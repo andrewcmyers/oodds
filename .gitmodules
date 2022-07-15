@@ -1,0 +1,3 @@
+[submodule "js/constrain"]
+	path = js/constrain
+	url = git@github.com:andrewcmyers/constrain
