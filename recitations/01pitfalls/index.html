@@ -1,0 +1,479 @@
+<h1>Java Execution Model: Arrays, Strings, Autoboxing</h1>
+<!-- dark corners of Java -->
+
+<p>We look at some important language features and see how object diagrams
+can help us to understand how they work and to avoid common programming
+errors involving them.
+</p>
+
+<h2>Names and scope</h2>
+<p>
+Names can refer to a variety of things: local variables (including the formal
+parameters of methods), instance fields, methods, types, classes, and
+packages. The basic rule for deciding what kind of thing a name refers to is
+to find the definition of the name with the smallest <em>scope</em> that includes
+the use of the name. Different kinds of names have different rule for scope.
+Local variables are in scope from the point of declaration until the end of the
+block in which they are declared. Method and field names are in scope
+throughout their class. Class and interface names are in scope throughout the
+program unless they are nested inside another class, in which case they are in
+scope throughout the containing class.
+</p>
+<p>
+If a name is in the scope of two different declarations at once, the outer declaration
+is said to be <em>shadowed</em> by the inner one. Java considers some shadowing to be
+illegal. For example, this code will not compile because the variable <code>x</code>
+is shadowed inside the <code>while</code> loop:
+</p>
+<pre>
+int x = 2;
+while (x != 0) {
+    int x = 5;
+    // both x's in scope here.
+}
+// only outer x in scope here.
+</pre>
+<p>
+One place where shadowing is allowed, often getting programmers into trouble, is when a local
+variable shadows an instance field. Shadowing often arises with constructors, because it is
+tempting to name formal parameters in the same way as instance variables:
+</p>
+<pre>
+class Point {
+    int x, y;
+    Point(int x, int y) {
+	// locals x and y shadow instance variables x and y
+	this.x = x;
+	this.y = y;
+    }
+}
+</pre>
+<p>
+As the example shows, there <i>is</i> a way to talk about shadowed instance
+variables, using the object reference <code>this</code>. The expression
+<code>this</code> can only be used inside instance methods (not static methods)
+and refers to the current object: in this case, the object being
+constructed. Alternatively, you can give the formal parameters different names
+(for example, by appending an underscore), and then the instance variables can
+be used directly, without the "<code>this</code>".
+</p>
+
+<h2>Arrays</h2>
+<p>
+Like objects, arrays in Java are reference types. The type <code>int[]</code> is the type
+of an array of <code>int</code>. One can have arrays of any type.
+</p>
+<p>Since arrays are reference types, we ordinarily create them with the <code>new</code> expression.
+Consider the following example:
+</p>
+<pre>
+int[] a = new int[2];
+int[] b = new int[] { 10, 20, 30 };
+</pre>
+<p>This code creates objects and initializes variables as shown by the following diagram. Notice
+that an array has a built-in instance variable called <code>length</code> that cannot be assigned to,
+and that defines the number of elements in the array. If the length is \(n\), then the legal
+indices into the array are \(0,...,n-1\).
+</p>
+<div class="figure" id="array-inits" style="width: 260px">
+<canvas id="array-inits-new" style="width:260px; height: 240px"></canvas>
+<script class=graphics>
+    with (new CFigure("array-inits-new")) {
+        let o1, o2, va, vb,
+            vars = group(va = varBoxes("a"), vspace().setH(5), vb = varBoxes("b")).align("left", "abut")
+        align("left", "abut",
+            o1 = varBoxes("class=int[]", "length=2", "0=0", "1=0"), vspace().setH(10),
+            o2 = varBoxes("class=int[]", "length=3", "0=10", "1=20", "2=30"))
+        align("right", "center", group(o1, o2), canvasRect().toRight(-2))
+        align("left", "top", vars, canvasRect().inset(2))
+        pointer(va, o1.getVar(0).cl())
+        pointer(vb, "left 40", o2.getVar(0).cl())
+    }
+</script>
+</div>
+<p>
+As with objects, the variables <code>a</code> and <code>b</code> contain
+references to the arrays rather than the arrays themselves. If we wrote an
+assignment <code>a = b;</code>, they would subsequently refer to the same
+underlying array; <code>a</code> and <code>b</code> would be <em>aliases</em>.
+Each array contains a first slot that keeps track of the
+type of the elements in the array, and each has a single immutable instance
+variable <code>length</code> that keeps track of the number of elements. The
+two elements of <code>a</code> are initialized to the default value of type
+<code>int</code>, which is 0.
+</p>
+<p>
+When declaring and initializing an array of type T<code>[]</code> for some T, an abbreviated syntax
+is allowed in which the usual <code>new T[]</code> is omitted. For example, the previous declaration
+of <code>b</code> could be written more compactly:
+</p>
+<pre>
+int[] b = { 10, 20, 30 };
+</pre>
+
+<p>
+We can't always initialize arrays completely in the declaration. To initialize large arrays,
+it is common to use <em>loops</em>. The <code>for</code> loop is a useful statement in
+Java. For example, suppose we want to initialize an array of <code>Point</code>s, where
+the class <code>Point</code> is defined as:
+<pre>
+class Point {
+   int x, y;
+   Point(int x, int y) {
+      this.x = x;
+      this.y = y;
+   }
+}
+</pre>
+Here is a loop that does that:
+</p>
+<pre class="load">
+<a href="01pitfalls/for_loop.java">for_loop.java</a>
+</pre>
+<p>This code creates an array whose entries are references to a series of newly
+created <code>Point</code> objects:
+</p>
+<div class="figure">
+    <canvas id="loop-init" style="width: 400px; height: 170px">
+    <img src="01pitfalls/loop-init.png"
+         alt="object diagram after loop initialization" />
+</div>
+<script class="graphics">
+    with (new CFigure("loop-init")) {
+        let pa = varBoxes("pa"),
+            arr = varBoxes("class=Point[]", "length=n", "", "", "=..."),
+            p0 = varBoxes("class=Point", "x=0", "y=0"),
+            p1 = varBoxes("class=Point", "x=1", "y=0")
+        pointer(pa, arr.getVar(0).cl())
+        align("left", "abut", p0, vspace(30), p1)
+        align("abut", "top", pa, hspace(30), arr, hspace(50), p0)
+        align("left", "top", canvasRect().inset(2), pa)
+        pointer(arr.getVar(2), "left", p0.getVar(0).cl())
+        pointer(arr.getVar(3), "left", p1.getVar(0).cl())
+
+    }
+</script>
+<p>
+The <code>for</code> loop repeatedly executes its body (the code in braces)
+until its guard (here <code>i < n</code>) becomes false. It has an interesting syntax. There are three
+clauses in the parentheses, separated by semicolons. The first clause (here <code>int i = 0</code>) is the
+<em>loop initializer</em>. It is executed once at the beginning of the loop and may include a
+variable declaration, as in the example. The second clause is the <em>loop guard</em>. It is evaluated at
+the beginning of every loop iteration, including the first. The loop terminates immediately if it evaluates
+to <code>false</code>. The third clause is the <em>increment statement</em>. It is
+executed at the end of every iteration of the body.
+</p>
+<p>
+Two other statements used in conjunction with loops are the <code>break</code>
+and <code>continue</code> statements. If a <code>break</code> statement in the
+body of a loop is executed, the loop terminates immediately. The
+<code>continue</code> statement does not terminate the loop altogether, but
+causes the current execution of the loop body to end immediately.
+The increment is performed and the guard is checked, and if the guard is still true,
+the body is executed again from the top.</p>
+
+<h3>Multidimensional arrays</h3>
+
+<p>A multidimensional array is really an array of references to arrays. For example,
+consider the following code that creates a two-dimensional array (aka matrix):</p>
+<pre>
+int[][] m = {{10, 20, 30}, {40, 50, 60}};
+</pre>
+<p>For many purposes, we can think of this code as truly creating a 2D array that
+could, for example, be used as a matrix in linear algebra computations:
+</p>
+<div class=figure><canvas id="matrix2" style="width:240px; height: 90px"></div>
+<script class="graphics">
+  with (new CFigure("matrix2")) {
+      let arr = [[10, 20, 30], [40, 50, 60]],
+          sz = 30,
+          oa = arr.map(row => row.map(val => square().addText("" + val).setW(sz).setH(sz))),
+          m = varBoxes("m=")
+      oa.forEach(row => align("abut", "top", ...row))
+      for (i = 0; i < 3; i++) { align("left", "abut", oa[0][i], oa[1][i]) }
+      pointer(m, oa[0][0])
+      align("abut", "none", canvasRect().inset(2).ul(), m)
+      align("abut", "center", m, hspace(50), oa[0][0])
+      align("none", "top", canvasRect().inset(2), oa[0][0])
+  }
+</script>
+
+<script class=graphics>
+</script>
+
+<p>
+However, the code actually creates <em>three</em> objects; a 2-dimensional array is really
+an array of arrays:
+</p>
+<div class=figure><canvas id="matrix3" style="width:540px; height: 240px"></div>
+<script class="graphics">
+  with (new CFigure("matrix3")) {
+      let arr = [[10, 20, 30], [40, 50, 60]];
+      let m
+      align("left", "top", canvasRect().inset(10), m = label("m"))
+      let outer = varBoxes("class=int[][]", "length=2", "", ""),
+          inner = [ varBoxes("class=int[]", "length=3", ...arr[0].map(x => "=" + x)),
+                    varBoxes("class=int[]", "length=3", ...arr[1].map(x => "=" + x)) ]
+      align("left", "none", inner[0], inner[1])
+      align("abut", "center", m, hspace(80), outer.getVar(0), hspace(100), inner[0].getVar(0))
+      align("none", "bottom", canvasRect().inset(2), inner[1]);
+      pointer(m.toRight(20), outer.getVar(0))
+      pointer(outer.getVar(2), inner[0].getVar(0).toLeft(50), inner[0].getVar(0))
+      pointer(outer.getVar(3), inner[1].getVar(0).toLeft(50), inner[1].getVar(0))
+  }
+</script>
+
+<p>
+Java does not enforce that <code>m</code> represents
+a rectangular matrix. For example, we can change the length of one of its rows:
+</p>
+<pre>
+m[1] = new int[1];
+</pre>
+<p class="cont">
+which would make the first row have length 1.
+We can even make the rows alias each other:
+</p>
+<pre>
+m[1] = m[0];
+</pre>
+<h3>Arrays as objects</h3>
+
+<p>
+Since arrays are objects, we can put a array value into a variable whose type is declared to
+be <code>Object</code>:
+</p>
+<pre>
+Object a = new int[] {10, 20};
+</pre>
+<p>
+This also means that we can create an array <em>of</em> objects and store any object, including
+arrays, into it:
+<pre>
+Object[] b = new Object[] {a, a};
+b[0] = b; // !
+</pre>
+<div class=figure>
+<canvas id="arrayobjs" style="width:420px; height:230px"></canvas>
+</div>
+<script class=graphics type="application/javascript">
+    let fig = new CFigure("arrayobjs", true)
+    with (fig) {
+        setFontName("consolas, fixed")
+        let f1 = addFrame(), f2 = addFrame(), f3 = addFrame().setLength(600)
+        let o1 = varBoxes("class=int[]", "length=2", "=10", "=20"),
+            o2 = varBoxes("class=Object[]", "length=2", "", "")
+        align("left", "abut", o1, vspace().setH(10), o2)
+        equal(o2.y0(), canvasRect().y())
+        equal(o1.x1(), minus(canvasRect().x1(), 40))
+        let a, b
+        align("left", "none", a = label("a").setY(o1.getVar(0).y()), canvasRect().toLeft(-150))
+        b = label("b").setY(o2.getVar(0).y())
+        align("left", "none", a, b)
+        connector(a.cr().toRight(5), o1.getVar(0).cl()).setEndArrow("arrow").setStartArrow("bullet").setLineWidth(2)
+        let p1 = point(), p2 = point()
+        drawAfter(f2, b, o2,
+            connector(b.cr().toRight(5), o2.getVar(0).cl()).setEndArrow("arrow").setStartArrow("bullet").setLineWidth(2),
+            pointer(o2.getVar(2), p1.toRight(30), p1),
+            pointer(o2.getVar(3), p2.toRight(50), p2))
+        pin(p1, smooth(f3, o1.getVar(0).cr().toBottom(5), o2.getVar(0).cr()))
+        pin(p2, o1.getVar(0).cr().toTop(5))
+        align("left", "center",
+            animateCode("*Object a = new int[] {10, 20};",
+                        "Object[] b = new Object[] {a, a};",
+                        "b[0] = b"), 
+            canvasRect().inset(2).cl().toTop(25))
+    }
+</script>
+<p>
+While this code is legal, it is certainly confusing and
+not a good example of how to write code!
+</p>
+
+<h2>Strings</h2>
+<p>
+Strings in Java are also objects, which leads to some surprises. The evaluation of
+a <em>string literal</em> like <code>"Hello"</code> actually causes a call to a
+constructor of the class <code>String</code>, resulting in an object that is an
+instance of the class. For example, the code on the left has the effect on the right:
+</p>
+<div class="floatfigure">
+    <canvas id=string_lit_new style="width: 200px; height: 310px"></canvas>
+</div>
+<script class=graphics>
+with (new CFigure("string_lit_new")) {
+    const xs = varBoxes("class=String", "size=5", "=Hello|2")
+    const zs = varBoxes("class=String", "size=10", "=HelloWorld|3")
+    const ws = varBoxes("class=String", "size=10", "=HelloWorld|3")
+
+    align("left", "distribute", xs, zs, ws)
+    align("none", "top", canvasRect().inset(2), xs)
+    align("none", "bottom", canvasRect().inset(2), ws)
+
+    const x = label("x"), y = label("y"), z = label("z"), w = label("w")
+    align("left", "distribute", x, y, z, w)
+    align("left", "top", canvasRect().inset(2), x)
+    align("left", "bottom", canvasRect().inset(2).cl().toTop(50), w)
+    align("right", "none", xs, canvasRect().inset(2))
+    pointer(x.toRight(20), "left", xs.getVar(0).cl().toTop(5))
+    pointer(y.toRight(20), "left", xs.getVar(0).cl().toBottom(5))
+    pointer(z.toRight(20), "left", zs.getVar(0))
+    pointer(w.toRight(20), "left 25", ws.getVar(0))
+}
+</script>
+
+<pre class="narrow">
+String x = "Hello";
+String y = x;
+String z = y + "World";
+String w = y + "World";
+</pre>
+<p>
+The operator <code>+</code> denotes <em>concatenation</em> when applied to strings. 
+It creates new string objects. Notice that the variables <code>z</code>
+and <code>w</code> are initialized to refer to string objects that have exactly the same
+state, but are actually different objects. Since strings are immutable (they cannot be
+changed after they are created), the fact that they are different objects normally does
+not matter.
+</p>
+<p>Strings support
+<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html">
+a large selection of useful methods</a>. One such method is <code>charAt</code>,
+which returns the character at a given position in the string, starting at 0.
+For example, the expression <code>z.charAt(1)</code> evaluates to the character
+<code>'e'</code>, and the same is true for <code>w</code>.
+</p>
+<p>Although the objects referenced by <code>z</code> and <code>w</code> represent the
+same string literal <code>"HelloWorld"</code>, they are different objects and
+can be distinguished using the <code>==</code> operator; that is, the
+result of <code>z == w</code> is <code>false</code>. This is because the
+<code>==</code> operator on reference types simply returns whether the operands
+reference the same object. This is almost never what we want when comparing two strings.
+We almost always want to test whether the two string literals
+are the same. For this, one should use the <code>String</code>
+object's <code>equals</code> method. For example, the expression <code>z.equals(w)</code> would
+evaluate to <code>true</code>.</p>
+
+<p>This also applies to other object values. A comparison using <code>equals</code>
+is more likely what you want. All objects have an <code>equals</code> method. Think twice before using <code>==</code> on an object.
+</p>
+<div class=floatfigure>
+<canvas style="width:250px; height: 190px" id="string_lit_impl_new"></canvas>
+</div>
+<script class=graphics>
+with (new CFigure("string_lit_impl_new")) {
+    let s1 = varBoxes("class=String", "size=5", "value=")
+    let arr = varBoxes("class=char[]", "length=5",
+            "0='H'", "1='e'", "2='l'", "3='l'", "4='o'")
+    align("none", "center", s1.getVar(2), arr.getVar(0))
+    align("left", "top", canvasRect().inset(2), s1)
+    align("right", "none", canvasRect().inset(2), arr)
+    pointer(s1.getVar(2), arr.getVar(0))
+
+}
+</script>
+
+<p>
+Based on the discussion of strings above, it is natural to think that strings
+are very special objects in Java. But they aren't: the only truly special thing
+about strings is that string objects can be created using the convenient
+quotation mark syntax. The object diagram above is a bit of a white lie,
+because strings are actually implemented using arrays of characters. For
+example, the string <code>"Hello"</code> is really implemented as <em>two</em>
+objects as shown in the object diagram on right. The <code>String</code> object
+contains an instance variable <code>value</code> that refers to the array of
+characters making up the string.
+</p>
+<p>
+Since the entries in the character array never change, you have to work pretty
+hard to figure out what a string in Java really is, because you can
+only access strings through the operations of the <code>String</code> class.
+And that is a Good Thing, because it means that the designers of Java can
+change the way strings work in future versions of Java without breaking all the
+existing programs. In fact, the implementation of the <code>String</code> class
+has changed significantly in the past few versions of Java, so even <em>this</em>
+object diagram is a white lie.
+</p>
+
+<h2>Autoboxing</h2>
+<p>
+Sometimes we want to use a primitive type like <code>int</code> where a
+reference type is expected, and vice versa. For example, a variable of
+type <code>Object</code> can refer to any object, but cannot refer directly to a primitive value.
+</p>
+<p>To address this issue, Java introduced a set of eight classes corresponding to the
+eight primitive types, as shown in the following table.</p>
+
+<table>
+<tr>
+<th>primitive type</th> <th>corresponding reference type</th></tr>
+<tr>
+<td><code>int</code></td> <td><code>Integer</code></tr>
+<td><code>boolean</code></td> <td><code>Boolean</code></tr>
+<td><code>short</code></td> <td><code>Short</code></tr>
+<td><code>byte</code></td> <td><code>Byte</code></tr>
+<td><code>char</code></td> <td><code>Char</code></tr>
+<td><code>float</code></td> <td><code>Float</code></tr>
+<td><code>double</code></td> <td><code>Double</code></tr>
+<td><code>long</code></td> <td><code>Long</code></tr>
+</table>
+Each of these classes defines objects that
+contain a value of the appropriate primitive type, and define an
+<code>equals</code> method to compare them.
+</p>
+<p>In addition, Java will automatically &quot;box&quot; primitive values into the corresponding
+reference type when necessary, and will automatically unbox them in the other direction,
+too. This feature is called <b>autoboxing</b>. It can have some counterintuitive
+effects, however. For example, consider this code:
+</p>
+<pre>
+Integer i = 200;
+Object l = i;
+int j = i;
+Object k = j;
+System.out.println(i == j); // true
+System.out.println(i == l); // true
+System.out.println(j == k); // static error: can't compare Object and int.
+System.out.println(l == k); // false!
+System.out.println(l.equals(k)); // true
+</pre>
+<p>
+There are a couple of surprises here. First, the compiler does not let us compare
+j and k. Autoboxing causes j to be boxed into an <code>Integer</code> object, but
+the <em>static</em> type of k is <code>Object</code>, so the Java compiler does not
+know that k can be unboxed into an <code>int</code>.
+</p>
+<p>
+Another surprise is the test <code>l == k</code>.
+Since <code>l</code> and <code>k</code> are different objects representing the
+same number, they compare as unequal. As with strings, we should use the
+<code>equals</code> method to compare values of type <code>Integer</code>.
+</p>
+<p>
+Curiously, changing the number 200 to anything between
+-128 and 127 will cause the code above to report <code>true</code> for <code>l
+== k</code>. This happens because there is a table of <code>Integer</code>
+objects that is used only for small integers. Autoboxing is performed by the
+method <code>Integer.valueOf</code>, which uses this table when it can and only
+resorts to <code>new</code> for larger integers.
+</p>
+<p>
+One moral of the story, again, is that we should use the <code>equals</code> method
+to compare <code>Integer</code> objects.
+Even though expression <code>l == k</code> is false,
+the expression <code>l.equals(k)</code> is true.
+</p>
+<p>Clearly, the assignment <code>j=i</code> is doing more than just an assignment.
+In fact, it's really executing the following code: <code>j = i.intValue()</code>.
+The <code>intValue()</code> method extracts the <code>int</code> value from the
+<code>Integer</code> object. This is an example of <b>syntactic sugar</b>, in
+which the language permits us to abbreviate how we write code.
+Conversely, if we assigned <code>i=j</code>, this would be syntactic sugar for
+<code>i = Integer.valueOf(j)</code>, which calls a method that depending on
+the value of <code>j</code> either looks up an appropriate preexisting
+object in a table, or creates a new <code>Integer</code> object.
+Calls to the <code>valueOf</code> and <code>intValue</code> methods are
+automatically inserted by the Java compiler to implement boxing and unboxing.
+Similar methods exist for the other primitive types.
+</p>
+

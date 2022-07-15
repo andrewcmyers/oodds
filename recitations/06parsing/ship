@@ -1,0 +1,5 @@
+#!/bin/sh
+
+dir=../../web/recitations/rec06
+mkdir -p "$dir"
+cp *.{dot,png} "$dir"/

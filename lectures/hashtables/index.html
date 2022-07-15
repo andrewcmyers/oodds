@@ -1,0 +1,788 @@
+<h1>Hash tables</h1>
+<p>
+Suppose we want a data structure to implement either a <strong>set</strong> of
+elements with operations like <code>contains</code>, <code>add</code>, and <code>remove</code> that take an element
+as an argument, or a <strong>map</strong> (<strong>function</strong>) from keys to values with operations like <code>get</code>,
+<code>put</code>, and <code>remove</code> that take a key or a (key,value) pair for an argument. A <strong>map</strong>
+represents a partial function that maps keys to values; it is <strong>partial</strong> because it is not defined on all keys,
+but only on those that have been put into the map. We have now seen a few data structures that could
+be used for both of these implementation tasks.
+</p>
+<p>
+We consider the problem of implementing sets and maps together, because most
+data structures that can implement a set can also implement a map and vice versa. A set of
+(key,value) pairs can act as a map, provided there is at most one
+(key,value) pair in the map with a given key. Conversely, a map that maps every key to a fixed dummy element 
+can be used to represent a set of keys.
+</p>
+<p>
+Here are the data structures we've seen so far, with the asymptotic complexities
+for each of their operations:
+</p>
+<table>
+<tr>
+<th>Data structure</th> <th>lookup (contains/get)</th> <th>add/put</th> <th>remove</th></tr>
+<tr>
+<td>Array</td>     <td>\(O(n)\)</td>         <td>\(O(1)\)</td>  <td>\(O(n)\)</td>
+</tr><tr>
+<td>Sorted array</td>  <td>\(O(\lg n)\)</td>        <td>\(O(n)\)</td>  <td>\(O(n)\)</td>
+</tr><tr>
+<td>Linked list</td>  <td>\(O(n)\)</td>         <td>\(O(1)\)</td>  <td>\(O(n)\)</td>
+</tr><tr>
+<td>Balanced search tree</td>  <td>\(O(\lg n)\)</td>        <td>\(O(\lg n)\)</td> <td>\(O(\lg n)\)</td>
+</tr>
+</table>
+<p>
+Naturally, we might wonder if there is a data structure that can do better.
+And it turns out that there is: the <strong>hash table</strong>, one of the best and
+most useful data structures there is—when used correctly.
+</p>
+<p>
+Many variations on hash tables have been developed. We'll explore the most
+common ones, building up in steps.
+</p>
+<h2>Step 1: Direct address tables</h2>
+<p>
+While arrays make a slow data structure when you don't know what index to look
+at, all of their operations are very fast when you do. This is the insight
+behind the <strong>direct address table</strong>. Suppose that for each element that
+we want to store in the data structure, we can determine a unique integer index
+in the range \(0\dots m-1\). That is, we need an <strong>injective</strong> function that maps
+elements (or keys) to integers in the range. Then we can use the indices produced
+by the function to decide at which index to store the elements in an array of size \(m\).
+</p>
+<div class="floatfigure">
+<img src="hashtables/dat.png" alt="direct address table" />
+</div>
+<p>
+For example, suppose we are maintaining a collection of objects representing
+houses on the same street. We can use the street address as the index into a
+direct address table. For example, to find the house at 29 Pine St, we might
+use the index 29, as shown in the figure on the right. Not every possible
+street address will be used, so some array entries will be empty. This is not a
+problem as long as there are not too many empty entries.
+</p>
+<p>
+However, it is often hard to come up with an injective function that
+does not require many empty entries. For example, we might try to
+maintain a collection of employees along with their social security
+numbers, and to look them up by social security number. Using the social
+security number as the index into a direct address table would require
+an array of 10 billion elements, almost all of which are likely to be
+unused. Even assuming our computer has enough memory to store such a
+<strong>sparse</strong> array, it will be a waste of memory. Furthermore, on
+most computer hardware, the use of caches means that accesses to large
+arrays are actually significantly slower than accesses to small arrays,
+sometimes by two orders of magnitude.
+</p>
+
+<h2>Step 2: Hashing</h2>
+<div class="floatfigure">
+<img src="hashtables/hashfn.png" alt="hash function" />
+</div>
+<p>
+Instead of requiring that each key be mapped to a unique index,
+hash tables allow a <strong>collisions</strong> in which two keys maps to the same index,
+and consequently the array can be smaller, on the order of the number of
+elements in the hash table. The entries in the array are called <strong>buckets</strong>,
+and we use \(m\) to denote the number of buckets.
+The mapping from keys to bucket indices
+is performed by a <strong>hash function</strong>;
+it maps the key in a reproducible way to a <strong>hash value</strong> that
+is a legal array index.
+</p>
+If the hash function is good, it will distribute
+the values fairly evenly, so that collisions occur infrequently, as if at random.
+In particular, what we want from the hash function is that for any two
+different keys generated by the program, the chance that they collide is
+approximately \(1/m\).
+</p>
+
+<p>For example, suppose we are using an array with 13 entries and our keys are
+social security numbers.  Then we might use <strong>modular hashing</strong>, in which
+the array index is computed as <code>(key % 13)</code>. Modular hashing is not
+very random, but is likely to be good enough in many applications.
+</p>
+<p>
+In some applications, the keys may be generated by an adversary, who is
+purposely choosing keys that collide. In this case, the choice of hash function
+must be made carefully to prevent the adversary from engineering collisions.
+Modular hashing will not be good enough. A <strong>cryptographic hash function</strong>
+should be used so that the adversary cannot produce collisions at a rate higher
+than random choice.
+</p>
+<h2>Step 3: Collision resolution</h2>
+<h3>Chaining</h3>
+<div class="floatfigure">
+<img src="hashtables/chaining.png" alt="separate chaining with linked lists" />
+</div>
+<p>
+There are two main ideas for how to deal with collisions. The best way is
+usually <strong>chaining</strong>: each array entry corresponds to a <strong>bucket</strong>
+containing a mutable set of elements. (Confusingly, this approach is sometimes known
+as <strong>closed addressing</strong> or <strong>open hashing</strong>.) Typically, the bucket is
+implemented as a linked list, and each array entry (if nonempty) contains a
+pointer to the head of the list. The list contains all keys that have been added to
+the hash table that hash to that array index.
+</p>
+<p>To check whether an element is in the hash table, the key is first
+hashed to find the correct bucket to look in, then the linked list is scanned
+for the desired element. If the list is short, this scan is very quick.
+</p>
+<p>
+An element is added or removed by hashing it to find the correct bucket. Then,
+the bucket is checked to see if the element is there, and finally the element
+is added or removed appropriately from the bucket in the usual way for linked
+lists.
+</p>
+<h3>Probing</h3>
+<div class="floatfigure">
+<img src="hashtables/probing.png" alt="open addressing" />
+</div>
+<p>
+Another approach to collision resolution is
+<strong>probing</strong>. (Equally confusingly, this technique is also known as
+<strong>open addressing</strong> or <strong>closed hashing</strong>.) Rather
+than put colliding elements in
+a linked list, all elements are stored in the array itself. When adding a new
+element to the hash table creates a collision, the hash table finds somewhere
+else in the array to put it. The simple way to find an empty index is to search ahead
+through the array indices with a fixed stride (usually 1) for the next unused array
+entry, wrapping modulo the length of the array if necessary. This strategy
+is called <strong>linear probing</strong>. It tends to produce a lot of
+clustering of elements, leading to poor performance. A better
+strategy is to use a second hash function to compute the probing interval;
+this strategy is called <strong>double hashing</strong>.</p>
+
+<p>Regardless of how collisions are resolved, the time required for the hash
+table operations grows as the hash table fills up. By contrast, the performance of
+chaining degrades more gracefully, and chaining is usually faster than probing
+even when the hash table is not nearly full. Therefore chaining is often
+preferred over probing.</p>
+
+<p>A recently popular variant of closed hashing is <strong>cuckoo hashing</strong>, in which two
+hash functions are used. Each element is stored at one of the two locations
+computed by these hash functions, so at most two table locations must be
+consulted in order to determine whether the element is present. If both
+possible locations are occupied, the newly added element <em>displaces</em> the
+element that was there, and this element is then re-added to the table. In
+general, a chain of displacements occurs.</p>
+
+<h2>Performance of hash tables</h2>
+
+<p>Suppose we are using a chained hash table with \(m\) buckets, and the number of
+elements in the hash table is \(n\). The average number of elements per bucket is
+\(n/m\), which is called the <strong>load factor</strong> of the hash table, written as \(α\).  When
+we search for an element that is not in the hash table, the expected length of
+the linked list traversed is \(n/m = α\). If we search for an element that
+<em>is</em> in the hash table, there is at least one element in the traversed
+list, and the remaining \(n-1\) elements are spread across all \(m\) buckets,
+so the expected length is \(1 + (n - 1)/m = 1 + α - 1/m &lt; 1+α\), though on average only
+half the list needs to be traversed to find it.  Since even when \(α\) is
+small, there is always at least some \(O(1)\) cost of hashing, the cost of
+searching for an absent element is \(O(1+α)\), and the cost of searching for a
+present element is \( O(1 + (α+1)/2) \) = \( O (1 + α) \).  Therefore, with a
+good hash function all hash table operations take expected time \(O(1 + α)\).
+</p>
+<p>
+Therefore, if we have a good hash function and we can ensure that the load factor
+α never exceeds some fixed value \(α_{max}\), then all operations take \(O(1 +
+α_{max}) = O(1)\) time both on average and even in the worst case with high probability.
+</p>
+<!--  Actually: O(lg n/lg lg n) for fixed α.
+<p>
+What about the time to access the worst-case element in the hash
+table? If the hash function is indistinguishable from a random function, the
+probability distribution of the length of the longest linked list falls off
+exponentially in the list length, so the expected longest bucket length is
+still \(O(1+α)\).
+</p>
+-->
+<p>
+In practice, we get the best performance from hash tables when \(α\) is
+within a narrow range, from approximately 1/2 to 1. If \(α\) is less than 1/2, the
+bucket array is becoming sparse and a smaller array is likely to give better
+performance. If \(α\) is greater than 1, the cost of traversing the linked lists
+limits performance. However, the optimal bounds on \(α\) depend on details of
+the hardware architecture.
+</p>
+<p>
+One way to hit the desired range for \(α\) is to allocate the bucket array to just
+the right size for the number of elements that are being added to it. In general,
+however, it's hard to know ahead of time what this size will be, and in any case,
+the number of elements in the hash table may need to change over time.
+</p>
+
+<h2>Step 4: Resizable arrays</h2>
+<p>
+To avoid trying to predict how big to make the bucket array ahead of time,
+we can use a <strong>resizable array</strong> to dynamically adjust the size when necessary.
+Instead of representing the hash table as a bucket array, we introduce a hash table
+object that maintains a pointer to the current bucket array and the
+number of elements that are currently in the hash table.
+</p>
+<div class="floatfigure">
+<img src="hashtables/resizing.png" alt="resizable array" />
+</div>
+<p>
+If adding an element would cause \(α\) to exceed \(α_{max}\),
+the hash table generates a new bucket array whose size is a multiple of
+the current size, usually twice the size. This means the hash function must change,
+so <em>all</em> the elements must be rehashed into the new bucket array. Hash functions
+are typically designed so they take the array size \(m\) as a parameter,
+so this parameter just needs to be changed.
+</p>
+
+<p>Resizable arrays are also used to implement variable-length array
+abstractions like <code>ArrayList</code>, because its size can be
+changed at run time.</p>
+
+<h2>Amortized complexity</h2>
+
+<p>With the above procedure, some <code>add</code> operations will cause
+all the elements in the hash table to be rehashed. We have to search
+the array for the nonempty buckets, hash all the elements, and add
+them to the new table. This will take time \(O(n)\)
+(provided \(n\) is at least a constant fraction of the
+size of the array). For a large hash table, this may take enough time
+that it causes problems for the program. Perhaps surprisingly, however,
+the expected cost per operation is still \(O(1)\). In
+particular, any sequence of \(n\) operations on the hash table always takes
+expected time \(O(n)\), or \(O(1)\)
+per operation. Therefore we say that the <strong>amortized</strong> asymptotic
+complexity of hash table operations is \(O(1)\). </p>
+<p>
+To see why this is true, consider a hash table with \(α_{max} = 1\). Starting
+with a table of size 1, say we add a sequence of \( n = 2^{j} \) elements.
+The hash table resizes after 1 add, then again after 2 more adds, then again after 4 more adds, etc.
+Not counting the array resizing, the cost of adding the \(n\) elements is \(O(n)\) on average.
+The cost of all the resizings is (a constant multiple of)
+\(1 + 2 + 4 + 8 + ⋅⋅⋅ + 2^{j} = 2^{j+1}&minus;1 = 2n&minus;1\), which is
+\(O(n)\).
+</p>
+<p>
+Notice that it is crucial that the array size grow geometrically
+(doubling).  It may be tempting to grow the array by a fixed increment
+(e.g., 100 elements at time), but this causes \(n\)
+elements to be rehashed \(O(n)\) times on average,
+resulting in \(O(n^{2})\) total insertion time,
+or amortized complexity of \(O(n)\).
+</p>
+
+<h2>Hash functions</h2>
+
+<p>A good hash function is one that avoids collisions. If we know
+what all the keys are in advance, we can in principle design a <em>perfect hash
+function</em> that hashes each key to a distinct bucket. In general, we
+can't design a perfect hash function.
+</p>
+<p>
+If we don't know something about what the keys will be in advance, the best
+we do is to have a hash function that seems random. An idealized hash function
+is one that satisfies the <strong>simple uniform hashing assumption</strong>: it behaves
+as if it generates each bucket index randomly with equal probability whenever
+it sees a new key; whenever it is given the key later, it returns the same
+bucket index. Such an idealized hash function is called a <strong>random oracle</strong>.
+</p>
+<p>
+It would be impractical to implement a hash function that behaves in exactly this way,
+but we can implement a hash function that is close enough. One way to think about
+the problem of designing hash functions is that there is an adversary generating
+keys and trying to cause collisions. Our job as a hash function designer is to
+pick a hash function that defeats the adversary: that makes it unlikely that the
+adversary will generate collisions. Of course, often this “adversary” is not
+really an adversary at all; it's the program generating keys in a way that relates
+to the computation being done. But in other settings, there really is an adversary
+choosing keys.
+</p>
+<p>
+There are relatively inexpensive hash functions that work well for less
+adversarial situations, and more expensive hash functions that make it
+infeasible for an adversary to choose keys that collide. A key property we want
+is <em>diffusion</em>: the hashes of two related keys should appear to have no
+relation to each other.  In particular, if any two keys \(k\) and \(k'\) are
+"close" to each other in the sense that the computation is likely to generate
+both of them, their hashes should not have any relationship. An implication of
+this principle is that if a single bit is flipped in the key, then every bit in
+the hash should appear to flip with 1/2 probability.
+</p>
+
+<h3>Integer hash functions</h3>
+
+<p>
+A useful building block for hashing is an <em>integer hash function</em> that
+maps from <code>int</code> to <code>int</code> or from <code>long</code> to
+<code>long</code> while introducing diffusion. Two standard approaches are
+<strong>modular hashing</strong> and <strong>multiplicative hashing</strong>. More expensive
+techniques like cyclic redundancy checks (CRCs) and message digests are also
+used in practice.
+</p>
+
+<h4>Modular hashing</h4>
+
+<p>
+With <strong>modular hashing</strong>, the hash function is simply \(h(k) = k \mod m\)
+for some modulus \(m\), which is typically the number of buckets. This hash
+function is easy to compute quickly when we have an integer hash code.
+Some values of \(m\) tend to produce poor results though; in particular, if
+m is a power of two (that is, \(m=2^{j}\) for some \(j\)), then \(h(k)\) is
+just the \(j\) lowest-order bits of \(k\):
+the function \(h(k)\) will discard all the higher-order bits!
+Throwing away these bits
+works particularly poorly when the hash code of an object is its memory
+address, as is the case for Java. At least two of the lower-order bits of an
+object address will be zero, with the result that most buckets are not
+used! Even if we discard these bits, there is often enough of a pattern to
+object memory addresses that they will cause collisions with modular hashing.
+A simple way to address this problem is to choose \(m\)
+to be one <em>less</em> than a power of two. In practice, primes
+work well as moduli, since computations typically will not generate keys with
+a periodicity matching a large prime number. The implementation can choose
+sizes from a predefined table of appropriately sized primes.
+</p>
+
+<h4>Multiplicative hashing</h4>
+<p>
+An alternative to modular hashing is <strong>multiplicative hashing</strong>, which is defined as
+\(h(k) = \lfloor m * frac(k·A)\rfloor\), where \(A\) is a constant between 0 and 1
+(e.g., Knuth recommends \(φ&minus;1 = 0.618033...\)), and the function frac
+gives the fractional part of a number (that is, \(frac(x) = x - &lfloor;x&rfloor;)\).
+This formula uses the fractional part of the product \(k·A\)
+to choose the bucket.
+</p>
+<p>
+However, the formula above is not the best way to evaluate the hash function.
+If \(m\) is some power of two (\(m = 2^{j}\)), we can scale up the
+multiplier \(A\) by \(2^{32}\) to obtain a 32-bit integer,
+For example, Knuth's multiplier becomes \(A = 2^{32}·(φ-1) &equiv; &minus;1640531527 \mod 2^{32}\).
+We can then evaluate the hash function cheaply as follows,
+obtaining a \(j\)-bit result in \([0,m)\):
+</p>
+<pre>
+h(k) = (k*A) &gt;&gt;&gt; (32&minus;j)
+</pre>
+<p>The reason this works is that the multiplication deliberately overflows, but
+when integers are multiplied, only the low 32 bits of the result are retained. We
+only want bits from the low 32 bits anyway.
+</p>
+<p>
+Implemented properly, multiplicative hashing is faster and offers diffusion
+better than that of modular hashing. Intuitively, multiplying together two
+large numbers diffuses information from each of them into the product,
+especially around the middle bits of the product. The formula above picks out
+<code>j</code> bits from the middle of the product \(k·A\).
+If we visualize what happens when we multiply two 32-bit numbers, we can see that
+every bit of <code>k</code> can potentially affect those <code>j</code> bits:
+</p>
+<div class=figure><canvas id="multiplication" style="width: 300px; height: 200px"></canvas></div>
+<script class=graphics>
+with (new CFigure("multiplication")) {
+    function word() {
+        return rectangle().setW(80).setH(12)
+    }
+    let w1 = word(),
+        w2 = word().addText("A"),
+        w = w1.w(), h = 5
+    label("A").setFontSize(9).at(w1)
+    label("k").setFontSize(9).at(w2)
+    align("none", "top", w1, canvasRect().inset(2))
+    align("left", "none", w1, w2)
+    equal(w2.y0(), plus(h, w1.y1()))
+    let bar = horzLine("black", 2), bar2 = horzLine("black", 2)
+    equal(bar.y(), plus(w2.y1(), h))
+    equal(bar.x1(), w1.x1())
+    equal(bar.w(), plus(w, 30))
+    equal(bar.x1(), minus(canvasRect().x1(), 5))
+    let x = label("×")
+    align("left", "abut", x, vspace().setH(h), bar)
+    let wi = [], wp = bar
+    for (let i = 0; i < 8; i++) {
+        wi[i] = word()
+        equal(wi[i].y0(), plus(wp.y1(), h))
+        equal(wi[i].x1(), minus(w1.x1(), times(w, i/8)))
+        wp = wi[i]
+    }
+    align("none", "abut", wp, vspace().setH(h), bar2)
+    align("right", "none", bar2, w2)
+    let sum = rectangle().setH(w1.h())
+    equal(sum.w(), times(2, w1.w()))
+    align("right", "abut", bar2, vspace().setH(h), sum)
+    align("left", "none", bar2, sum)
+    let ll = vertLine(), lr = vertLine()
+    equal(ll.x(), w2.x0())
+    equal(ll.y0(), bar.y(), lr.y0())
+    equal(ll.y1(), sum.y1(), lr.y1())
+    equal(lr.x(), wi[5].x1())
+    label("j").setX(average(lr.x(), ll.x())).setY(sum.y()).setFontSize(9)
+}
+</script>
+
+<p>Unfortunately, multiplicative hashing is often implemented incorrectly
+and has unfairly acquired a bad reputation in some quarters because of it.
+A common mistake is to implement it as
+\((k·A) \mod m\). By the properties of modular arithmetic,
+\((k·A) \mod m = ((k \mod m) × (A \mod m) \mod m)\). Therefore, this mistaken implementation
+acts just like modular hashing in combination with
+shuffling the order of the buckets, rather than providing real diffusion.
+</p>
+<p>
+With multiplicative hashing, diffusion into the lower-order bits is not as good as
+into the higher-order bits, because fewer bits of either the multiplier or the hashcode
+affect them. This effect can increase clustering for large hash tables where lower-order
+bits affect the choice of bucket.
+</p>
+<p>
+An easy way to increase diffusion in the lower bits is to use 64-bit
+multiplication instead:
+</p>
+<pre>
+h(k) = (A * (long)k) &gt;&gt;&gt; (64&minus;j)
+</pre>
+<p>
+where <code>A</code> is now a 64-bit representation of the multiplier.
+</p>
+
+<h3>Adversarial computation and cryptographic hash functions</h3>
+<p>
+The goal of the hash table is that collisions should
+occur as if at random. Therefore, whether collisions occur depends to some
+extent on the keys generated by the client. If the client is an adversary
+trying to produce collisions, the hash table must work harder. Early web
+sites implemented using the Perl programming language were subject to
+denial-of-service attacks that exploited the ability to engineer hash table
+collisions. Attackers used their knowledge of Perl's hash function on strings
+to craft strings (e.g., usernames) that collided, effectively turning Perl's hash tables
+into linked lists.
+</p>
+<p>
+To produce hashes resistant to an adversary, a <strong>cryptographic hash function</strong>
+should be used. The message digest algorithms MD5, SHA-1,
+and SHA-2 are good choices whose security increases (and performance
+decreases) in that order. They are available in Java through the class
+<tt>java.security.MessageDigest</tt>. Viewing the data to be hashed as
+a string or byte array s, the value <code>MD5(IV + s) mod m</code> is a
+cryptographic hash function offering a good balance between security and
+performance. MD5 generates 128 bits of output, so if \(m = 2^{j}\),
+the hash function can simply pick \(j\) bits from the MD5 output.
+If \(m\) is not a power of two, modular hashing can be
+applied to the message digest.
+</p>
+<p>
+The value
+<code>IV</code> is the <strong>initialization vector</strong>. It should be randomly generated
+when the program starts, using a high-entropy input source such as the
+class <code>java.security.SecureRandom</code>. The initialization vector
+prevents the adversary from testing possible values of <code>s</code> ahead of
+time. For very long-running programs, it is also prudent to
+refresh <code>IV</code> periodically, to guard against an adversary
+who is trying to learn the hash function.
+However, note that refreshing IV requires rehashing all hash tables that depend
+on it.
+</p>
+<h2>Hash tables in the Java Collection Framework</h2>
+
+<p>
+The standard Java libraries offer multiple implementations of hash tables. The
+class <code>HashSet&lt;T&gt;</code> implements a mutable set abstraction: a set
+of elements of type <code>T</code>. The class <code>HashMap&lt;K,V&gt;</code>
+implements a mutable map from keys of type K to values of type V. There is also
+a second, older mutable map implementation, <code>Hashtable&lt;K,V&gt;</code>,
+but it should be avoided; the <code>HashMap</code> class is faster and better
+designed.
+</p>
+<div class="floatfigure">
+<img src="hashtables/hashcode.png" alt="hashCode()" />
+</div>
+<p>
+All three of these hash table implementations rely on objects
+having a method <code>hashCode()</code> that is used to compute
+the hash of an object.  The <code>hashCode()</code> method as
+defined by Java is not a hash function.  As shown in the figure,
+it generates the <em>input</em> to an internal integer hash function,
+denoted as <code>h()</code>, which is provided by the hash table.
+Therefore, the actual hash function used by the hash
+table is the <em>composition</em> of the two methods:
+<code>h</code> ○ <code>hashCode</code>.
+</p>
+<p>
+The job of <code>hashCode()</code> is to hash a key object to
+an <code>int</code> rather than to a number in \([0,m)\).
+We discuss the properties of a good integer hash
+function and ways to obtain it below, but for now, assume that we have one.
+</p>
+
+<h2>Generating hash codes</h2>
+<p>
+The design of the Java collection classes is intended to relieve the client of
+the burden of implementing a high-quality hash function. The use of an internal
+integer hash function makes it easier to implement
+<code>hashCode()</code> in such a way that the composed hash function
+<code>h</code> ○ <code>hashCode</code> is good enough; it is easier to
+implement a good hashcode than it is a good hash function.
+</p>
+<p>
+However, a poorly designed <code>hashCode()</code> method can still cause the hash table
+implementation to fail to work correctly or to exhibit poor performance. There are
+two main considerations:
+</p>
+<ol>
+<li><p>For the hash table to work, the <code>hashCode()</code> method must be
+consistent with the <code>equals()</code> method, because <code>equals()</code>
+is used by the hash table to determine when it has found the right element or key.
+Otherwise the hash table might look in the wrong bucket.
+</p>
+
+<p>In fact, it is a general class invariant of Java classes that if two objects
+are equal according to <code>equals()</code>, then their <code>hashCode()</code> values
+must be the same. Many classes in the Java system library do a quick check for equality
+of objects by comparing their hash values and returning <code>false</code> if they
+are not equal. If the invariant did not hold, there would be false negatives.
+If you ever write a class that overrides the <code>equals()</code> method of <code>Object</code>,
+be sure to do it in a way that maintains this invariant.
+</p></li>
+<li>
+<p>
+The <code>hashCode()</code> function should also be as injective as possible. That
+is, hashing two unequal keys should be unlikely to produce the same hash code.
+This goal implies that the hash
+code should be computed using all of the information in the object that
+determines equality. If some of the information that distinguishes two objects
+does not affect the hash code, objects will always collide when they differ
+only with respect to that ignored information.
+</p></li>
+</ol>
+<p>Java provides a default implementation of <code>hashCode()</code>, which
+returns the memory address of the object. For mutable objects, this implementation
+satisfies the two conditions above. It is usually the right choice,
+because two mutable objects are only really equal if they are
+the same object. On the other hand, immutable objects such as
+<code>String</code>s and <code>Integer</code>s have a notion of equality that
+ignores the object's memory address, so these classes override
+<code>hashCode()</code>.
+</p>
+<p>
+An alternative way to design a hash table is to give the job of
+providing a high-quality hash function entirely to the client code:
+the hash codes themselves must look random. This approach puts more
+of a burden on the client but avoids wasted computation when the
+client is providing a high-quality hash function already. In the
+presence of keys generated by an adversary, the client should already
+be providing a hash code that appears random (and ideally one with at
+least 64 bits), because otherwise the adversary can engineer hash code
+collisions. For example, it is possible to choose strings such that
+Java's <code>String.hashCode()</code> produces collisions.
+</p>
+
+<h3>Hashing immutable data structures</h3>
+<p>
+Immutable data abstractions such as <code>String</code> would normally define
+their notion of equality in terms of the data they contain rather than their
+memory address. The <code>hashCode()</code> method should therefore return
+the same hashcode for objects that represent the same data value. For large
+objects, it is important in general to use all of the information that makes
+up the value; otherwise collisions can easily result. Fortunately, a
+hash function that operates on fixed-sized blocks of information can be
+used to construct a hash function that operates on an arbitrary amount of data.
+Suppose the immutable object can be uniquely encoded as a finite sequence of integer
+data values \(d_{1}, d_{2}, ..., d_n\), and we have an
+integer hash function \(h\) that maps any integer value into a integer
+hash value with good diffusion. In that case, a good hash function \(H\) can be constructed iteratively
+by feeding the output of \(H\) on all previous values to \(h\).
+Using \(H_{i}\) to represent the hash of the first \(i\)
+values in the sequence, and &oplus; to represent the bitwise <em>exclusive or</em> operator, we have:
+</p>
+
+<blockquote>
+\[
+    H_{1} = h(d_{1})
+\]
+\[
+    H_{i+1} =
+        h(H_{i} ⊕ d_{i+1})
+\]
+\[
+    H(d_{1}, ..., d_n) = H_{n}
+\]
+</blockquote>
+
+<p>Diagrammatically, the computation looks as follows:</p>
+<div class=figure>
+<canvas id="hashdigest" style="width: 400px; height: 100px"></canvas>
+<script class=graphics>
+with (new CFigure("hashdigest")) {
+    function dv(n) {
+        return rectangle().addText(italic("d"), subscript("" + n)).setH(18).setW(50)
+    }
+    function h() {
+        return rectangle().addText(italic("h"))
+                          .setH(18).setW(50).setLineWidth(2)
+                          .setFillStyle("#dff")
+    }
+    function oplus() {
+        let c = circle().setW(15).setLineWidth(2)
+        align("center", "top bottom", vertLine("black", 2), c)
+        align("left right", "center", horzLine("black", 2), c)
+        return c
+    }
+    function arrow(...args) {
+        return connector(...args).setEndArrow("arrow")
+    }
+    let d1, d2, dn
+    align("distribute", "center", d1 = dv(1), d2 = dv(2), label("..."), dn = dv("n"))
+    equal(d1.x0(), 2)
+    equal(d1.y0(), 2)
+    equal(dn.x1(), minus(canvasRect().x1(),80))
+    let h1, h2, h3
+    align("none", "center", h1 = h(), h2 = h(), h3 = h())
+    equal(h1.y0(), plus(d1.y1(), 50))
+    equal(h1.x0(), d1.x1())
+    equal(h2.x0(), d2.x1())
+    equal(h3.x0(), dn.x1())
+    arrow(d1.lc(), h1.cl().toLeft(30), h1.cl())
+    let xor1 = oplus(), xor2 = oplus(), dots = label("...").setFontSize(18)
+    align("center", "none", xor1, d2)
+    align("center", "none", xor2, dn)
+    align("none", "center", xor1, xor2, h1, dots)
+    arrow(d2.lc(), xor1.uc())
+    arrow(h1.cr(), xor1.cl())
+    arrow(xor1.cr(), h2.cl())
+    arrow(h2.cr(), dots)
+    equal(dots.x0(), plus(h2.x1(), 30))
+    arrow(dots.cr(), xor2.cl())
+    arrow(dn.lc(), xor2.uc())
+    arrow(xor2.cr(), h3.cl())
+    arrow(h3.cr(), h3.cr().toRight(30))
+}
+</script>
+</div>
+
+<p>
+Note that this is very different from the alternative of
+hashing all the individual data values and combining them with exclusive-or.
+That perhaps tempting algorithm would tend to have more collisions because
+the commutativity and associativity of exclusive-or would cause that algorithm
+to give the same result on any permutation of the data values.
+</p>
+<p>
+To make hash values unpredictable across runs, it is desirable to
+compute the first hash value in the sequence by combining it with
+an initialization vector: \( H_1 = h(d_1 ⊕ IV) \), where
+the initialization vector \(IV\) is chosen at the start
+of the application.
+</p>
+<p>
+If writing a loop to implement the diagram above seems like too much work, a useful trick for constructing a good <code>hashCode()</code> method is to leverage the
+fact that Java <code>String</code> objects implement <code>hashCode()</code> in this way, using
+the characters of the string as the data values. If your class defines a <code>toString()</code>
+method in such a way that it returns the same strings when two objects are equal, then
+<code>hashCode()</code> can simply return the hash of that string!
+</p>
+<pre>
+  // Requires: o1.toString().equals(o2.toString()) if o1.equals(o2)
+  int hashCode() {
+    return toString().hashCode();
+  }
+</pre>
+<p>However, note that if two unequal objects have the same <code>toString()</code> output, they will
+<em>always</em> collide in the hash table if this <code>hashCode()</code> function is used. For
+the best performance, we would want <code>toString()</code> to treturn the same string
+<em>exactly</em> when the two objects are equal.
+</p>
+
+<p>One Java pitfall to watch out for arises because Java's collection classes
+also override <code>hashCode()</code> to compute the hash from the current
+contents of the collection, as if Java collections were immutable.  This way of
+computing the hash code is dangerous, precisely because collections are
+<em>not</em> immutable.  Mutating the collection used as the key will change
+its hash code, breaking the class invariant of the hash table.  Any collection
+being used as a key must not be mutated.
+</p>
+
+<h2>More performance tips</h2>
+<h3>Precomputing hash codes</h3>
+<p>
+High-quality hash functions can be expensive. If the same values are
+being hashed repeatedly, one trick is to precompute their hash codes
+and store them with the value. Hash tables can also store the full hash
+codes of values, which makes scanning down one bucket fast; there is no
+need to do a full equality test on the keys if their hash codes don't
+match. In fact, if the hash code is long and the hash function is
+cryptographically strong (e.g., 64+ bits of a properly constructed MD5
+digest), two keys with the same hash code are almost certainly the same
+value. Your computer is then more likely to get a wrong answer from a
+cosmic ray hitting it than from a collision in random 64-bit data.
+</p>
+<p>
+Precomputing and storing hash codes is an example of a <strong>space-time tradeoff</strong>,
+in which we speed up computation at the cost of using
+extra memory.
+</p>
+
+<h3>Measuring clustering</h3>
+<p>
+When the distribution of keys into buckets is not random, we say that the hash
+table exhibits <strong>clustering</strong>. If you care about performance,
+it's a good idea to test your hash
+function to make sure it does not exhibit clustering. With any
+hash function, it is possible to generate data that cause it to behave poorly,
+but a good hash function will make this unlikely.
+A good way to determine whether a hash function is working well is to measure
+clustering. 
+</p>
+<p>
+Unfortunately, most hash table implementations, including those in the Java
+Collections Framework, do not give the client a way to measure clustering.
+Clients can't easily tell whether the hash function is performing well.
+We can hope that it will be standard practice for future hash table designers
+to provide clustering estimation as part of the interface.
+</p>
+<h4>Counting empty buckets</h4>
+<p>
+One simple way to check for clustering is to measure the fraction of
+empty buckets. With a uniform hash function, the probability that a given
+bucket is empty is \( (1 - 1/m)^n ≈ (1/e)^α \). If the fraction of empty buckets
+is higher than that, it indicates the hash function is doing worse than random.
+If lower, it is better than random, which can happen when the data being hashed
+has structure that interacts in a felicitous way with the hash function being used.
+For example, if the keys are sequential integers, and the hash function
+is just "mod \(m\)", the keys will be distributed as evenly as possible among
+the buckets, more evenly than if they were mapped randomly onto buckets.
+In general, you should not count on this happening!
+</p>
+<h4>Measuring bucket size variance</h4>
+<p>
+A more informative way to measure clustering looks at the sizes of the buckets.
+It estimates the <strong>variance</strong> of the
+distribution of bucket sizes. If clustering is occurring, some buckets will
+have more elements than they should, and some will have fewer. So there will be
+a wider range of bucket sizes than one would expect from a random hash
+function.
+</p>
+<p>
+In particular, if bucket \(i\) contains \(x_i\) elements, clustering can be
+measured using the following formula:
+</p>
+<div class=figure>
+\[
+C = {m \over (n - 1)}\left(&sum;_{i}{x_i^{2} \over n} - 1\right)
+\]
+</div>
+<p>
+A uniform hash function produces clustering \(C\) near 1.0
+with high probability. A clustering measure \(C\) that is
+greater than one means that clustering will slow down the performance of the hash table by
+approximately a factor of \(C\).
+For example, if \(m = n\) and all elements are hashed into one bucket, the
+clustering measure evaluates to \(n\). If the hash function is
+perfect and every element lands in its own bucket, the clustering measure
+will be 0. If the clustering measure is less than 1.0, the hash
+function is spreading elements out more evenly than a random hash function
+would.
+</p>
+<p>
+<p>
+Note that it's
+not necessary to compute the sum of squares of <i>all</i>
+bucket lengths; picking enough buckets so that enough keys are counted (say,
+at least 100) is good enough.
+</p>

@@ -1,0 +1,580 @@
+<h1>Recursion and linked lists</h1>
+
+<h2>Recursion</h2>
+
+<p>Recursion is the definition of something in terms of itself. This sounds
+circular, but with care, recursive definitions can be a highly effective way to
+express both algorithms and data structures.
+Recursion allows us to solve a problem
+by using solutions to “smaller” versions of the same problem.
+</p>
+<h3>Example: Fibonacci numbers</h3>
+<p>
+The nth Fibonacci number is the sum of the previous two Fibonacci numbers. This is a recursive
+definition of a function f(n):
+</p>
+<blockquote>
+\(
+f(n) = f(n-1) + f(n-2)
+\)
+</blockquote>
+<p>
+To make this definition make sense, we need a <b>base case</b> that stops
+the recursion definition from expanding indefinitely:
+</p>
+<blockquote>\(
+f(0) = 0 \qquad f(1) = 1
+\)</blockquote>
+<p>
+Since the recursive definition is always in terms of smaller values of \(n\), any given 
+\( f(n) \) where \( n≥0 \)
+expands into smaller and smaller arguments until the base case is reached. For example:
+</p>
+<blockquote>
+\(
+    f(3) = f(2) + f(1) = (f(1) + f(0)) + f(1) = (1 + 0) + 1 = 2
+\)
+</blockquote>
+<p>
+This recursive definition not only makes sense mathematically,
+it can be implemented in a direct way as Java code:
+</p>
+<pre class="load">
+<a href="recursion_lists/fibo.java">fibo.java</a>
+</pre>
+<p>
+This is very concise code, but not very efficient, as we'll see.
+</p>
+
+<h3>Example: Exponentiation</h3>
+<p>
+An efficient algorithm for exponentiation known as “squaring and multiplication” 
+can be implemented recursively in an elegant way.  Algorithms like this one are used
+to implement the exponentiation needed by modern cryptography, because the exponents
+are too large for the obvious, simple exponentiation algorithm to be practical.
+</p>
+<pre class="load">
+<a href="sorting/Exponentiation.java">Exponentiation.java</a>
+</pre>
+<p>
+It is not difficult to see that this code works correctly.
+The base case for the recursion is e = 0, which is clearly computed correctly.
+For all other values of e, the expression <code>e/2</code> is smaller than e,
+so each recursive call gets closer to the base case and so <code>pow</code>
+must terminate. When evaluating whether it works for a given value of
+<code>e</code>, we assume that it works for all smaller values of
+<code>e</code>, in particular for <code>pow(x, e/2)</code>. Since the expression
+<code>e/2</code> computes \( \lfloor e/2 \rfloor \), the
+value of <code>h</code> is \(x^{\lfloor e/2 \rfloor}\) according to the
+spec for <code>pow</code>. If e is even, then \( \lfloor e/2\rfloor = e/2\), so
+<code>h*h</code> is equal to \( (x^{e/2})^2 = x^e\), as
+desired. If e is odd, then \(\lfloor e/2\rfloor = (e-1)/2\), so
+<code>h*h*x</code> = \(x^{(e-1)} · x = x^e\). So the method works
+in either case.
+</p>
+
+<h3>Execution of recursive methods</h3>
+<p>
+Every time a method is invoked, a structure called an <strong>activation record</strong> is
+created in the computer's memory, containing all its local variables, including its
+parameters. We can represent an activation record in a way similar
+to the way we've shown objects, as a box containing variables. (However, it's
+not a full-fledged object, because we cannot create a reference to the activation record.)
+For example, the diagram
+below shows the activation records created during the call <code>pow(2,5)</code>.
+Activation records have a pointer to the activation record of the calling method,
+shown by a dotted arrow in the diagram. As each recursive call occurs, a new activation
+record is created containing new local variables, so that each distinct call has its
+own variables.
+</p>
+<div class="figure">
+<canvas style="width: 400px; height: 400px" id="rec_stack"></canvas>
+<script class="graphics">
+  with (new CFigure("rec_stack")) {
+    let sf1, sf2, sf3, sf4
+    align("center", "distribute",
+        sf1 = varBoxes("x = 2", "e = 5", "h = 4"),
+        sf2 = varBoxes("x = 2", "e = 2", "h = 2"),
+        sf3 = varBoxes("x = 2", "e = 1", "h = 1"),
+        sf4 = varBoxes("x = 2", "e = 0"))
+    align("center", "top", sf1, canvasRect().inset(30))
+    align("center", "bottom", sf4, canvasRect().inset(5))
+    align("abut", "top", label("pow(2,5)"), hspace(30), sf1)
+    align("abut", "top", label("pow(2,2)"), hspace(30), sf2)
+    align("abut", "top", label("pow(2,1)"), hspace(30), sf3)
+    align("abut", "top", label("pow(2,0)"), hspace(30), sf4)
+    align("abut", "center", sf4, hspace(10), label("(base case)"))
+    function retval(f1, f2, v) {
+        return connector(f1.ur(), f1.ur().toRight(30), f2.lr())
+                .setLineDash([4,4]).setEndArrow("arrow")
+                .addLabel(lineLabel(v, 0.7, 10).setFillStyle("blue"))
+    }
+    retval(sf4, sf3, "1")
+    retval(sf3, sf2, "2")
+    retval(sf2, sf1, "4")
+    retval(sf1, sf1.ur().toTop(20), "32")
+
+  }
+
+
+</script>
+</div>
+<p>
+When a method returns, a value is returned to the calling method, as shown by
+the numbers beside the dotted arrows. The activation record of the called method
+is then destroyed because it is no longer needed.
+</p>
+<p>
+The activation records of a running program form a <b>stack</b>. A stack is an
+ordered sequence of items that supports two operations: <b>push</b> and <b>pop</b>.
+The <b>push</b> operation puts a new item at the beginning of the sequence and
+<b>pop</b> discards the first item in the sequence. The stack of activation
+records begins with the current activation record. Each call to a method causes
+the creation of a new activation record that is pushed onto the stack. Each
+return from a method causes the current activation record to be popped from the
+stack. Therefore, activation records are also known as <b>stack frames</b>.
+</p>
+
+<h3>Termination and the base case</h3>
+
+<p>
+For recursive code to be correct, the base case of the recursion must
+eventually be reached on every chain of recursive calls. Just like in the case
+of correct loops where we have a decrementing function that gets smaller on
+every loop iteration, something must get smaller on every recursive call, until
+the base case is reached.
+</p>
+<p>
+For example, consider the problem of determining the number of ways to select
+r items from a set of n items. We write this as C(n,r), where C stands for either
+<b>choose</b> or <b>combinations</b>. To write the code, we break the problem into
+deciding what to do with the first element of the set, and then solving the problem
+recursively for the rest of the set. If we choose the first element of the set of n elements,
+then there are C(n&minus;1, r&minus;1) ways to pick the remaining elements we need from the rest of
+the set. If we don't choose the first element of the set, then there are C(n&minus;1, r) ways
+to pick all the r elements from the rest of the set. Therefore, we have the following
+equation:
+</p>
+<div class="figure">
+\(
+C(n, r) = C(n&minus;1, r&minus;1) + C(n&minus;1, r)
+\)
+</div>
+There are two cases where this equation doesn't hold: when \(r = 0\) and when \(n = r\). In
+both those cases, there is only one way to pick the elements, so:
+<div class="figure">
+\(
+C(n, n) = C(n, 0) = 1
+\)
+</div>
+<p>We can view the space of inputs \((n,r)\) as a table, in which the value of each cell
+other than the top row and the diagonal is determined by adding the numbers directly
+above and diagonally to the left. This gives us Pascal's triangle:
+</p>
+<table>
+<tr><td>&nbsp;</td><td>\(n\)</td><td>0 </td><td>1 </td><td> 2 </td><td>3 </td><td> 4 </td><td>...</td></tr>
+<tr><td>\(r\)</td><td>0</td><td>1 </td><td>1 </td><td> 1 </td><td>1 </td><td> 1 </td><td></td></tr>
+<tr><td>&nbsp;</td><td>1</td><td> </td><td>1 </td><td> 2 </td><td>3 </td><td> 4 </td><td></td></tr>
+<tr><td>&nbsp;</td><td>2</td><td> </td><td> </td><td> 1 </td><td>3 </td><td> 6 </td><td></td></tr>
+<tr><td>&nbsp;</td><td>3</td><td> </td><td> </td><td>  </td><td>1 </td><td> 4 </td><td></td></tr>
+<tr><td>&nbsp;</td><td>4</td><td> </td><td> </td><td>  </td><td> </td><td> 1 </td><td></td></tr>
+</table>
+<p>
+As a decrementing function, we can use the value \(\min(n-r, r)\), which measures the closest
+distance to one of the two lines of 1's in the table. If this value goes to zero, then
+we are in one of the two base cases. Its value decreases by 1 in both recursive calls,
+so it can never go below zero. Therefore, the base case must be reached along any chain
+of recursive calls.
+</p>
+
+<h2>Linked lists</h2>
+<p>
+We are now going to start talking about <b>data structures</b>, objects
+used primarily to store and look up information. Data structures often involve
+another kind of recursion: <b>recursion on types</b>.
+</p>
+<p>
+A classic and very useful example of a data structure is the <b>linked list</b>.
+A linked list consists of a sequence of <b>node</b> objects in which each node
+points to the next node in the list. Some data is stored along with each node.
+This data structure can be depicted graphically as shown in this figure, where
+the first three prime numbers are stored in the list.
+</p>
+<div class="figure">
+<img src="recursion_lists/llist.png" alt="linked list" />
+</div>
+<p>
+The last node in the list does not point to another node; instead, it refers to
+the special value <code>null</code> or, alternatively, to a <b>sentinel
+object</b> that is used to mark the end of the list.
+</p>
+<p>
+A linked list node is implemented with code like the following:
+</p>
+<pre class="load">
+<a href="recursion_lists/Node.java">Node.java</a>
+</pre>
+<p>
+Notice that the class <code>Node</code> has an instance variable of the same type. That is,
+<code>Node</code> is defined in terms of itself. It is an example of a <b>recursive type</b>.
+Recursive types are perfectly legal in Java, and very useful.
+</p>
+<!-- p>
+The information in the list may be contained inside the nodes of the linked list, in
+which case the list is said to be <b>endogenous</b>, or it may merely be <i>referenced</i> by
+the list node, in which case the list is <b>exogenous</b>. We will be working with exogenous
+lists here.
+</p -->
+<p>A sentinel object can be used instead of the special value <code>null</code>,
+avoiding the possibility of a null pointer exception:
+</p>
+<pre>
+static Node Null = new Node(); Null.next = Null;
+</pre>
+<p>
+The list shown above is considered a <b>singly linked list</b> because each
+list node has one outgoing link. A singly linked list can only be traversed in one direction,
+from front to back. It is sometimes helpful to use a
+<b>doubly linked list</b> instead, in which each node points to both the
+previous and next nodes in the list. In a doubly linked list, it is possible to
+walk in both directions, at a cost of more storage to represent the extra links.
+</p>
+<p>
+The definition of a doubly linked list node looks something like the following:
+</p>
+<pre class="load">
+<a href="recursion_lists/DNode.java">DNode.java</a>
+</pre>
+<p>Doubly linked lists come in both linear and circular varieties, as
+illustrated below. In the linear variety, the first and last nodes have
+null <code>prev</code> and <code>next</code> pointers, respectively. In the
+circular variety, no pointers are null. The
+head node is distinguished by the fact that
+a pointer is kept to it from outside.
+The class <code>java.util.LinkedList</code> is actually implemented as a
+circular doubly linked list.
+</p>
+<div class="figure">
+<img src="recursion_lists/dlist.png" alt="doubly linked list" />
+</div>
+<h3>Iterative list traversal</h3>
+<p>
+We can use lists to build many interesting algorithms. Usually we keep some small number of variables
+pointing into the list, and follow the pointers between nodes to get around. For example, we can write
+code to check whether a list contains an object equal to a particular object <code>x</code>:
+</p>
+<pre>
+boolean contains(Node n, Object x) {
+   while (n != null) {
+      if (x.equals(n.data)) return true;
+      n = n.next;
+   }
+   return false;
+}
+</pre>
+<p>
+We can also scan over a list accumulating information. For example, we might compute the sum of
+all the numbers contained in a list of integers:
+</p>
+<pre>
+int sum(Node n) {
+   int s = 0;
+   while (n != null) {
+      s += n.data;
+      n = n.next;
+   }
+   return s;
+}
+</pre>
+<p>or more succinctly,</p>
+<pre>
+int sum(Node n) {
+   int s;
+   for (s = 0; n != null; n = n.next) s += n.data;
+   return s;
+}
+</pre>
+<p>
+Something we often want to do with linked lists is to add a new item into the list.
+It is easiest to add at the front of the list because the front of the list is
+immediately accessible. This is sometimes called the <b>cons</b> operation, as
+in the Lisp language:
+</p>
+<pre>
+Node cons(Object x, Node n) {
+   Node ret = new Node();
+   ret.data = x;
+   ret.next = n;
+   return ret;
+}
+</pre>
+<p>
+Notice that the new linked list is constructed without making any changes to
+the existing nodes. In a sense, we now have two linked lists that happen to share
+most of their nodes. As long as we don't make changes to the nodes of either linked
+list, this sharing is perfectly okay and something we can exploit for efficiency.
+</p>
+<p>
+If we want to insert at the end of the list, we have to modify the last node.
+We can find the last node by scanning down the list until we find it. Or we
+can keep track of the last node of the list explicitly.
+</p>
+<pre>
+/** Update the list starting at n to add a node containing x at the end.
+ * Requires: n is not null.
+ */
+void append(Object x, Node n) {
+   while (n.next != null)
+	  n = n.next;
+   n.next = new Node();
+   n.next.data = x;
+}
+</pre>
+
+<h2>Building abstractions using linked lists</h2>
+<p>
+Linked lists are useful data structures, but using them directly can lead
+to programming errors. Often their utility comes from using them to implement
+other abstractions.
+</p>
+<h3>Immutable lists</h3>
+<p>
+For example, we can use a linked list to efficiently implement an <b>immutable
+list</b> of objects:
+</p>
+<pre class="load">
+<a href="recursion_lists/ImmList.java">ImmList.java</a>
+</pre>
+<p>
+To implement this interface using a <code>null</code>-terminated list, we will
+need an additional <b>header object</b> so that we can represent empty lists
+with something other than <code>null</code>. (Notice that we don't bother to
+repeat the specifications from the interface. No need!)
+</p>
+<pre class="load">
+<a href="recursion_lists/ImmListImpl.java">ImmListImpl.java</a>
+</pre>
+<p>
+Notice that this implementation allows different lists to share the same list
+nodes. This makes operations like <code>cons</code> and <code>rest</code> much
+more efficient than they otherwise would be; the method <code>rest</code> runs
+in constant time rather than needing to copy all the remaining nodes of the list.
+It is safe to share list nodes precisely because the list abstraction is
+immutable, and the underlying list nodes cannot be accessed by any code outside
+the <code>ImmListImpl</code> class. Abstraction lets us build more efficient
+code.
+</p>
+<p>
+Because <code>ImmList</code> is immutable, it makes sense to have an <code>equals</code>
+operation that compares all the corresponding elements:
+</p>
+<pre>
+boolean equals(Object o) {
+   if (!o instanceof ImmList) return false;
+   ImmList lst = (ImmList) o;
+   Node n = head;
+   while (n != null) {
+      if (lst.empty()) return false;
+      if (!n.data.equals(lst.data)) return false;
+      n = n.next;
+      lst = lst.rest();
+   }
+   return lst.empty();
+}
+</pre>
+
+<h3>Mutable lists</h3>
+<p>
+The sharing that was possible with immutable lists is necessarily lost when we use
+linked lists to implement mutable lists. On the other hand, we can offer a larger
+set of operations:
+</p>
+<pre class="load">
+<a href="recursion_lists/MutList.java">MutList.java</a>
+</pre>
+<p>Again, this abstraction can be implemented using a linked list.
+A header object is again handy, especially to keep track of auxiliary
+information like the number of elements in the list and the last element
+of the list.
+</p>
+<p>We didn't put a <code>rest()</code> operation in the interface,
+because it would have to be an O(n) operation. If the client really
+wants to perform that computation, they will probably copy the whole
+list and remove the first element of the copy.
+</p>
+<p>Below is the implementation of mutable lists. Notice that <code>prepend</code>
+and <code>append</code> both can be implemented to take constant time thanks to
+the <code>last</code> field, which avoids scanning down the whole list to find the
+end.
+</p>
+<p>
+A final important thing we want to be able to do with mutable lists is to remove a node. For
+doubly linked lists, removing nodes is easy, but it is slightly tricky for singly linked lists.
+The problem is that when the node is found, the <em>previous</em>
+node in the list needs to be updated to point to the next node. The simple loop we've been
+using so far will have forgotten what that previous node is. A second wrinkle is that
+if the node to be removed is the first node in the list, there <em>is</em> no previous node
+to be updated. We can solve this problem by marching two pointers through the list at the same
+time. The variable <code>n</code> points to the current node, and the <code>p</code> points
+to the previous node, or contains <code>null</code> if <code>n</code> is the first node:
+</p>
+<pre class="load">
+<a href="recursion_lists/MList.java">MList.java</a>
+</pre>
+<h2>Abstract data types vs. data structures</h2>
+<!-- this section was not covered during lecture -->
+<img style="float: right; padding: 2em" src="recursion_lists/listimpls.png" alt="abstraction barrier" />
+<p>
+A key observation is that singly or doubly
+linked lists are concrete data structures. They are implementations of a particular
+set of operations. The operations are usually specified in Java by an interface.
+The collection of operations and their specifications is called an <b>abstract data type</b> (ADT).
+For example, immutable lists and mutable lists are abstract data types, because they
+are merely specifications of a collection of operations. These abstract data types can
+be implemented by linked lists, but as we will see later on, linked lists are only one of the ways
+to implement list abstractions.
+</p>
+<p>
+We can also use data
+structures such as linked lists to implement other abstractions.
+For example, one useful abstract data type we will see many times over is the <b>stack</b>.
+A stack is a list that supports two operations:
+</p>
+
+<ul>
+<li><code>void push(Object x)</code>: Insert the element x at the beginning of the list.</li>
+<li><code>Object pop()</code>: Remove and return the first element in the list. Requires that the stack is nonempty.</li>
+</ul>
+
+<p>The stack ADT is easily and efficiently implemented using linked lists:</p>
+
+<pre class="load">
+<a href="recursion_lists/Stack.java">Stack.java</a>
+</pre>
+
+<p>Keep in mind that data structures are ways to implement
+abstract data types, and using them through an abstraction barrier is preferable
+to using the data structure directly. This allows you to change the data structure
+without breaking client code.</p>
+
+<h2>Recursion on lists</h2>
+<p>
+The tail of a list is another, smaller list. That means we can write recursive
+algorithms that compute over linked lists. For example, we can write the
+<code>contains</code> method even more compactly using recursion:
+</p>
+<pre>
+/** Returns whether x is in the list starting at node n. */
+boolean contains(Object x, Node n) {
+   if (n == null) return false;
+   if (x.equals(n.data)) return true;
+   return contains(x, n.next);
+}
+</pre>
+<p>
+Many different computations on lists can be written recursively, including the <code>sum</code>
+method we saw earlier:
+</p>
+<pre>
+/** Returns the sum of the data in the list starting at n. */
+int sum(Node n) {
+   if (n == null) return 0;
+   return n.data + sum(n.next);
+}
+</pre>
+<p>
+The code is shorter and simpler than the iterative code. However, it's likely to be a little
+bit slower, at least in Java. The reason is that the recursive version creates one
+activation record for each list node, but the iterative version uses only one activation
+record total.
+</p>
+
+<h2>Tail recursion elimination</h2>
+
+<p>
+Earlier we saw that we could code up binary search as an iterative algorithm.
+We can also implement it recursively, in a way that makes it more obvious why
+it works.
+</p>
+<pre class="load">
+<a href="sorting/BinarySearch.java">BinarySearch.java</a>
+</pre>
+<p>
+Why does the algorithm work? First, consider the base case, which is when
+fst=lst. Since we are assuming that the element k is between fst and lst, it
+must be at index lst. Otherwise, the code determines whether the element is
+to the left of m (inclusive) or to the right (exclusive), ensuring both that the
+precondition of the method is satisfied for the recursive call and that the
+distance between fst and lst strictly decreases. It can never decrease below zero,
+so the base case is reached eventually.
+</p>
+<p>
+The recursive version of <code>search()</code> above is
+a particularly interesting kind of recursive method in that it calls itself as
+the very last action. It does not do any computation after the call, but simply
+returns the result of the recursive call. Such a call is called a <b>tail call</b>.
+A recursive method with only tail calls is said to be <b>tail-recursive</b>.
+</p>
+<p>
+Tail-recursive methods have an interesting property: they are equivalent to
+<code>while</code> loops. Any tail-recursive method can be converted to a
+<code>while</code> loop and vice versa. The reason this works is that the
+activation record for a tail-recursive method is not needed after the call is
+made. So the same activation record can be reused for the recursive call. We do not
+need a stack of activation records, but can do with just one.
+</p>
+
+<p>To convert a tail-recursive method to a <code>while</code> loop, we
+wrap the method body in a big <code>while</code> loop with guard <code>true</code>,
+then replace each recursive call with assignment statements that reassign
+to the method's formal parameters the new values that would have been passed in the recursive call.
+Here is what the binary search code looks like after this transformation:
+</p>
+<pre class="load">
+<a href="sorting/BinarySearchIterative.java">BinarySearchIterative.java</a>
+</pre>
+<p>
+Of course, we can make further simplifications such as folding the base case
+into the loop guard.
+</p>
+<p>
+In Java, the iterative version is likely to run more efficiently than the recursive
+version, because it requires only one activation record. In some languages, such as
+OCaml, the compiler recognizes tail recursion automatically and generates code that
+is just as efficient as a loop. Since the transformation to a loop is straightforward,
+we can write code using tail recursion when that helps us to get the algorithm right,
+and convert it into an efficient loop when necessary for good performance.
+</p>
+
+<p>
+Another example of a tail-recursive method is the <code>contains</code> method above.
+It is tail-recursive because all recursive calls are tail calls. Here is the result
+of the transformation to a <code>while</code> loop.
+</p>
+<pre>
+boolean contains(Object x, Node n) {
+   while (true) {
+      if (n == null) return false;
+      if (x.equals(n.data)) return true;
+      n = n.next; // x is unchanged in the recursive call
+   }
+}
+</pre>
+<p>
+As an optimization, we then move the (negated) test <code>n == null</code> into
+the loop guard, and put the <code>return false</code> after the loop, to
+get exactly the iterative code above!
+</p>
+<pre>
+boolean contains(Object x, Node n) {
+   while (n != null) {
+      if (x.equals(n.data)) return true;
+      n = n.next; // x is unchanged in the recursive call
+   }
+   return false;
+}
+</pre>
+<p>
+The moral is that we can often write short, clear, recursive code and convert it to an
+efficient loop when efficiency is paramount.
+</p>

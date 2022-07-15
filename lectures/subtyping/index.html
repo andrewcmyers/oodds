@@ -1,0 +1,376 @@
+<h1>Interfaces and subtyping</h1>
+
+<p>
+The word “interface” has more than one meaning. In the context of computer
+science generally, it refers to a description or specification of the way that
+program modules interact with one another, or the way that client code interacts
+with a program module. In the context of Java,
+“interface” refers to a language feature that allows programmers to create
+interfaces for classes, which are a module mechanism. An interface describes a
+set of public methods that must be provided by the class; when using the class
+via the interface; only these public methods can be used. The interface
+includes the name and signature of the methods; it's also a good place to write
+specifications for those methods.
+</p>
+<h2>Example</h2>
+<p>
+For example, suppose that we want to implement the <a href="http://2048game.com">2048 game</a>,
+a popular game for cell phones consisting of movable numbered tiles in a 4&times;4 grid.
+We want to keep track of the state of the game at any given point and allow the user
+to make moves in the game.</p>
+
+<p>
+Let's define an interface to the game. We'll call it <code>Puzzle</code>:
+</p>
+<pre class="load">
+<a href="subtyping/Puzzle.java">Puzzle.java</a>
+</pre>
+
+<p>
+Notice that this interface says nothing about how the various methods are implemented
+or about how the puzzle information is represented inside objects. The interface doesn't
+say that the methods are public, because interface methods are always public.
+</p>
+
+<h3>An implementation</h3>
+<p>
+The <code>Puzzle</code> interface can be implemented by defining a class that
+is declared to implement it using the <code>implements</code> keyword. Now we get to make some implementation choices, such as
+how to represent the tiles of the puzzle. One obvious representation is as a two-dimensional
+array of integers, with 0 representing blank tiles:
+</p>
+<pre class="load">
+<a href="subtyping/APuzzle.java">APuzzle.java</a>
+</pre>
+
+<p>
+There are few interesting aspects of this code. First, notice that each method
+declared in the interface must be implemented as a <code>public</code> method
+in the class. The class has some other components as well. For example, the
+instance variables <code>tiles</code> and <code>score</code> are declared
+<code>private</code> to hide them from clients. A class can also add new
+methods not declared in the interface, such as the <code>APuzzle()</code>
+constructor.
+</p>
+<p>
+We can define an interface (in the general sense) to a class either by
+declaring which of its methods are public, or by declaring a Java interface
+as above. One advantage of using the interface mechanism is that it allows
+<em>multiple</em> implementations of the interface.
+</p>
+<p>
+For example,  here is a sketch of a second implementation of the <code>Puzzle</code>
+interface, in which the tiles are represented as characters in a string:
+</p>
+
+<pre class="load">
+<a href="subtyping/SPuzzle.java">SPuzzle.java</a>
+</pre>
+
+<h3>Using objects at type Puzzle</h3>
+
+<p>
+We now have two implementations of <code>Puzzle</code>. The important new
+capability that is added is that client code can be written that does not care
+which implementation is being used. For example, suppose we want to write a method
+that displays a puzzle. That code can be written so it works on objects from
+either implementation:
+</p>
+<pre class="load">
+<a href="subtyping/Display.java">display.java</a>
+</pre>
+<p>The client code can use <code>display()</code> on either kind of object, because
+both <code>APuzzle</code> and <code>SPuzzle</code> are implementations of <code>Puzzle</code>.
+</p>
+
+<p>
+As long as <code>APuzzle</code> and <code>SPuzzle</code> are implemented correctly, the code of
+<code>display()</code> cannot tell which implementation is being used. That is
+why <code>display()</code> can be used on objects of either kind.  The
+abstraction barrier imposed by the <code>Puzzle</code> interface allows the programmer to
+start with one implementation and later to replace it with a different
+implementation, with confidence that it won't break the program.
+</p>
+<p>
+When compiling the method call <code>p.tile(r, c)</code> in the method <code>display(Puzzle p)</code>, the compiler does not know which method code it is going to run. The variable <code>p</code> can refer to either
+an <code>APuzzle</code> object or an <code>SPuzzle</code> object (or maybe some other implementation of <code>Puzzle</code> altogether). In general, the compiler cannot figure out ahead of time which one it will be. The call to <code>p.tile(r, c)</code> must find the correct
+method implementation at runtime. It does this by checking the dynamic type (aka runtime type) of the object <code>p</code>. The dynamic or runtime type of an object is the class that was named when the object was created via <code>new</code>. This is called <b>dynamic dispatch</b>.
+</p>
+
+<h2>Classes vs. types</h2>
+<p>
+In Java programs, each object has a <strong>dynamic</strong> or <strong>runtime</strong> type. The dynamic type is the name of the class that was specified in the <code>new</code> statement when the object was created. The dynamic type is associated with the object at birth and stays with it unchanged throughout its lifetime.</p>
+
+<p>
+On the other hand, expressions in the Java language have <strong>static</strong> types that they obtain by declaration of variables. The static type of a variable is the type given to it in its declaration. (Note that this usage of the term <strong>static</strong> is not related to the Java keyword <code>static</code> used to declared static fields and methods.)</p>
+
+<p> 
+Both interface names like <code>Puzzle</code> and class names like <code>APuzzle</code> and <code>SPuzzle</code> may be used as static types in Java programs, but only class names may be used
+as dynamic types. The dynamic type of an object can never be <code>Puzzle</code>; it is always
+the class of the object that was provided to the <code>new</code> operator when the object was
+created.</p>
+
+<p>For example, consider the following code. The first line creates an object with dynamic type
+<code>APuzzle</code> and assigns it to a variable of static type <code>APuzzle</code>. The second
+line assigns the same object to a variable of static type <code>Puzzle</code>. This is allowed
+because <code>APuzzle</code> is an implementation of <code>Puzzle</code>. The third line tries to
+use the interface <code>Puzzle</code> with the operator <code>new</code>. This is illegal, because
+<code>Puzzle</code> is not a class; the compiler doesn't know what implementation to use.
+</p>
+<pre>
+APuzzle a = new APuzzle(); // ok
+Puzzle p = a; // ok
+Puzzle p = new Puzzle();  // illegal
+</pre>
+<p>
+This shows that both class and interface names may be used as static types in Java, but only class names
+may be used as dynamic types.
+</p>
+
+<h2>Subtyping and subtype polymorphism</h2>
+<p>
+Because <code>APuzzle</code> implements <code>Puzzle</code>, an expression of
+static type <code>APuzzle</code> can always be used where a
+<code>Puzzle</code> is expected. This is an example of a <b>subtype</b> relationship
+between two types. We write <code>APuzzle</code> &lt;: <code>Puzzle</code> to
+mean that the type <code>APuzzle</code> is a subtype of the type
+<code>Puzzle</code>. (Sometimes you will see this written as <code>APuzzle</code> ≤ <code>Puzzle</code>.)
+Since an <code>SPuzzle</code> can also be used wherever a
+<code>Puzzle</code> is expected, the subtype relationship
+<code>SPuzzle</code> &lt;: <code>Puzzle</code> also holds.
+</p>
+<p>
+The subtyping relationships among the various types form a <b>type hierarchy</b>
+(or <b>subtype hierarchy</b>), an example of which is shown in this figure:
+</p>
+<div class="figure">
+<canvas id=subtype_hierarchy style="width:400px; height: 180px"></canvas>
+<script class=graphics>
+  with (new CFigure("subtype_hierarchy")) {
+    setFontName("consolas")
+    setFontSize(11)
+    addFrame()
+    let l_int, l_obj = label("Object")
+    align("distribute", "bottom", l_obj, hspace().setW(0), label("char"), label("boolean"), l_int = label("int"))
+    align("right", "top", l_int, canvasRect())
+    align("center", "top", l_obj, canvasRect())
+    let l_Integer = label("Integer"),
+        l_String = label("String"),
+        l_intarray = label("int[]"),
+        l_collection = label("Collection<Object>"),
+        tier2 = group(l_Integer, l_String, l_intarray, l_collection)
+    align("distribute", "bottom", tier2.objects)
+    align("center", "none", l_obj, tier2)
+    align("left", "none", tier2, canvasRect())
+    align("right", "none", tier2, canvasRect())
+    let l_Puzzle = label("Puzzle")
+    equal(l_Puzzle.y0(), plus(24, l_String.y1()))
+    equal(l_Puzzle.x(), average(l_String.x1(), l_intarray.x0()));
+    [l_Integer, l_String, l_intarray, l_collection, l_Puzzle].forEach(o =>
+        connector(l_obj.lc().toBottom(4), o.uc()).setEndArrow("arrow")
+    )
+    let lA = label("APuzzle"), lS = label("SPuzzle")
+    let tier3 = group(lA, hspace().setW(40), lS).align("abut", "bottom").setX(l_Puzzle.x())
+    align("none", "bottom", tier3, canvasRect());
+
+    [lA, lS].forEach(o =>
+        connector(l_Puzzle.lc().toBottom(4), o.uc()).setEndArrow("arrow"))
+  }
+</script>
+</div>
+<p>
+In addition to the subtype relationships we've discussed so far, this diagram shows a few
+more, such as <code>Puzzle</code> &lt;: <code>Object</code>. 
+The subtyping relation is reflexive (T&lt;:T for all types T) and is also transitive (if T&lt;:U and U&lt;:V, then T&lt;:V).)
+Thus by transitivity, we also have <code>APuzzle</code> &lt;: <code>Object</code>.
+We can also notice that array types like <code>int[]</code> are subtypes of <code>Object</code>.
+Standing alone in the diagram are the primitive types (<code>int</code>, <code>boolean</code>, <code>char</code>, ...). These types are not subtypes of any other type.
+</p>
+<p>In the diagram above, every type has at most one parent, making this diagram a
+collection of trees (a <b>forest</b>). However, a class is allowed to implement more than
+one interface, as in the following definition:
+</p>
+<pre>
+class SPuzzle implements Puzzle, Collection&lt;Integer&gt; {
+    ...
+}
+</pre>
+<p class="cont">
+so in general the subtype diagram is a graph in which some nodes have
+more than one ancestor.
+</p>
+
+<p>An invariant that always holds throughout execution is:</p>
+<blockquote>
+The dynamic type of the value of an expression is always a subtype of the static type of the expression.
+</blockquote>
+<p>
+In particular, whenever a variable references an object, the dynamic type of the object is a subtype of the declared type of the variable.</p>
+
+<h2>Subtyping vs. coercion</h2>
+<p>
+Java lets us write the following declaration, which might make us think
+incorrectly that <code>int</code> &lt;: <code>Object</code>:
+</p>
+<pre>
+Object x = 2;
+</pre>
+<p>
+Although this looks like subtyping, actually Java is automatically inserting a coercion (conversion)
+to make the types work.  The variable <code>x</code> is not being
+assigned the value appearing on the right-hand side, but rather an object of
+type <code>Integer</code> that is created automatically. The declaration is syntactic sugar for this one:
+<code>Object x = Integer.valueOf(2)</code>. This mechanism is known as <strong>autoboxing</strong>.
+</p>
+
+<h2>Casting</h2>
+<p>
+With subtyping, a given value can be treated as though it has more than one
+type. (When a value can have more than one type, it is called
+<b>polymorphism</b>, and the kind of polymorphism we get with
+subtyping is called <b>subtype polymorphism</b>.)
+</p>
+<p>
+Java's cast operator can be used to control the type at which we are using a
+value.  As an example, suppose we have a variable <code>a</code> of type
+<code>APuzzle</code>.  To force it to be treated as a <code>Puzzle</code>, we
+write <code>(Puzzle) a</code>.  Since <code>APuzzle</code> is a subtype of
+<code>Puzzle</code>, this cast will always succeed at runtime: it is
+<b>typesafe</b>. We refer to this kind of cast as an <b>upcast</b> because it
+shifts the type upward in the type hierarchy.
+</p>
+<p>
+It is also possible to cast downward in the subtype hierarchy. This gives us a <b>downcast</b>,
+an unsafe cast that can fail at runtime. For example, consider this code:
+</p>
+<pre>
+APuzzle a = new APuzzle();
+Puzzle p = a;
+APuzzle a2 = (APuzzle) p;
+</pre>
+<p>
+Here, all three variables refer to the same underlying <code>APuzzle</code> object.
+The downcast to <code>a2</code> succeeds at run time because the dynamic type of the object
+is a subtype of the type it is being cast to. On the other hand, if we had reassigned
+the variable <code>p</code> to refer to an <code>SPuzzle</code> object, the downcast
+would fail with a <code>ClassCastException</code>.
+</p>
+<p>
+A downcast should ordinarily be used only when it is guaranteed to succeed, so
+a failed downcast generally means that the programmer has made a mistake. It is
+possible to test in advance whether a downcast will succeed by using the <code>instanceof</code>
+operator to test the runtime type of the object.
+</p>
+<pre>
+Puzzle p = ...;
+if (p instanceof APuzzle) {
+    APuzzle a2 = (APuzzle) p;
+    ...
+}
+</pre>
+<p>
+Downcasting and <code>instanceof</code> are sometimes necessary,
+but excessive use of these operations is a danger sign that your code is not well designed.
+If you find yourself using them a lot, it is worth thinking about whether there is a way to redesign your
+code to avoid them.
+</p>
+<p>
+Upcasting to a supertype can sometimes be used as a form of information hiding.
+Upcasting to a supertype hides operations not present in the supertype. The
+corresponding downcast can be used to restore access to these operations if desired.
+In general it is good form to work at the highest level possible that still allows
+the desired operations to be performed. Often this means accessing
+objects only through the interfaces they implement.
+</p>
+<h2>Conformance</h2>
+<p>
+For one type to be a subtype of another, the methods of the first type must have signatures
+that <b>conform</b> to the signatures of those in the supertype. The conformance requirement
+has implications for the types and visibility of methods.
+</p>
+<p>
+For conformance, Java requires that the types of method formal parameters in
+the subtype be exactly the same as the types of the corresponding formal
+parameters in the supertype. However, the return type of a method in the subtype
+may be a subtype of the corresponding return type in the supertype.
+</p>
+<p>
+In addition, the visibility of instance methods in the subclass is not allowed to be
+any less than the visibility in the superclass. Visibility modifiers can
+be ordered as follows:
+</p>
+<div class="figure">
+<code>private</code> &lt; (package) &lt; <code>protected</code> &lt; <code>public</code>
+</div>
+<p>
+To see why, suppose that a method is declared public in the supertype but is private
+in the subtype. If we have a reference to an object of the subtype, the method will
+be inaccessible, but will become accessible after an upcast to the supertype.
+Therefore, the private visibility modifier is not meaningful. On the other hand, it
+makes sense and is legal to have a method that is private in the supertype but public in the subtype.
+</p>
+
+<h2>Interface subtyping</h2>
+<p>
+An interface can <code>extend</code> another interface, creating a subtyping relationship.
+For example, we might want a puzzle interface that adds a method for automatically solving the puzzle.
+If we declare the interface to extend <code>Puzzle</code>, it will be a subtype:
+</p>
+<pre>
+interface SolvablePuzzle extends Puzzle {
+    Move[] solve();
+}
+</pre>
+<p>
+The definition of <code>SolvablePuzzle</code> makes it a subtype of
+<code>Puzzle</code>: that is, <code>SolvablePuzzle</code> &lt;: <code>Puzzle</code>,
+and  <code>SolvablePuzzle</code> has all of the methods of <code>Puzzle</code> in
+addition to the new <code>solve()</code> method that it adds.
+</p>
+<p>
+The ability to extend interfaces gives even more control over how much of a class is exposed
+to client code. Clients that do not need the <code>solve()</code> method can be given the
+<code>Puzzle</code> view of the puzzle, avoiding unnecessarily coupling of the implementing
+class and its clients. However, the possibility of downcasting means that the abstraction barrier
+is more permeable when interfaces are in this way: we get a form of information hiding but not
+full encapsulation.
+</p>
+<p>
+It is worth noting that subtype relationships need to be explicitly declared in
+Java. If we declared another separate interface <code>Q</code> that had all the same
+methods as <code>Puzzle</code>, plus some additional ones, but did not declare
+<code>Q</code> to extend <code>Puzzle</code>, it might appear harmless to
+allow <code>Q</code> &lt;: <code>Puzzle</code>. Unlike some languages, Java does not allow
+this <b>structural</b> subtype relationships, but only <b>nominal</b>
+subtyping, in which subtypes are explicitly declared. There are two reasons for this design:
+first, structural subtyping is hard to implement efficiently, and second, just
+because two methods have the same name and signature does not mean that they
+actually mean the same thing.
+</p>
+
+<h2>Factory methods</h2>
+
+<p> The use of interfaces allows us to write code that is independent of the
+choice of implementation—except when the objects are actually created. At some point
+an actual implementing class must be provided to <code>new</code>. This might seem to
+break the principle of separating interfaces from implementations.
+</p>
+<p>When this stronger separation is desired, a common solution is to use <b>factory methods</b>
+to build objects. A factory method is one that creates objects, typically with an interface type.
+For example, we could (in some class) declare a method that creates <code>Puzzle</code> objects:
+</p>
+<pre>
+static Puzzle createPuzzle();
+</pre>
+<p>
+This method can be used to create <code>Puzzle</code> objects without
+committing to using any particular implementation of the <code>Puzzle</code> interface.
+</p>
+<h2>Summary</h2>
+<p>
+Java interfaces are a very useful mechanism for writing code in which module clients
+and module implementations are strongly separated.  In addition,
+Java's support for subtyping means that it is possible to write multiple implementations of
+the same interface. These different implementations can even coexist and operate
+within the same program. This is a valuable feature for building large software systems.
+</p>

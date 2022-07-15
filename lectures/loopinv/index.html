@@ -1,0 +1,406 @@
+<h1>Loop invariants</h1>
+
+<p>
+When we want to convince ourselves that our code is correct, we need to be able to argue
+that certain things are true at various points in the program. Loops pose a special challenge
+for such arguments, because the same code can be executed multiple times. How do we know
+what is true about the program as loops execute?
+</p>
+<p>
+A <b>loop invariant</b> is a condition that is true at the beginning and end of
+every iteration of a loop. The concept is similar to a <b>class invariant</b>,
+which must be true at the beginning and end of every public method. When you
+write a loop that works correctly, you are at least implicitly relying on a
+loop invariant.  Knowing what a loop invariant is and thinking explicitly about
+loop invariants will help you write correct, efficient code, especially when implementing
+tricky algorithms.
+</p>
+<h2>Binary search via iteration</h2>
+<p>
+Suppose we want to find an element in a sorted array. We can do much better
+than scanning from left to right: we can use <em>binary search</em>. Here is
+the binary search algorithm, written as a loop.
+</p>
+<pre class="load">
+<a href="loopinv/binary_search.java">binary_search.java</a>
+</pre>
+<p>
+Conceptually, this algorithm is simple. But it is deceptively tricky to get
+exactly right. How do we know we got the computation of <code>m</code> right?
+Why is it <tt>k &lt;= a[m]</tt> and not <tt>k &lt; a[m]</tt>? Why
+<code>m</code> and <code>m+1</code> in the two updates to <code>r</code> and
+<code>l</code> respectively? If we change any of these decisions, the algorithm is
+incorrect and will sometimes fail to find the correct element.
+</p>
+<p>
+The key question is whether the loop code is correct. To say what it
+means to be correct, we must identify the precondition and the postcondition
+of the loop itself. The precondition describes the possible states of the
+program just as the loop begins executing; the postcondition describes the
+desired states when the loop stops. In this case, the precondition consists
+of the precondition of <code>search()</code> itself, plus the facts that
+<code>l = 0</code> and <code>r = a.length - 1</code>. The desired
+postcondition is that <code>k = a[l]</code>. To show that the loop
+is correct, we use a loop invariant to transform the state of
+the program from one satisfying the precondition to one satisfying
+the postcondition.
+</p>
+<h2>Binary search loop invariant</h2>
+<p>
+To convince ourselves that we wrote the correct code, we need a <b>loop invariant</b>
+that describes the conditions that we want the loop body to preserve. For this
+example, we can write a useful loop invariant using three clauses:
+</p>
+<ol>
+<li> The array <code>a</code> is sorted in ascending order.
+<li> <code>0 ≤ l ≤ r ≤ a.length-1</code></li>
+<li> <code>k ∈ a[l..r]</code></li>
+</ol>
+<p>
+We use the notation <code>i..j</code> to denote the set or sequence <code>{x |
+i ≤ x ≤ j}</code> or <code>(i,i+1,...,j-1,j)</code>. We use the notation
+<code>a[i..j]</code> to denote the subsequence of the array <code>a</code>
+starting from <code>a[i]</code> and continuing up to and including
+<code>a[j]</code>.
+</p>
+<p>
+If we squint at this loop invariant, we can see that it looks a bit like
+the precondition and a bit like the postcondition, but generalizes both
+of them. The invariant looks like the precondition except that it
+ranges over just the indices from <code>l</code> to <code>r</code>.
+And the third part of the invariant looks like the postcondition,
+except that it talks about a range of the array rather than a single
+element. The loop invariant captures the progress that the algorithm
+makes as it runs.
+</p>
+<p>
+If we have a loop and we know what the loop invariant is for that loop, it is
+often a good idea to document it. In fact, we can document it in a checkable
+way by using an <code>assert</code> statement that is executed on every loop
+iteration.
+</p>
+
+<h2>Loop invariants and tail-recursive functions</h2>
+<p>
+We observed earlier that tail-recursive functions can be converted into
+loops. Conversely, loops can be converted into tail-recursive functions.
+What is the relationship of this tail-recursive function to the loop
+invariant?
+</p>
+<p>
+For example, binary search can be converted into a tail-recursive
+function as follows:
+</p>
+<pre class="load">
+<a href="loopinv/binary_search_recursive.java">binary_search.java</a>
+</pre>
+<p>
+Notice that the precondition of the tail-recursive function
+<code>search_rec</code> is exactly the loop invariant, and the postcondition of
+the loop is just the postcondition of the function. This is no accident: a loop
+invariant is simply the precondition of the corresponding tail-recursive
+function.  The loop preserves the loop invariant exactly when the precondition
+is satisfied for all recursive calls made in the recursive version. In this
+example there are two recursive calls.
+</p>
+<p>
+If we think of a loop as a function whose precondition must be satisfied and
+whose postcondition must ensure the loop's postcondition is satisfied, that can
+help us identify the loop invariant.
+</p>
+
+<h2>Using loop invariants to show code is correct</h2>
+<p>
+Loop invariants can help us convince ourselves that our code,
+especially tricky code, is correct. They also help us develop code
+that is correct in the first place, and they help us write efficient code.
+</p>
+<p>
+To use a loop invariant to argue that code does what we want, we
+use the following steps:
+</p>
+<ol>
+<li><b>Establishment (aka Initialization).</b> Show that the loop invariant is
+true just after loop initialization. That is, the loop invariant must be
+implied by the loop precondition.
+For while-loops of the form <code>while
+(<i>guard</i>) { <i>body</i> }</code>, the invariant must be true before
+beginning the loop.  For for-loops <code>for (<i>init</i>; <i>guard</i>;
+<i>incr</i>) { body }</code>, the invariant must be true just after executing
+the code <code><i>init</i></code>, which is not properly part of the loop because
+it is executed only once.</li>
+
+<li><b>Preservation (aka Maintenance).</b> Show that whenever both the loop invariant and the
+<code>guard</code> are true just before executing the loop body, then the loop
+invariant is true just <em>after</em> executing the loop body. Note that the
+loop invariant may fail to be true at intermediate steps during the execution
+of the loop body, as long as it is reestablished by the end.  (For
+<code>for</code> loops, the loop body also includes the increment
+<code>incr</code>.) </li>
+
+<li><b>Postcondition.</b> Show that if the <code>guard</code> is false (so the loop exits)
+and the loop invariant holds, then the desired result of the loop
+has been achieved: the loop postocondition holds.</li>
+</ol>
+
+<p>Other than coming up with the loop invariant in the first place, the Preservation
+step is typically the most challenging. The Postcondition step is a crucial step too.
+If the chosen loop invariant is too weak, this step will not be possible. Defining a
+too-weak invariant is a common mistake, so it is good to try the Postcondition step early.</p>
+
+<p>
+These three steps allow us to conclude that the loop satisfies
+<b>partial correctness</b>, which means that if the loop terminates, it
+will succeed. To show <b>total correctness</b>, we must show in addition
+that the loop eventually terminates. To show this, there is a fourth step:
+</p>
+<ol>
+<li value="4"><b>Termination.</b> Assuming the loop invariant holds at the start of
+each iteration, show that some quantity strictly decreases, and that it cannot
+decrease indefinitely.
+This quantity is called the <b>decrementing function</b> or <b>loop variant</b>.
+If we call the decrementing function DF, we need to show that if the loop guard is
+true, then the value of DF after
+the loop body (call it DF') is strictly less than it was at the beginning: DF' &lt; DF.
+Further, we need to come up with some minimal value DF<sub>0</sub> such that if DF &lt; DF<sub>0</sub>,
+then either the loop guard or the loop invariant is false. Since DF decreases on every step, it will
+eventually be less than DF<sub>0</sub>, and in that case the loop cannot still be running.
+</li>
+</ol>
+
+<p>
+Let's try these four steps on the binary search algorithm.
+</p>
+<ol>
+  <li><b>Initialization.</b>
+  <p>The loop invariant has three clauses; we can argue that each one holds:
+  <ol>
+<li>That array <code>a</code> is sorted is in the precondition of <code>search</code>.
+
+<li>Since <code>a.length</code> is at least 1 by the precondition that <code>k</code> is in the array, and since initially <code>l = 0</code> and <code>r = a.length-1</code>, we have <code>0 ≤ l ≤ r ≤ a.length-1</code>.</li>
+<li> <code>k ∈ a[l..r]</code> because that is the whole array and the precondition
+       guarantees that <code>k</code> is there.</li>
+  </ol></p>
+  </li>
+  <li><b>Preservation.</b>
+  <p>Since the loop doesn't change the array, clearly the first clause of the invariant
+   is preserved. Arguing the remaining clauses is a bit trickier.</p>
+  <p>We use l', r' to represent the values of l, r at the end of the loop.
+  We want to show that if the invariant is true at the beginning of the loop body,
+  that is, if <code>0 ≤ l ≤ r ≤ a.length-1</code> and <code>k ∈ a[l..r]</code>,
+  then clauses 2 and 3 are true at the end of the loop body, that is,
+  <code>0 ≤ l' ≤ r' ≤ a.length-1</code> and <code>k ∈ a[l'..r']</code>.</p>
+
+  <p>
+  Note that m is the average of l and r, rounded down. So we
+  know that <code>l ≤ m ≤ r</code>. In fact, because  the loop guard <code>l &lt; r</code> is true
+  and the value of m is rounded down, we know something stronger: <code>l ≤ m &lt; r</code>.
+  </p>
+  <p>
+  How the loop body executes depends on the outcome of the test <code>k &lt;= a[m]</code>. There
+  are two cases to consider: either <code>k &lt;= a[m]</code> or <code>k &gt; a[m]</code>.
+  We analyze the two cases separately.
+  </p>
+  <ul>
+	<li><p><b>Case</b> <code>k &lt;= a[m]</code>:</p>
+	<p>
+          In this case we have <code>l' = l</code> and <code>r' = m</code>.
+          Since we have <code>0 ≤ l ≤ m < r ≤ a.length-1</code> as just argued,
+          clause 2 is preserved: <code>0 ≤ l' ≤ r' ≤ a.length-1</code>.
+        </p>
+
+        <p>
+          How about clause 3? By the loop invariant, we know that k occurs at
+          least once in <code>a[l..r]</code>. Since <code>k &lt;= a[m]</code>,
+          it must occur at or before index <code>m</code>. Therefore we have
+          <code>k∈a[l..m] = a[l'..r']</code>, as required.
+	</p>
+	</li>
+	<li><p><b>Case</b> <code>k &gt; a[m]</code>:</p>
+	<p>
+          Clause 2. In this case, the loop body sets <code>r' = r</code> and <code>l' =
+          m+1</code>. We know <code>m &lt; r</code>, so <code>l' = m + 1 ≤ r = r'</code>.
+          Therefore, we have <code>0 ≤ l' ≤ r' ≤ a.length-1</code>
+          </p>
+          <p>
+          Clause 3.  Since the array is sorted, <code>k</code> cannot be
+          located in <code>a[l..m]</code>. But according to the invariant, it
+          is in <code>a[l..r]</code>. Therefore, <code>k</code> is in <code>a[m+1..r]</code> = <code>a[l'..r']</code>,
+          as required.
+	  </p>
+	</li>
+  </ul>
+  </li>
+  <li><b>Postcondition.</b> <p>For the algorithm to be correct, we need 
+  <code>a[l] = k</code>. If the loop guard is false, we know <code>l ≥ r</code>. But the invariant (2) guarantees <code>l ≤ r</code>,
+  so we must have <code>l = r</code>. We know from the invariant (3) that <code>k ∈ a[l..r]</code>,
+  which has been reduced to a single element, so that must be where k is.</p></li>
+
+  <li><b>Termination.</b>
+  <p>The value DF = <code>r &minus; l</code> is guaranteed by the invariant
+  (1) to be nonnegative: we can choose DF<sub>0</sub> = 0.
+  In the case where <code>k ∈ a[l..m]</code>, we know <code>m &lt; r</code>, so
+  <code>r' &minus; l' &lt; r &minus; l</code>. In the other case, we know <code>l &lt; m+1</code>, so again,
+  <code>r' &minus; l' &lt; r &minus; l</code>. Thus the quantity <code>r &minus; l</code> gets strictly
+  smaller on every loop iteration as long as <code>l &lt; r</code>. Therefore,
+  the loop eventually terminates.
+</ol>
+
+<p>
+In this case, the loop invariant has three clauses, but it is easy to leave things out of the
+loop invariant. If clauses are omitted, the invariant may be too weak:
+Initialization is easier to argue, but it becomes impossible to show
+Preservation or Postcondition. On the other hand, if the loop invariant is too
+strong because it contains clauses that shouldn't be there, then
+Initialization or Preservation become impossible to show.
+</p>
+<p>
+Let's consider what would have happened had we omitted any of the three clauses from
+the binary search loop invariant:
+</p>
+
+<ol>
+<li>
+If we didn't know the array was sorted, our reasoning about where the element k was
+would fail.
+</li>
+<li><p><code>l ≤ r</code><br>
+Without this clause, we don't know that we are going to the correct side when we split
+on <code>m</code>. The Termination argument also fails because the decrementing
+function is no longer guaranteed to be nonnegative.
+</p>
+<li><p><code>k ∈ a[l..r]</code><br>
+Without this clause, we don't know that the loop has found anything when it terminates,
+so Postcondition fails.
+</p>
+</li>
+</ol>
+
+<h2>Example: Exponentiation by squaring and multiplication</h2>
+<p>
+Here is an implementation of exponentiation that is efficient but
+whose correctness is not immediately apparent.
+</p>
+<pre class="load">
+<a href="loopinv/Pow.java">Pow.java</a>
+</pre>
+
+<p>Intuitively, this algorithm converts the exponent e into
+a binary representation, which we can think of as a sum of powers of 2. So
+e = 2<sup>k<sub>1</sub></sup> + 2<sup>k<sub>2</sub></sup> + ··· and x<sup>e</sup>
+= x<sup>2<sup>k<sub>1</sub></sup>+2<sup>k<sub>2</sub></sup>+···</sup>
+= x<sup>2<sup>k<sub>1</sub></sup></sup>·x<sup>2<sup>k<sub>2</sub></sup></sup>···.
+(Note that x<sup>2<sup>k</sup></sup> always means x<sup>(2<sup>k</sup>)</sup>, never (x<sup>2</sup>)<sup>k</sup>.)</p>
+
+<p>
+For example, if e = 11010 in binary, then x<sup>e</sup> = x<sup>11010</sup> = x<sup>10000+1000+10</sup> = x<sup>10000</sup>·x<sup>1000</sup>·x<sup>10</sup>.
+</p>
+
+<p>
+By repeatedly halving y and inspecting the resulting parity,
+the algorithm finds each of the &ldquo;1 digits&rdquo; in the binary
+representation of e, corresponding to the terms 2<sup>k<sub>i</sub></sup>, and for such a digit
+at position k, multiplies into r the appropriate factor
+x<sup>2<sup>k</sup></sup>. That is the intuition, but the loop invariant will help convince us
+that it really does work. The loop invariant captures that part of the final
+result has been transferred into r and what remains to be multiplied into the result is b<sup>y</sup>.
+</p>
+
+<p>Let's consider the four steps outlined above.</p>
+
+<ol>
+<li><b>Establishment.</b> <p>Initially, r=1, b=x and y=e, so trivially we have r·b<sup>y</sup> = x<sup>e</sup>. Also y &ge; 0 since initially y = e and e &ge; 0 as a precondition.</p></li>
+<li><b>Preservation.</b> <p>Let us use y', b', and r' to refer to the values of these variables
+at the end of the loop. We need to show that if y &gt; 0 and r·b<sup>y</sup> = x<sup>e</sup> at the beginning of the loop body, then y' &ge; 0 and r'·b'<sup>y'</sup> = x<sup>e</sup> at the end of the loop body. It suffices to show that if y &gt; 0, then r'·b'<sup>y'</sup> = r·b<sup>y</sup> and y' &ge; 0. There are two cases to consider:</p>
+<ul>
+<li><p><b>Case: y is even</b>. In this case, r' = r, y' = y/2, and b'= b<sup>2</sup>.
+Therefore, r'·b'<sup>y'</sup> = r·(b<sup>2</sup>)<sup>y/2</sup> = r·b<sup>y</sup>, as desired.</p></li>
+<li><p><b>Case: y is odd</b>. Here we have r'=r·b, y' = (y-1)/2, and b' = b<sup>2</sup>.
+Therefore, r'·b'<sup>y'</sup> = r·b·(b<sup>2</sup>)<sup>(y-1)/2</sup>
+          = r·b·b<sup>y-1</sup>
+          = r·b<sup>y</sup>, again.</p></li>
+<p>In either case, y' &ge; 0, since halving a positive number cannot make it negative.</p>
+</ul>
+</li>
+<li><b>Postcondition.</b>
+<p>If the loop guard is false, then y = 0, since y &ge; 0 and not y &gt; 0. But if y = 0, then r = r·b<sup>y</sup> = x<sup>e</sup>, and that is the return value.</p></li>
+<li><b>Termination.</b>
+<p>Dividing by two makes the quantity y strictly smaller on every loop iteration,
+because it is always nonnegative (this is a part of
+the loop invariant). It can never become negative, so eventually it will become
+zero and the loop will terminate.</p></li>
+</ol>
+
+<p>
+Therefore, the loop terminates and returns the correct value of x<sup>e</sup>.
+</p>
+<h2>Example: Insertion sort</h2>
+
+<pre class="load">
+<a href="loopinv/insertion_sort.java">insertion_sort.java</a>
+</pre>
+
+<p>
+There are two loops, hence two loop invariants. These loop invariants can be
+visualized with the following diagram:
+</p>
+<div class="figure">
+<img src="loopinv/insertion-sort.png" alt="insertion sort loop invariants" />
+</div>
+<p>
+Notice that the loop invariant holds in <code>for</code> loops at the point
+when the loop guard (i.e., <tt>i &lt; a.length</tt>) is evaluated, and
+not necessarily at the point when the <code>for</code> statement starts
+executing. That is, the initialization expression in the <code>for</code>
+statement can help establish the loop invariant.
+
+<h2>Debugging and choosing loop invariants</h2>
+<p>
+There are two things that typically go wrong when choosing a loop invariant.
+The most common error is to define a loop invariant that is too weak. This
+error usually shows up when trying to take the Postcondition step. If the loop
+invariant is too weak, we can't argue that the loop achieves whatever it is
+supposed to. Alternatively, sometimes a too-weak invariant will show up in the
+Preservation step, because the weak loop invariant does not restrict the
+state enough to show that even it is preserved by the loop.
+</p>
+<p>
+If a loop invariant is too strong, that error typically shows up when one tries
+to prove Preservation: the strong loop invariant simply isn't preserved by
+executing the loop body. It is also possible but less common for this error to
+show up in the Establishment step, if the putative loop invariant doesn't even
+hold at the start of the loop.
+</p>
+<p>
+Choosing loop invariants is a bit of an art, but becomes easier with practice.
+The key is that a loop invariant really does capture the core reason why the
+loop works. So imagine trying to explain to someone why the loop works, and
+write down conditions that capture that explanation.
+</p>
+<p>
+Recall that the loop invariant must be implied by the loop precondition and it
+must imply the loop postcondition; another way to think about the loop
+invariant is that it interpolates between the precondition and postcondition.
+It can be helpful to write down both the precondition and the postcondition
+together, and then to try to come up with a logical statement that captures
+both of them. It should generalize both the precondition and the postcondition,
+but be close to the precondition as the loop starts and close to the
+postcondition when it ends. For example, in the binary search algorithm, that
+we want <code>k = a[l]</code> at the end and we have <code>k ∈
+a[0..a.length-1]</code> at the beginning.  The statement k ∈ a[l..r]
+generalizes both of these assertions.
+</p>
+
+<h2>Loop invariants in software engineering</h2>
+<p>
+Loop invariants capture key facts that explain why code works.
+If you write code in which the loop invariant is not obvious, you should
+add a comment that gives the loop invariant. This helps other programmers
+understand the code, and helps keep them (and you!) from accidentally breaking
+the invariant with future changes.
+</p>
+<p>
+It also makes sense to add <code>assert</code> statements that for every iteration check
+the parts of the loop invariant that are easy to check. Such assertions will catch errors
+early and expose problems with your understanding of why the code works.
+</p>

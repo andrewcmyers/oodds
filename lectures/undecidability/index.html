@@ -1,0 +1,326 @@
+<h1>Hard problems and undecidability</h1>
+
+<p>
+We have seen many useful algorithms and data structures for solving
+computational problems. However, some problems are intractably hard in the sense
+that they would require too much time or space. Some problems are not solvable at all,
+no matter how much time or space is available.
+</p>
+
+<h2>P, NP, and EXPTIME</h2>
+
+<p>
+The class of problems that are generally considered to be <em>tractable</em> are those
+that can be solved in <b>polynomial time</b>, which is to say O(n<sup>k</sup>)
+for some k. In practice, algorithms that take polynomial time with k larger
+than 1 scale poorly, and algorithms that require k≥5 are almost never used
+in practice (and even k=3 and k=4 are often impractically slow).
+</p>
+<p>
+We define the complexity class <b>P</b> as the set of all problems that can be
+solved by an algorithm taking polynomial time, that is, time O(n<sup>k</sup>) for 
+some constant k.</p>
+<p>
+Beyond P is the class <b>EXPTIME</b>, which includes all
+algorithms that take time O(2<sup>n<sup>k</sup></sup>) for some constant k.
+Algorithms in EXPTIME effectively hit a wall when the problem size n
+becomes even moderately large.
+For example, if an algorithm takes time 2<sup>n</sup>,
+increasing the problem size from n to size n+1 requires twice as much time.
+Even if the algorithm is fast for small n, as n grows, we quickly reach
+a size where even a small increase is far too expensive. Contrast
+this with the case of an O(n<sup>k</sup>) algorithm, where
+going from n to n+1 means increasing the time only by a factor of roughly 1+k/n,
+which gets smaller as n increases.
+(To see why, note that ((n+1)/n)<sup>k</sup> ≈ 1 + k/n when n ≫ k.)
+</p>
+<p>
+Another important class is <b>nondeterministic polynomial time</b>, or
+<b>NP</b>. These are the problems for which a potential solution can be
+<em>checked</em> in polynomial time. It may be intractably difficult
+to <em>discover</em> a solution to a problem in NP, but once we are given
+a candidate solution, we can check in (deterministic) polynomial time
+whether it is indeed a solution.
+</p>
+<p>
+Examples of problems in NP are the following:
+<ul>
+<li><b>Graph coloring.</b> Does there exist a valid k-coloring of a given undirected graph, that is,
+a coloring of the vertices with k distinct colors such that no two adjacent vertices have the same color?
+If we are given a k-coloring, checking whether it is valid can be done in linear time.
+But if we are not given such a coloring, it is not known how to efficiently test whether one
+exists or how to find one if so.
+<li><b>Hamiltonian cycles.</b> A Hamiltonian cycle in a graph is a cycle that includes
+every vertex exactly once. The problem is to test whether such a cycle exists in a given graph.
+Given a candidate cycle as a list of vertices, it can be checked in polynomial time whether it
+is indeed a cycle and whether each vertex occurs exactly once.
+<li><b>Boolean satisfiability (SAT)</b>. Given a boolean formula using logical “and”, ”or”, and “not”, is it
+is there a way to choose boolean values (true or false) for the variables in the formula that cause
+the whole formula to evaluate to true? The formula is said to be <em>satisfiable</em> if such an
+assignment exists. Given a candidate assignment of truth values to the variables,
+the formula can be evaluated in polynomial time to determine if the assignment satisfies the formula.
+But it is not known how to efficiently find a satisfying assignment.
+</ul>
+<p>
+These are three famous problems in NP. All of them can be solved by exponential-time
+algorithms that essentially try all exponentially many possible solutions. But this
+approach is infeasible for all but very small instances of the problem.
+It is not known whether polynomial-time algorithms for these problems exist,
+although by now most computer scientists believe they do not.
+</p>
+
+<h2>NP-completeness and the P=NP question</h2>
+
+<p>
+Each of these three problems above has the interesting property that in polynomial time, any
+problem in NP can be reduced to it (encoded in it). That is, if a computational problem A is
+in NP, then there is a translation that, given an instance x of A, transforms x into an instance
+(G,k) of the graph coloring problem such that a valid k-coloring of G could be transformed back to a solution of x.</p>
+
+<p>Because they can express any
+problem in NP, these problems are said to be <em>NP-complete</em>. If we had a
+polynomial-time algorithm to solve an NP-complete problem, we could solve any
+problem in NP in polynomial time! This result would mean that the complexity
+classes P and NP were the same.</p>
+
+<p>
+Most computer scientists believe that P
+and NP are not the same and that there is no algorithm that solves any
+NP-complete problem in worst-case polynomial time. However, no one has managed to prove
+that the two classes are different either.
+The P=NP question has intrigued and stymied researchers for decades. It
+remains the single most important unsolved problem of computer science.
+</p>
+
+<h2>Space complexity</h2>
+
+<p>
+It is also possible to classify algorithms in terms of the memory space they
+require. Algorithms in PSPACE require a polynomial amount of space.
+Algorithms in L require only a logarithmic amount of space in addition to the
+input data; in effect, they can use a constant number of pointers
+into the input data. A recent surprising result is that
+undirected graph reachability is in L.
+</p>
+
+<p>
+Space classes have nondeterministic versions too. A surprising result, proved by
+Savitch in the 1970s and known as <i>Savitch's theorem</i>, states that PSPACE = NPSPACE;
+that is, for a particular problem, if there is a polynomial-space algorithm to <i>check</i>
+whether a potential solution is indeed a solution, then there is a polynomial-space
+algorithm to <i>find</i> solutions.
+</p>
+
+<p>
+Some relationships among complexity classes have been proved, such as the
+following inclusion relationships:
+<div class=equation>
+L ⊆ NL ⊆ P ⊆ NP ⊆ PSPACE = NPSPACE ⊆ EXPTIME
+</div>
+</p>
+
+<p>
+It is also known that L≠PSPACE and that P≠EXPTIME. However, many important things
+are not known. For example, because L≠PSPACE, we know that at least one of the
+inequalities L≠P, P≠NP, and NP≠PSPACE must hold, but we don't know which.</p>
+
+<p>
+The complexity of some important problems is not known either. For example, even
+though the security of RSA encryption rests on the difficulty of factoring
+numbers, it is not known whether factoring is in P. (However, it is known
+that factoring can in principle be solved in polynomial time on a
+<em>quantum computer</em>, though no one has yet been able to build a useful
+quantum computer.) On the other hand, testing primality&mdash;whether a given
+integer is prime or composite&mdash;is known to be in polynomial time.
+</p>
+
+<h2>Undecidability</h2>
+<p>
+Beyond the problems mentioned above, there are even computational
+problems that cannot be solved at all, even in principle, and even with
+unlimited time and space. We can prove mathematically
+that such problems exist. We will focus on <b>decision problems</b> where
+the goal is to decide whether a given property holds of some input, and we will
+show that some decision problems are <b>undecidable</b> by any algorithm.
+</p>
+
+<h3>Undecidability of the halting problem</h3>
+
+<p>
+An example of such a decision problem is the <b>halting problem</b>: Given a
+program <code>p</code> and input <code>x</code> to that program, does
+<code>p</code> terminate when run on input <code>x</code>? We will see that
+the halting problem is undecidable in general. That is, there is no
+algorithm that halts and answers this question correctly for all
+programs and inputs.
+</p>
+
+<p>
+We have seen in previous lectures and from the programming assignments
+that a program can be represented as a data structure such as an
+abstract syntax tree (AST) or bytecode. Let us assume there is a class
+<code>Program</code> that can be used to represent programs.
+</p><p>
+We want to know whether we can implement a method with the following specification:
+</p><p>
+<pre>
+/**
+ * Returns true if the given program p terminates when given x as input,
+ * otherwise returns false.
+ */
+boolean terminates(Program p, Object x);
+</pre>
+</p><p class="cont">
+That is, for every <code>p</code> and input <code>x</code>, it should
+successfully return either <code>true</code> or <code>false</code> depending on
+whether the program represented by <code>p</code> halts on input <code>x</code>.
+Note that although <code>terminates</code>
+is just one method, it is allowed to use as many other classes and
+methods as it likes. We have the full power of Java at our disposal.
+</p><p>
+For simplicity let us consider only Java programs that 
+implement a decision problem and have the following form:
+</p>
+<pre>
+class P {
+  public static boolean main(Object x) { ... }
+}
+</pre>
+<p>
+If <code>p</code> is an instance of <code>Program</code> that represents
+the Java program <code>P</code>, then
+<code>terminates(p,x)</code> should return <code>true</code> or
+<code>false</code> according as <code>P.main(x)</code> halts or
+does not halt, respectively.</p>
+
+<p>
+The method <code>main</code> is allowed to use other classes
+and methods. However, we will only consider programs that receive no input from and
+send no output to the outside environment. The only input to the
+program is <code>x</code> and the only output is the boolean result of <code>main</code>.
+If we can't determine whether such simple programs terminate, then of
+course we have no hope of determining whether more complex programs do.
+</p>
+
+<p>
+We have seen that it is possible to write an interpreter for a
+programming language. An interpreter for programs like <code>P</code>
+(as coded by the <code>Program</code> object <code>p</code>) can be
+written with the following signature:
+</p>
+<pre>
+/**
+ * Simulate the execution of <code>p</code> on input <code>x</code>, returning
+ * the same result as <code>p</code> would. If <code>p</code> would fail to terminate on
+ * this input, so does <code>interpret(p, x)</code>.
+ */
+public static boolean interpret(Program p, Object x);
+</pre>
+<p>
+In other words, <code>interpret(p,x)</code> gives exactly the same result
+as <code>P.main(x)</code>.
+</p>
+
+<p>
+Now consider the following program.
+</p>
+
+<pre>
+<small>1</small>   class H {
+<small>2</small>      public static boolean main(Object x) {
+<small>3</small>         if (!(x instanceof Program)) return false;
+<small>4</small>         Program p = (Program)x;
+<small>5</small>         if (!terminates(p,p)) return true;
+<small>6</small>         return !interpret(p,p);
+<small>7</small>      }
+<small>8</small>   }
+</pre>
+<p>
+Note that <code>H.main</code> terminates on any input <code>x</code>,
+because the only possibility for nontermination is in line 6 in the call to <code>interpret(p,p)</code>,
+but we have already guaranteed that this will terminate by the call to <code>terminates(p,p)</code> in line 5. Therefore <code>H.main(x)</code> always returns either true or false.
+</p><p>
+But now let <code>h</code> be an instance of <code>Program</code> representing <code>H</code>,
+and consider what happens when we run <code>H.main(h)</code>. As argued above, this must
+terminate. The program does not return in line 3 and the cast succeeds in line 4 because <code>h</code> is an instance of <code>Program</code>. The program does not return in line 5 because that would only happen if <code>terminates(h,h)</code> returned false, which would only happen if <code>H.main(h)</code> did not
+terminate, but it does. Thus we get all the way to line 6. But now observe that at line 6, the code returns
+the value <code>!interpret(h, h)</code>, which if the interpreter works correctly, is equal to <code>!H.main(h)</code>.
+In other words, the result of <code>H.main(h)</code> is equal to <code>!H.main(h)</code>. This is a contradiction:
+</p>
+<div align=center>
+<p>
+<code>H.main(h)</code> returns <code>true</code>
+&nbsp;&nbsp;&xhArr;&nbsp;&nbsp;
+<code>interpret(h,h)</code> returns <code>false</code>
+&nbsp;&nbsp;&xhArr;&nbsp;&nbsp;
+<code>H.main(h)</code> returns false.
+</p>
+</div>
+
+<p>
+This contradiction means that our original assumption, that we can test halting
+in line 5, must be wrong. More precisely, in a language expressive enough to
+implement <code>interpret</code>, we cannot implement
+<code>terminates</code> to work correctly on all input programs.
+We know how to implement interpreters for programming languages (including Java) in Java;
+we did it for a much simpler language in Assignment 5, but the principle is the same.
+So the erroneous assumption was that we could decide termination. The method
+<code>terminates</code> cannot exist.</p>
+<p>
+The conclusion is that some useful results are simply not computable by any algorithm.
+</p>
+
+<h2>Implications for program analysis</h2>
+
+<p>
+This result may sound obscure but it has some far-reaching practical implications.
+In particular, many different <b>program analyses</b> besides
+termination are also undecidable. For example, we cannot reliably
+identify dead code (code that cannot be reached), or tell if a given
+program will ever generate a <code>NullPointerException</code>, or
+tell if a run-time type error will occur. These problems are all
+provably undecidable.
+</p>
+<p>
+To see why they are undecidable, suppose that
+we had an analysis tool that could always tell at compile time whether 
+a program could generate a <code>NullPointerException</code>. Using
+that analysis, we could use it to figure out whether arbitrary code
+terminates, by constructing code like the following:
+</p>
+<pre>
+String x = null;
+while (...) {
+    // some computation that does not refer to x
+}
+System.out.println(x.toString());
+</pre>
+<p>
+Assuming the body of the while loop does not generate any <code>NullPointerException</code>s,
+this code generates <code>NullPointerException</code> if and only if
+the <code>while</code> loop terminates. If we had an analysis tool that could
+predict <code>NullPointerException</code>s at compile time, we could use it to determine whether the <code>while</code> loop terminates. But we know that termination is undecidable, therefore
+predicting <code>NullPointerException</code>s is impossible in general.
+</p>
+
+<p>
+As a result, all “interesting” program analyses must be <b>conservative</b>,
+giving answers &ldquo;true&rdquo;, &ldquo;false&rdquo; or
+&ldquo;not sure&rdquo;. Type checking is another example of such an analysis.
+A compiler type-checks programs conservatively by only allowing programs
+that (if the type system is sound) definitely have no run-time type errors.
+However, a type checker will sometime complain about programs being ill-typed
+even though they do not cause run-time type errors.
+</p>
+
+<p>
+By similar arguments, we see that we have to be conservative about many other
+facts we'd like to know about programs&mdash;for example, whether they are
+correct, whether they are secure, or whether they leak memory. All automatic
+tools for analyzing programs will either be <b>incomplete</b>, meaning that
+they reject some safe programs as possibly unsafe (this is a <b>false
+positive</b> or a <b>false alarm</b>), or else <b>unsound</b>, meaning that they accept some unsafe
+programs as safe (this is a <b>false negative</b>). Despite these limitations,
+software developers use incomplete and even unsound automatic tools all the time:
+they can still be useful despite their limitations.
+</p>

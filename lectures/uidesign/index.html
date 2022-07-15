@@ -1,0 +1,284 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
+<div id="content">
+
+<h1>User interface design</h1>
+
+<h2>High-level goal: Usability</h2>
+
+<p>
+A good user interface (UI) enables users to get their job done efficiently,
+easily, and enjoyably. User interface design focuses on users and their
+experience of using the system.
+</p>
+<p>
+Some of the principles that normally apply to software enginering
+tasks are less central to user interface design.  In particular,
+we have been focusing on the needs of programmers, but for UI
+design, we worry about users and how they interact with the system. Our
+focus is therefore not on making the programmer's job easy, although we
+of course still care about how to deliver a good user interface in
+a cost-effective way.
+</p>
+<p>
+We might think that a good user interface is one that provides the 
+largest feature set possible. Sometimes a large feature set is needed,
+but often it is not what the user needs.
+</p>
+<p>
+We now take a look at the problem of UI design and try to elucidate some
+principles that can guide us when designing and implementing user interfaces.
+</p>
+
+<h2>Know your users. Design to them.</h2>
+
+<blockquote>
+<i>
+“If there is any one secret of success, it lies in
+the ability to get the other person’s point of
+view and see things from that person’s angle as
+well as from your own”</i> — Henry Ford (actually)
+</blockquote>
+
+<p>
+  The most critical aspect of designing any interface is to understand how
+  it will be used. That is, you need to understand your users.
+</p>
+<p>
+  Different applications have different kinds of users. Your users may
+  be expected to use the software frequently and therefore to be familiar
+  with it, or they may only use the software occasionally. They may be
+  novices to the application domain, or they may be knowledgeable about it.
+  Users may be expected to have some training in the use of the system,
+  or may be expected to learn how to use it without training. Different
+  kinds of users need different kinds of UI designs.
+</p>
+<p>
+    We might think that the way to design a good user interface is to give
+    users what they say they want. But users are not typically good user
+    interface designers, so treating their ideas as prescriptions tends to bad
+    designs.  As the (unfortunately apocryphal) quote often attributed to Henry
+    Ford says, “If I had asked people what they wanted, they would have said
+    faster horses.”
+</p>
+<p>
+    Although we don't want users to dictate the design, at the same time, it is
+    crucial to understand your users and the tasks they want to accomplish.
+    Interviewing potential users is an important early step in design. The
+    focus should be, again, not on asking users what specific features they are
+    looking for, but on understanding the tasks they want to carry out. Then
+    you can design while being conscious of how the user experience you are creating
+    meshes with the intended uses.
+</p>
+<p>
+    A common error when designing user interfaces is to think that the user
+    thinks like you do. But most users are <i>not</i> like you. To combat
+    this form of bias, it is critical to interviews users, and to test designs 
+    on users.
+</p>
+
+<h3>Infrequent/new users</h3>
+<p>
+For users who use the software too infrequently to remember it, or who are
+encountering it for the first time,  the design emphasis should be on providing
+a gentle learning curve and strong visual, auditory, or even haptic cues.
+</p>
+
+<ul>
+    <li> Discoverability: can learn features, interaction
+    <li> Protection from dangerous actions, no loaded guns.
+    (Andy Aaron's classic Saturday Night Live skit,
+    <a href="https://www.youtube.com/watch?v=GYeYJ0r5D2Q">“Blowing up a Building”</a>,
+    is a great illustration of this principle.)
+    <li> Principle of Least Surprise
+    <li> Clarity: Simple, clear displays
+    <li> Consistency with other applications
+    <li> Use metaphors to communicate (e.g., icons)
+</ul>
+
+<h3>Intermittent but knowledgeable users</h3>
+<p>
+Here the focus is on making features discoverable, and reducing the
+memory burden for users. The user has an idea what features are available
+but may not remember how to access them.
+</p>
+<ul>
+    <li>Internally consistent appearance and actions
+    <li>Clear visual structure
+    <li>Protection from dangerous action for safe exploration
+</ul>
+
+<h3>Frequent/power users</h3>
+
+<p>
+For users expected to have a lot of experience with the application,
+and perhaps also training, the design emphasis should be on 
+efficient interactions.
+</p>
+
+    <ul>
+        <li> Usable ≠ "User friendly"
+        <li> Powerful actions, short interaction sequences
+        <li> Rapid response times
+        <li> Rich controls, shortcuts for common actions
+        <li> Exploit muscle memory
+        <li> Information-rich displays
+        <li> Customization and macros
+        </ul>
+    </ul>
+
+
+<h2>UI as dialogue</h2>
+
+    <li> App needs to be good conversation partner
+        <ul>
+        <li> Ratify actions quickly
+        <li> Be responsive (e.g., highlighting)
+        <li> Show progress on longer actions
+        </ul>
+    <li> Work out the conversations
+	<ul>
+            <li> Use a set of <b>use cases</b> to figure out what users will
+                have to do.
+            <li> Eliminate unnecessary user actions.
+            <li> Aim for short interactions with clear progress:
+                <b>intermediate goal satisfaction</b> (cf. DisneyWorld ride lines)
+            <li> Use testing to find your blind spots (as developer).
+	    <li> May need to write testing scripts for human testers. Key
+		(as usual): coverage.
+	</ul>
+
+    <li> Choosing the right interaction paradigm: direct manipulation vs. I/O vs. ?
+    <ul>
+    <li> Goal: app feels like extension of user, promotes flow
+    <li> Example: driving a car vs. programming/remote-controlling a car, or Word vs. TeX.
+    <li> UI abstracts underlying application state (the model)
+    <li> Abstraction does <em>not</em> need to match the implementation
+    <li> Good implementation strategy: Model != View != Controller
+    <li> Good abstraction: Model = View = Controller
+    <li> Less direct styles:
+        <ul>
+            <li>Menu selection/hierarchical navigation
+            <li>Form fill-in + submit
+            <li>Command languages
+        </ul>
+    </ul>
+
+    <li>GUI helps by <em>restricting the vocabulary</em>
+        <ul>
+        <li> Channels `utterances´ (user actions) into meaningful directions
+        <li> Reduces memorization
+        </ul>
+
+    <li>Use modes well
+        <ul>
+            <li> Modes: states of UI that restrict interactions.
+            <li> Modes help with restricted context-sensitive vocabulary
+            <li> Avoid overusing modes and trapping users in modes.
+        </ul>
+    <li>Interaction time scales</li>
+        <ul>
+        <li> &lt;1/60s: biologically imperceptible: faster than neurons
+        <li> &lt;1/30: fast enough for continuous-feedback tasks (e.g., mouse tracking)
+        <li> &lt;1/10s: imperceptible delay for discrete actions, e.g. button clicks.
+        <li> &lt;1/2s: fast but noticeable (ok for command-response interaction)
+        <li> 1/2s-5s: increasingly annoying but user stays focused
+        <li> 5s-10s: User starts to lose attention.
+        <li> 10s-1 min$: User becomes distracted and
+        productivity declines. App needs to support parallel activities.
+        <li> &gt;1 min: Significant loss of productivity.  User leaves for coffee.
+        </ul>
+
+
+<h2>Learning and memory</h2>
+<li>
+Goal: interface that users can learn to use sufficiently quickly
+and can remember how to use.
+
+    <ul>
+    <li> Obvious controls
+        <ul>
+        <li> Easy to find and identify
+        <li> Don't set up user for a fall: disable invalid/dangerous actions
+        </ul>
+
+    <li> Avoid overload
+        <ul>
+        <li> Human can only hold 7 things in their head at once
+        <li> Avoid long menus, lots of buttons
+        <li> Design visuals carefully for rapid comprehension
+        </ul>
+    </ul>
+
+    <li> Context-sensitive help
+        <ul>
+        <li> Task-focused rather than feature-focused (unlike most modern apps!)
+        </ul>
+
+    <li> Exploit spatial memory
+	<ul>
+        <li> Tap into humans ability remember to things spatially: e.g., the
+                <b>memory palace</b>.
+
+        <li> Each window or dialogue is a place you can go&mdash;make it a
+             place user wants to be in.
+	<li> Avoid unnecessary places to learn about and navigate between.
+	<li> Make navigation simple, clear, easy.
+	<li> Big-picture overviews help users stay oriented
+	    <ul>
+	    <li> bird's eye views
+	    <li> menus with highlights
+	    </ul>
+	</ul>
+
+    <li> Exploit motor memory (esp. for power users)
+	<ul>
+	<li> Frequent users remember UI in their muscles.
+	<li> Make actions to get an effect consistent so motor memory
+	      can carry users through without thinking.
+	</ul>
+
+    </ul>
+
+<h2>Visual design</h2>
+
+    <ul>
+    <li> Avoid visual clutter
+    <ul>
+        <li> Use space shading, color rather than lines to organize
+             information.
+	<li> Use low-contrast separators
+	<li> Maximize &ldquo;information/ink ratio&rdquo; (Tufte)
+    </ul>
+    <li> Aim for visual consistency
+	<ul>
+	<li> Large apps need a written <em>style guide</em> to keep look and feel
+	      consistent as app evolves.
+	<li> E.g., buttons that change state vs. buttons that navigate
+	      vs. buttons that expose hidden information: user should
+	      be able to distinguish.
+	</ul>
+    <li> Employ visual features as an <i>additional</i> communication channel.
+        <ul>
+        <li> Shape (up to 15)
+        <li> Color (up to 24)
+        <li> Size, length, thickness: up to 6.
+        <li> Orientation: up to 24
+        <li> Texture
+	<li> Differing perceptual capabilities of some users (esp.
+            for color) ⇒ cannot rely solely on visual features to
+                communicate, but they can complement the information that
+	      is there in another form.
+        </ul>
+    </ul>
+<h2>Useful reading</h2>
+<ul>
+  <li>Envisioning Information. Edward Tufte.</li>
+  <li>Principles of Computer Graphics. Foley and Van Dam. Ch 8.2-8.3, 9</li>
+  <li>About Face 2.0, Cooper and Reimann. </li>
+  <li>Human–Computer Interaction. Dix, Finlay, Abowd, Beale.</li>
+  <li>The UX Book. Hartson and Pyla.</li>
+</ul>
+

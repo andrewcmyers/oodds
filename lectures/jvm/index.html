@@ -1,0 +1,367 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
+
+<div id="content">
+<h1>Interpreters, compilers, and the Java Virtual Machine</h1>
+
+<h2>Interpreters vs. compilers</h2>
+
+There are two strategies for obtaining runnable code from a program
+written in some programming language that we will call the <b>source
+language</b>. The first is <b>compilation</b>, or <b>translation</b>, in which the
+program is translated into a second, <b>target</b> language.
+</p><p>
+<div class=figure>
+<img src="jvm/compilation.png" />
+<span class="caption">Figure 1: Compiling a program</span>
+</div>
+</p><p>
+Compilation can be slow because it is not simple to translate from a
+high-level source language to low-level languages. But once this
+translation is done, it can result in fast code.  Traditionally, the
+target language of compilers is <b>machine code</b>, which the computer's
+processor knows how to execute. This is an instance of the second
+method for running code: <b>interpretation</b>, in which an interpreter
+reads the program and does whatever computation it describes.
+</p><p>
+<div class=figure>
+<img src="jvm/interpretation.png"/>
+<span class="caption">Figure 2: Interpreting a program</span>
+</div>
+</p><p>
+Ultimately all programs have to be interpreted by either hardware or software,
+since compilers only translate them. One advantage that a software interpreter
+offers over a compiler is that, given a program, it can quickly start running
+it without spending time to compile it. A second advantage is that the code is
+more <b>portable</b> to different hardware architectures; it can run on any
+hardware architecture that the interpreter itself can run on.
+</p><p>
+The disadvantage of software interpretation is that it is orders of
+magnitude slower than hardware execution of the same computation. This
+is because for each program operation (say, adding two numbers), a software
+interpreter has to execute many machine instructions to figure out what it is
+supposed to be doing. But the hardware usually can do the operation much
+faster. Adding two numbers can be done in a single machine instruction
+requiring just one machine cycle.
+</p>
+<h2>Interpreter designs</h2>
+<p>
+There are multiple kinds of software interpreters. The simplest
+interpreters are AST interpreters of the sort you built in your project. These are
+implemented as recursive traversals of the AST. However, traversing
+the AST makes them typically hundreds of times slower than the
+equivalent machine code.
+</p><p>
+A faster and very common interpreter design is a <b>bytecode
+interpreter</b>, in which the program is compiled to bytecode
+instructions somewhat similar to machine code, but these instructions
+are interpreted. Language implementations based on a
+bytecode interpreter include Java, Smalltalk, OCaml, Python, and C#.
+The bytecode language of Java is the Java Virtual Machine.
+</p><p>
+A third interpreter design often used is a <b>threaded interpreter</b>.
+Here the word &ldquo;threaded&rdquo; has nothing to do with the threads related
+to concurrency. The code is represented as a data structure in which
+the leaf nodes are machine code and the non-leaf nodes are arrays of
+pointers to other nodes. Execution proceeds largely as a recursive
+tree traversal, which can be implemented as a short, efficient loop
+written in machine code. Threaded interpreters are usually a little
+faster than bytecode interpreters but the interpreted code takes up
+more space (a space–time tradeoff). This approach is used by the language FORTH,
+commonly used in device firmware.
+</p>
+<h2>Java compilation</h2>
+<p>
+Java combines the two strategies of compilation and interpretation, as
+depicted in Figure 3.
+
+</p><p>
+<div class=figure>
+<img src="jvm/java-arch.png"/>
+<span class="caption">Figure 3: The Java execution architecture</span>
+</div>
+
+</p><p>
+Source code is compiled to JVM bytecode. This bytecode can immediately
+be interpreted by the JVM interpreter. The interpreter also monitors
+how much each piece of bytecode is executed (<b>run-time profiling</b>) and
+hands off frequently executed code (the <b>hot spots</b>) to the
+just-in-time (JIT) compiler. The JIT compiler converts the bytecode
+into corresponding machine code to be used instead. Because the JIT
+knows what code is frequently executed, and which classes are actually
+loaded into the current JVM, it can optimize code in ways that an
+ordinary offline compiler could not. It generates reasonably good code
+even though it does not include some (expensive) optimizations and
+even though the Java compiler generates bytecode in a straightforward
+way.
+</p><p>
+
+The Java architecture thus allows code to run on any machine to which
+the JVM interpreter has been ported and to run fast on any machine for
+which the JIT interpreter has also been designed to target. Serious
+code optimization effort is reserved for the hot spots in the code.
+</p>
+
+<h2>The Java Virtual Machine</h2>
+<p>
+JVM bytecode is stored in <b>class files</b> (.class) containing the
+bytecode for each of the methods of the class, along with a <b>constant
+pool</b> defining the values of string constants and other constants used
+in the code. Other information is found in a .class file as well,
+such as attributes that describe the code.
+Consult the
+<a href="http://docs.oracle.com/javase/specs/jvms/se8/html/index.html">
+Java Virtual Machine Specification</a> for a thorough and detailed description
+of the JVM.
+
+</p><p>
+It is not difficult to inspect the bytecode generated by the Java
+compiler, using the program <tt>javap</tt>, a standard part of the Java
+software release. Run <kbd>javap -c &langle;<i>fully-qualified-classname&rangle;</i></kbd> to see
+the bytecode for each of the methods of the named class.
+
+</p><p>
+The JVM is a stack-based language with support for objects. When a
+method executes, its stack frame includes an array of local variables
+and an operand stack.
+
+</p><p>
+Local variables have indices ranging from 0 up some maximum.  The
+first few local variables are the arguments to the method, including
+<code>this</code> at index 0; the remainder represent local variables and perhaps
+temporary values computed during the method. A given local variable
+may be reused to represent different variables in the Java code.
+
+</p><p>
+For example, consider the following Java code:
+</p>
+
+<pre>
+if (b) x = y+1;
+else x = z;
+</pre>
+
+<div class=floatfigure>
+<pre>
+13: iload_3
+14: ifeq    26
+17: iload   5
+19: iconst_1
+20: iadd
+21: istore  4
+23: goto    30
+26: iload   6
+28: istore  4
+30: return
+</pre>
+<span class="caption">Figure 4: Some bytecode</span>
+</div>
+<p>
+The corresponding bytecode instructions might look as shown in
+Figure 4.
+Each bytecode instruction is located at some offset (in bytes) from
+the beginning of the method code, which is shown in the first column in the
+figure. In this case the bytecode happens to start at offset 13,
+and variables <code>b</code>, <code>x</code>, <code>y</code>, and <code>z</code> are found in local variables
+3, 4, 5, and 6 respectively.
+</p><p>
+All computation is done using the operand stack. The purpose of the
+first instruction is to load the (integer) variable at location 3 and
+push its value onto the stack. This is the variable <code>b</code>, showing that
+Java booleans are represented as integers at the JVM level. The second
+instruction pops the value on the top of the stack and sees if it is
+equal to zero (i.e., it represents <code>false</code>). If so, the code branches
+to offset 26. If nonzero (<code>true</code>), execution continues to the next
+instruction, which pushes <code>y</code> onto the stack. The instruction
+<code>iconst_1</code> pushes a constant 1 onto the stack, and then <code>iadd</code> pops
+the top two values (which must be integers), adds them, and pushes the
+result onto the stack. The result is stored into <code>x</code> by the
+instruction <code>istore 4</code>. Notice that for small integer constants and
+small-integer indexed local variables, there are special bytecode
+instructions. These are used to make the code more compact than it
+otherwise would be: by looking at the offsets for each of the
+instructions, we can see that <code>iload_3</code> takes just one byte whereas
+<code>iload 5</code> takes two.
+</p><p>
+<h3>Method dispatch</h3>
+</p><p>
+When methods are called, the arguments to the method are popped from
+the operand stack and used to construct the first few entries of the
+local variable array in the called method's stack frame. The result
+from the method, if any, is pushed onto the operand stack of the
+caller.
+</p><p>
+There are multiple bytecode instructions for calling methods. Given a
+call <code>x.eat(5)</code>, where <code>eat</code> is an ordinary non-final, non-private
+method and <code>x</code> has static type <code>Animal</code>, the corresponding invocation
+bytecode is something like this:
+</p><p>
+<pre>
+invokevirtual #23
+</pre>
+</p><p>
+Here the <code>#23</code> is an index into the constant pool. The corresponding
+entry contains the string <code>eat:(I)V</code>, showing that the invoked method is
+named <code>eat</code>, that it has a single integer argument (<code>I</code>), and that it
+returns <code>void</code> (<code>V</code>). We can see from the fact that the name of the
+invoked method includes the arguments of the types that all
+overloading has been fully resolved by the Java compiler. Unlike the
+Java compiler, the JVM doesn't have to make any decisions about what
+method to call based on the arguments to the call.
+</p><p>
+At run time, <b>method dispatch</b> must be done to find the right bytecode
+to run. For example, suppose that the actual class of the object that
+<code>x</code> refers to is <code>Rhino</code>, a subclass of its static type <code>Animal</code>, but that
+<code>Rhino</code> inherits its implementation of <code>eat()</code> from <code>Animal</code>. The situation
+inside the JVM is shown in Figure 5.
+</p><p>
+Each object contains a pointer to its <b>class object</b>, an object
+representing its class. The class object in turn points to the
+<b>dispatch vector</b>, an array of pointers to its method bytecode
+(In C++ implementations, this array is known as the <b>vtable</b>,
+and objects point directly to their vtables rather than to an
+intervening class object.) In the depicted example, the JVM has
+decided to put method <code>eat()</code> at position 2 within the dispatch vector.  To
+find the bytecode for this method, the appropriate pointer is loaded
+from the array. The figure shows that the classes <code>Animal</code> and <code>Rhino</code>
+share inherited bytecode. If <code>Rhino</code> had overridden the method <code>eat()</code>, the 
+two dispatch vectors would have pointed to different bytecode.
+</p>
+<div class=figure>
+<canvas id="method-disp-fig-new" style="width: 610px; height: 400px"></canvas>
+</div>
+<script class=graphics>
+with (new CFigure("method-disp-fig-new")) {
+    let Rhino, Animal, RL, HL, RDV, ADV,
+        xo = varBoxes("class=Rhino", "=|4"),
+        x = label("x")
+    Rhino = varBoxes("", "", "DV=", "", "=...")
+    Animal = varBoxes("", "", "DV=", "", "=...")
+    ADV = varBoxes("", "", "eat:(I)V=", "")
+    RDV = varBoxes("", "", "eat:(I)V=", "")
+    let w  = Rhino.getVar(0).w()
+    align("center", "abut",
+        RL = textFrame().addText("Rhino class object").setW(w).setH(50), Rhino.getVar(0))
+    align("center", "abut",
+        HL = textFrame().addText("Animal class object").setW(w).setH(50), Animal.getVar(0))
+
+    align("none", "top", canvasRect().inset(2), HL)
+    align("none", "bottom", canvasRect().inset(2), RDV)
+    align("center", "none", Animal, Rhino)
+
+    align("center", "abut", textFrame().addText("Rhino dispatch vector").setW(w).setH(60), RDV.getVar(0))
+    align("center", "abut", textFrame().addText("Animal dispatch vector").setW(w).setH(60), ADV.getVar(0))
+    pointer(xo.getVar(0), "left 50", Rhino.getVar(0))        
+    geq(Rhino.x0(), plus(30, xo.x1()))
+    geq(RDV.x0(), plus(30, Rhino.x1()))
+    align("none", "top", xo, Rhino)
+    align("abut", "center", x, hspace(30), xo.getVar(0))
+    pointer(x.toRight(20), xo.getVar(0).cl())
+    align("abut", "none", canvasRect().cl(), hspace(20), x, hspace(50), xo)
+
+    align("none", "center", Rhino.getVar(2), RDV.getVar(0))
+    align("none", "center", Animal.getVar(2), ADV.getVar(0))
+    pointer(Rhino.getVar(2), RDV.getVar(0))
+    pointer(Animal.getVar(2), ADV.getVar(0))
+    align("center", "none", RDV, ADV)
+
+    let bytecode = rectangle().setCornerRadius(10).addText("Animal.eat bytecode").setLineWidth(2)
+    geq(bytecode.x0(), plus(50, RDV.x1()))
+    geq(bytecode.w(), 60)
+    align("right", "center", bytecode, canvasRect().inset(4))
+    pointer(ADV.getVar(2), "left", bytecode.cl().toTop(5))
+    pointer(RDV.getVar(2), "left", bytecode.cl().toBottom(5))
+
+}
+</script>
+
+<p>
+The JIT compiler converts bytecode into machine code. In doing so,
+it may create <b>specialized</b> versions of inherited methods such as <code>f</code>,
+so that different code ends up being executed for <code>Animal.eat()</code> and <code>Rhino.eat()</code>.
+Specialization of code allows the compiler to generate more efficient
+code, at the cost of greater space usage.
+</p><p>
+There are other ways to invoke methods, and the JVM has bytecode
+instructions for them:
+</p>
+<ul class=bullets>
+<li><p><code>invokestatic</code> invokes static methods, using a table in
+the specified class object. No receiver (<code>this</code>) object is passed as
+an argument.</p></li>
+
+<li><p><code>invokeinterface</code> invokes methods on objects via their
+interface. It looks like <tt>invokevirtual</tt>, but because a class can
+implement multiple interfaces, this operation is often a bit more expensive.
+</p></li>
+
+<li><p><code>invokespecial</code> invokes object methods that
+do not involve dispatch, such as constructors, final methods, and
+private methods.
+</p></li>
+
+<li><p><code>invokedynamic</code> invokes object methods without requiring that
+static type of the receiver object supports the method. Run-time
+checking is used to ensure that the method can be called. This is a
+recent addition to the JVM, intended to support dynamically typed
+languages. It should not ordinarily be needed for Java code.
+</p>
+
+</li>
+</ul>
+
+<h2>Bytecode verification</h2>
+
+<p>
+One of the most important properties of the JVM is that JVM bytecode
+can be type-checked. This process is known as bytecode verification.
+It makes sure that bytecode instructions can be run safely with little
+run-time checking, making Java both faster and more secure.  For
+example, when a method is invoked on an object, verification ensures
+that the receiver object is of the right type (and is not actually an integer, for example).
+</p>
+
+<h2>Type parameterization via erasure</h2>
+
+<p>
+The JVM knows nothing about type parameters. All type parameters are
+erased by the Java compiler and replaced with the type <code>Object</code>.  An
+array of parameter type <code>T</code> then becomes an array of <code>Object</code> in the
+context of the JVM, which is why you can't write expressions like <code>new
+T[n]</code>.
+</p>
+
+<h2>Generating code at run time with Java</h2>
+<p>
+The Java architecture also makes it relatively easy to generate new
+code at run time. This can help increase performance for some
+tasks, such as implementing a domain-specific language for a
+particular application. The Assignment 5 interpreter is an example where this
+strategy would help.
+
+</p><p>
+The class <code>javax.tools.ToolProvider</code> provides access to the
+Java compiler at run time. The compiler appears simply as an object
+implementing the interface <code>javax.tools.JavaCompiler</code>. It can be
+used to dynamically generate bytecode. Using a classloader
+(also obtainable from <code>ToolProvider</code>), this bytecode can be loaded
+into the running program as a new class or classes. The new classes
+are represented as objects of class <code>java.lang.Class</code>. To run their
+code, the <b>reflection</b> capabilities of Java are used. In particular,
+from a <code>Class</code> object one can obtain a <code>Method</code> object for each of
+its methods. The <code>Method</code> object can be used to run the code of the
+method, using the method <code>Method.invoke</code>. At this point the code
+of the newly generated class will be run. If it runs many times,
+the JIT compiler will be invoked to convert it into machine code.
+
+</p><p>
+Another strategy for generating code is to generate bytecode directly,
+possibly using one of the several JVM <b>bytecode assemblers</b> that are
+available. This bytecode can be loaded using a classloader as above.
+Unfortunately JVM bytecode does not expose many capabilities that
+aren't available in Java already, so it is usually easier just to
+target Java code.
+
+<hr><small>Notes by Andrew Myers, 11/27/12.</small></p>

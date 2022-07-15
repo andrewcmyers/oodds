@@ -1,0 +1,408 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
+
+<div id="content">
+
+<h1>Graphs and graph representations</h1>
+
+<h3>Topics:</h3>
+<ul class=bullets>
+    <li>vertices and edges</li>
+    <li>directed vs undirected graphs</li>
+    <li>labeled graphs</li>
+    <li>adjacency and degree</li>
+    <li>adjacency-matrix and adjacency-list representations</li>
+    <li>paths and cycles</li>
+    <li>topological sorting</li>
+    <li>more graph problems: shortest paths, graph coloring</li>
+</ul>
+
+<p>
+A <b>graph</b> is a highly useful mathematical abstraction. A graph consists of
+a set of <b>vertices</b> (also called <b>nodes</b>) and a set of <b>edges</b>
+(also called <b>arcs</b>) connecting those vertices. There are two main kinds
+of graphs: <b>undirected graphs</b> and <b>directed graphs</b>. In a directed graph
+(sometimes abbreviated as <b>digraph</b>), the edges are
+directed: that is, they have a direction, proceeding from a
+<b>source</b> vertex to a <b>sink</b> (or <b>destination</b>) vertex.
+The sink vertex is a <b>successor</b> of the source, and the the source is
+a <b>predecessor</b> of the sink.  In undirected graphs, the edges are symmetrical.
+</p>
+<div class=figure>
+<img src="graphs/graph_examples.png">
+</div>
+
+<h2>Uses of graphs</h2>
+<p>
+Graphs are a highly useful abstraction in computer science because so many
+important problems can be expressed in terms of graphs. We have already seen a
+number of graph structures: for example, the objects in a running program form
+a directed graph in which the vertices are objects and references between
+objects are edges. To implement <b>automatic garbage collection</b> (which
+discards unused objects), the language implementation uses a algorithm for
+<b>graph reachability</b>.
+</p>
+<p>
+Other examples of graphs, many of which we've seen, include:
+<ul class=bullets>
+<li>
+states of games and puzzles, which are vertices connected by edges that are
+the legal moves in the game,
+</li><li>
+state machines, where the states are vertices and the transitions between states
+are edges,
+</li>
+<li>
+road maps, where the vertices are intersections or points along the road and edges
+are roads connecting those points,
+</li>
+<li>
+scheduling problems, where vertices represent events to be scheduled and edges might
+represent events that cannot be scheduled together, or, depending on the problem,
+edges that <em>must</em> be scheduled together,
+</li>
+<li>
+and in fact, any binary relation ρ can be viewed as a directed graph in which
+the relationship x ρ y corresponds to an edge from vertex x to vertex y.
+</li>
+</ul>
+<p>
+What is the value of having a common mathematical abstraction like graphs?
+One payoff is that we can develop algorithms that work on graphs in general.
+Once we realize we can express a problem in terms of graphs,
+we can consult a very large toolbox of efficient graph algorithms, rather than
+trying to invent a new algorithm for the specific domain of interest.
+</p>
+<p>
+There are many computational problems over graphs that are not known to
+be solvable in any reasonable amount of time. In particular, there is a large class of problems
+known as the <b>NP complete problems</b> that are not known to be efficiently solvable, but
+are known to be equivalent in complexity. If we could give an efficient algorithm for solving
+any one of them, then we would have efficient algorithms for all of them.
+</p>
+
+<h2>Vertices and edges</h2>
+<p>
+A graph consists of a set of vertices V and a set of edges E.
+If the graph is directed, the edges E are a set of ordered
+pairs (u,v) representing an edge with source
+vertex u and sink vertex v. When drawing graphs, this is usually
+represented as an arrow from u to v.
+</p>
+
+<p>If the graph is undirected, then the edges are a set of sets of <em>unordered</em>
+pairs {u,v}. Alternatively, we can model an undirected graph as a directed graph
+with edges in both directions; i.e., if (u,v) &isin; E,
+then (v,u) &isin; E also. When drawing graphs, this is usually
+represented as a line between u and v without an arrowhead.
+</p>
+<p>
+In some cases, edges from a vertex to itself or multiple edges between the same
+pair of vertices may be permitted. But usually the default is <em>not</em> to allow
+these things unless explicly stated otherwise.
+</p>
+
+<h2>Adjacency and degree</h2>
+<p>
+Two vertices v and w are <b>adjacent</b> if they are connected
+by an edge. The <b>degree</b> of a vertex is the total number of adjacent 
+vertices. In a directed graph, we can distinguish between outgoing and incoming
+edges. The <b>out-degree</b> of a vertex is the number of outgoing edges and
+the <b>in-degree</b> is the number of incoming edgs.
+</p>
+
+<h2>Labels</h2>
+<p>The real value of graphs is obtained when we can use them to organize
+information.  Both edges and vertices of graphs can have <b>labels</b> that
+carry meaning about an entity represented by a vertex or about the relationship
+between two entities represented by an edge. For example, we might encode
+information about the population of cities and distances between them
+as an undirected labeled graph:
+</p>
+<div class=figure>
+<img src="graphs/cities.png" />
+</div>
+<p>
+Here, the vertices are labeled with a pair containing the name of the city and
+its population, and the edges are labeled with the distance between the cities.
+</p>
+<p>A graph in which the edges are labeled with numbers is called a <b>weighted graph</b>.
+Of course, the labels do not have to represent weight; they might stand for
+distances, or the probability of transitioning from one state to
+another, or the similarity between two vertices, etc.
+</p>
+
+<h2>Graph representations</h2>
+<p>
+There are several ways to represent graphs in a computer program.  Which
+representation is best depends on the application.
+For example, consider the following weighted directed graph with vertices {0,1,2,3}
+and directed edges with edge weights shown:
+</p>
+
+<div class=figure>
+<img src="graphs/rep_graph.png">
+</div>
+
+<h3>Adjacency matrix</h3>
+<p>
+An <b>adjacency matrix</b> represents a graph as a two-dimensional array.
+Each vertex is assigned a distinct index in {0,1,...,|V|-1}. If
+the graph is represented by the 2D array <code>m</code>, then the
+edge (or lack thereof) from vertex <code>i</code> to vertex <code>j</code>
+is recorded at <code>m[i][j]</code>.
+</p>
+<p>
+The graph structure, ignoring the weights, can be represented by storing a boolean value at
+each array index. A directed edge from i to j is represented by a true (T) value in location m[i][j].
+If there is no edge there, the value is false.
+For example, the edges in the example above are represented this matrix:
+</p>
+<div class=figure>
+<table style="margin: 0 auto">
+<tr>
+<th>&nbsp;</th> <th>0</th> <th>1</th> <th>2</th> <th>3</th>
+</tr>
+<tr>
+<th>0</th> <td>F</td> <td>T</td> <td>T</td> <td>F</td>
+</tr>
+<tr>
+<th>1</th> <td>F</td> <td>F</td> <td>F</td> <td>T</td>
+</tr>
+<tr>
+<th>2</th> <td>F</td> <td>T</td> <td>F</td> <td>T</td>
+</tr>
+<tr>
+<th>3</th> <td>F</td> <td>F</td> <td>F</td> <td>F</td>
+</tr>
+</table>
+</div>
+
+<p>
+More compact bit-level representations for the booleans are also possible.
+</p>
+<p>If there is some information associated with each edge, say a weight,
+we store that information in the corresponding array entry:</p>
+<div class=figure>
+<table>
+<tr>
+<th>&nbsp;</th> <th>0</th> <th>1</th> <th>2</th> <th>3</th>
+</tr>
+<tr>
+<th>0</th> <td>—</td> <td>10</td> <td>40</td> <td>—</td>
+</tr>
+<tr>
+<th>1</th> <td>—</td> <td>—</td> <td>—</td> <td>–5</td>
+</tr>
+<tr>
+<th>2</th> <td>—</td> <td>25</td> <td>20</td> <td>—</td>
+</tr>
+<tr>
+<th>3</th> <td>—</td> <td>—</td> <td>—</td> <td>—</td>
+</tr>
+</table>
+</div>
+<p>
+The space required by the adjacency matrix representation is O(V<sup>2</sup>),
+so adjacency matrices can waste a lot of space if the number of edges |E| is
+much smaller than O(V<sup>2</sup>). In particular, a graph with only O(V) edges
+is said to be <b>sparse</b>. For example, graphs in which either the
+in-degree or out-degree is bounded by a constant are sparse. Adjacency matrices
+are not as wasteful when the graphs they represent are <b>dense</b> (i.e., not sparse).
+</p>
+<p>
+The adjacency matrix representation is <em>time</em>-efficient for some
+operations.  Testing whether there is an edge between two vertices can clearly
+be done in constant time. However, finding all incoming edges to a given
+vertex, or finding all outgoing edges, takes time proportional to the number
+of vertices, even for sparse graphs.
+</p>
+<p>
+Undirected graphs can also be represented with an adjacency matrix. The
+matrix will be symmetric around its main diagonal; that is, m[i][j]=m[j][i].
+</p>
+
+<h3>Adjacency list representation</h3>
+<p>
+Since sparse graphs are quite common, the <b>adjacency list</b> representation is
+often preferred. This representation keeps track of the outgoing edges from
+each vertex, typically as a linked list. For example, the graph above might
+be represented with the following data structure:
+</p>
+
+<div class=figure>
+<img src="graphs/adjacency_list.png">
+</div>
+
+<p>
+Adjacency lists are asymptotically space-efficient because they only use space
+proportional to the number of vertices and the number of edges. We say that they
+require O(V+E) space.
+</p>
+<p>
+Finding the outgoing edges from a vertex is very efficient in the adjacency
+list representation too; it requires time proportional to the number of outgoing
+edges.  However, finding the incoming edges to a vertex is not efficient: it
+requires scanning the entire data structure, requiring O(V+E) time.
+</p>
+<p>
+When it is necessary to be able to walk forward on outgoing edges and backward
+on incoming edges, a good approach is to maintain two adjacency lists,
+one representing the graph as above and one corresponding to the <b>dual</b>
+(or <b>transposed</b>) graph</b> in which all edges are reversed. That is,
+there is a an edge (u,v) in the original graph if and only if there is an edge (v,u) in 
+the transposed graph.  Of course, this invariant must be maintained between the
+two adjacency list representations.
+</p>
+<p>
+Testing whether there is an edge from vertex i to vertex j requires scanning
+all the outgoing edges, taking O(V) time in the worse case. If this operation
+needs to be fast, the linked list can be replaced with a hash table. For example,
+we might implement the graph using this Java representation, which preserves
+the asympotic space efficiency of adjacency lists while also supporting
+queries for particular edges:
+</p>
+<div class=equation>
+<code>
+HashMap&lt;Vertex, HashMap&lt;Vertex, Edge&gt;&gt;
+</code>
+</div>
+<h2>Paths and cycles</h2>
+<p>
+Following a series of edges from a starting vertex creates a <b>path</b>
+through the graph, a sequence of alternating vertices and edges beginning and ending with a vertex (v<sub>0</sub>,e<sub>0</sub>,v<sub>1</sub>,e<sub>1</sub>,...,v<sub>n</sub>)
+where e<sub>i</sub> = (v<sub>i</sub>,v<sub>i+1</sub>) for all 0&le;i&le;n-1.
+The <b>length</b> of the path is the number of edges (that is, n). Note that
+n=0 is possible; this would be a path of length 0 consisting of just a single vertex
+and no edges.
+If no vertex appears twice in the path, except that possibly v<sub>0</sub> =
+v<sub>n</sub>, the path is called <b>simple</b>.
+If the first and last vertices are the same, the path is a <b>cycle</b>.
+</p>
+<p>
+Some graphs have no cycles. For example, linked lists and trees are both examples
+of graphs in which there are no cycles.  They are <b>directed acyclic graphs</b>,
+abbreviated as DAGs. In trees and linked lists, each vertex has at most one
+predecessor. In general, vertices of DAGs can have more than one predecessor.
+</p>
+
+<h2>Topological sorting</h2>
+<p>
+One use of directed graphs is to represent an ordering constraint on vertices.
+For example, vertices might represent events, and an edge (u,v) might represent
+the constraint that u must happen before v.</p>
+
+<p>
+A <b>topological sort</b> of the vertices is a <em>total</em> ordering of the vertices
+that is consistent with all edges. That is, if (u,v) is an edge, then u must appear before
+v in the total ordering. A graph can be topologically sorted if and only if
+it has no cycles.
+</p>
+<p>
+Topological sorts are useful for deciding in what order to do things. For
+example, consider the following DAG expressing what we might call the
+“men's informal dressing problem”:
+</p>
+<div class=figure>
+<img src="graphs/dressing_dag.png">
+</div>
+<p>
+A valid plan for getting dressed is a topological sort of this graph. In
+fact, any topological sort is in principle a workable way to get dressed.  For
+example, the ordering (pants, shirt, belt, socks, tie, jacket, shoes) is
+consistent with the ordering on all the graph edges. Less conventional
+strategies are also workable, such as (socks, pants, shoes, shirt, belt, tie,
+jacket).
+</p>
+<p>
+Does every DAG have a topological sort? Yes. To see this, observe that every
+finite DAG must have a vertex with in-degree zero. To find such a vertex, we
+start from an arbitrary vertex in the graph and walk backward along edges until
+we reach a vertex with zero in-degree. We know that the walk must generate a
+simple path because there are no cycles in the graph. Therefore, the walk
+must terminate because we run out of vertices that haven't already been seen
+along the walk.
+</p>
+<p>
+This gives us an (inefficient) way to topologically sort a DAG:
+</p>
+<ol>
+<li>Start with an empty ordering.
+<li>Find a 0 in-degree node and put it at the end of the ordering built thus far
+(the first node we do this with will be the first node in the ordering).
+<li>Remove the node found from the graph.
+<li>Repeat from step 2 until the graph is empty.
+</ol>
+<p>
+Since finding the 0 in-degree node takes O(V) time, this algorithm takes
+O(V<sup>2</sup>) time. We can do better, as we'll see shortly.
+</p>
+<h2>Other graph problems</h2>
+<p>
+Many problems of interest can be expressed in terms of graphs. Here are a few
+examples of important graph problems, some of which can be solved efficiently
+and some of which are intractable!
+</p>
+<h3>Reachability</h3>
+<p>
+One vertex is <em>reachable</em> from another if there is a path from one to the other.
+Determining which vertices are reachable from a given vertex is useful and
+can be done in linear time.
+</p>
+<h3>Shortest paths</h3>
+<p>
+Finding paths with the smallest number of edges is useful and can be solved
+efficiently. Shortest-path problems are a generalization: finding a paths of
+minimum total weight, where we think of the weight of an edge as a distance.
+<p>
+For example, if a road map is represented as a graph with vertices representing
+intersections and edges representing road segments, the shortest-path problem
+can be used to find short routes. There are several variants of the problem,
+depending on whether one is interested in the distance from a given root vertex
+or in the distances between all pairs of vertices. If negative-weight
+edges exist, these problems become harder and different algorithms are needed.
+</p>
+
+<h3>Hamiltonian paths and the traveling salesman problem</h3>
+<p>
+The problem of finding the <em>longest</em> simple path between two nodes in a graph
+is, in general, intractable. It is related to some other important problems.
+A <b>Hamiltonian path</b> is one that visits every vertex in a graph exactly once.
+A <b>Hamiltonian cycle</b> is a cycle that visits every vertex exactly once.
+The ability to determine whether a graph contains a Hamiltonian path or a Hamiltonian
+cycle would be useful, but in general the best known algorithms for this problem
+require exponential time.
+</p>
+<p>
+A weighted version of this problem is the <b>traveling salesman problem</b>
+(TSP), which tries to find the Hamiltonian cycle with the minimum total weight.
+The name comes from imagining a salesman who wants to visit every one of a set
+of cities while traveling the least possible total distance. This problem is at
+least as hard as finding Hamiltonian cycles and is not known to be solvable in
+any less than exponential time. However, finding a solution that
+is within a constant factor (e.g., 1.5) of optimal can be done in polynomial
+time under some reasonable assumptions. In practice, there exist good heuristics
+that allow close-to-optimal solutions to TSP even for large problem instances.
+</p>
+
+<h3>Graph coloring</h3>
+<p>
+Imagine that we want to schedule exams in k time slots such that no student
+has two exams at the same time. We can represent this problem using an
+undirected graph in which the exams are vertices, with the exams v<sub>1</sub> and
+v<sub>2</sub> connected by an edge if there exists at least one student who
+needs to take both exams. We can schedule the exams in the k slots if there
+is a <b>k-coloring</b> of the graph with k colors: a way to assign a color to
+each vertex with one of k colors such that no two
+adjacent vertices are assigned the same color. The <b>chromatic number</b> of a graph
+is the smallest number of colors needed to color it.
+</p>
+<p>
+There is no known efficient algorithm for k coloring in general. There are some
+special classes of graphs for which coloring is efficient, and in practice,
+graph colorings close to optimal can be found, but in general the best known
+algorithms to solve the problem optimally take exponential time.
+</p>
+</html>

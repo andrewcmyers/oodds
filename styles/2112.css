@@ -1,0 +1,264 @@
+td.lectnum {
+   width: 3em;
+   text-align: right;
+   padding: 10px 0px;
+}
+
+span.link {
+    font-weight: bold;
+    color: #000080;
+}
+div.hidden {display:none}
+div.tab {display: none}
+div.figure, canvas.figure {margin: 1em auto; text-align: center}
+div.figure pre {text-align: left}
+div.figure img {display: float; margin: 0 auto; padding: 0}
+div.equation {text-align: center; font-size: 110%; padding-bottom: 1em }
+div.figure table { margin: 0 auto; padding: 0; border: none}
+div.figure table td {border: none}
+div.floatfigure { display: float;
+                  float: right;
+                  clear: right;
+                  margin: 1em 0 1em 2em;
+                  text-align: center;
+		  page-break-inside: avoid; }
+div.floatfigure pre {text-align: left }
+img.whitebg {background-color: white}
+pre {padding: 1ex 2em;
+     background-color: #e8e4dc;
+}
+pre.narrow { max-width: 40ex }
+h1,h2,h3,h4 {padding-top: 1ex; font-weight: medium; page-break-after: never}
+span.comment {color: #008; font-style: italic}
+
+ul { font-size: 100% }
+ol > li { list-style-type: decimal }
+pre { font-size: 110% }
+span.lastupdate {font-size: 90%}
+span.lastupdate .ampm {font-size: 80%}
+.ampm {font-variant: small-caps}
+span.nobreak {white-space: nowrap}
+span.nobreak span {white-space: nowrap}
+span.superscript {font-size:smaller; vertical-align:super;}
+span.subscript {font-size:smaller; vertical-align:sub;}
+.cont {text-indent: 0}
+div.figure .caption, div.floatfigure .caption {
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    padding: 0
+}
+
+table.sidebysidecode {
+    border: none; font-size: 90%;
+    width: 80%;
+    margin: 0 auto;
+    margin-bottom: 2ex;
+}
+table.sidebysidecode td {
+    width: 50%;
+    border-top: none;
+    background-color: #e8e4dc;
+    vertical-align: middle;
+    margin: 0.5ex;
+    padding: 0.5ex;
+}
+table.sidebysidecode td pre {
+    margin: 0.5ex;
+}
+table.sidebysidecode td:first-child {
+    border-top: none;
+    border-right: 2px solid gray;
+    background-color: #e8e4dc;
+}
+table.sidebysidecode tr {
+    border: none
+}
+a.pre {
+	color: black;
+	text-decoration: none;
+	border: none;
+}
+
+pre { font-family: Menlo, consolas, monospace, Courier }
+tt, code { font-size: 100%; font-family: Menlo, consolas, monospace, Courier }
+h2 { font-weight: bold }
+
+table.staff_table {
+	width: 100%;
+}
+td.staff_info {
+	white-space: nowrap;
+}
+span.staff_position {
+	font-style:italic;
+	font-size:0.9em;
+}
+.bullets li {
+    list-style-type: disc;
+	margin: 5px 0 0 3em;
+	padding: 0
+}
+
+.varname {
+    font-style: normal;
+    color: black;
+}
+.digression {
+    margin-bottom: 2ex;
+    padding: 2ex;
+    background-color: #ccc;
+    border: 1px solid black;
+}
+blockquote {
+	margin-bottom: 2ex;
+}
+
+table.schedule td, table.schedule {
+    border: none;
+}
+table.math td, table.math { border: none }
+table.math td { text-align: center }
+table.math td:first-child { text-align: left }
+
+div#unit-signature-links a { color: white }
+
+.keyword {font-weight: bold}
+.m, .math { font-family:serif; font-size: 11pt }
+
+@media print {
+	body {
+		font-family: "Times New Roman", times;
+		font-size: 12pt;
+		color: black;
+		background: white;	/* footer background color */
+	}
+	@page {
+		height: 9in;
+	}
+	p {
+		font-size: 100%;
+		line-height: 1.2em;
+		text-align: justify;
+		-webkit-hyphens: auto;
+		-moz-hyphens: auto;
+		-ms-hyphens: auto;
+		hyphens: auto;
+	}
+        .MathJax {
+            font-size: 1em !important;
+        }
+	div.pagebreak, div.toc {page-break-after: always; break-after: always}
+	div.toc ol {
+		line-height: 1.0em;
+	}
+	hr {
+		display: none;
+                page-break-after: always;
+	}
+	#skipnav, #cu-identity {
+		display: none;
+	}
+	#identity {
+		padding: 0;
+	}
+	#identity h1 {
+		margin: 0 auto;
+		width: 6.5in;
+		font-family: "palatino linotype", palatino;
+		font-size: 16pt;
+		color: #000;
+	} 
+	#header {
+		background: #fff;
+	}
+	#navigation {
+		display: none;
+	}
+	#footer-content {
+		width: 6.5in;
+		color: #000;
+	}
+	#footer a {
+		border: 0;
+	}
+	h1 {
+		margin: 0 0 15px 0;
+		font-size: 2em;
+	}
+	
+	h2 {
+		margin: 0 0 15px 0;
+		font-size: 1.3em;
+	}
+	
+	h3 {
+		clear: both;
+		margin: 0 0 15px 0;
+		font-size: 1.3em;
+		line-height: 1.2em;
+	}
+	
+	h4 {
+		margin: 15px 0 3px 0;
+		font-size: 1em;
+	}
+	tt, code, pre {
+		font-size: 0.75em;
+		-webkit-hyphens: none;
+		-moz-hyphens: none;
+		-ms-hyphens: none;
+		hyphens: none;
+	}
+	pre {
+		margin: 0 0 15px 0;
+		padding: 10px;
+		background-color: #eeeeee;
+		border: 1px solid #ccc;
+	}
+	a {
+		border-bottom: 0;
+		color: #000;
+		text-decoration: none;
+	}
+	a:visited {
+		color: #000;
+	}
+	.bridge-section h2 {
+		margin: 0 0 15px 0;
+		padding: 0;
+		font-family: "times new roman", times;
+		font-size: 1.3em;
+		line-height: 1.5em;
+		background: #fff;
+	}
+	#wrap {
+		background: #fff;
+	}
+	#content, .content {
+		width: 6.5in;
+		font-size: 12pt;
+	}
+	td.staff_info {
+		white-space: normal;
+	}
+	span.comment {color: #666}
+	div.figure {
+		page-break-before: auto;
+		page-break-before: auto;
+		page-break-inside: avoid;
+	}
+	div.figure .caption, div.floatfigure .caption {
+		font-family: arial, helvetica;
+		font-size: 0.8em;
+		color: #000;
+	}
+	div.digression {
+		display: table;
+		background-color: #fff;
+		border: 1px dashed black;
+	}
+        .noprint {
+            display: none;
+        }
+}

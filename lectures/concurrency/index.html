@@ -1,0 +1,479 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
+<div id="content">
+
+<h1>Concurrency</h1>
+<p>
+Concurrency is the simultaneous execution of multiple <b>threads</b>
+of execution. These threads may execute within
+the same program, which is called <b>multithreading</b>. Modern computers
+also allow different processes to run separate programs at the same
+time; this is called <b>multiprogramming</b>.
+Like most modern programming languages, Java supports concurrent threads; Java is a multithreaded programming language. We have already seen this in the context of graphical user interfaces.
+
+</p>
+<p>
+Concurrency is important for two major reasons. First, it helps us
+build good user interfaces. One thread can be taking care of updating
+the GUI while other threads are doing the real computational work of
+the application. JavaFX has a separate <b>Application thread</b>
+that starts when the first JavaFX window is opened, and handles
+delivery of events to JavaFX nodes. JavaFX applications can also 
+start other threads that run in the background and get work done
+for the application even while the user is using it. Second, modern computers
+have multiple processors that can execute threads in parallel, so concurrency
+lets you take full advantage of your computer's processing power by giving
+all the available processors work to do.
+</p>
+<p>
+Programming concurrent applications is challenging. Different threads
+can interfere with each other in various ways, and it is hard to reason about
+all the ways that this can happen. Some additional techniques and
+design patterns help.
+</p>
+
+<h2>Concurrency and parallelism</h2>
+
+<p>
+Modern computers usually have multiple processors that can be simultaneously computing
+different things. The individual processors are called <b>cores</b> when they
+are located together on the same chip, as they are in most modern <b>multicore</b> machines.
+<b>Multiprocessor</b> systems have existed for a long time, but prior to multicore
+systems, the processors were located on different chips.
+</p>
+
+<p>Concurrency is different from, but related to, parallelism.
+Parallelism is when different hardware units (e.g., cores) are doing work
+at the same time. Other forms of parallelism exist: graphics processing units
+(GPUs), network, and disk hardware all do work in parallel with the main
+processor(s). Modern processors even use parallelism when they are executing
+a single thread, because they use pipelining and other techniques to execute
+multiple machine instructions from a single thread at the same time. There
+is also a memory subsystem, peripheral bus, and graphics processing unit that
+all run in parallel with the CPU.
+</p>
+<p>
+Thus, concurrency can be present even when there is no parallelism, and parallelism
+can be present without concurrency. However, parallelism makes concurrency more
+effective, because concurrent threads can execute in parallel on different
+cores.
+</p>
+<p>
+Concurrent threads can also execute on a single core. To implement the
+abstraction that the threads are all running at the same time, the core rapidly
+switches among the threads, making a little progress on executing each thread before
+moving on to the next thread. This is called <b>context switching</b>. One
+problem with context switching is that it takes a little time to set up the hardware
+state for a new context.
+</p>
+<p>
+The JVM and your operating system automatically allocate threads to cores so
+you usually don't need to worry about how many cores you have. However, creating
+a very large number of threads is usually not very efficient because it forces
+cores to context-switch a lot.
+</p>
+
+<h2>Programming with threads in Java</h2>
+
+<h3>The <code>Thread</code> class</h3>
+
+<p>
+In Java, the key class for concurrency is <code>java.lang.Thread</code>. It
+starts a new thread to do some computation. The most important part of the
+interface is as follows:
+</p>
+
+<pre>
+class Thread {
+  /** Create a thread that executes its <code>run()</code> method when started. */
+  public Thread();
+
+  /** Create a thread that executes the <code>Runnable</code> when started. */
+  public Thread(Runnable r);
+
+  /** Start this thread to run concurrently with the calling thread. */
+  public void start();
+  
+  /** Called by a new thread created with this.start(). May be overridden to
+      specify the behavior of a thread. */
+  public void run();
+
+  /** Allow other threads to do work. However, other threads may preempt
+   * the current thread even if {@code yield} is not called. */
+  public void yield();
+
+  /** Pass {@code true} to make this thread a daemon thread. */
+  void setDaemon(boolean b);
+}
+</pre>
+
+<p class=cont>
+The <code>Thread</code> class has some deprecated methods such as <code>stop()</code>, <code>destroy()</code>, <code>suspend()</code>, and <code>resume()</code> that are
+dangerous and should be avoided. They can cause the thread to terminate in an inconsistent state.
+The best way for a thread to halt is to return from its <code>run()</code> method.
+</p><p>
+To start a new thread, we can have a subclass of <code>Thread</code>
+whose <code>run()</code> method overrides the <code>run()</code> method of <code>Thread</code>
+to do something useful. (The <code>run()</code> method of <code>Thread</code> itself simply returns
+without doing anything.) Creating an instance of that subclass and calling its <code>start()</code>
+method will cause the runtime system to launch a new thread that will run concurrently with other
+threads in the program. The calling thread will return immediately from <code>start()</code>, while
+the new thread will call the <code>run()</code> method. 
+</p>
+<p>
+Alternatively, we can construct a thread by passing a <code>Runnable</code> object
+to the <code>Thread</code> constructor. In this case, the thread will execute the <code>run</code>
+method of the object when it starts.
+</p>
+<p>
+For example, consider a program in which we want to start a long-running
+computation when the user clicks a button. We don't want the Application thread
+to do this computation, because this will freeze the user interface while the computation completes.
+Instead, we can start a new thread when the button is clicked.
+This can be done conveniently using two inner classes:
+</p>
+
+<pre class=load>
+<a href="concurrency/button_example.java">button example</a>
+</pre>
+
+<h3>Priorities and preemption</h3>
+<p>
+In Java, threads can <b>preempt</b> each other by starting to run even when <code>yield()</code> is not
+called. With preemptive concurrency, a thread that has run long enough might be
+suspended automatically to allow other threads to run.</p>
+<p>It is possible to set priorities of threads so that threads with higher priority
+are executed preferentially. A newly-created thread has the same priority as the thread that
+created it, but it can be changed with <code>setPriority(...)</code>.
+Even so, it is nearly impossible to predict when preemption
+will occur, so careful programming is needed to ensure the program works no matter when
+threads are preempted.
+</p>
+
+<h3>Daemon and normal threads</h3>
+<p>
+A thread is either a <em>daemon</em> or a <em>normal</em> thread.
+Daemon threads are used for minor or ephemeral tasks such as timers or sounds.
+The initial thread (the one that runs <code>main</code>) is normal.
+The application halts when either <code>System.exit(...)</code> is called or all
+normal (non-daemon) threads have terminated. When this happens, all daemon threads are
+automatically stopped.</p>
+
+<p>
+A thread is initially a daemon thread if and only if the thread that created it is. However,
+that can be changed with the <code>setDaemon(...)</code> method. 
+</p>
+
+<h2>Amdahl's Law</h2>
+<p>
+Your computer almost surely has multiple processor cores. Unless you use threads, only
+one of those cores will be helping execute the program at a given time.
+Threads enable a program to take advantage of multiple cores and, potentially, run
+significantly faster. For example, on a computer with 4 cores, we might expect to
+achieve a <b>speedup</b> of 4; in other words, the program would take 1/4 of the
+time it took when run on a single core.
+</p>
+<p>
+A big challenge in achieving this good performance scaling with increasing
+cores is that not all work the program does can be easily <b>parallelized</b>:
+that is, separated into tasks that can be done in parallel by different cores.
+</p>
+<p>
+Amdahl's law makes the simple observation that when there are many cores,
+speedup becomes limited by the performance of the part of the computation that
+cannot be parallelized. For example, if 25% of the computation cannot be parallelized,
+then no matter how many cores are available, the maximum speedup is 4. In 
+particular, if a fraction \(p\) of the work can be parallelized, and \(c\) cores
+are available to run this part of the work, then Amdahl's law says that the
+maximum speedup is
+\[1 \over (1-p) + p/c\]
+which, no matter how large \(c\) becomes,
+never exceeds \(1/(1-p)\).
+</p>
+<p>
+Since most programs have some work that is difficult to parallelize, Amdahl's law explains
+why it is often difficult to get large gains from having many cores.
+</p>
+
+<h2>Race conditions</h2>
+<p>
+We have to be careful about multiple threads accessing the same object,
+because threads can interfere with each other.
+Two threads simultaneously reading information from the same object 
+is not a problem. Read-read sharing is safe. But if both threads are
+simultaneously trying to update the same object, or if one thread
+is updating the object while the other is reading it, it is possible that
+inconsistencies can arise. This is called a <b>race condition</b>.
+Both read-write and write-write races are a problem.
+</p>
+<p>
+For example, consider the following bank account simulation:
+</p>
+
+<pre>
+class Account {
+  int balance;
+  void withdraw(int n) {
+   int b = balance - n; // R1
+   balance = b;         // W1
+  }
+  void deposit(int n) {
+   int b = balance + n; // R2
+   balance = b;         // W2
+  }
+}
+</pre>
+
+<p>
+Suppose the initial balance is $100.
+If two threads T1 and T2 are respectively concurrently executing
+<code>withdraw(50)</code> and
+<code>deposit(50)</code>, what can happen? Clearly the final balance ought to be
+$100. But the actions of the different threads can be
+<b>interleaved</b> in
+many different ways. Under some of those interleavings, such as (R1,
+W1, R2, W2) or (R2, W2, R1, W1), the final balance is indeed $100. But
+other interleavings are more problematic: (R1, R2, W2, W1) destroys $50,
+and (R2, R1, W1, W2) creates $50. The problem is the
+races between R1 and W2 and between R2 and W1.
+</p><p>
+We can fix this code by controlling which interleavings are possible. In
+particular, we want only interleavings in which the methods
+<code>withdraw()</code> and <code>deposit()</code> execute <b>atomically</b>,
+meaning that their execution can be thought of an indivisible unit that cannot
+be interrupted by another thread. This does not mean that when one thread
+executes, say, <code>withdraw()</code>, that all other threads are suspended.
+However, it does mean that as far as the programmer is concerned, the system
+<em>acts</em> as if this were true.
+</p>
+
+<h2>Critical sections and atomicity</h2>
+
+<p>
+We have been seeing that sharing mutable objects between different
+threads is tricky. We need some kind of <b>synchronization</b> between the
+different threads to prevent race conditions. For example, we saw that the following two methods
+on a <code>BankAccount</code> object got us into trouble:
+</p>
+<table class="sidebysidecode"><tr><td>
+<pre>
+void withdraw(int n) {
+  balance -= n;
+}</pre>
+</td><td>
+<pre>
+void deposit(int n) {
+  balance += n;
+}</pre>
+</tr></table>
+<br>
+
+<p>
+There is a problem here even though the updates to <code>balance</code> are done
+all in one statement rather than in two as above.
+Execution of one thread may pause in the middle of that statement, so
+it doesn't help to write it as one statement. Two threads that are
+simultaneously executing <code>withdraw</code> and <code>deposit</code>, or even two threads
+both simultaneously executing <code>withdraw</code>, may cause the balance to be
+updated incorrectly.
+</p><p>
+This example shows that sometimes a piece of code needs to be executed
+as though nothing else in the system is making updates. Such code
+segments are called <b>critical sections</b>. They need to be executed
+<b>atomically</b> and in <b>isolation</b>; that is, without interruption from
+or interaction with other threads.
+</p><p>
+However, we don't want to stop all threads just because one thread has
+entered a critical section. So we need a mechanism that only stops the
+interactions of other threads with this one. This is usually achieved
+by using <b>locks</b>. (Recently, software- and hardware-based
+<b>transaction</b> mechanisms have become a popular
+research topic, but locks remain for now the standard way to isolate
+threads.)
+</p>
+
+<h2>Mutexes and <code>synchronized</code></h2>
+
+<p>
+Mutual exclusion locks are sometimes called <b>mutexes</b>.
+Threads can <em>acquire</em> them and <em>release</em> them.
+At most one thread can hold a mutex at a time.
+While a mutex is being held by a thread, all other threads that try to acquire
+it will be blocked until it is released, at which point
+just one waiting thread will manage to acquire it.
+</p><p>
+Java supports mutual exclusion locks directly. Any object can be used as a mutex.
+The mutex is acquired and released using the <code>synchronized</code> statement:
+</p><pre>
+synchronized (obj) {
+  // <i>...perform some action while holding obj's mutex...</i>
+}
+</pre>
+<p> 
+The <code>synchronized</code> statement is useful because it makes sure that the
+mutex is released no matter how the statement finishes executing,
+even if it is via an exception. There are no explicit <code>acquire()</code>
+and <code>release()</code> operations, but if there were,
+the above code using <code>synchronized</code> would be equivalent to this:
+</p><pre>
+try {
+  obj.acquire();
+  // <i>...perform some action while holding obj's mutex...</i>
+} finally {
+  obj.release();
+}
+</pre>
+
+<h3>Mutex syntactic sugar</h3>
+<p>
+Using mutexes, we can protect the <code>withdraw()</code> and <code>deposit()</code> methods
+from themselves and from each other. Here we use the receiver object as a mutex:
+</p>
+
+<table class="sidebysidecode" cellspacing=0 cellpadding=0>
+<tr>
+<td>
+<pre>
+void withdraw(int n) {
+   synchronized(this) {
+      balance -= n;
+   }
+}
+</pre>
+</td><td>
+<pre>
+void deposit(int n) {
+   synchronized(this) {
+      balance += n;
+   }
+}
+</pre>
+</td>
+</tr>
+</table>
+<p>
+Because the pattern of wrapping entire method bodies in
+<code>synchronized(this)</code> is so common, Java has syntactic sugar for it:
+</p>
+<table class="sidebysidecode">
+<tr><td><pre>
+synchronized void withdraw(int n) {
+   balance -= n;
+}
+</pre></td>
+<td><pre>
+synchronized void deposit(int n) {
+   balance += n;
+}
+</pre></td></tr></table>
+
+<h3>Mutex variations</h3>
+
+<p>
+Java mutexes are <em>reentrant mutexes</em>, meaning that it is harmless for a
+single thread to acquire the same mutex more than once. One consequence is that
+one synchronized method can call another on the same object without getting
+stuck trying to acquire the same mutex. Each mutex keeps track of the number of
+times the thread has acquired the mutex, and the mutex is only really released
+once it has been released by the holding thread the same number of times.
+</p>
+<p>
+A locking mechanism closely related to the mutex is the <em>semaphore</em>,
+named after <a href="https://en.wikipedia.org/wiki/Railway_semaphore_signal">railway
+semaphores</a>. A <em>binary semaphore</em> acts just like a (non-reentrant)
+mutex, except that a thread is not required to hold the semaphore in order to
+release it. In general, semaphores can be acquired by up to some fixed number
+of threads, and additional threads trying to acquire it block until some
+releases happen. Semaphores are the original locking abstraction, and they make
+possible some additional concurrent algorithms. But semaphores are harder than
+mutexes to use successfully.
+</p>
+
+<h3>Volatile variables</h3>
+<p>
+Java allows instance variables to be declared as <code>volatile</code>. These variables behave as
+though they have their own mutex: each access to such a variable (read or write) causes
+synchronization using that mutex. This mechanism is occasionally useful, but it's not enough
+in many situations. For example, declaring the variable <code>balance</code> to be volatile
+in the earlier bank example would not help at all; all of the wrong interleavings would still be possible.
+</p>
+<p>
+Some programmers have a bad habit of trying to solve concurrency problems
+by sprinkling <code>volatile</code> declarations around haphazardly. That can make
+some bugs seem to disappear, but there
+is nothing magic about volatile variables. Anything that can be accomplished
+with them can be accomplished with other synchronization mechanisms.  And
+because they cause automatic synchronization, they are expensive, both because
+synchronization has an inherent overhead and because it can remove desirable parallelism.
+The time that <code>volatile</code> is useful is when
+all you want is indeed to acquire a mutex around all accesses to a variable;
+in this case, <code>volatile</code> is the easiest and cheapest way to do it.
+</p>
+
+<h2>When is synchronization needed?</h2>
+<p>
+Synchronization is not free. It involves manipulating data structures,
+and on a machine with multiple processors (or cores) requires
+communication between the processors. When one is trying to make code
+run fast, it is tempting to cheat on synchronization. Usually this
+leads to disaster.
+</p><p>
+Synchronization is needed whenever we must rely on invariants on
+the state of objects, either between different fields of one or more
+objects, or between contents of the same field at different times.
+Without synchronization there is no guarantee that some other thread
+won't be simultaneously modifying the fields in question, leading to
+an inconsistent view of their contents.
+</p><p>
+Synchronization is also needed when we need to make sure that one
+thread <em>sees</em> the updates caused by another thread. It is possible
+for one thread to update an instance variable and another thread to later
+read the same instance variable and see the value it had before the update.
+This inconsistency arises because
+different threads may run on different processors. For speed,
+each processor has its own local memory cache, but local updates
+may not propagate immediately to main memory or to other processors. For example, consider
+two threads executing the following code in parallel. Say the values of <code>x</code> and <code>y</code>
+are initially 0.
+</p>
+<table class="sidebysidecode"><tr><td>
+Thread 1:
+<pre>
+y = 1;
+x = 1;
+</pre>
+</td>
+<td>
+Thread 2:
+<pre>
+while (x == 0) {}
+print (y);</pre></td></tr></table>
+<p>
+What possible values of <code>y</code> might be printed by Thread 2? Naively, it
+looks like the only possible value is 1. But without synchronization, Thread 2 could
+observe the update to <code>x</code> <em>before</em> the update to <code>y</code>.
+The fact that Thread 1 assigned to <code>y</code> before
+it assigned 1 to <code>x</code> does not matter! This behavior can and does happen frequently
+with modern hardware. This bizarre state of affairs shows that programming with
+concurrency can be highly counterintuitive, and that one must never rely on naive assumptions
+about the order of events.
+</p>
+<p>
+The most reliable way
+to ensure that updates done by one thread are seen by another is
+to explicitly synchronize the two threads. Synchronization is needed
+for all accesses to mutable state that is shared between
+threads. The mutable state might be entire objects, or for
+finer-grained synchronization, just mutable fields of objects. Each
+piece of mutable state should be protected by a lock. When
+the lock protecting a shared mutable field is not being held by the
+current thread, the programmer must assume that its value can
+change at any time. Any invariant that involves the value of such a
+field cannot be relied upon.
+</p><p>
+Note that <em>immutable</em> state shared between threads doesn't need
+to be locked because it cannot be updated. This fact
+encourages a style of programming that avoids mutable state.
+</p><p>

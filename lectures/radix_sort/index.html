@@ -1,0 +1,273 @@
+<h1>Linear-Time Sorting Algorithms</h1>
+<p>
+In recitation this week, you learned about a number of sorting algorithms, including
+<b>insertion sort</b> and <b>selection sort</b>, which are quadratic time in the worst case,
+as well as <b>mergesort</b>, which is O(n log n) time in the worst case. You also learned about
+<b>quicksort</b>, which is quadratic time in the worst case but O(n log n) expected time
+with randomly chosen pivots and requires no extra storage. Quicksort is very fast in practice,
+but not stable.
+</p>
+
+<p>
+All of these are <b>comparison-based</b> sorting algorithms, which means
+they work on any data that can be compared according to some linear order &le; as 
+specified by, say, the <code>Comparable&lt;T&gt;</code> interface. Comparison-based algorithms
+do not use any information about the data except that the items being compared are linearly
+ordered by &le;. They may only ask whether x&le;y, nothing else. For data items implementing the
+<code>Comparable&lt;T&gt;</code> interface, this test can be done by calling the
+<code>compareTo</code> method. But the interface reveals nothing about the nature of the elements
+being compared except that they can be compared.
+</p>
+
+<p>
+In this lecture we will show that any comparison-based algorithm must take at least &Omega;(n log n) time
+in the worst case. (Note: We always use &Omega;(-) (Greek Omega) for lower bounds and O(-) for upper bounds.
+To say an algorithm is &Omega;(n log n) in the worst case says that for every n, there is an input of
+size n for which the algorithm takes at least cn log n time for some constant c &gt; 0.)
+</p>
+
+<p>
+After we do that, we will give some sorting algorithms that achieve better than O(n log n) time.
+These cannot be comparison-based algorithms, of course. They achieve better than O(n log n) performance
+by taking advantage of special properties of the data.
+</p>
+
+<h2>Lower bound for comparison-based sorting</h2>
+<p>
+Here is a proof that all comparison-based sorting algorithms must take at least &Omega;(n log n) time in the worst
+case to sort arrays of length n. There may be arrays of length n on which the algorithm takes less than n log n time;
+but there is always at least one array of length n on which it takes n log n time.
+</p>
+
+<p>Consider any algorithm that only does comparisons. Let us analyze its behavior when trying to sort an array a of length n.
+The algorithm starts off in an initial state. It may compute for a while, perhaps going through
+a sequence of states. Then at some point it may perform a comparison of two elements of the array
+it is sorting. Depending on the outcome of the comparison, it will branch to one of two next states.
+For example, it might test a[3] &le; a[6] and branch to two different states, depending on whether
+a[3] &le; a[6] or a[3] &gt; a[6]. Let us keep track of what it would do in each of these two cases.
+</p>
+
+<p>
+For each of the two branches, computation may proceed for a while, again going through
+a sequence of states. Then the branch may again perform a comparison and split
+depending on the outcome. The tests in each branches do not have to be
+the same test, and in fact may be completely independent of each other.
+</p>
+
+<p>
+In this way the algorithm generates a <b>computation tree</b> whose nodes are states of the computation (Fig. 1).
+At the root is the initial state. There is a branch point in the tree at every comparison. Each run of the algorithm
+on some input of length n follows exactly one path down through the tree, depending on the input array. At the very bottom of the
+tree are the leaves, which are the final states of the algorithm. Each leaf is a halting state at which
+the algorithm halts with a sorted array. The leaf at which the algorithm halts depends on the results
+of the comparisons on the path down from the root.
+</p>
+<div class="figure">
+<img src="radix_sort/comptree.png" width=500 alt="computation tree" />
+<p class="caption">
+Figure 1: A computation tree
+</p>
+</div>
+
+<p>
+This is a very general and abstract view of a comparison-based sorting algorithm. Note that
+we have given no code at all, or said what the states are, or said anything about the sorting
+method. We have only said that every comparison-based sorting algorithm must generate
+a computation tree of this form.
+</p>
+
+<p>
+Now to prove our lower bound, we will argue that <i>there must be a path in this tree of length
+at least &Omega;(n log n)</i>. Any computation that traces this path must take at least this much time.
+The argument depends on two observations:
+<ol>
+<li>The tree must have at least n! distinct leaves.</li>
+<li>To generate all these leaves, a binary tree must be of height at least log(n!) ~ n log n.</li>
+</ol>
+
+<p>
+For claim 1, let's assume that the input array is of length n and the elements are all distinct. Since comparison-based
+algorithms do not know anything about the elements being compared except the ordering between
+them, it does not hurt to assume that the elements are 0,1,2,3,...,n&minus;1 in some order. The
+unsorted input array can then be viewed a permutation a:{0,1,2,...,n&minus;1} &rarr; {0,1,2,...,n&minus;1}, that is, a one-to-one
+and onto function from the set {0,1,2,...,n&minus;1} (the array indices) to the set {0,1,2,...,n&minus;1} (the elements
+to be sorted). The value a[i] gives the value of this function. There are n! = n(n&minus;1)(n&minus;2)&middot;&middot;&middot;3&middot;2&middot;1 possible such functions.
+</p>
+
+<p>
+Given any such permutation a, the algorithm must find its way down to a leaf of the computation tree
+by making comparisons between elements. At the leaf, it has successfully sorted the array, thus it must
+have found the inverse of the permutation a<sup>&minus;1</sup>, the function that puts the elements in the right order.
+The inverse a<sup>&minus;1</sup> of the permutation satisfies the property that a<sup>&minus;1</sup>(i) = j if and
+only if a(j) = i; that is, composing a and a<sup>&minus;1</sup> (in either order) gives the identity function on {0,1,2,...,n&minus;1}.
+</p>
+
+<p>
+Now if we start with two distinct permutations a &ne; b, then the algorithm must trace two distinct
+paths down the tree, leading to two distinct leaves. If it traced the same path on both a and b, that would
+say that it took all the same actions to sort the array; that is, a<sup>&minus;1</sup> = b<sup>&minus;1</sup>, and one of them must be wrong, because if the
+inverses of a and b are equal, then a and b must also be equal, which would contradict the assumption that they were different. Thus the
+algorithm could not have traced the same path in the tree on a and b. There must be a distinct path for each permutation. Since there are n! different permutations, the tree must have at least n! distinct leaves.
+</p>
+
+<p>
+For claim 2, we count the maximum number of states that can possibly occur in a binary tree of height h (The <b>height</b> of a tree is the length of the longest path.) A tree of height 0 can contain at most one node, namely the root. A tree of height 1 can contain at most 3 nodes, the root and two children. A tree of height 2 can contain at most 7 nodes: the root, two children, and four grandchildren. In general, one can show inductively that binary a tree of height h can have at most 2<sup>h+1</sup>&minus;1 states and 2<sup>h</sup> leaves.
+</p>
+
+<p>
+Now in order to generate n! leaves, the height of the tree must be at least h, where 2<sup>h</sup> &ge; n!. Taking logs of both sides, and using the fact that the log function is monotone (preserves order), we have h &ge; log(n!), which we can argue is &Omega;(n log n) as follows:
+</p>
+
+<p>
+n! = n(n&minus;1)(n&minus;2)(n&minus;3) &middot;&middot;&middot; 3&middot;2&middot;1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&ge; n(n&minus;1)(n&minus;2)(n&minus;3) &middot;&middot;&middot; (n/2+1)(n/2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&ge; (n/2)(n/2)(n/2) &middot;&middot;&middot; (n/2)(n/2)&nbsp;&nbsp;&nbsp;&nbsp;(n/2 times)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;= (n/2)<sup>n/2</sup>
+</p>
+<p>
+so for sufficiently large n,
+</p>
+<p>
+log(n!) &ge; log ((n/2)<sup>n/2</sup>) = (n/2) log (n/2) = (n/2)((log n) &minus; 1) &ge; (n/2)(log n)/2 = (n/4) log n.   
+</p>
+
+<p>
+We have shown that the height of any computation tree of any comparison-based algorithm
+for sorting must be of height at least &Omega;(n log n).
+</p>
+
+<h2>Counting sort</h2>
+
+<p>
+Despite the lower bound of &Omega;(n log n) on comparison-based sorting algorithms, there are several
+sorting methods that break this barrier. They are not comparison-based, but take advantage of special
+properties of the data being sorted.
+</p>
+
+<p>
+One popular such method is <b>counting sort</b>, a special case of <b>bucket sort</b> (discussed below). This is a useful method for sorting integers when the range of possible values is small. It proceeds by creating an <code>int</code> array <code>count</code> to count the number of occurrences of each value in the input array.
+</p>
+
+<p>
+For example, suppose we wish to sort an array <code>a</code> of integers, and we know that all the integers in the array lie between 0 and 999, inclusive. We create an array <code>count</code> of length 1000 and loop through the unsorted array <code>a</code>. For each element <code>k</code> in the unsorted array, we add one to <code>count[k]</code>. Here is the code:
+</p>
+<pre>
+   /**
+    * Sort the integer array a using counting sort
+    * Requires: all values in a are between 0 and m-1 inclusive
+    */
+   void countingSort(int[] a, int m) {
+      int[] count = new int[m]; // create the count array
+      for (int i = 0; i < m; i++) {
+         count[i] = 0; // initialize counts
+      }
+      for (int i = 0; i < a.length; i++) {
+         assert 0 <= a[i] && a[i] < m; // sanity check
+         count[a[i]]++; // count this element
+      }
+      // create the sorted array a
+      int k = 0; // index into a
+      for (int i = 0; i < m; i++) { // for each value
+         for (int j = 0; j < count[i]; j++) {
+            a[k++] = i; // put that many elements into a
+         }
+      }
+   }
+</pre>
+<p>
+The time complexity of this algorithm is O(m + n), where m is the number of buckets and n is the length of the input array.
+</p>
+
+<h2>Bucket sort</h2>
+
+<p>
+<b>Bucket sort</b> is like counting sort, but somewhat more general. In bucket sort, we form an array of <b>buckets</b>, which is a partition of the possible input values into disjoint sets. We then loop through the input array, putting each element into its bucket. When we are done, we sort the buckets individually using any sorting algorithm. The buckets are typically much smaller than the original array. When done, the sorted buckets are concatenated together to give the output array.
+</p>
+
+<p>
+For example, suppose we wanted to sort an array of integers, and we know that all elements are between 0 and 9999, inclusive. We can create an array of buckets in which
+</p>
+<p>
+buckets[0] contains a list of elements 0 &le; i &lt; 100<br>
+buckets[1] contains a list of elements 100 &le; i &lt; 200<br>
+buckets[2] contains a list of elements 200 &le; i &lt; 300<br>
+...<br>
+buckets[k] contains a list of elements 100k &le; i &lt; 100(k+1)<br>
+...<br>
+buckets[99] contains a list of elements 9900 &le; i &lt; 10000.
+</p>
+<p>
+For each k, the bucket number is k/100. Here is the code:
+</p>
+<pre>
+   /**
+    * Sort the integer array a using bucket sort
+    * params: m = number of buckets, s = bucket size
+    * Requires: all values in a are between 0 and m*s-1 inclusive
+    */
+   void bucketSort(int[] a, int m, int s) {
+      // create the buckets
+      @SuppressWarnings("unchecked")
+      ArrayList&lt;Integer&gt;[] buckets = (ArrayList&lt;Integer&gt;[])new ArrayList[m];
+      for (int i = 0; i < a.length; i++) {
+         assert 0 <= a[i] && a[i] < m*s; // sanity check
+         int bucket = a[i]/s;
+         if (buckets[bucket] == null) {
+            buckets[bucket] = new ArrayList&lt;Integer&gt;();
+         }
+         buckets[bucket].add(a[i]); // add this element to the bucket
+      }
+      int k = 0; // index into a
+      for (ArrayList&lt;Integer&gt; bucket : buckets) {
+         if (bucket != null) {
+            Integer[] x = bucket.toArray(new Integer[0]);
+            Arrays.sort(x); // sort the bucket
+            for (int j : x) {
+               a[k++] = j;
+            }
+         }
+      }
+   }
+</pre>
+<p>
+Like counting sort, the time complexity is O(m + n), where m is the number of buckets and n is the length of the input array, not counting the time to sort the buckets.
+</p>
+
+<h2>Radix sort</h2>
+
+<p>
+<b>Radix sort</b> is a kind of iterated bucket sort. This is a method for sorting integers or strings in which the data items can be divided into small chunks C<sub>1</sub>, C<sub>2</sub>, C<sub>3</sub>, ..., C<sub>n</sub> that can be viewed as fields on which we want to sort lexicographically. This means that the data should be ordered according to the most significant chunk C<sub>1</sub>; then among elements with the same value of C<sub>1</sub>, according to C<sub>2</sub>; then among elements with the same values of C<sub>1</sub> and C<sub>2</sub>, according to C<sub>3</sub>; and so on.
+</p>
+
+<p>
+This can be accomplished by sorting the entire array on the value of the least significant chunk C<sub>n</sub>; then on the value of the next significant chunk C<sub>n&minus;1</sub>; and so on. The last sort is on the value of the most significant chunk C<sub>1</sub>. A stable sorting method must be used to sort the chunks, so that later sorts do not undo the work of the earlier sorts. Bucket sort is a common choice to sort the chunks.
+</p>
+
+<p>
+Recall that a sorting method is <b>stable</b> if equal elements appear in the same order in the sorted array as in the original array. This is important if we wish to sort on two fields A and B. We wish the elements to be sorted primarily with respect to some field A, but for elements with the same value of A, they should be sorted secondarily on some other field B. If the sort is stable, we can simply sort everything on the field B first, then on the field A. If the second sort is stable, then it does not undo the results of the first sort, so elements with the same value of A will still be sorted with respect to B. In the case of radix sort, we may have several chunks, not just two.
+</p>
+
+<p>
+For example, suppose we are sorting k-bit integers. The chunks may be the digit positions. We write the numbers to be sorted in decimal. We sort the elements by the least significant decimal digit (one's place) using bucket sort. There are ten buckets corresponding to the ten decimal digits. Then we sort on the next least significant digit (ten's place), and so on. In each stage, we use ten buckets.
+</p>
+
+<p>
+Here is an example. Suppose we wish to sort the elements 24, 61, 15, 804, 323, 56, 99, 102, 11, 4.
+</p>
+
+<p>
+We first sort on the least significant digit using bucket sort, giving 61, 11, 102, 323, 24, 804, 4, 15, 56, 99. Note that since bucket sort is stable, the elements with the same one's digit occur in the same order in both sequences.
+</p>
+
+<p>
+Next, we sort on the ten's digit. This yields 102, 804, 4, 11, 15, 323, 24, 56, 61, 99.
+</p>
+
+<p>
+Finally, we sort on the hundred's digit. This yields 4, 11, 15, 24, 56, 61, 99, 102, 323, 804.
+The sequence is sorted!
+</p>
+
+<p>
+The time complexity is O(nm), where n is the size of the array to be sorted and m is the number of chunks. Typically we regard m as a constant, which is the reason this is considered a linear-time sort.
+</p>

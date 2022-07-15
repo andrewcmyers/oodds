@@ -1,0 +1,64 @@
+// mem[8] mod (6+7+11) = 0 and 1 < mem[2] --> mem[2] := 5 mem[1+mem[3]] := 2 + ahead[4] left
+digraph {
+    "-->" -> "and";
+    "-->" -> command;
+    command -> updates;
+    command -> left;
+    and -> "=";
+    and -> "<";
+    "=" -> mod;
+    "=" -> 0;
+    "<" -> 1;
+    "<" -> mem2;
+    mem2 -> 2;
+
+    subgraph reln1 {
+        node plus67 [label = "+"];
+        node plus6711 [label = "+"];
+        mod -> mem8;
+        mem8 -> 8;
+        mod -> plus6711;
+        plus6711 -> plus67;
+        plus6711->11;
+        plus67 -> 6;
+        plus67 -> 7;
+    }
+
+    node two [label=2];
+
+    node u1 [label = ":="]
+    node u2 [label = ":="]
+    node mem8 [label = "mem"]
+    node mem2 [label = "mem"]
+    node mem3 [label = "mem"]
+
+
+    updates -> u1;
+    updates -> u2;
+    u1 -> two;
+    u1 -> 5;
+    u2 -> "+";
+    node one [label=1]
+    "+" -> one
+    "+" -> mem3;
+    mem3 -> 3;
+
+    node plus [label = "+"];
+    node two2 [label = "2"];
+    u2 -> plus;
+    plus -> two2;
+    plus -> ahead;
+    ahead -> 4;
+
+    //8 -> 6 [style = invis];
+    plus67 -> 0 [style = invis];
+    plus6711 -> 0 [style = invis];
+    11 -> 0 [style = invis];
+    11 -> 7 [style = invis];
+    1 -> 0 [ style= invis];
+    0 -> "+" [ style = invis];
+    "<" -> updates [style = invis];
+    mem2 -> updates [style = invis];
+    //ahead -> 2 [style=invis];
+
+}

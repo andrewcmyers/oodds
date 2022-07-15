@@ -1,0 +1,781 @@
+<h1>Sorting</h1>
+<p>
+Sorting a collection of values is a fundamental operation with many uses.
+Let's look at the most common algorithms.
+You might ask why we need to talk about sorting algorithms at all, given that
+sorting algorithms are built into Java (see <code>Arrays.sort</code>) and many
+other languages these days. One reason is that it is useful to
+understand the tradeoffs between different sorting algorithms.
+Another is that at some point you may have to build software
+in an environment in which the ideal sorting algorithm is not available. Finally,
+sorting is a great opportunity to explore the interplay between algorithm design,
+loop invariants, and performance analysis.
+</p>
+<h2>Insertion sort</h2>
+<p>
+Insertion sort is a simple algorithm that is the fastest way to sort small arrays.
+Intuitively, insertion sort scans through the array from left to right,
+making sure that the part of the array that has been scanned is always in sorted
+order. The code can be written as a loop with a loop invariant depicted as follows:
+</p>
+<div class=figure>
+  <canvas id="insert-sort-inv1"
+          style="height:80px; width:400px">
+  </canvas>
+  <p class="caption">
+    Figure 1: Invariant for the outer loop of insertion sort
+  </p>
+  <script class=graphics>
+    function iRect(f) { return f.rectangle().setH(30).setLineWidth(1) }
+    with (new CFigure("insert-sort-inv1")) {
+        var left, right
+        align("abut", "top bottom",
+            left = rectangle().setH(30).setW(150).addText("sorted").setFontSize(11),
+            right = rectangle().setW(180).addText("unsorted").setFontSize(11))
+        align("center", "none", right.cl(), canvasRect())
+        align("left", "abut", right, vspace(10), label(" i").setFontSize(12))
+        align("none", "top", left, canvasRect().inset(10))
+    }
+  </script>
+</div>
+<p>
+The loop invariant is maintained by shifting each newly encountered element (at
+index i) leftward into the place it belongs in the sorted part of the array.
+This insertion causes the sorted part of the array to grow by one element.
+Eventually all elements have been inserted into the sorted part and there is
+nothing left to sort.
+</p>
+<pre class="load">
+<a href="sorting/InsertionSort.java">InsertionSort.java</a>
+</pre>
+
+<p>
+The loop invariant for the outer loop is as depicted above. The invariant is satisfied
+when \( i=1 \) and each loop iteration ensures that the value that
+index \(i\) initially pointed to (\(k\)) is
+inserted into the right place.
+</p>
+
+<div class=figure>
+  <canvas id="insert-sort-inv2"
+          style="height:80px; width:400px">
+  </canvas>
+  <p class="caption">
+    Figure 2: Invariant for the inner loop
+  </p>
+  <script class=graphics>
+    with (new CFigure("insert-sort-inv2")) {
+        function invRect() { return rectangle().setH(30).setLineWidth(1) }
+        function addLabel(r, t) {
+            r.addText(t)
+            return r
+        }
+        var r1 = invRect(), r2 = invRect(), r3 = invRect(), r4 = invRect()
+        align("abut", "top bottom", r1, r2, r3, r4)
+        align("none", "center", r1, canvasRect().inset(2))
+
+        align("left", "center", r1, canvasRect().inset(2))
+        align("right", "center", r4, canvasRect().inset(2))
+        equal(times(5, r2.width()), r1.width())
+        equal(r1.width(), r3.width())
+        equal(times(15, r2.width(), r4.width()))
+
+        addLabel(r1, "A (<B)")
+        addLabel(r2, "?")
+        addLabel(r3, "B (>A, k)")
+        addLabel(r4, "unsorted")
+        align("center", "abut", r2, vspace(5), label("j"))
+        align("right", "abut", r3, vspace(5), label("i "))
+    }
+  </script>
+</div>
+<p>
+The invariant for the inner loop is also illustrated in the figure.
+The index \(j\) points to
+an array location such that everything to the left of \(j\) (region A)
+is less than everything to the right (region B). Further, everything
+in region B is greater than the value to be inserted, \(k\). When the
+loop terminates, the top element in \(A\) is less than or equal to
+the value 
+\(k\), so \(k\) can be placed in the element marked &ldquo;?&rdquo;. Figuring out
+loop invariants helps us write code like this that is efficient and
+correct.
+</p><p>
+The running time of insertion sort is best when the array is already
+sorted. In this case the inner loop stops immediately on each outer
+iteration, so the total work done per outer iteration is constant.
+Therefore the total work done by the algorithm in the best case is linear in
+the array size: \(O(n)\).</p>
+<p>
+The worst case for the algorithm is when the array is sorted in the
+reverse order. In that case the loop on \(j\) goes all the way down to 0 on
+each outer iteration. The first iteration does two copies, the second
+three copies, and so on, so the total work is \(2 + 3 + \dots + n = n(n+1)/2 &minus; 1\).
+This function is \(O(n^2)\), since \(O(n^2+n) = O(n^2)\).</p>
+<p>
+Recall that in general, we can drop lower-order terms from polynomials
+when determining asymptotic complexity. For example, in this case
+\((n^2+n)/n^2\) limits to a constant (1)
+as \(n\) becomes large. Therefore the two functions in the
+ratio have the same asymptotic complexity.
+</p>
+<h2>Stability</h2>
+<p>
+Insertion sort has one other nice property: implemented properly, it is a
+<b>stable</b> sort, meaning that if given an array containing elements that are
+equal to each other, it keeps those elements in the same relative order as in
+the original array.
+</p>
+<p>
+Stability is important for the following reason. Say you want to sort some items
+according to one field, then again according to another field. For example, you might
+have a list of pairs (zip code, street name) that you would like to have sorted by zip code,
+and within each zip code, sorted by street name. Thus
+<pre>
+(14850, Buffalo St)
+(14853, East Av)
+(14853, Campus Rd)
+(14850, Seneca St)
+(14850, Green St)
+(14853, Hoy Rd)
+(14850, Court St)
+</pre>
+after sorting should be
+<pre>
+(14850, Buffalo St)
+(14850, Court St)
+(14850, Green St)
+(14850, Seneca St)
+(14853, Campus Rd)
+(14853, East Av)
+(14853, Hoy Rd)
+</pre>
+To do this, sort first by the lower-order field (in this example, the street name), ignoring the higher-order field (in this example, the zip code). Then sort again by the higher-order field using a stable sort, ignoring the lower-order field. Since the second sort is done with a stable sort, it does not undo the effects of the first sort. This is because the elements with the same zip code are considered "equal" by the second sort, so the second sort keeps them in the same order.
+</p>
+<p>
+In the example above, after the first sort we would have
+<pre>
+(14850, Buffalo St)
+(14853, Campus Rd)
+(14850, Court St)
+(14853, East Av)
+(14850, Green St)
+(14853, Hoy Rd)
+(14850, Seneca St)
+</pre>
+The second sort, being stable, would simply move the 14850 items up and the 14853 items down, but within each zip code keep them in the same order.
+</p>
+<h2>Selection sort</h2>
+<p>
+Selection sort is another sorting algorithm, used more commonly by humans than
+by computers. Intuitively, it tries to find the right element to put in each
+location of the final array. Once an array location is set to contain the right
+element, it is never changed.
+</p>
+<pre>
+for (int i = 0; i &lt; n; i++) {
+    // find smallest element in subarray a[i..n&minus;1]
+    // swap it with a[i]
+}
+</pre>
+
+<p>
+Because each loop iteration must in turn iterate over the rest of the
+array to find the smallest element, the <b>best</b>-case performance of this algorithm
+is the same as the worst-case performance: \(O(n^2)\).
+</p>
+<h2>Lower bounds on sorting</h2>
+<p>
+The above sorting algorithms are all quadratic in the worst case. As we will see
+shortly, there are better algorithms for sorting large collections,
+but there is also a limit on how good a sorting algorithm of this kind can be. Here we are concerned with algorithms that work no matter what kind of data they are sorting,
+so the only observation these algorithms can make about the sorted elements is to
+compare them. Generically, the interface to such an algorithm looks like the
+following:
+<p>
+<pre>
+&lt;T&gt; sort(T[] a, Comparator&lt;T&gt; cmp) {
+</pre>
+<p class=cont>
+where the implementation of the method contains some number of calls to
+the <code>compareTo</code> method:
+<pre>
+    cmp.compareTo(x, y); // returns &lt;, =, or &gt;
+</pre>
+<p>
+The sorting algorithm receives an array whose elements have been permuted in
+some order relative to their sorted order, and the job of the algorithm is to
+undo that permutation. Given \(n\) elements, there are \(n!\)
+possible permutations that the sorting algorithm must choose
+correctly among. The information it uses to make that choice consists of the
+sequence of observations the algorithm makes using <code>compareTo()</code>.
+For example, such a sequence might look like (&lt;, &gt;, &lt;, =, &gt;, ...),
+where we've only recorded the result returned by the call. We can organize
+all such possible observation sequences into a <b>decision tree</b>, in which
+each observation sequence corresponds to exactly one path from the root of the tree
+to some leaf.
+Since the decision tree is able to correctly handle all \(n!\)
+permutations of the array, it must have at least \(n!\) leaves:
+</p>
+
+<div class=figure>
+  <canvas id="decision-tree"
+          style="height:140px; width:400px">
+  </canvas>
+  <p class=caption>
+    Figure 3: Sorting decision tree
+</p>
+  <script class=graphics>
+    with (new CFigure("decision-tree")) {
+        function node(l) {
+            let r = circle().setW(10)
+            if (l) label(l).at(r)
+            return r
+        }
+        function drawSubTree(n, w) {
+            let lt = node("<"), eq = node("="), gt = node(">")
+            align("distribute", "center", lt, eq, gt)
+            equal(minus(gt.x(), lt.x()), w)
+            equal(gt.y(), plus(n.y(), 20))
+            equal(eq.x(), n.x())
+            connector(n, lt)
+            connector(n, eq)
+            connector(n, gt)
+            if (w > 50) {
+                drawSubTree(lt, w/3)
+                drawSubTree(eq, w/3)
+                drawSubTree(gt, w/3)
+            }
+        }
+        let root = node()
+        align("center", "top", root, canvasRect().inset(2))
+        drawSubTree(root, 250)
+        let dot1 = label("."),
+            dot2 = label("."),
+            dot3 = label(".")
+        align("center", "distribute", dot1, dot2, dot3)
+        equal(plus(dot1.y(), 30), dot3.y())
+        let leaves = horzLine().setStartArrow("arrow").setEndArrow("arrow")
+        align("left right", "bottom", leaves, canvasRect().inset(12))
+        align("center", "abut", dot3, vspace(10), leaves, vspace(2), label("≥ n! leaves"))
+    }
+  </script>
+</div>
+<p>
+The worst-case running time of the sorting algorithm must be at least
+proportional to the number of comparisons it makes, which can be as large as
+the longest path in this decision tree: that is, the height \(h\) of the decision tree. To express such a <em>lower bound</em>
+on running time, we cannot use big-O, because it talks about upper bounds.
+To express lower bounds we use big-<b>omega</b>. In this case, the
+running time of the sorting algorithm is \(Ω(h)\).
+<p>
+In general, we say that a function \(f(n)\)
+is \(Ω(g(n))\) if
+there exists some constant factor \(k\) and value
+\(n_0\) such that for large values of
+\(n\) (that is, where \(n &gt; n_0\), the inequality
+\(f(n) &ge; k·g(n)\) always holds. We say that
+\(g(n)\) is an asymptotic lower bound for \(f(n)\) in this case.
+</p>
+
+</p>
+<p>
+Now, a ternary tree of height \(h\) can have at <em>most</em>
+\(3^h\) leaves. Therefore, we know
+\(3^h ≥ n!\), or equivalently, that
+\(h ≥ log_3(n!) = \ln(n!)/\ln(3)\).
+From
+<a href="https://en.wikipedia.org/wiki/Stirling%27s_approximation">Stirling's formula</a>, we learn that
+\(\ln n!\) is \(O(n \ln n)\).
+Ignoring the constant factor of \(1/\ln(3)\), this result means
+that \(Ω(h) = Ω(n \lg n)\), as claimed. Hence, generic sorting
+algorithms cannot be faster in the worst case, even if they can be faster
+for particular inputs, such as the linear-time performance of
+insertion sort on an already-sorted array.
+</p>
+
+<h2>Merge sort</h2>
+<p>
+Most efficient sorting algorithms use recursion to implement a <b>divide-and-conquer</b>
+strategy. They break the array into smaller subarrays and recursively
+sort them. Merge sort is one such algorithm. Given an array to sort,
+it finds the middle of the array and then recursively sorts the
+left half and the right half of the array. Then it merges the
+resulting arrays. A temporary array <code>tmp</code> is provided to give space
+for merging work:
+</p>
+<pre>
+/** Sort a[l..r). Modifies tmp.
+    Requires: l &lt; r, and tmp is an array at least as long as a.
+ */
+void sort(int[] a, int l, int r, int[] tmp) {
+    if (l == r-1) return; // already sorted
+    int m = (l+r)/2;
+    sort(a, l, m, tmp);
+    sort(a, m, r, tmp);
+    merge(a, l, m, r, tmp);
+}
+</pre>
+<p>
+The real work is done in <code>merge</code>, which takes time linear in the total
+number of elements to be merged: \(O(r&minus;l)\). It works by
+scanning both subarrays to be merged from left to right, picking the smaller element
+from each array as the following diagram suggests:
+</p>
+<div class=figure>
+  <canvas id="merge-inv-constrain"
+          style="height:120px; width:400px">
+  </canvas>
+    <p class="caption">
+    Array during merge
+    </p>
+  <script class=graphics>
+    with (new CFigure("merge-inv-constrain")) {
+        setFontName("Menlo, Consolas, fixed")
+        function r() { return rectangle().setH(20).setLineWidth(1) }
+        var before1 = r(), before2 = r(), before3 = r(), before4=r(),
+            a = label("a")
+        var after1 = r(), after2 = r()
+        align("abut", "center", a, hspace(4), before1, before2, before3, before4)
+        align("abut", "top bottom", before1, before2, before3, before4)
+        align("left", "abut", before1, vspace(50), after1)
+        // align("none", "top", varr, canvasRect())
+
+        var tmp
+        align("abut", "center", tmp = label("tmp"), hspace(4), after1, after2)
+        align("left", "none", tmp, canvasRect())
+
+        before1.setFillStyle('#ddd') 
+        before3.setFillStyle('#ddd') 
+        after1.setFillStyle('#ddd')
+
+        var varr = label("r")
+        equal(varr.y0(), 2)
+        equal(minus(before2.x1(), before1.x0()),
+              minus(before4.x1(), before3.x0()))
+        equal(before3.w(), times(before1.w(), 1.8))
+        equal(before1.w(), times(0.4, before2.w()))
+        align("left", "abut", label("l"), vspace(3), before1)
+        align("left", "abut", label("i"), vspace(3), before2)
+        align("left", "abut", label("m"), vspace(3), before3)
+        align("left", "abut", label("j"), vspace(3), before4)
+        align("left", "abut", varr, vspace(3), before4.ur())
+        align("right", "none", varr, canvasRect().inset(1))
+        align("right", "none", before4, after2)
+        align("left", "abut", label("l"), vspace(3), after1)
+        align("left", "abut", label("k"), vspace(3), after2)
+        align("left", "abut", label("r"), vspace(3), after2.ur())
+        connector(before1, before1.toBottom(20), after1.uc().toLeft(10)).setEndArrow("arrow")
+        connector(before3.lc(), before3.lc().toBottom(20), after1.ur().toTop(35), after1.uc().toRight(10)).setEndArrow("arrow")
+    }
+  </script>
+</div>
+<p>
+Here is the code. We use the notation <code>a[l..r)</code> to mean <code>a[l..r-1]</code>.
+</p>
+<pre>
+/** Place a[l..r) into sorted order.
+  * Requires: l &lt; m &lt; r, and a[l..m) and a[m..r) are both in sorted order.
+  * Performance: O(r-l)
+  */
+void merge(int[] a, int l, int m, int r, int[] tmp) {
+    int i = l, j = m, k = l;
+    while (i &lt; m &amp;&amp; j &lt; r)
+        tmp[k++] = (a[i] &lt; a[j]) ? a[i++] : a[j++];
+    System.arraycopy(a, i, tmp, k, m-i);
+    System.arraycopy(tmp, l, a, l, j-l);
+}
+</pre>
+<p>
+At the end of the <code>while</code> loop, either <code>i</code> = <code>m</code> or
+<code>j</code>=<code>r</code>, but not both, because only one of <code>i</code>
+and <code>j</code> is incremented on each loop iteration.  Therefore, 
+array <code>a</code> still contains some elements that have not been
+copied to <code>tmp</code>, either in <code>a[i..m)</code> (if <code>j</code> = <code>r</code>)
+or in <code>a[j..r)</code> (if <code>i</code> = <code>m</code>). if
+<code>j</code> = <code>r</code>, the first <code>arraycopy</code> call
+transfers the elements <code>a[i..m)</code> to <code>tmp</code> and the second
+<code>arraycopy</code> copies all the elements from tmp back to a (since
+<code>j-l</code> = <code>r-l</code>). If <code>i</code>=<code>m</code>, however,
+elements in <code>a[j..r)</code>, are already in the right place in
+<code>a</code>, so there is no need to copy them to <code>tmp</code> and back again.
+The first <code>arraycopy</code> does nothing, and the second
+<code>arraycopy</code> copies just the elements <code>tmp[l..j)</code> into
+<code>a[l..j)</code>, leaving <code>a[j..r)</code> alone.
+</p>
+<p>
+    The running time of this algorithm is always \(O(n \lg n)\), which is big
+    improvement on \(O(n^2)\). For example, if sorting a million elements, the
+    speedup, ignoring constant factors, is \(1,\!000,\!000/\lg 1,\!000,\!000 ≈
+    50,\!000\). The speedup probably won't be quite that great when comparing
+    to insertion sort because of the constant factors hidden in the big-\(O\)
+    notation.
+</p>
+<p>
+    To see why it is \(n \lg n\), think about the whole sequence of recursive
+    calls shown in Figure 4. Each layer of recursive calls takes total merge
+    time proportional to \(n\), and there are \(\lg n\) recursive calls. The
+    total time spent in the algorithm is therefore \(O(n·\lg n)\).
+</p>
+<div class=figure>
+  <canvas id="merge-sort-analysis"
+          style="height:220px; width:400px">
+  </canvas>
+  <p class="caption">
+    Figure 4: Merge sort performance analysis. Total work on each level is proportional to \(n\)
+  </p>
+  <script type="application/javascript" class=graphics>
+    with (new CFigure("merge-sort-analysis")) {
+        var sep = 8, h = 20, hs = h + sep
+        function level(x, p1, p2) {
+            if (x < 4) {
+                let r = rectangle()
+                pin(p1, r.ul())
+                pin(p2, r.lr())
+                label("n" + (x == 0 ? "" : "/" + (1<<x))).at(r.center())
+                let m = average(p1.x(), p2.x())
+                level(x + 1, p1.toBottom(hs), point(minus(m, sep/2), plus(p2.y1(), hs)))
+                return level(x + 1, point(plus(m, sep/2), plus(p1.y1(), hs)), p2.toBottom(hs))
+            }
+            return p2
+        }
+        let levels = group(label("lg n"), vspace(5), label("levels")).align("center", "abut")
+        align("left", "center", levels, canvasRect())
+        let p2 = level(0, point(levels.x1(), plus(1,canvasRect().y0())),
+                          canvasRect().ur().toBottom(h).toLeft(1))
+
+        let rp, w1, num_ones = 16
+        for (let i = 0; i < num_ones; i++) {
+            let ri = rectangle().setH(h)
+            label("1").at(ri)
+            if (i == 0) {
+                equal(ri.x0(), levels.x1())
+                w1 = ri.w()
+            } else {
+                equal(ri.x0(), plus(sep, rp.x1()))
+                equal(ri.w(), w1)
+            }
+            equal(ri.y1(), canvasRect().inset(2).y1())
+            rp = ri
+        }
+        let g = group(label("."), label("."), label(".")).align("center", "distribute")
+        align("center", "none", g, canvasRect())
+        equal(rp.x1(), canvasRect().inset(2).x1())
+        align("none", "abut", p2, vspace(-sep), g, vspace(15), rp)
+        align("center", "abut",
+            point(levels.x(), canvasRect().y0()),
+            vertLine().setStartArrow("arrow"),
+            vspace(5),
+            levels,
+            vspace(5),
+            vertLine().setEndArrow("arrow"),
+            point(levels.x(), canvasRect().y1())
+        )
+    }
+  </script>
+</div>
+<p>
+Like insertion sort, merge sort is a stable sort. This is a major
+reason why merge sort is commonly used. Another is that its run time
+is not only fairly low but is also predictable.
+</p><p>
+Merge sort is not quite as fast as the quicksort algorithm that we will see
+next because it does extra copying into the temporary array.
+We can avoid some of the copying by exchanging the roles of <code>a</code> and <code>tmp</code> on
+alternate recursive calls. This trick speeds up the algorithm slightly at the cost of more complex code.
+It is actually possible to do an in-place merge in linear time, but in-place merging
+is quite tricky and about 5 times slower in practice than using a separate array.
+</p><p>
+Another trick that is used to speed up merge sort is to use insertion
+sort when the subarrays are small enough. For small arrays,
+insertion sort is faster because \(k_1n^2\) is smaller than \(k_2n \lg n\)
+when \(n\) and \(k_1\) are small enough,
+and insertion sort tends to have a very good constant factor \(k_1\).
+The location of the performance crossover is architecture-dependent, but on modern machines,
+a good starting guess would be 16&ndash;20 elements. Using insertion sort for subarrays
+of this size can speed up merge sort by about 20%.
+</p>
+<h2>Quicksort</h2>
+<p>
+Quicksort is another divide-and-conquer sorting algorithm. It avoids
+the work of merging by partitioning the array elements before
+recursively sorting. The algorithm chooses a <b>pivot value</b> \(p\) and
+then separates all the elements in the array so that the right half 
+contains
+elements at least as large as \(p\) and the left half contains elements
+no larger than \(p\).
+</p>
+<!--
+<div class="figure">
+<img src="sorting/qs-final.png" alt="quicksort after partition" />
+<p class="caption">
+Final partitioned state of the array
+</p>
+</div>
+-->     
+<div class=figure>
+  <canvas id="final-qsort-state" style="height:80px; width:400px">
+  </canvas>
+  <p class="caption">
+    Final partitioned state of the array
+  </p>
+  <script type="application/javascript" class=graphics>
+    with (new CFigure("final-qsort-state")) {
+        var left, right
+        function invRect() { return rectangle().setH(30).setLineWidth(1) }
+        setFontSize(11)
+        align("abut", "top bottom",
+            left = invRect().setW(150).addText("≤ p"),
+            right = invRect().setW(180).addText("≥ p"))
+        align("center", "none", right.cl(), canvasRect())
+        align("left", "abut", right, vspace(10), label(" k").setFontSize(12))
+        align("none", "top", left, canvasRect().inset(10))
+    }
+  </script>
+</div>
+<p>
+Thus, quicksort does some of the work of sorting before recursing.
+The two resulting subarrays can then be sorted recursively
+and the algorithm is then done.
+</p>
+
+<pre>
+/** Sort a[l..r) */
+void qsort(int[] a, int l, int r) {
+    if (l &gt;= r-1) return; // base case: 0 or 1 elements are already sorted
+
+    // Partition elements around some pivot value p, obtaining partition index k.
+    int k = partition(a, l, r);
+
+    qsort(a, l, k);
+    qsort(a, k, r);
+}
+</pre>
+<p>
+Notice that the choice of pivot matters. If the pivot
+value is the largest or smallest element in the array, the subarrays
+have lengths 1 and \(n&minus;1\). If this happens on every recursion&mdash;which
+it easily can if the array is sorted to begin with&mdash;quicksort will
+take \(O(n^2)\) time. One solution is to choose the pivot randomly from
+among the elements of the array, and swap it with <code>a[l]</code>.  With this choice, quicksort has
+expected run time \(O(n \lg n)\), using reasoning similar to that for
+merge sort. A different, commonly used heuristic is to choose the median of
+the first, the last, and the middle element of the array. This
+cheaper heuristic makes quicksort perform well on arrays that are mostly
+sorted, while usually avoiding the \(O(n^2)\) case in practice.
+</p>
+<h3>Partitioning</h3>
+<p>
+Now, how to partition elements efficiently? We want the array to end up looking
+like the diagram above. The idea is to start two pointers \(i\) and \(j\) from opposite ends of the array.
+They sweep in toward the middle, swapping elements as necessary to achieve the
+final partitioned state shown above.
+</p>
+<p>The algorithm starts with the array containing the pivot value in its
+first element and the rest of the array in an unknown state:
+</p>
+<div class=figure>
+  <canvas id="qs-initial" style="height:60px; width:400px">
+  </canvas>
+  <p class="caption">
+    Quicksort: Initial state of the array
+  </p>
+  <script type="application/javascript" class=graphics>
+    var f = new CFigure("qs-initial")
+    function iRect(f) { return f.rectangle().setH(30).setLineWidth(1) }
+    with (f) {
+        var left, right
+        setFontSize(11)
+        align("abut", "top bottom",
+            left = iRect(f).setW(30).addText("p"),
+            right = iRect(f).addText("?"))
+        align("left", "top", left, canvasRect().inset(2))
+        let j = label(" j").setFontSize(12)
+        align("left", "abut", right.lr(), vspace(5), j)
+        align("right", "none", j, canvasRect().inset(2))
+    }
+  </script>
+</div>
+<p>
+The initial loop advances <code>j</code> so that it points to an element on the
+wrong side of the array, with <code>l</code> ≤ <code>i</code> ≤ <code>j</code> &lt; <code>r</code>:
+</p>
+<div class=figure>
+  <canvas id="qs-start-loop" style="height:60px; width:400px">
+  </canvas>
+  <p class="caption">
+    Quicksort: State of the array at the start of the main loop
+  </p>
+  <script type="application/javascript" class=graphics>
+    var f = new CFigure("qs-start-loop")
+    with (f) {
+        setFontSize(11)
+        let g = group(iRect(f).setW(30).addText("p"),
+                      iRect(f).addText("?"),
+                      iRect(f).addText("≤p"),
+                      iRect(f).addText(">p")).align("abut", "top bottom")
+        let rects = g.children()
+        align("right", "none", rects[3], canvasRect().inset(2))
+        equal(rects[2].w(), rects[0].w())
+        align("left", "top", g, canvasRect().inset(2))
+        align("center", "abut", rects[0], vspace(5), label("i"))
+        align("center", "abut", rects[2], vspace(5), label("j"))
+    }
+  </script>
+</div>
+<p>
+The loop must have an invariant that starts out describing this state but that
+ends up describing the desired final state.
+As the following diagram suggests, the invariant
+says that all elements strictly to the left of <code>i</code> are at
+most \(p\), and all elements strictly to the right of
+<code>j</code> are at least \(p\). Further, the element at
+<code>i</code> itself is at least \(p\) (and therefore belongs on the
+right-hand side of the array) and the element at <code>j</code> 
+is at most \(p\) (and belongs on the left-hand side).
+Finally, the inequalities <tt>l</tt> ≤ <code>i</code> ≤ <code>j</code>+1 ≤ <code>r</code> hold,
+so both i and j are in bounds and can go past each other by at most a single index.  Therefore, if <code>i</code> and <code>j</code> do past each other,
+the values they index will be on the correct side of the array and the 
+array can be partitioned between them.
+</p>
+<div class=figure>
+  <canvas id="qs-inv" style="height:80px; width:400px">
+  </canvas>
+  <p class="caption">
+    Quicksort: Invariant during partitioning
+  </p>
+  <script type="application/javascript" class=graphics>
+    var f = new CFigure("qs-inv")
+    with (f) {
+        var left, right
+        var rects = [ iRect(f), iRect(f), iRect(f), iRect(f), iRect(f) ]
+        align("abut", "top bottom", rects[0], rects[1], rects[2], rects[3], rects[4])
+        setFontSize(11)
+        rects[0].addText("≤p")
+        rects[1].addText("≥p").setFontSize(10)
+        rects[2].addText("?")
+        rects[3].addText("≤p").setFontSize(10)
+        rects[4].addText("≥p")
+        align("left", "top", rects[0], canvasRect().inset(2))
+        align("right", "top", rects[4], canvasRect().inset(2))
+        rects[1].setW(30)
+        rects[3].setW(30)
+        equal(rects[0].w(), rects[2].w())
+        equal(rects[2].w(), rects[4].w())
+        align("center", "abut", rects[1], vspace(5), label("i"))
+        align("center", "abut", rects[3], vspace(5), label("j"))
+    }
+  </script>
+</div>
+<p>
+Despite (or because of!) the complexity of the invariant, the partitioning code can
+then look very simple and be very efficient:
+</p>
+<pre>
+/** Partition array {@code a} into {@code a[l..k)} and {@code a[k..r)}, where {@code l&lt;k&lt;r}, and all elements
+ * in {@code a[l..k)} are less than or equal to all elements in {@code a[k..r)}.
+ * Requires: {@code 0≤l}, {@code r≤a.length}, and {@code r-l≥2}.
+ */
+int partition(int[] a, int l, int r) {
+    int p = a[l]; // better: swap a[l] with random element first
+    int i = l, j = r - 1;
+    while (a[j] &gt; p) j--;
+    while (i &lt; j) {
+        swap a[i] ⇔ a[j]
+        do i++; while (a[i] &lt; p);
+        do j--; while (a[j] &gt; p);
+    }
+    return j+1;
+}
+</pre>
+<p class="cont">
+The inner loops are written as <code>do...while</code> loops because we want to
+do the body of each loop once even if the loop guard is initially false.
+Interestingly, these inner loops do not need to do any bounds checking on
+<code>i</code> and <code>j</code>. The reason bounds checks are not needed
+is after swapping <code>a[i]</code> and <code>a[j]</code>, there must be at
+least one value “ahead” of both <code>i</code> and <code>j</code> that will
+stop their inner loops.
+</p>
+<p>
+An example of partitioning will probably help understand what is going
+on.  We start out with the following array, with <code>p=5</code>:
+</p>
+<pre>
+5 2 6 7 1 9 3 8
+i               j
+</pre>
+<p>Before the main loop starts, we move <code>j</code> down to a value that can be swapped
+with the pivot at index <code>i</code>:
+</p>
+<pre>
+5 2 6 7 1 9 3 8
+i           j  
+</pre>
+<p>
+In the first iteration, we swap and then move i and j 
+inward to the next swappable values:
+</p>
+<pre>
+3 2 6 7 1 9 5 8
+    i   j     
+</pre>
+<p>
+In the second iteration, we swap and then move i and j 
+inward again:
+</p>
+<pre>
+3 2 1 7 6 9 5 8
+    j i       
+</pre>
+<p>
+Since <code>i &gt; j</code>,
+the loop halts and the result is <code>j+1</code> = 3. The two subarrays
+to be recursively sorted are (3,2,1) and (7,6,9,5,8).
+</p>
+<p>The loop can either stop with <code>i</code> = <code>j</code>+1 or with
+<code>i</code> = <code>j</code> in the case where <code>a[i]</code> =
+<code>a[j]</code> = <code>p</code>. Since j must be decremented at least twice,
+either by the initial loop or by the first iteration of the main loop,
+the value j+1 will always be a valid array index.
+</p>
+<p>
+Quicksort is an excellent sorting algorithm for many applications.
+It tends to be a bit faster than merge sort—perhaps 25% faster for
+large arrays.  However, one downside is that it is not a stable sort. As with
+merge sort, a noticeable speedup can be obtained by switching to insertion sort for
+sufficiently small subarrays.
+</p>
+
+<h3>Quickselect</h3>
+<p>
+Finding the maximum and minimum elements in an array is a straightforward
+\(O(n)\)
+algorithm.  But what if we want to find the <em>median</em> element? Or the
+10th largest element? The problem of finding the nth largest element in an
+array is called the <b>order statistics</b> problem.  Clearly, we can solve
+this problem by sorting the array and then indexing to the appropriate
+position, but that does a lot of sorting work that is not necessary.
+</p>
+<p>
+Fortunately, the quicksort algorithm can be tweaked a little to solve
+the order statistics problem efficiently.
+</p>
+<pre class=load>
+<a href="sorting/qselect.java">qselect.java</a>
+</pre>
+<p>
+If partitioning perfectly splits the array in half each time, the total work
+is proportional to the finite geometric series \(n + n/2 + n/4 + ... + 1 = 2n&minus; 1\),
+which is \(O(n)\). Of course, the split won't usually be perfect, but
+the average split will still result in a series that is \(O(n)\). Therefore,
+expected time is \(O(n)\); worst-case time is, as with quicksort,
+\(O(n^2)\).
+</p>
+<p>
+Unlike quicksort, this method is tail-recursive, so it can be converted to a
+loop in the usual way:
+</p>
+<pre class=load>
+<a href="sorting/qselect_iterative.java">qselect_iterative.java</a>
+</pre>

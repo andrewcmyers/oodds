@@ -1,0 +1,225 @@
+<p>
+We'll see how to remove nodes from a linked list in a minute.
+</p>
+
+<h2>Building abstractions using linked lists</h2>
+<p>
+Linked lists are useful data structures, but using them directly can lead
+to programming errors. Often their utility comes from using them to implement
+other abstractions.
+</p>
+<h3>Immutable lists</h3>
+<p>
+For example, we can use a linked list to efficiently implement an <b>immutable
+list</b> of objects:
+
+<pre>
+// An immutable, ordered, finite sequence of objects (a<sub>0</sub>,
+// a<sub>1</sub>, ..., a<sub>n-1</sub>), which may be empty.
+interface ImmList {
+    /** Returns: the first object in the list (a<sub>0</sub>).
+     *  Checks: the list is not empty. */
+    Object first();
+
+    /** Returns: a list containing all elements but the first, i.e.,
+     * (a<sub>1</sub>, ..., a<sub>n-1</sub>)
+     *  Checks: the list is not empty.  */
+    ImmList rest();
+
+    /** Returns whether this is the empty list. */
+    boolean empty();
+
+    /** Returns: a list containing the same elements as this,
+     *  but with the object x inserted at the beginning. That is,
+     *  (x, a<sub>1</sub>, ..., a<sub>n-1</sub>) 
+     *  Checks: the list is not empty.  */
+    ImmList cons(Object x)
+}
+</pre>
+To implement this interface using a <code>null</code>-terminated list, we will
+need an additional <b>header object</b> so that we can represent empty lists
+with something other than <code>null</code>. (Notice that we don't bother to
+repeat the specifications from the interface. No need!)
+</p>
+<pre>
+class ImmListImpl implements ImmList {
+    private Node head; // may be null to represent empty list
+
+    public ImmListImpl() {
+        head = null;
+    }
+    public boolean empty() {
+        return (head == null);
+    }
+    public Object first() {
+        assert head != null;
+        return head.data;
+    }
+    public ImmList rest() {
+        assert head != null;
+        ImmListImpl r = new ImmListImpl();
+        r.head = head.next;
+        return r;
+    }
+    public ImmList cons(Object x) {
+        ImmListImpl r = new ImmListImpl();
+        r.head = new Node(x, head); // assuming appropriate Node constructor
+        return r;
+    }
+
+}
+</pre>
+<p>
+Notice that this implementation allows different lists to share the same list
+nodes. This makes operations like <code>cons</code> and <code>rest</code> much
+more efficient than they otherwise would be; the method <code>rest</code> runs
+in constant time rather than needing to copy all the remaining nodes of the list.
+It is safe to share list nodes precisely because the list abstraction is
+immutable, and the underlying list nodes cannot be accessed by any code outside
+the <code>ImmListImpl</code> class. Abstraction lets us build more efficient
+code.
+</p>
+
+Because <code>ImmList</code> is immutable, it makes sense to have an <code>equals</code>
+operation that compares all the corresponding elements:
+<pre>
+boolean equals(Object o) {
+    if (!o instanceof ImmList) return false;
+    ImmList lst = (ImmList) o;
+    Node n = head;
+    while (n != null) {
+        if (lst.empty()) return false;
+        if (!n.data.equals(lst.data)) return false;
+        n = n.next;
+        lst = lst.rest();
+    }
+    return lst.empty();
+}
+</pre>
+
+<h3>Mutable lists</h3>
+<p>
+The sharing that was possible with immutable lists is necessarily lost when we use
+linked lists to implement mutable lists. On the other hand, we can offer a larger
+set of operations:
+<pre>
+/** A mutable ordered list (a<sub>0</sub>, a<sub>1</sub>, ..., a<sub>n-1</sub>) */
+interface MutList {
+    /** The number of objects in the list. */
+    int size();
+
+    /** Returns: The object at index i (a<sub>i</sub>).
+     *  Requires: 0 &le; i &lt; n */
+    Object get(int i);
+
+    /** Effects: Inserts x at the head of the list. */
+    void prepend(Object x);
+
+    /** Effects: Inserts x at the end of the list. */
+    void append(Object x);
+
+    /** Returns: true if x is in the list.
+     *  Effects: Removes the first occurrence of object x from the list.  */
+    boolean remove(Object x);
+
+    /** Returns: true if x is in the list. */
+    boolean contains(Object x);
+
+    ...more operations...
+}
+</pre>
+<p>Again, this abstraction can be implemented using a linked list.
+A header object is again handy, especially to keep track of auxiliary
+information like the number of elements in the list and the last element
+of the list.
+</p>
+<p>We didn't put a <code>rest()</code> operation in the interface,
+because it would have to be an O(n) operation. If the client really
+wants to perform that computation, they will probably copy the whole
+list and remove the first element of the copy.
+</p>
+<p>Below is the implementation of mutable lists. Notice that <code>prepend</code>
+and <code>append</code> both can be implemented to take constant time thanks to
+the <code>last</code> field, which avoids scanning down the whole list to find the
+end.
+</p>
+<p>
+This code also shows how to find and remove nodes from a linked list. The key is
+to keep <i>two</i> pointers into the list, named <code>n</code> and <code>p</code>
+in this code, keeping track of the current node and also the previous node. The
+previous node is needed because the previous node's <code>next</code> field needs
+to point to the next node after the one containing the object we are looking for.
+</p>
+<pre>
+class MList implements MutList {
+    private Node head;
+    // invariant: size_ is the number of nodes in the list starting with head.
+    private int size_;
+    // The last element in the list. Is null iff head is null.
+    private Node last;
+
+    int size() { return size_; }
+
+    void prepend(Object x) {
+        head = new Node(x, head);
+        size_++;                        // restore the size_ invariant
+    }
+    void append(Object x) {
+	Node n = new Node(x, null);
+	if (head == null)
+	    head = last = n;
+	else
+	    last.next = n;
+	size_++;
+    }
+    boolean remove(Object x) {
+        Node n = head, p = null;
+        while (n != null && !x.equals(n.data)) {
+            p = n;
+            n = n.next;
+        }
+        if (n == null) return false;
+        size--;
+        if (p == null) head = n.next;
+        else p.next = n.next; // splice out n
+        return true;
+    }
+}
+</pre>
+<h2>Abstractions vs data structures</h2>
+<img style="float: right" src="lec_recursion_lists/listimpls.png">
+<p>
+A key thing to observe here is that data structures such as singly or doubly
+linked lists are data structures. We can use these data structures to implement
+abstractions, such as immutable lists and mutable lists, which provide a
+particular set of operations.  There are other ways to implement these
+abstractions, however, as we'll see later. And we can use these data
+structures, in turn, to implement other abstractions. For example, one useful
+abstraction we will see over and over again is the <b>stack</b>. A stack is an
+ordered list that supports two operations:
+</p>
+
+<ul>
+<li><code>void push(Object x)</code> : insert the element x at the beginning of the list.
+<li><code>Object pop()</code> : remove and return the first element in the list. Requires that the stack is non-empty.
+</ul>
+
+<p>The stack abstraction is easily and efficiently implemented using linked lists:</p>
+
+<pre>
+class Stack {
+    private Node top;
+
+    void push(Object x) {
+        top = new Node(x, top);
+    }
+    Object pop() {
+        Object ret = top.data;
+        top = top.next;
+    }
+</pre>
+
+<p>The key is to keep in mind that data structures are ways to implement
+abstractions, and using them through an abstraction barrier is preferable
+to using the data structure directly. This allows you to change the data structure
+without breaking client code.</p>

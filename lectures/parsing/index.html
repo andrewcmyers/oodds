@@ -1,0 +1,460 @@
+<h1>Grammars and Parsing</h1>
+<p>
+Parsing is something we do constantly. In fact, you are doing it right
+now as you read this sentence. Parsing is the process of converting a
+stream of input into a structured representation. The input stream may
+consists of words, characters, or even bits. The output of the process
+is a tree.
+</p>
+<p>          
+Our brains are remarkably good at parsing. When we hear a sentence like
+“The rat ate cheese,” our brains build a <b>parse tree</b> similar to the
+following diagram:
+</p>
+<div class="figure">
+<img src="parsing/simple-sentence.png" alt="parse tree of a simple sentence" />
+</div>
+<p>Notice that the leaves of the tree, in left-to-right order, spell
+out the sentence, but there are also some other nodes higher up in
+the tree describing the function of each words and of subsequences of
+words.</p>
+<p>
+Your brain can handle much more complex sentences, though it does
+have its limits.  On the other hand, when you read a supposed sentence
+like “rat cheese the ate the,” you instantly recognize this as not being
+a sentence at all, because it has no parse tree. This sequence of words
+is, in fact, a <b>syntax error</b>. 
+</p>
+<p>
+Parsing is performed by computers as well. Your Java programs are parsed
+by the Java compiler. Even more mundane devices such as calculators
+use parsing to interpret mathematical expressions.
+</p>
+<p>
+For programming languages, legal syntax is defined by a <b>grammar</b>,
+which specifies which input sequences have a parse tree.  While the
+situation in real human languages is more complex, for programming
+languages, legal syntax is defined using a <b>context-free grammar</b>.
+The modifier <b>context-free</b> means that the legal syntax for a
+subtree of the parse tree (say, the possible subtrees of a “noun phrase”
+node, above) depends only on the node at the root of the subtree and not
+on the rest of the tree. 
+</p>
+<p>
+The grammar is defined in terms of <b>terminal symbols</b> (also
+called <b>tokens</b>) and <b>nonterminal symbols</b>. The terminal symbols
+can appear as part of the input (e.g., “rat”) and appear in the parse
+tree only at its leaves. The nonterminal symbols (e.g., “noun phrase”)
+appear at all other nodes in the tree.
+There is usually a low-level preprocessing step called <b>tokenization</b>
+that reads a stream of raw input symbols and organizes them into a sequence of tokens
+to be presented to the parser. For example, when parsing the arithmetic expression
+<code>(42 + foo) * 2112</code>, a tokenizer might break the input up into a
+sequence of tokens (, 42, +, foo, ), *, and 2112.
+</p>
+<h2>Productions</h2>
+<p>
+A context-free grammar is defined by a set of <b>productions</b> that
+define how a single nonterminal can be expanded out into a longer
+series of symbols. A given nonterminal can have multiple
+different productions specifying alternative ways to expand it. For
+example, we can write a pseudo-English grammar corresponding to the
+parse tree above:
+</p>
+<pre>
+<i>sentence</i> → <i>noun-phrase verb-phrase noun-phrase</i>
+<i>sentence</i> → <i>noun-phrase verb-phrase</i>
+<i>noun-phrase</i> → <i>noun</i>
+<i>noun-phrase</i> → <i>article</i> <i>noun</i>
+<i>noun</i> → <i>adjective</i> <i>noun</i>
+<i>article</i> → <b>the</b> | <b>a</b> | <b>an</b>
+<i>adjective</i> → <b>young</b> | <b>old</b> | <b>red</b> | ...
+<i>noun</i> → <b>cat</b> | <b>dog</b> | <b>rat</b> | <b>cheese</b> | ...
+<i>verb</i> → <b>eats</b> | <b>barks</b> | ...
+</pre>
+<p>
+As an abbreviation, when a single nonterminal has multiple productions,
+we write them all together on the right side separated by a vertical
+bar.
+</p>
+<p>
+One of the nonterminals in a context-free grammar is designated as
+the <b>start symbol</b>; it is the root of every possible parse tree.
+The leaves of the parse tree are terminals, and every other node
+is a nonterminal whose children correspond to one of the productions
+in the grammar.
+</p>
+<p>
+The <b>language</b> of a grammar is the set of strings of terminal symbols that
+can be produced by constructing a parse tree with that grammar: the possible
+strings that can be <b>derived</b> from the start symbol. The job of a parser
+is to figure out whether an input string is part of the language of the grammar
+and to construct a parse tree if so.
+</p>
+<p>The language of a grammar can be infinite in size if the grammar is
+<b>recursive</b>. For example, the productions <i>noun-phrase → article
+noun</i> and <i>noun → adjective
+noun</i> allow us to derive the following noun phrases:
+“the dog”, “the old dog”, “the old old dog”, “the old old old dog”, and so on ad infinitum.
+</p>
+<h2>Ambiguity</h2>
+<p>
+With some grammars, it is possible for a string to have more than one parse
+tree. Such a grammar is said to be <b>ambiguous</b>.
+</p>
+<p>
+An example of an ambiguous grammar is the following grammar for arithmetic expressions:
+</p>
+<pre>
+<i>E</i> → <b>n</b> | <i>E</i> + <i>E</i> | <i>E</i> × <i>E</i> | ( <i>E</i> )
+</pre>
+<p>
+The symbols <b>n</b>, <b>+</b>, <b>×</b>, <b>(</b>, and <b>)</b> are all
+terminals; the only nonterminal is the start symbol <i>E</i>.
+The symbol <b>n</b> stands for all possible numeric literals: 1, 2, 3, etc.
+</p>
+<p>
+With this grammar, a string like “2 + 3 × 5” has two possible parse trees, as shown:
+</p>
+<div class="figure">
+<img src="parsing/two-parses.png" alt="parse trees of ambiguous expression" />
+<p class="caption">
+Two parse trees for “2+3×5”
+</p>
+</div>
+<p>
+Only one of these parse trees corresponds to our usual understanding of the
+meaning of the expression as arithmetic, namely the one on the left. Usually, we
+want the grammars we write to be unambiguous so that we obtain a unique parse
+tree corresponding to the meaning of the expression. Unfortunately, there is
+no algorithm that can determine in general whether a given grammar is ambiguous
+(the problem is said to be <b>undecidable</b>). However,
+in practice it is possible to design grammars in a way that avoids ambiguity.
+</p>
+<p>
+The problem with the parse tree on the right is that it violates our
+expectations about <b>precedence</b>. By convention, multiplicative operations
+have higher precedence than additive operations, but the parse tree on the
+right violates this custom, because the addition is performed first.
+</p>
+
+<p>To remove the ambiguity and obtain the expected precedence, the
+grammar can be rewritten to use more nonterminals. We add more nonterminals
+to prevent a “+” production from appearing directly under a “×” production.
+Here <i>T</i> represents an operand in an additive expression and
+<i>F</i> represents an operand in a multiplicative expression.
+The productions in this grammar prevent a <i>T</i> from appearing under an <i>F</i> in the
+parse tree unless shielded by parentheses:
+</p>
+<pre>
+<i>E</i> → <i>E</i> + <i>T</i> | <i>T</i>
+<i>T</i> → <i>T</i> × <i>F</i> | <i>F</i>
+<i>F</i> → <b>n</b> | ( <i>E</i> )
+</pre>
+<p>This grammar has exactly the same language as the above grammar but is unambiguous. For example,
+the example string parses uniquely as follows:
+</p>
+
+<div class="figure">
+<img src="parsing/unambiguous.png" alt="parse tree of unambiguous expression" />
+</div>
+
+<h2>Recursive-descent parsing</h2>
+<p>
+THe idea of <b>recursive-descent parsing</b>, also known as <b>top-down
+parsing</b>, is to parse input while exploring the corresponding parse tree
+recursively, starting from the top. 
+</p>
+<p>Let's build a parser using the following methods.
+For simplicity, we will assume that the input arrives
+as tokens of type <code>String</code>. We assume
+there is a special token <code>EOF</code> at the end of the stream.
+</p>
+<pre>
+/** Returns the next token in the input stream. */
+String peek();
+
+/** Consumes the next token from the input stream and returns it. */
+String consume();
+</pre>
+<p>
+Using these two methods, we can build two more methods that will be especially useful for parsing:
+</p>
+<pre>
+/** Returns whether the next token is {@code s}. */
+boolean peek(String s) {
+    return peek().equals(s);
+}
+
+/** Consume the next token if it is {@code s}.
+ *  Throw {@code SyntaxError} otherwise.
+ */
+void consume(String s) throws SyntaxError {
+    if (peek(s)) { consume(); }
+    else throw new SyntaxError();
+}
+</pre>
+
+<p>The idea of recursive-descent parsing is that we implement a separate method
+for each nonterminal.  The content of each method corresponds exactly to the
+productions for that nonterminal. The key is that it must be possible to
+<em>predict</em> from the tokens seen on the input stream which production
+is being used. Recursive-descent parsing is therefore also known as
+<b>predictive parsing</b>.
+</p>
+
+<p>
+The grammar above ensures that the operators + and × are <i>left-associative</i> (operations of
+equal precedence are performed left-to-right). For the purpose of the exposition, let us temporarily
+change the grammar to make them right-associative:
+</p>
+<pre>
+<i>E</i> → <i>T</i> + <i>E</i> | <i>T</i>
+<i>T</i> → <i>F</i> × <i>T</i> | <i>F</i>
+<i>F</i> → <b>n</b> | ( <i>E</i> )
+</pre>
+<p>
+We will show later how left-associativity can be regained.
+</p>
+
+<p>The method to parse a string generated by the nonterminal <i>E</i> first recursively parses a string generated by <i>T</i> (because both productions for <i>E</i> start with <i>T</i>), then peeks ahead at the next token to see if it is a +. This determines whether the input contains a string generated by <i>T</i> <tt>+</tt> <i>E</i> or just <i>T</i>, thereby determining which production to apply next.
+</p>
+<pre>
+// E → T + E | T
+void parseE() throws SyntaxError {
+    parseT();
+    if (peek("+")) {
+        consume();
+        parseE();
+    }
+}
+</pre>
+<p>
+Similarly, the method <code>parseT</code> looks for “<code>×</code>” to decide which
+production to use:
+</p>
+<pre>
+// T → F × T | F
+void parseT() throws SyntaxError {
+    parseF();
+    if (peek("×")) {
+        consume();
+        parseT();
+    }
+}
+</pre>
+<p>
+And <code>parseF()</code> can decide using the first symbol it sees,
+assuming we have an appropriate method <code>isNumber()</code>:
+</p>
+<pre>
+// F → n | ( E )
+void parseF() throws SyntaxError {
+    if (isNumber(peek())) {
+        consume();
+    } else {
+        consume("(");
+        parseE();
+        consume(")");
+    }
+}
+</pre>
+<h3>Building an evaluator</h3>
+<p>
+So far, the parser we have built is only a <b>recognizer</b> that decides
+whether the input string is in the language generated by the grammar, i.e. whether
+it has a parse tree. It halts normally if so and throws a <code>SyntaxError</code> if not.
+It doesn't actually build the parse tree or evaluate the expression.</p>
+
+<p>However, with a few minor modifications, we can easily convert it
+into an <b>evaluator</b> that evaluates the expression.
+The result type of all the methods becomes <code>int</code>.
+</p>
+<pre>
+int parseE() throws SyntaxError {
+    int v = parseT();
+    if (peek("+")) {
+        consume();
+        v = v + parseE();
+    }
+    return v;
+}
+int parseT() throws SyntaxError {
+    int v = parseF();
+    if (peek("×")) {
+        consume();
+        v = v * parseT();
+    }
+    return v;
+}
+int parseF() throws SyntaxError {
+    if (isNumber(peek())) {
+        return Integer.parseInt(consume());
+    } else {
+        consume("(");
+        int ret = parseE();
+        consume(")");
+        return ret;
+    }
+}
+</pre>
+<p>
+Now we can parse the previous example input and get a result of 17.
+</p>
+<h2>Abstract syntax trees</h2>
+<p>
+The output of a parser is usually an <b>abstract syntax tree</b> (AST), which
+differs from a parse tree in that it contains no noninformative terminal
+symbols. For example, if we parse the input 2+(3×5), we expect to get a tree
+like the following,
+</p>
+<div class="figure">
+<img src="parsing/ast.png" alt="abstract syntax tree" />
+<p class="caption">
+Abstract syntax tree
+</p>
+</div>
+<p>
+Note that the parentheses are no longer there! Parentheses are only needed in the input string
+to disambiguate parsing. Once the expression is parsed, they are
+no longer needed, because the tree structure determines the 
+evaluation order. In fact, the expressions 2+(3×5) and 2+3×5 should produce
+exactly the same AST. Note also that the tree does not need to keep track of
+nonterminals like <i>T</i> and <i>F</i>.
+</p>
+<p>The abstract syntax tree is implemented as a data structure. However, unlike the
+tree structures we have seen up until this point, the nodes are of different types.
+</p>
+<pre>
+class Expr {}
+enum BinaryOp { PLUS, TIMES }
+class Binary extends Expr {
+    BinaryOp operator;
+    Expr left, right;
+    Binary(BinaryOp op, Expr l, Expr r) {
+        operator = op;
+        left = l;
+        right = r;
+    }
+}
+class Number extends Expr {
+    int value;
+    Number(int v) { value = v; }
+}
+</pre>
+<p>
+Using these classes, we can build the AST shown in the previous figure:</p>
+<pre>
+    Expr e = new Binary(BinaryOp.PLUS,
+                new Number(2),
+                new Binary(BinaryOp.TIMES, new Number(3), new Number(5)));
+</pre>
+<h2>Parsing an AST</h2>
+<p>
+A parser that constructs an AST can now be written by changing our recognizer once more, this
+time to return an <code>Expr</code>. Instead of computing integers, as in the evaluator, we just
+construct the corresponding AST nodes:
+</p>
+<pre>
+Expr parseE() throws SyntaxError {
+    Expr e = parseT();
+    if (peek("+")) {
+        consume();
+        e = new Binary(BinaryOp.PLUS, e, parseE());
+    }
+    return e;
+}
+Expr parseT() throws SyntaxError {
+    Expr e = parseF();
+    if (peek("×")) {
+        consume();
+        e = new Binary(BinaryOp.TIMES, e, parseT());
+    }
+    return e;
+}
+Expr parseF() throws SyntaxError {
+    if (isNumber(peek())) {
+        return new Number(Integer.parseInt(consume()));
+    } else {
+        consume("("); // parentheses discarded here!
+        Expr e = parseE();
+        consume(")");
+        return e;
+    }
+}
+</pre>
+<h2>Limitations of top-down parsing</h2>
+<p>
+Some grammars cannot be parsed top-down. Unfortunately, they include grammars
+that we might naturally want to write. Particularly problematic are grammars
+that contain <b>left-recursive</b> productions, where the nonterminal being
+expanded appears on the left-hand side of its own production. We saw these
+in the original grammar specifying the left-associative operators + and ×. The production
+<i>E</i> → <i>E</i> + <i>T</i> is left-recursive, whereas the production used
+above, <i>E</i> → <i>T</i> + <i>E</i>, is right-recursive. A left-recursive
+production doesn't lend itself to predictive parsing, because top-down
+construction of the AST means the parser needs
+to be able to choose which production to use based on the first symbol seen.
+</p>
+<p>
+Grammars with left-recursive productions are very useful, because they create
+parse trees that describe left-associative (left-to-right) computation. With the right-recursive
+production used above, the string “1 + 2 + 3” creates an AST in which evaluation
+proceeds right-to-left. Programmers normally expect left-to-right evaluation,
+and this is even more of a problem if the operator in question
+is not associative (for example, subtraction).
+</p>
+<h3>Reassociation</h3>
+<p>
+To fix this, we can <i>reassociate</i> after parsing. To see how this works, note
+that the two productions <i>E</i> → <i>T</i> + <i>E</i> | <i>T</i> can be viewed as
+shorthand for an infinite list of productions:
+</p>
+<p>
+<i>E</i> → <i>T</i><br />
+<i>E</i> → <i>T</i> + <i>T</i><br />
+<i>E</i> → <i>T</i> + <i>T</i> + <i>T</i><br />
+<i>E</i> → <i>T</i> + <i>T</i> + <i>T</i> + <i>T</i><br />
+...
+</p>
+<p>
+Another way to express all these productions is to adapt the <b>Kleene star</b>
+notation used in regular expressions: the expression <i>A</i><sup>*</sup> means
+0 or more concatenated strings, each chosen
+from the language of <i>A</i>. For example, if the language of
+<i>A</i> is {"a", "bb"}, then the language of A<sup>*</sup>
+has an infinite number of elements, including "a", "aa", "aaa", "bb", "bbbb", "abba", "bbabbbb", and many more.
+<p>
+Using the Kleene star
+notation, we can rewrite the infinite list of productions:
+</p>
+<blockquote>
+<i>E</i> → <i>T</i> ( + <i>T</i> )<sup>*</sup>
+</blockquote>
+<p class="cont">
+where the parentheses are being used as a grouping construct (they are
+<b>metasyntax</b> rather than syntax).
+</p>
+<p>The point of rewriting the productions in this way is that parsing a use of Kleene star
+naturally lends itself to an implementation as a loop. Within that loop, the AST can be
+built bottom-up, so that the operator associates to the left:
+</p>
+<pre>
+void parseE() throws SyntaxError {
+    Expr e = parseT();
+    while (peek("+")) {
+        consume();
+        e = new Binary(BinaryOp.PLUS, e, parseT());
+    }
+}
+</pre>
+<p>Given input &ldquo;t<sub>0</sub> + t<sub>1</sub> + t<sub>2</sub> + t<sub>3</sub> + ...&rdquo;,
+the corresponding abstract syntax tree built by this code looks as follows:
+</p>
+<div class="figure">
+<img src="parsing/reassociation.png" alt="reassociation of a production" />
+</div>
+<p>
+Because it allows parsing of left-associative operators, reassociation via
+bottom-up tree construction is an important technique for top-down parsing.
+</p>

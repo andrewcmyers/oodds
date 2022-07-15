@@ -1,0 +1,312 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
+<body>
+
+<h1>Graphical User Interfaces: Display and Layout</h1>
+<p>
+One of the driving forces behind the development of object-oriented programming
+was the need to create <strong>graphical user interfaces</strong> (GUIs). It is not surprising,
+then, that the OO programming model really shines when building GUIs.
+</p>
+<p>
+In fact, the standard WIMP model of graphical user interfaces (Windows, Icons,
+Menus, Pointer) was developed at Xerox PARC during the 1970's in and along with
+one of the first object-oriented programming languages, Smalltalk. GUIs
+influenced the language design and vice versa. The WIMP model first saw
+widespread deployment by Apple with the first Macintosh computer and was
+soon adopted by Microsoft Windows as well.
+</p>
+<p>
+In this approach to graphical user interface design, the user interface is
+represented internally as a tree structure, in which the various user interface
+components (sometimes called widgets) are nodes in the tree, and the parent–child
+relationship corresponds to containment. In fact, the HTML markup language
+follows this same approach to defining a user interface.
+</p>
+<p>
+We will be using JavaFX, a modern object-oriented GUI library. In such a library,
+there are <em>two</em> interacting hierarchies: first, the containment hierarchy
+corresponding to the tree of UI components, and second, the class hierarchy
+of the components themselves. Unlike in HTML, the class hierarchy is extensible,
+allowing developers to use inheritance to design new components or to customize
+the behavior of existing components.
+</p>
+<h2>Scene Graph</h2>
+<p>
+JavaFX manages the user interface as a <b>scene graph</b>, which is actually a
+tree of nodes. At the root of the scene graph is some node; the node is 
+registered with a <tt>Scene</tt> object that is in turn registered with a
+<tt>Stage</tt>, which corresponds to a top-level window in the application.
+</p>
+<h2>Node class hierarchy</h2>
+<p>
+JavaFX provides a rich class hierarchy of node types that can appear in the Scene
+Graph. Some of them provide rendering capability, others are useful for layout, and
+some are useful user interface devices such as buttons or text editors.
+</p>
+<tt>
+<ul>
+<li>Node
+  <ul>
+  <li>Shape
+    <ul>
+    <li>Text
+    <li>Line
+    <li>Rectangle
+    <li>Circle
+    <li>Polygon
+    </ul>
+  <li>Parent: <i>node that contains other nodes</i>
+    <ul>
+    <li>Group
+    <li>Region: <i>parent that covers a specified area</i>
+      <ul>
+      <li>Control: <i>some useful predefined GUI widgets</i>
+      <ul>
+        <li>Accordion
+        <li>ChoiceBox
+        <li>Separator
+        <li>Labeled
+          <ul>
+          <li>ButtonBase
+            <ul>
+            <li>Button
+            <li>CheckBox
+            <li>Hyperlink
+            </ul>
+          </ul>
+        <li>TextInputControl
+          <ul>
+          <li>TextArea
+          <li>TextField
+          </ul>
+      </ul>
+      <li>Pane: <i>Parent that implements a policy for laying out its children</i>
+        <ul>
+        <li>HBox
+        <li>VBox
+        <li>StackPane
+        <li>GridPane
+        <li>FlowPane
+        <li>BorderPane
+        </ul>
+      <li>Chart
+      <li>Axis
+      </ul>
+    </ul>
+  <li>Canvas: <i>gives complete control over rendering inside its area</i>
+  <li>ImageView
+  <li>SwingNode: <i>allows embedding components from the Swing GUI library</i>
+
+  </ul>
+</ul>
+</tt>
+<h2>Building a GUI</h2>
+<p>
+A scene graph must be constructed. This can be done either by either</p>
+<ul class=bullets>
+<li>writing code to build the scene graph one node at a time, or</li>
+<li>reading it from a file.</li>
+</ul>
+<p>All of the non-leaf nodes in the
+tree are a subclass of <code>Parent</code> (typically a subclass of <code>Pane</code>).
+</p>
+<p>
+To add a child using code:
+</p>
+<pre>
+Parent p;
+Node n;
+p.getChildren().add(n);
+</pre>
+<p>
+The <code>getChildren()</code> method returns a collection of children that is
+tied to the actual children of the parent node. Thus, adding a new node to the
+collection causes the parent node to acquire a new child. The collection can
+be used in various other ways, however; for example, it can be used to
+iterate over the children or to listen to its contents to find out when the set
+of children changes.
+</p>
+<p>
+A scene graph can also be created in advance using the <a
+href="https://www.oracle.com/technetwork/java/javase/downloads/javafxscenebuilder-info-2157684.html">
+JavaFX SceneBuilder application</a>. SceneBuilder saves the scene is saved in
+XML format in an <tt>.fxml</tt> file, which can be loaded by the application to
+create the entire scene graph at once.
+</p>
+<h2>Layout</h2>
+<p>
+Some JavaFX nodes just display themselves (e.g., <code>Rectangle</code>). Some nodes do something active
+(e.g., <code>Button</code>, <code>TextField</code>). Other nodes are just there to control the layout of other
+nodes in the window. Examples of these are the various subclasses of <code>Pane</code>.
+<code>Pane</code> places
+all its children in the upper left corner, but its subclasses override this layout behavior in various
+ways.
+</p>
+<p>For example, the classes <code>HBox</code> and <code>VBox</code>
+lay out their children in a horizontal row or vertical column, respectively. <code>StackPane</code>
+stacks all its children on top of each other in the center. <code>GridPane</code> organizes its
+children into a regular grid, like an HTML table. <code>FlowPane</code> lays out its children like
+words of text, in a series of top-to-bottom rows in which each row contains children laid out left-to-right. <code>BorderPane</code> expects to have five children; one is placed in the center and the four others
+are placed at the top, bottom, right, and left.
+</p>
+<div class=figure>
+<canvas id=panes style="width: 600px; height: 300px"></canvas>
+<script class=graphics>
+with (new CFigure("panes")) {
+    let pane_w = variable("pane_w"), pane_h = variable("pane_h")
+
+    function pane(lb) {
+        let r = rectangle().setFillStyle(null).setW(pane_w).setH(pane_h)
+        label(lb).at(r.lc().toBottom(-8))
+        return r
+    }
+
+    function kids(set_size, n) {
+        if (!n) n = 3
+        function kid(i) {
+            let r = rectangle().addText("" + i).setFillStyle(null).setLineWidth(3)
+            let col
+            switch (i) {
+                case 0: col = "red"; if (set_size) r.setW(80).setH(50); break
+                case 1: col = "green"; if (set_size) r.setW(50).setH(80); break
+                case 2: col = "blue"; if (set_size) r.setW(100).setH(100); break
+                case 3: col = "purple"; break
+                case 4: col = "orange"; break
+            }
+            return r.setStrokeStyle(col).setTextStyle(col).setFontSize(20).setFontStyle("bold")
+        }
+        let result = []
+        for (let i = 0; i < n; i++) {
+            result.push(kid(i))
+        }
+        return result
+    }
+
+    let border = canvasRect().inset(2)
+
+    let Pane = pane("Pane"), HBox = pane("HBox"), VBox = pane("VBox"),
+        StackPane = pane("StackPane"), GridPane = pane("GridPane"), BorderPane = pane("BorderPane")
+
+    align("distribute", "top bottom", Pane, HBox, VBox)
+    align("distribute", "top bottom", GridPane, StackPane, BorderPane)
+    align("left", "abut", Pane, vspace(20), GridPane)
+    align("left", "top", Pane, border)
+    align("right", "top", border, VBox)
+    align("right", "bottom", border, BorderPane)
+
+    align("left", "top", ...kids(true), Pane)
+
+    let hbox_kids = kids(false)
+    align("abut", "top bottom", ...hbox_kids)
+    align("left", "top bottom", hbox_kids[0], HBox)
+    align("right", "top bottom", hbox_kids[2], HBox)
+    equal(hbox_kids[0].w(), times(2, hbox_kids[2].w()))
+
+    let vbox_kids = kids(false)
+    align("left right", "abut", ...vbox_kids)
+    align("left right", "top", vbox_kids[0], VBox)
+    align("left right", "bottom", vbox_kids[2], VBox)
+    equal(vbox_kids[0].h(), times(0.5, vbox_kids[2].h()))
+
+    let gk = kids(false, 4)
+    align("abut", "top bottom", gk[0], gk[1])
+    align("abut", "top bottom", gk[2], gk[3])
+    align("left right", "abut", gk[0], gk[2])
+    align("left right", "abut", gk[1], gk[3])
+    align("left", "top", gk[0], GridPane)
+    align("right", "bottom", gk[3], GridPane)
+    equal(gk[0].h(), times(1.5, gk[2].h()))
+    equal(gk[0].w(), times(3, gk[1].w()))
+
+    align("center", "center", ...kids(true), StackPane)
+
+    let bk = kids(false, 5)
+    align("center", "center", bk[0], BorderPane)
+    align("abut", "top bottom", bk[4], bk[0], bk[2])
+    align("left", "none", bk[4], BorderPane)
+    align("right", "none", bk[2], BorderPane)
+    align("left right", "top", bk[1], BorderPane)
+    align("left right", "bottom", bk[3], BorderPane)
+    align("none", "abut", bk[1], bk[0], bk[3])
+    bk[3].setH(50)
+
+    equal(minus(HBox.x0(), Pane.x1()), minus(GridPane.y0(), Pane.y1()))
+}
+</script>
+</div>
+
+<h2>Appearance</h2>
+
+<p>There are several ways to control the appearance of the scene. Some nodes have handles that
+allow them to be minimized, maximized, or resized. There are also various controls such as
+sliders or knobs to control shape, size, color, or other aspect of the appearance. Nodes can also be
+added, removed, moved, or transformed. With JavaFX, when such a change is made and the
+scene needs to be redrawn, the visible components of the scene redraw themselves in the right order.</p>
+
+<p>
+A useful feature of JavaFX is that nodes can be styled using style sheets (CSS), similar to how HTML
+pages are styled (e.g., <code>p.setStyle("-fx-background-color: #ffff00");</code>). The style sheet
+can also be created in advance and loaded from an external file. Style sheets provide an easy way to
+rapidly experiment with different looks for an application without recompiling the application.
+</p>
+
+<p>It is also possible to draw onto a <code>Canvas</code> using a
+<code>GraphicsContext</code> object.  One can draw shapes such as rectangles,
+circles, ellipses, or curves. Canvases give complete control over rendering
+anything within their borders, but the program has the responsibility for the
+rendering. One difference from  Swing, JavaFX's predecessor, is that 
+exposed pixels are redrawn automatically.</p>
+
+<h2>Event-driven programs</h2>
+
+<p>
+JavaFX applications are typically <strong>event driven</strong>. This is a somewhat different
+programming paradigm from the usual imperative style. Its motto is: "Don't call us, we'll call you."
+When some hardware event takes place such as a mouse click or key press, an <code>Event</code>
+object is generated. An <code>Event</code> object is simply a Java object like any other
+Java object. It contains information about the source and type of the event: button click,
+mouse movement, keystroke, etc. The event handler of any listener that has registered to
+receive the event is called, and the event object is passed to the handler.
+In that way an application can receive and respond to events such as
+mouse clicks and button pushes.</p>
+
+<h2>Threads</h2>
+<p>
+Unlike simple Java programs, a JavaFX application typically has multiple concurrent threads:
+a <strong>main thread</strong>, a <strong>application thread</strong>, and a <strong>rendering thread</strong>, as well as various background worker threads, depending on the application. The application thread's sole task
+is to loop continuously, listening for the occurrence of hardware-generated events such as mouse
+clicks. For each such occurrence, it constructs an <code>Event</code> object describing the
+event and the GUI component in which it occurred, then calls the event handler of each registered
+listener with that <code>Event</code> object. The rendering thread's task is to continuously rerender the display.
+</p>
+<p>
+Event handlers should not contain long-running computations, because this will
+tie up the application thread, preventing events from being handled. While the
+application thread is carrying out a long-running computation, the user
+interface will freeze and not respond to events. 
+Fortunately, there is a mechanism for scheduling an update of the GUI on the application
+thread later using the method <tt>Platform.runLater(Runnable r)</tt>. The <code>run()</code>
+method of the <code>Runnable</code> object <code>r</code> is called at the earliest available opportunity by the application thread.
+</p>
+<p>
+Programming with threads is challenging because they share access to the same objects. If two
+threads access the same object, it is challenging to prevent them from <strong>interfering</strong>.
+If one thread is in the middle of modifying an object while another thread accesses the object,
+it is easy for the observing thread to see the object in a state in which its class invariant does
+not hold. A good programming pattern for preventing interference is to have most objects <strong>owned</strong>
+by a single thread. Accesses (either reading or writing) to an object by a thread that does own 
+the object are unsafe and are not permitted by the pattern.
+</p>
+<p>
+The JavaFX scene graph follows this pattern. The scene graph is owned by the
+JavaFX application thread.  If you create a background thread to do more
+time-consuming computations, it may be tempting to have the background thread
+access the nodes in the scene graph.  Such accesses are not allowed. JavaFX provides
+other mechanisms for background threads to communicate with the application thread,
+notably the method <code>Platform.runLater()</code>.
+</p>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
+<body>
+
+<h1>Graphical User Interfaces: Events and Animation</h1>
+
+<h2>Handling events</h2>
+<p>
+Programs can define <strong>event handlers</strong> to handle different types of input events. Handlers must be registered to receive events with a GUI component on which the event can occur. There are several ways to specify a handler: classes, inner classes, or lambda expressions. All are basically syntactic sugar for the same thing, but convenient. Here is an example with a lambda expression:
+<pre>
+Button b = ...;
+b.setOnAction(e -&gt; print("button clicked"));
+</pre>
+<p>
+This is essentially the Observer pattern, but for many events, there can be
+only one registered handler. Lambda expressions are really just syntactic sugar
+for <b>inner classes</b>, which are anonymous classes implementing a specified
+interface. In this case, the method <code>setOnAction</code> expects to
+receive an object implementing the interface <code>EventHandler&lt;ActionEvent&gt;</code>,
+where <code>EventHandler</code> is defined as follows:
+</p>
+<pre class="load">
+<a href="gui/EventHandler.java">EventHandler.java</a>
+</pre>
+<p>
+It is not necessary to use a lambda expression to implement an event handler. The
+lambda expression is syntactic sugar for the following code defining an inner class:
+<pre class="load">
+<a href="gui/desugared_lambda.java">desugared_lambda.java</a>
+</pre>
+It is not even necessary to use an inner class; an ordinary class can be used to
+implement the desired interface, as in the following code:
+<pre class="load">
+<a href="gui/desugared_top_level_class.java">desugared_lambda.java</a>
+</pre>
+</p>
+<p>
+In fact, even inner classes are syntactic sugar for top-level classes. Because
+they are just syntactic sugar, they come with some limitations. In particular,
+inner classes and lambda expressions can only refer to variables defined
+outside their scope if those variables are final. The reason for this
+limitation is that their objects may outlive the external variables they refer
+to. For that reason, the implementation of inner classes and lambdas actually
+makes a copy of any such external variable. Since the variable is final, there
+is no way for the programmer to tell that such a copy has been made!
+</p>
+</body>
+</html>

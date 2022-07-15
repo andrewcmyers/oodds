@@ -1,0 +1,116 @@
+<h1>CS 2112 Recitation 6 : Top-down parsing</h1>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<h2>How to approach assignment 4</h2>
+<p>
+You will be more successful on the next assignment if you divide the work up
+evenly between the two partners and set things up so both can make progress
+immediately. In particular, you don't want to wait on implementing the fault
+injection/mutation part of the assignment, because it's about half the work all
+by itself. The natural interface between parsing and fault injection is the
+design of the AST.  If your group can arrive at a good AST design early, then
+one partner can work on producing the AST as an output and the other can work
+on fault injection that uses it as an input.
+</p>
+
+<h2>Interpreting an expression as AST</h2>
+
+<p>
+Let's draw an AST for an example rule written in the critter language. Here is the rule:
+</p>
+
+<pre>
+mem[8] mod (6 + 7 + 11) = 0 and 1 < mem[2] --> mem[2] := 5 mem[1+mem[3]] := 2 + ahead[4] left
+</pre>
+
+<p>
+Here is a reasonable way to represent it as an abstract syntax tree:
+</p>
+
+<div class="figure">
+<img src="rec06/example.png">
+</div>
+
+<p>
+It might be useful see <a href="rec06/example.dot">the DOT source file that generated this diagram</a>.
+It can be viewed using <a href="http://www.graphviz.org">Graphviz</a>, which is a useful tool
+to know about.
+</p>
+
+<p>
+Notice that we created nodes called "command" and "updates" that aren't in the concrete
+syntax, but are meaningful for the critter language.
+</p>
+
+<h2>Parsing example: s-expressions</h2>
+<p>
+The second high-level programming language, Lisp, is written using
+<b>s-expressions</b>, introduced by John McCarthy around 1959. An s-expression
+uses parentheses to denote the application of a function, in prefix syntax.
+For example, the expression 2+3 would be written as (+ 2 3) in Lisp. The tokens
+"+", "2", and "3" are all considered identifiers.
+</p> 
+
+<h3>A grammar for s-expressions</h3>
+
+We use "id" to represent an identifier token. The start symbol is S.
+
+<pre>
+S → id | ( L )
+L → S L | ε
+</pre>
+
+Note that this syntax permits empty s-expressions such as <code>()</code>. If these are not desired, the syntax
+for nonterminal L can be adjusted:
+
+<pre>
+L → S L | S
+</pre>
+
+<h3>AST for s-expressions</h3>
+<p>
+The abstract syntax tree need not follow the parse tree closely. In the case of s-expression, there are really
+two kinds of expressions: identifiers and applications. We can capture this idea by declaring two classes that
+implement a common <code>Node</code> interface:
+
+<pre>
+interface Node {
+    ...
+}
+class Id implements Node {
+    String name;
+}
+class App implements Node {
+    List&lt;Node&gt; children;
+}
+</pre>
+
+<p>
+So an s-expression such as <code>(+ (* 2 3) 4 )</code> produces the following
+AST, where all non-leaf nodes represent function applications.
+</p>
+
+<div class="figure">
+<img src="rec06/ast.png">
+</div>
+
+<h2>Parsing s-expressions</h2>
+
+<p>
+We declare a method for each nonterminal, with a type appropriate for representing what
+that nonterminal corresponds to. One trick we can use is to rewrite the L nonterminal using
+EBNF syntax in which a regular expression is used on the right-hand side:
+</p>
+<pre>
+L → S<sup>*</sup>
+</pre>
+<p>This rule suggests implementing the parsing of L as a loop.
+
+<pre class=load>
+<a href="rec06/SExp.java">SExp.java</a>
+</pre>
+<p>
+This parsing code is simple and efficient.
+</p>
+
+</html>

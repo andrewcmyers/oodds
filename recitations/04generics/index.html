@@ -1,0 +1,109 @@
+<h1>Asymptotic Complexity</h1>
+<p>
+We write expressions like <span class=m>O(n)</span> and <span class=m>O(n<sup>2</sup>)</span> to describe the performance
+of algorithms. This is called <b>&ldquo;big-O&rdquo; notation</b>, and describes
+performance in a way that is largely independent of the kind of computer on
+which we are running our code. This is handy.
+</p>
+<p>
+The statement that <span class=m>f(n)</span> is <span class=m>O(g(n))</span> means that <span class=m>g(n)</span> is an upper bound for <span class=m>f(n)</span>
+within a constant factor, for large enough <span class=m>n</span>. That is, there exists some <span class=m>k</span> such
+that <span class=m>f(n) ≤ k·g(n)</span> for sufficiently large n.
+</p>
+<p>For example, the function <span class=m>f(n) = 3n&minus;2</span> is <span
+class=m>O(n)</span> because <span class=m>(3n&minus;2) ≤ 3n</span> for all
+<span class=m>n &gt; 0</span>. That is, the constant <span class=m>k</span> is
+3.  Similarly, the function <span class=m>f'(n) = 3n + 2</span> is
+<em>also</em> <span class=m>O(n)</span>. It is bounded above by <span class=m>4n</span>
+for any <span class=m>n</span> larger than 2.  This shows that
+<span class=m>kg(n)</span> doesn't have to be larger than <span class=m>f(n)</span>
+for all <span class=m>n</span>, just for <em>sufficiently large</em> <span
+class=m>n</span>. That is, there must be some value <span
+class=m>n<sub>0</sub></span> such that for all <span class=m>n ≥
+n<sub>0</sub></span>, <span class=m>kg(n)</span> is larger than <span
+class=m>f(n)</span>.
+</p>
+<p>
+A perhaps surprising consequence of the definition of <span
+class=m>O(g(n))</span> is that both <span class=m>f</span> and <span
+class=m>f'</span> are also <span class=m>O(n<sup>2</sup>)</span>, because the
+quantity <span class=m>(3n&pm;2)</span> is bounded above by <span
+class=m>kn<sup>2</sup></span> (for any <span class=m>k</span>) as <span
+class=m>n</span> grows large. In other words, big-O notation only establishes
+an <b>upper bound</b> on how the function grows.</p>
+<p>
+A function that is <span class=m>O(n)</span> is said to be asympotically <b>linear</b> and a
+function that is <span class=m>O(1)</span> is said to be <b>constant-time</b> because it is always
+less than some constant <span class=m>k</span>. A function that is <span class=m>O(n<sup>2</sup>)</span> is called
+<b>quadratic</b>, and a function that is <span class=m>O(n<sup>y</sup>)</span> for some positive
+integer <span class=m>y</span> is said to be <b>polynomial</b>.
+</p>
+<h2>Reasoning with asymptotic complexity</h2>
+<p>An expression like <span class=m>O(g(n))</span> is <em>not</em> a function. It really
+describes a set of functions: all functions for which the appropriate constant
+factor k can be found.  For example, when we write <span class=m>O(10) = O(1)</span> or <span class=m>O(n+1) = O(n)</span>, 
+these are (true) statements about the equality of sets of functions.
+Sometimes people write “equations” like <span class=m>5n+1 = O(n)</span>
+that are not really equations. What is meant is that the function <span class=m>f(n) = 5n + 1</span>
+is in the set <span class=m>O(n)</span>.
+It is also a common shorthand to use mathematical operations
+on big-O expressions as if they were numbers.
+For example, we might write <span class=m>O(n) + O(n<sup>2</sup>) = O(n<sup>2</sup>)</span> to mean
+that the sum of any two functions that are respectively asymptotically linear
+and asymptotically quadratic is asymptotically quadratic.
+</p>
+<p>
+It helps to have some rules for reasoning about asymptotic complexity. Suppose
+f and g are both functions of n, and c is an arbitrary constant. Then using the
+shorthand notation of the previous paragraph, the following rules hold:
+</p>
+<p class=m>
+c = O(1)<br>
+O(c·f) = c·O(f) = O(f)<br>
+cn<sup>m</sup> = O(n<sup>k</sup>) if m ≤ k<br>
+O(f) + O(g) = O(f + g)<br>
+O(f)·O(g) = O(f·g)<br>
+log<sub>c</sub> n = O(log n)
+</p>
+<p>
+However, we might expect that <span class=math>O(k<sup>n</sup>) = O(k'<sup>n</sup>)</span> when
+<span class=m>k≠k'</span>,
+but this is <em>not</em> true when <span class=m>k &gt; k'</span>. In that case, the ratio
+<span class=m>k'<sup>n</sup>/k<sup>n</sup></span> grows without bound.
+</p>
+<h2>Deriving asymptotic complexity</h2>
+<p>
+Together, the constants k and n<sub>0</sub> form a <b>witness</b> to the
+asymptotic complexity of the function. To show that a function has a particular
+asymptotic complexity, the direct way to produce the necessary witness. For
+the example of the function <span class=math>f'(n) = 3n + 2</span>, one witness is, as we saw above,
+the pair <span class=m>(k=3, n<sub>0</sub>=2)</span>. Witnesses are not unique. If
+<span class=m>(k, n<sub>0</sub>)</span> is a witness,
+so is <span class=m>(k', n'<sub>0</sub>)</span> whenever <span class=m>k'≥k</span> and
+<span class=m>n'<sub>0</sub>≥n<sub>0</sub></span>.
+</p>
+<p>
+Often, a simple way to show asymptotic complexity is to use the limit of the
+ratio <span class=m>f(n)/g(n)</span> as <span class=m>n</span> goes to infinity.  If this ratio has a finite limit, then
+<span class=m>f(n)</span> is <span class=m>O(g(n))</span>.
+On the other hand, if the ratio limits to infinity, <span class=m>f(n)</span> is
+<em>not</em> <span class=m>O(g(n))</span>. (Both of these shortcuts can be proved using the
+definition of limits.)
+</p>
+<p>
+To evaluate the limit of <span class=m>f(n)/g(n)</span>, L'Hôpital's rule often comes in handy.
+When both <span class=m>f(n)</span> and <span class=m>g(n)</span> go to infinity as <span class=m>n</span> goes to infinity, the ratio
+of the two functions <span class=m>f(n)/g(n)</span> limits to the same value as the limit of their
+derivatives: <span class=m>f'(n)/g'(n)</span>.
+</p>
+<p>
+For example, <span class=m>lg n</span> is <span class=m>O(n)</span> because
+<span class=m>lim<sub>n→&infin;</sub> (lg n)/n = lim<sub>n→&infin;</sub>
+(1/n)/1 = 0</span>. In turn, this means that <span class=m>lg<sup>k</sup>
+n</span> is <span class=m>O(n)</span> for any <span class=m>k</span> because
+the derivative of <span class=m>lg<sup>k</sup> n</span> is <span class=m>k/(n
+lg<sup>k-1</sup> n)</span>.  Since <span class=m>lg n</span> is <span
+class=m>O(n)</span>, so is <span class=m>lg<sup>2</sup> n</span>, and therefore
+<span class=m>lg<sup>3</sup> n</span>, and so on for any positive <span
+class=m>k</span>.
+(This is an argument by induction.)

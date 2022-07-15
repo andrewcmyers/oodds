@@ -1,0 +1,339 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
+
+<div id="content">
+<h1>Priority Queues and Heaps</h1>
+<p>
+To implement Dijkstra's shortest-path algorithm, we need a <b>priority queue</b>: a queue
+in which each element has a <b>priority</b> and from which elements are removed in priority order;
+that is, the next element to be removed from the queue is always the element of highest
+priority currently in the queue. A priority queue is an abstraction with several important uses,
+and fortunately, it can be implemented efficiently.</p>
+
+<p>
+We have already seen that priority queues are useful for implementing Dijkstra's algorithm
+and A<sup>*</sup> search. In these applications, the priority is the best-known estimate of a
+shortest distance. Such a queue is called a <b>min-queue</b> because the smaller the distance,
+the higher the priority. There are also <b>max-queues</b> in which larger numbers correspond to
+higher priorities, but they can be implemented in the same way.</p>
+
+<p>
+Another application in which priority queues are very useful is <em>discrete
+event-driven simulation</em>.  Such a simulator needs to process events in the
+order in which they occur, updating the state of the simulation for each event.
+A min-queue is used to store unprocessed events, where the priority is a
+timestamp indicating the time of occurrence. Handling one event can generate
+new future events, which are added to the queue.</p>
+
+<p>
+Another use for priority queues is for the data compression algorithm known as
+<a href="http://en.wikipedia.org/wiki/Huffman_coding">Huffman coding</a>, an
+optimal way to compress individual symbols in a data stream. Priority queues can also
+be used for sorting, since elements to be sorted can be pushed into the priority queue
+and then simply removed in sorted order. In fact, with a good implementation of
+priority queues, this sorting algorithm is asymptotically optimal.
+</p>
+
+<h2>Priority queue interface</h2>
+<p>
+A priority queue can be described via the following interface:
+<pre class=load>
+<a href="heaps/pqueue.java">PriorityQueue.java</a>
+</pre>
+</p>
+<p>
+The methods described in this interface suffice to implement Dijkstra's shortest path algorithm.
+</p>
+<p>
+To implement <code>increasePriority()</code>, an implementation must have a
+fast way to find the element whose priority is to be updated. This can be
+accomplished by using a hash table to look up the position of elements in the
+underlying data structure, or by storing the position of the element in the
+queue into the element itself. Using the Concept design pattern, we would
+pass an object to the priority queue that provides operations for manipulating
+queue elements, providing an interface like the following:
+</p>
+<pre class=load>
+<a href="heaps/elemops.java">ElemOps.java</a>
+</pre>
+
+<h2>Implementation 1: list</h2>
+
+<p>It is straightforward to implement priority queues with ordered or unordered lists.
+Ordered lists allow constant-time <code>extractMin</code> and linear time <code>add</code>,
+whereas unordered lists allow constant-time <code>add</code> and linear time <code>extractMin</code>.
+We can do better!
+</p>
+
+<h2>Implementation 2: Binary Search Tree</h2>
+<p>
+If you already have an implementation of balanced search trees, it is
+easy to implement priority queues on top. The idea is to use elements
+as keys, ordered first by their priorities and secondarily by the
+some intrinsic element ordering. New elements are added by using the
+ordinary BST add operation. The minimum element in the tree can be found by
+simply walking leftward in the tree as far as possible and then pruning or
+splicing out the element found there. The priority of an element can be
+adjusted by first finding the element; then the element is removed from the
+tree and readded with its new priority.
+</p>
+<p>
+This implementation has reasonable asymptotic performance: all of the
+operations can be done in logarithmic time, asymptotically.  However, a
+balanced search tree is unnecessarily complex for the priority queue job, and
+consequently a bit slow.
+</p>
+
+<h2>Implementation 3: Binary Heap</h2>
+
+<p>A simple concrete data structure called a <b>binary heap</b> allows all operations
+to be done in \(O(\log n)\) time with good constant factors.
+</p>
+<p>
+In computer science, the term <em>heap</em> is unfortunately a bit overloaded.
+Binary heaps should not be confused with <em>memory heaps</em>. A <em>memory
+heap</em> is a low-level data structure used to keep track of the computer's
+memory so that the programming language implementation knows where to place
+objects in memory. This is not how we are using the term here.
+</p>
+<p>
+A <b>binary</b> heap is a binary tree satisfying the <b>heap invariant</b>:
+</p>
+<p>
+<b>(Heap Invariant)</b> Every node n in the tree has the highest priority among all nodes in the
+subtree rooted at n. Equivalently, the priority of any node is at least as high as
+the priority of any of its children. Equivalently still, a heap stores its highest
+priority element at the root, and the left and right subtrees are also both heaps.
+</p>
+<p>
+  Here is an example of a binary heap in which smaller values have higher priority.
+  Note that the root of each subtree contains the highest-priority element in that subtree.
+</p>
+<div class=figure>
+<img src="heaps/heap_example.png">
+</div>
+<p>
+  It is possible to manipulate binary heaps as tree structures. However, additional
+  speedup can be achieved if the binary heap satisfies a second invariant:
+</p>
+<p>
+  <b>(Shape Invariant)</b> For every h, if there exists a node n at depth h,
+  then all 2<sup>h-1</sup> possible node of depth h–1 exist in the tree, along
+  with every possible node to the left of n of depth h. It follows that if h is
+  the maximum depth of a node in the tree, the leaves of the tree occur only at
+  depths h and h–1.
+</p>
+   <div class=figure>
+    <img src="heaps/heap_shape.png">
+   </div>
+<p class=cont>In fact, the example tree above also satisfies this shape invariant.</p>
+<p>
+The shape invariant makes it possible to represent
+the binary heap as a <em>resizable array</em>. The elements of the tree are placed in the 
+array row by row from top to bottom, reading each row from left to right and placing the
+nodes in the array from left to right. The heap structure illustrated above would be represented by
+the following array of length 9, with array indices shown on the bottom.
+</p>
+<div class=figure>
+<img src="heaps/array_rep.png">
+</div>
+<p>
+The nice thing about this representation is that it is possible to represent
+the tree structure without pointers. The shape invariant guarantees that the
+children of the node at index \(i\) are found at indices \(2i+1\) (left) and
+\(2i+2\) (right). Conversely, the parent of a node at index i is found at
+\(\lfloor (i–1)/2 \rfloor \). So we can walk up and down through the tree using
+simple arithmetic. There is no need to store or follow pointers!
+</p>
+<h3>Binary heap operations</h3>
+<h4>Add</h4>
+<p>
+Adding a new node to the heap is done by adding the element at the end of the array to preserve the shape invariant. However, the heap invariant may not hold, because its priority may be greater than its parent's priority. To restore the heap invariant, we <em>bubble up</em> the element by swapping it with its parent until either it reaches the root or its parent node has higher priority. This requires at most \(\lg n\) swaps, because the tree is perfectly balanced. So adds take at most \(O(\log n)\) time.</p>
+
+<p>In the example above, if we add an element with priority 2, it is first placed at the end of the array, then bubbles up past the 5 and the 3, finally ending up where 3 was:
+</p>
+
+<div class=figure>
+<img src="heaps/heap_example_add.png">
+</div>
+
+<h4>ExtractMin</h4>
+<p>
+The minimum element is always at the root (location 0 in the array). We can extract it,
+but we need to replace it with something.
+The last element in the array is a good candidate. We move it to the root
+of the tree. This reestablishes the shape invariant, but the heap invariant may now be broken.
+We fix the heap invariant by <em>bubbling the element down</em> (sometimes also called sifting down).
+The element is compared against its
+two children. If either child is higher priority, it is swapped with the higher
+priority child. The process repeats until either the element is higher priority than
+its children or it becomes a leaf.</p>
+
+<p>Here is what happens with our example heap. We delete the 1 at the root and replace it with 5,
+which was the last element in the array. Then we bubble the 5 down. We compare it with 2 and 4. It is
+lower priority than both, so we swap it with the higher priority child, which is 2. (We must swap it with the higher priority child to maintain the heap invariant, because that child will become the parent of the other child.) We then compare with the new children, 6 and 3, and swap with 3, at which point 5 becomes a leaf. The heap invariant is now reestablished.
+</p>
+<div class=figure>
+<img src="heaps/heap_example_pop.png">
+</div>
+<p>Again, at most \(\lg n\) swaps are needed.</p>
+
+<h4>IncreasePriority</h4>
+<p>
+We may wish to change the priority of an element in the queue. Assigning a new priority to an element maintains the shape invariant, but may break the heap invariant. To reestablish the heap invariant, we may need to bubble the element up if we increase the priority (which for a min-queue means decreasing the value) or down if we decrease the priority.
+</p>
+
+<h2>Heapsort</h2>
+<p>
+The heapsort algorithm sorts an array by first <em>heapifying</em> it to make
+it satisfy the heap invariant. Then <code>extractMin()</code> is used
+repeatedly to read out the elements in increasing order. This can be used to
+sort an array in \(O(n \log n)\) time. That repeatedly calling <code>extractMin()</code>
+takes \(O(n \log n)\) time is obvious, but what about heapifying?
+</p>
+<p>
+Heapifying can be done by bubbling every element down, starting from the last element in the array
+representation and working backward:
+</p>
+<pre>
+for (i = (n/2)-1; i &gt;= 0; i--) {
+  bubbleDown(i);
+}
+</pre>
+<p>This loop works correctly because it has the following loop invariant: when
+the loop is considering node \(i\), the two subtrees of node \(i\) already
+satisfy the heap invariant: they occur in the part of the array that has
+already been scanned. Therefore, bubbling down node \(i\) is all that is needed
+to make the entire subtree rooted at \(i\) also satisfy the invariant.
+</p>
+<canvas id=heapify_layers style="width: 180px; height: 150px; float: right"></canvas>
+<p>The total time required to heapify is, perhaps surprisingly, linear. No work
+is done on the half of the elements in indices \(\lfloor n/2\rfloor\dots n-1\) because these are all leaves. 
+Considering the rest of the elements, as suggested by the figure at the right,
+at most a quarter need to be bubbled down one step, at most an eighth
+need to be bubbled down two steps, and so on. So the total work is
+at most:
+</p>
+<script class=graphics>
+with (new CFigure("heapify_layers")) {
+    let cr = canvasRect().inset(2)
+    let t = polygon(cr.uc(), cr.ll(), cr.lr())
+    let [l4, l0, l1, l2, l3] = [0,1,2,3,4].map(() => horzLine())
+    align("center", "distribute", t.points[0], point(), point(), l4, l0, l1, l2, l3)
+    align("LR", "bottom", t, l3)
+    collinear(t.points[0], l0.start(), l1.start(), l2.start(), l3.start(), l4.start())
+    setFontSize(15)
+    setFontName("Times")
+    label(text(italic("n"), "/2 : 0")).at(l3.lc().toTop(10))
+    label(text(italic("n"), "/4 : 1")).at(l2.lc().toTop(10))
+    label(text(italic("n"), "/8 : 2")).at(l1.lc().toTop(10))
+    label(text(italic("n"), "/16 : 3")).at(l0.lc().toTop(10))
+}
+</script>
+
+\begin{equation}
+T = n/4 + 2n/8 + 3n/16 + 4n/32 + \dots + kn/2^{k+1} + \dots
+\end{equation}
+<p>
+This series is easy to solve by taking the difference of two series in the usual
+way:
+\(T = 2T - T = n/2 + n/4 + n/8 + \dots = O(n) \).
+</p>
+<p>
+Hence, we can see that heapifying is actually the fast part of heapsort!
+</p>
+
+<h2>Improvements</h2>
+<p>
+There are many variations on this basic data structure, some of which can yield
+significant performance improvements under the right circumstances.
+</p>
+<p>
+When using priority queues to implement Dijkstra's shortest-path algorithm on dense
+graphs, the performance limiting operation is often <code>increasePriority()</code>,
+which as we have seen takes logarithmic time. <b>Fibonacci heaps</b> and
+<b>relaxed heaps</b> are heap data structures that can do <code>increasePriority()</code>
+in only constant (amortized) time, yielding a speedup. Since these data structures
+do not enforce the Shape invariant, they require pointers to implement. Hence, although
+their asymptotic performance is the same or better than a simple binary heap on all
+operations, they incur a higher constant factor slowdown that is typically not
+worth paying.
+</p>
+<p>
+In many search applications, the binary heap will tend to contain a lot of
+elements with the same priority—especially, many elements with the same
+priority as the root.  A simple optimization is to store all elements with the
+highest priority separately in a resizable array, significantly reducing the amount
+of bubbling down that is done by <code>extractMin()</code>.
+</p>
+<p>
+We can also exploit the linear-time performance of heapifying to make it
+cheaper to add new elements to a binary heap. Rather than immediately bubbling
+new elements up, we simply append them to a small unordered region of size \(O(\lg
+n)\) elements at the end of the array. For <code>extractMin()</code>, the smallest
+element could be in the unordered region, so it must scan these elements
+too—but this small scan takes logarithmic time and hence does not harm
+asymptotic performance.  If the size of the unordered region becomes larger
+than \(O(\lg n)\) elements, we restore the heap invariant for the whole array
+by heapifying the unordered region into the rest of the array. If
+we heapify in a way that only touches the ancestors of the unordered regions,
+it takes \(O(\lg n)\) time and hence \(O(1)\) amortized time per element added.
+</p>
+
+<h2>Treaps</h2>
+<p>
+A <b>treap</b> is a binary search tree that is balanced with high probability. This is
+achieved by ensuring the tree has exactly the same structure that it would have had if
+the elements had been inserted in random order. Each node in a treap contains both a
+key and a randomly chosen priority. The treap satisfies the BST invariant with respect
+to all of its keys so elements can be found in the treap in (expected) logarithmic time. The
+treap satisfies the heap invariant with respect to all its priorities. This ensures that
+the tree structure is exactly what you would get if the elements had been inserted in
+priority order.
+</p>
+<p>For example, the following is a treap where the keys are the letters and the priorities
+are the numbers.</p>
+<div class=figure>
+<img src="heaps/treap_example.png">
+</div>
+<p>
+Elements are added to the treap in the usual way for binary search trees. However,
+this may break the heap invariant on priorities. To fix the heap invariant, the element
+is bubbled up through the treap using <b>tree rotations</b> that swap a node with its
+parent while preserving the BST invariant. If the node is x and it is the right child
+of a parent p, the tree rotation is performed by changing pointers so the data structure
+on the left turns into the data structure on the right.
+</p>
+<div class=figure>
+<img src="heaps/tree_rot.png">
+</div>
+<p>
+Note that A, B, and C here represent entire subtrees that are not affected by the
+rotation except that their parent nodes may change. Note also that the rotation operation
+is reversible, so that if p has higher priority than x, we can perform the rotation
+above from right to left.
+</p>
+<p>
+Because they only affect three nodes of the tree, tree rotations are efficient:
+</p>
+<pre>
+<b>Left rotation</b>                          <b>Right rotation</b>
+p.right = x.left;                      x.left = p.right;
+x.left = p;                            p.right = x;
+newChild = x;                          newChild = p;
+</pre>
+<p>
+For example, adding a node D with priority 2 to the treap above results in the following
+rotations being done to restore the heap invariant:
+</p>
+<div class=figure>
+<img src="heaps/treap_add.png">
+</div>
+<p>
+This is exactly the tree structure we would have gotten if we had inserted all the nodes
+into a simple BST in the order specified by their priorities.
+</p>
+
+</html>

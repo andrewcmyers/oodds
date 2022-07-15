@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>State Machines</title>
+</head>
+<!-- <link rel="stylesheet" type="text/css" href="cs211style.css"> -->
+<link rel="stylesheet" type="text/css" href="../../cs211style.css">
+<body>
+
+<h1>CS 211 Spring 2006<br>
+    State machines<br></h1>
+
+
+<p> State machines are an abstract way of thinking about how computers and
+computations work. They are especially useful for describing reactive systems
+such as user interfaces that need to respond to events from the outside. A
+state machine has some internal state that can be changed in response to an
+external event. When a state machine receives an event from the external
+environment, it changes its state to a new state in accordance with a simple
+rule. It may also perform an action with significance to the external
+environment. In the classic version of state machines, this action can
+only be "accepting" the input.
+</p>
+
+<h2>Definition</h2>
+<p>
+A state machine is actually a formal, mathematical concept. In general, a
+state machine consists of the following things:
+<ul>
+<li>A set of <b>states</b> S. At any given time, the state machine is in
+one of these states. Typically the set of states is finite, in which case
+it is called a <b>finite state machine</b> or <b>finite automaton</b>.
+<li>An initial state s<sub>0</sub>, which is a member of S. The automaton starts in this state before any events are received.
+</li>
+<li>A set &Sigma; of possible <b>symbols</b> (events) that can be received by the
+state machine.
+</li>
+<li>A <b>state transition function</b> &delta;. The state transition function
+says how the state machine changes state in response to an event. If the
+machine is in state s, and it receives an event e, then the new state of the
+machine will be s' = &delta;(s,e). Often the state transition function is
+allowed to return a special value that is not a state, to indicate that there
+is no next state. In this case, the input is considered to be illegal and the
+machine is said to reject it.
+</li>
+<li>A set of <b>final states</b>, F. These are states in which the state machine
+is said to accept the input. Often, state machines are augmented to have
+other actions attached to states or to transitions performed by the machine.
+</li>
+</ul>
+</p>
+<p>
+The state machine starts in state s<sub>0</sub>. As each input event arrives,
+its state changes as described by the state transition function.
+</p>
+
+<p>
+For example, suppose that we have two states, A and B, and two input symbols, 0
+and 1.  And suppose s<sub>0</sub> = A and &delta;(A,0) = 0, &delta;(A,1) = 1,
+&delta;(B,0) = 1, &delta;(B,1) = 1.  Then this state machine will start in
+state A but will change irrevocably to state B if it ever sees an input of a 1.
+You can think of it as a "1 detector". If we make the state B a final state,
+then the machine will accept any sequence of events as long as it includes a 1.
+</p>
+
+<p>Many real-world systems can be thought of as state machines.
+For example, computer processors are state machines. They receive signals from
+outside the chip, update some state on-chip, and produce outputs in response.
+There is a finite set of states that the processor chip can be in.
+</p>
+
+<h2>State machine as a graph</h2>
+
+<p>
+Another way to view a state machine is as a labeled, directed graph. The states are just nodes
+in the graph, and the state transition function defines edges. Edges are
+labeled with the corresponding events. For example,
+we can draw the "1 detector" state machine as follows:
+</p>
+<img src="detector.png">
+
+<p>The arrow coming into state A from nowhere indicates that A is the initial state of the machine. The double circle around B indicates that B is a final state of the machine. Notice that is possible to have transitions out of the final state; just because a state is "final" doesn't mean that the machine stops when it reaches it.
+</p>
+
+<p>Here is a more elaborate state machine that checks whether a sequence of
+input characters are a valid Java string:</p>
+
+<img src="string-recognizer.png">
+
+<h2>Why state machines?</h2>
+It is often useful to think about software systems as state machines because it
+gives insight into how the state works or ought to work. User interfaces are a
+good case of such software. It is helpful to think about the different states
+that exist in a UI when designing it. If there are too many states, it may
+indicate an overly complex design. It is also often helpful to draw the graph
+representing a state machine because you can then see visually how the
+different states relate. It also becomes easier to see if there are missing
+transitions where you have failed to define what happens when the system
+receives a particular input in a particular state.
+</p>
+<p>State machines are used throughout computer science. For example,
+state machines are used by compilers to break up programs efficiently into
+a sequence of words (tokens). They are also closely related to
+<b>regular expressions</b>, which are a way of compactly describing sets of
+strings.
+</p>
+
+<hr>
+<small>Notes by Andrew Myers, 5/1/06</small>
+</html>

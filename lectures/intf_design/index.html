@@ -1,0 +1,443 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
+<body>
+
+<h1>Designing and documenting interfaces</h1>
+<p>
+Good software engineering is about dividing code into modules that separate
+concerns and localize them within modules. These modules then interact via
+<b>interfaces</b> that provide abstraction barriers supporting local reasoning.
+Let's look more closely at the problem of designing good interfaces.
+</p>
+
+<h2>What makes a good interface?</h2>
+<p>
+Interfaces exist at the boundaries of the modular decomposition. An interface will
+be most effective when it has the following three properties:
+<ol>
+<li><p>It provides a strong <b>abstraction barrier</b> between modules.</li>
+<li><p>The interface should be as <b>narrow</b> as possible while providing the functionality needed by clients.
+<li><p>The interface should be <b>clearly specified</b>.
+</ol>
+<p>
+We've already discussed abstraction earlier; our goal here is to examine the
+second two attributes of a good interface.
+</p>
+<p>
+By a <b>narrow</b> interface, we mean an interface that exposes few operations or
+other potential dependencies between modules. The opposite of a narrow interface is
+a <b>wide</b> interface, one that exposes many operations or potential dependencies
+between modules.
+</p>
+<p>
+The choice between a narrow interface and a wide interface is not always obvious,
+because there are benefits to each approach. We can compare and contrast the philosophies:
+
+<table>
+<tbody>
+<tr>
+  <th>narrow</th><th>wide</th></tr>
+<tr>
+  <td>few operations, limited functionality for clients to use</td>
+  <td>many operations, much functionality available for clients</td></tr>
+<tr>
+  <td>easy to extend, maintain, reimplement</td>
+  <td>hard to extend, maintain, reimplement</td></tr>
+<tr>
+  <td>loose coupling: clients less likely to be disrupted by changes</td>
+  <td>tight coupling: clients more likely to be disrupted by changes</td>
+  </tr>
+</tbody>
+</table>
+<p>
+In principle, it's possible to make the interface so narrow that it interferes
+with clients getting their job done in an efficient and straightforward way.
+But this is not the usual mistake of software designers; more typically, they
+make interfaces too wide, leading to software that is hard to maintain, 
+extend, and reimplement without breaking client code.
+</p>
+<p>
+The rule of thumb, then, is that interfaces should be made only as wide as necessary
+for efficient client code to be written in a straighforward way.
+</p>
+<h3>Convenience methods</h3>
+<p>
+Often when a narrow interface feels awkward to use, it is possible to address
+this problem by writing <b>convenience methods</b> that are implemented
+outside the module, using only the narrow interface that the module provides.
+Clients can then use the convenience functions to avoid code duplication, but
+without widening the interface and thereby introducing new dependencies between
+modules.
+</p>
+<p>
+When a module's interface is wide and there doesn't seem to be a way to avoid
+this by writing convenience functions or by separating the module into multiple
+modules, it is often a sign that you haven't managed to separate program
+concerns into different modules. When concerns are not sufficiently separated,
+there are <em>inherently</em> too many interactions between the different parts
+of the program to define a narrow interface between the components.
+</p>
+<p>
+Object-oriented languages offer a nice pattern for separating convenience methods from
+the core functionality of a class: convenience methods are factored out into an
+abstract class that is intended to be subclassed to provide the missing core
+functionality.  The core functionality, corresponding to a narrow interface, is
+provided by the subclass by overriding the unimplemented methods. This
+implementation strategy is used extensively in the Java Collection Framework.
+The collection classes offer a wide interface to client code, but most of their
+methods are implemented by abstract classes such as
+<code>AbstractCollection</code>, <code>AbstractList</code>,
+<code>AbstractQueue</code>, <code>AbstractSequentialList</code>, and
+<code>AbstractSet</code>. This implementation strategy keeps interfaces
+narrower and separates concerns.  Another nice feature is that the subclass can
+even override convenience methods if there is a more efficient way to implement
+them than the generic way in the context of this particular implementation.
+</p>
+
+<h2>How should we document interfaces?</h2>
+<p>
+Once we've decided what operations and other functionality belongs in an interface,
+what documentation should be added? An important principle can guide us here:
+documentation <em>is</em> code, code for <em>humans</em> to run. The documentation is
+a human-readable abstraction of the code that (depending on which documentation we're
+talking about) supports programmers writing client code or maintaining the implementation.
+</p>
+<p>
+The most important function of documentation is to provide <em>specifications</em>
+of what code does. Specifications are particularly useful for supporting client code,
+but also help implementers.
+</p>
+
+<h3><em>Where</em> to document?</h3>
+<p>
+According to the principle that documentation is code, the best place for documentation
+is with the code itself, in the form of program comments. When this is not practical,
+code documentation should be linked from code so it can be easily accessed. Javadoc
+documentation is a good example of this principle in action: the documentation is
+extracted from the code, so it cannot be separated from it.
+</p>
+<p>
+Documenting code separately in separate documents may be appealing, but the more
+separate documentation is from the code it describes, the more it tends to
+diverge from the code. The more it diverges from the code, the less useful it
+becomes and the less programmers rely on (or look at) the documentation. Both
+documentation and code require programmers' attention to stay fresh!
+</ul>
+<h3><em>When</em> to document? (Early!)</h3>
+<div class="figure">
+<canvas id="design-process" style="width: 400px; height: 280px"></canvas>
+</div>
+<script type="application/javascript" class=graphics>
+with (new CFigure("design-process", false)) {
+    let l1, l2, l3, l4, l5
+    function design_step(name) {
+        const r = rectangle().addText(name).setFontSize(10)
+        equal(r.w(), times(2, r.h()))
+        return r
+    }
+    function arrow(a, b) {
+        connector(a, b).setEndArrow("arrow")
+    }
+    l1 = label("documenting late").setFontStyle("italic")
+    align("center", "distribute",
+        l2 = design_step("design"),
+        l3 = design_step("code"),
+        l4 = design_step("debug"),
+        l5 = design_step("document"))
+    align("center", "abut", l1, vspace(10), l2)
+    align("left", "none", l4, canvasRect().inset(2))
+    arrow(l2, l3)
+    arrow(l3, l4)
+    arrow(l4, l5)
+    equal(l2.h(), 80)
+    equal(l5.y1(), canvasRect().inset(2).y1())
+    equal(l1.y0(), canvasRect().inset(2).y0())
+    equal(30, l2.w(), times(l3.w(), 0.4), times(l4.w(), 0.2), times(l5.w(), 0.4))
+    connector(l4, l3.toRight(150), l2.toRight(80), l2).setEndArrow("arrow")
+
+    let r1, r2, r3, r4
+
+    r1 = label("documenting early").setFontStyle("italic")
+
+    align("center", "distribute",
+       r2 = design_step("design & document"),
+       r3 = design_step("code"),
+       r4 = design_step("debug"))
+
+    equal(55, times(r2.w(), 0.8), r3.w(), r4.w())
+
+    align("none", "top", l1, r1)
+    align("right", "none", r1, canvasRect().inset(2))
+    align("center", "none", r1, r2)
+    align("none", "center", l2, r2)
+    align("none", "bottom", r4, canvasRect().inset(2))
+    arrow(r2, r3)
+    arrow(r3, r4)
+
+
+}
+</script>
+<p>
+Too often, programmers write their documentation at the end of the design and implmentation
+process, as a kind of afterthought. The workflow of design, coding, debugging, and documenting
+tends to look like the figure on the left. A lot of time is spent debugging because the design
+is not worked out carefully enough. In general, spending a lot of time debugging is a sign
+you haven't worked hard enough on the design.
+</p>
+<p>
+Documenting the design early, as shown in the figure on the right, helps you work bugs
+out of your design and to understand your design better. Typically, this makes both
+coding and debugging faster. Sometimes your code just works on the first try!
+</p>
+<p>
+The moral is that documentation is not some kind of esthetic decoration for your code. It
+is a tool that can improve your designs and save you time in the long run.
+</p>
+
+<h3><em>What</em> to write?</h3>
+<ol>
+<li><p><b>Know your audience</b>: Tell your reader the things they need
+to know in a way they can understand.
+But your reader's attention is precious.
+Don't waste space on obvious, boring things. Filler
+distracts from what's important.
+Avoid “filler” comments that don't add any value and distract from
+what's important, such as:</p>
+<pre>
+x = x + 1 // add one to x
+</pre>
+<li><p><b>Be coherent</b>: avoid interruptions. Better to write one clear
+explanation than to intersperse explanatory comments throughout the code.</li>
+
+<li><p><b>Respect the abstraction barrier</b>: write specifications in terms the
+    reader/client can understand without knowing the implementation.</li>
+</ol>
+</ul>
+
+<h2>An example: polynomials</h2>
+
+<h3>Step 1: describe the abstraction</h3>
+<pre>
+/** A polynomial over a single variable x
+ * Example: 2 + 3x - 5.3x<sup>3</sup>
+ */
+interface Poly {
+  ...
+}
+</pre>
+
+<h3>Step 2: choose operations</h3>
+
+<p>Well-designed methods usually fall into one of three categories: <b>creators</b> (factory methods), <b>observers</b> (also known as <b>queries</b>), and <b>mutators</b> (also known as <b>commands</b>).
+
+<ul>
+<li><b>Creators</b>: these methods are used to create new objects, particular those of the class being implemented.</li>
+<li><b>Observers</b>: these methods report on object state but have no side effects.</li>
+<li><b>Mutators</b>: the primary purpose of these methods is to have a side effect.</li>
+</ul>
+
+<p>
+Abstractions that do not have any mutators that can change their state, such as
+<code>String</code> and <code>Integer</code>, are <b>immutable</b>
+abstractions. Abstractions with mutators are <b>mutable</b>. Both kinds of abstractions
+have their uses. The advantage of immutable abstractions is that their objects can be
+shared freely by different code modules.
+</p> 
+
+<p>The useful principle of <b>command-query
+separation</b> can guide how we design methods. The principle says that
+a given operation should fall into one of these three
+categories, rather than multiple categories. This makes the interface easier to
+use. For example, you don't want to be forced to have side effects in order to
+check the state of an object.</p>
+<p>Considering each of the categories in turn, we might come up with operations like the following:</p>
+<ul>
+<li><b>Creators:</b>
+  <ul>
+	<li><code>zero</code>: create the zero polynomial</li>
+	<li><code>monomial</code>: create a polynomial with form ax<sup>b</sup></li>
+	<li><code>fromArray</code>: create a polynomial with coefficients defined by an array of <code>double</code>s.</li>
+	<li><code>derivative</code>: create a polynomial that is the derivative of the given polynomial (also an observer).</li>
+	<li><code>plus</code>: create a polynomial that is the sum of two polynomials.</li>
+	<li><code>minus</code>: create a polynomial that is the difference of two polynomials.</li>
+  </ul>
+<li><b>Observers:</b>
+  <ul>
+	<li><code>degree</code>: report the maximum exponent with non-zero degree.</li>
+	<li><code>coefficient</code>: report one coefficient of the polynomial</li>
+	<li><code>evaluate</code>: evaluate the polynomial at a given value for x</li>
+	<li><code>toString</code>: generate a string representation of the polynomial</li>
+	<li><code>equals</code>: report equality of a polynomial with another object.</li>
+  </ul>
+<li><b>Mutators:</b>
+  We might not want to have mutators at all, so that we don't have to worry
+  about polynomials changing their values. If polynomials are to be mutable,
+  however, we need mutators, e.g.:
+  <ul>
+   <li><code>clear</code>: set this to the zero polynomial.</li>
+   <li><code>add</code>: add another polynomial to this.</li>
+  </ul>
+  </li>
+</ul>
+
+<p>Notice that we have not discussed how we are going to implement
+this polynomial abstraction. That is a good thing. We want to expose the
+operations that clients are going to need. We might have to make sacrifices
+because some operations are hard or expensive to implement, but that should
+be done only after thinking about the ideal interface.
+</p>
+
+<p>We want to avoid adding operations that we can implement efficiently using
+existing operations. For example, we might be tempted to have an operation that
+finds zeros of the polynomial. However, such an operation can probably be
+implemented efficiently using either factoring (for low-degree polynomials) or
+numerically via Newton's method, using <code>evaluate</code> and
+<code>derivative</code>.
+</p>
+
+<p><b>Standard operations.</b> Some operations are so useful
+that it is worth thinking about whether you will want them for
+<em>every</em> data abstraction you define:
+<ul>
+<li><p><b>equals</b>. Testing whether two values are equal is fundamental
+to mathematics and to programming.
+Implementing the <b>equals()</b> method is surprisingly tricky, because the notion
+of equality itself is more complex than it might appear at first glance. There are
+two natural ways to define equality on two values:
+<ol>
+<li><p><b>Leibniz equality.</b> The mathematician
+<a href="https://en.wikipedia.org/wiki/Gottfried_Wilhelm_Leibniz">Leibniz</a>
+said that two things should be equal if and only if they are indistinguishable.
+</p>
+
+<li><b>State equality.</b> Some Java classes implement equality by comparing the
+current state of two objects. For example, two Java collections will report
+themselves equal if they contain the same objects. However, one of the
+collections might change later on, since collections are mutable. Thus, they
+would stop being “equal”. A notion of equality that can change is dangerous,
+because it can lead to invariants being broken. For example, objects used as
+keys in Java collections need to satisfy invariants with the data structure
+that implements the collection. Mutating these objects will break the invariants
+of the data structure.
+</ol>
+
+<p>As a rule of thumb, it is best to use Leibniz equality when feasible.  Since
+mutable objects are only really indistinguishable when they are the same
+object, this rule implies that mutable objects should simply inherit
+<code>Object.equals()</code>.  However, two immutable objects, such as
+<code>String</code>s, can be indistinguishable through all of their observer
+operations and should in that case be considered equal.
+</p>
+
+<li><p><b>toString</b>. It is very useful for debugging to be able to
+print a string representation of an object. Ideally, two objects should have
+equal answers for <code>toString()</code> if and only if they are equal
+according to <code>equals</code>.
+
+<li><p><b>hashCode</b>. If you want to use an object as key in a hash table,
+it needs to have a <code>hashCode()</code> method. Two objects that are equal
+according to <code>equals()</code> <em>must</em> have the same hashcode.
+Two application-generated objects that are not equal according to
+<code>equals()</code> should have different hash codes with high probability.
+
+<li><p><b>a copy constructor</b>. For mutable abstractions (that is,
+abstractions that have mutators), it is often useful to be able to make a copy of an
+existing mutable object. Unless mutators are used on either the copy or the
+original, the two should be indistinguishable. There should be no way to affect
+the original by mutating the copy, or vice versa. Among other uses, copies are
+handy for building test cases. The copying method should override <code>Object.clone()</code>.
+</ul>
+
+<p><b>Getters and setters</b>. Getters are observer methods that report the
+contents of fields, and setters are mutators that change the values of fields
+to a given value. Both getters and setters allow access to your object's data,
+and care should be taken to allow access in cases only where it is appropriate.
+It is not a good idea to indiscriminately add getters and
+setters to classes you write. Think about whether the client needs read or write
+access to the object's data and what restrictions apply.
+</p>
+<p>
+One can make a field public, but it is generally better to keep the field private
+and use a setter. Public fields allow completely unchecked access. With a setter,
+one can check to make sure data is of the correct form before updating. For example,
+if an integer field must never be negative, that check can be put in a setter. 
+</p>
+<p>One pitfall with getters to be aware of is that they may inadvertently
+allow modification of the data by exposing mutable state from inside the abstraction.
+For example, suppose we store the coefficients of a polynomial as an array in the
+instance variable <tt>coefficients</tt> and provide a getter:
+</p>
+<pre>
+ private double[] coefficients;
+ public double[] getCoefficients() {
+    return coefficients;
+ }
+</pre>
+<p>
+Now a client can get access to the internal array of coefficients and
+change the polynomial in an unconstrained way, possibly breaking its class invariant.
+To avoid this, a copy of the array must be returned.
+</p>
+<p>The moral is that some observers and some mutators may look like getters and setters,
+but you should choose observers and mutators that are appropriate to the abstraction
+being designed rather than reflexively exporting access to all instance variables.
+</p>
+
+<p>Another operation that is overrated is the default constructor. It is the
+job of constructors to create a properly initialized object. Unfortunately,
+one often sees code that uses a default constructor to create the object,
+then initializes the fields using setters. A better approach is to use a constructor
+for initialization.
+</p>
+
+<h3>Step 3: write specifications</h3>
+<p>We have a rough idea of the operations we want to support. But before we
+start implementing, we should write clear, precise specifications so that we know when
+we have implemented the operations properly.
+</p>
+<p>For each method, we need to define a <b>signature</b> that gives the types of
+the parameters, the type of the return value, and the possible exceptions that could
+be thrown. We should also define a specification (<b>spec</b>) that describes what the
+client needs to know (and is allowed to know) about the behavior of the method.</p>
+<p>For example, we might write a spec for the <b>degree</b> method as follows:</p>
+<pre>
+/** Returns: the degree of the polynomial, the largest exponent with a non-zero
+ * coefficient. */
+int degree();
+</pre>
+<h4>Spec clauses</h4>
+<p>To help us construct a good spec, it is useful to think of the spec as being composed of
+various <b>clauses</b>. These cover different things the client needs to know about:</p>
+<ul>
+<li><b>Outputs</b>: The <b>returns clause</b> describes what results come back when the method is called.
+<li><b>Inputs</b>: The <b>requires clause</b> describes what arguments the caller is permitted to supply.
+<li><b>Effects</b>: The <b>effects clause</b> describes what side effects to the state of objects happen.
+<li><b>Errors</b>: To aid in debugging, we may want to explain what happens when the client supplies incorrect inputs.
+          This is usually done as part of the requires clause.
+<li><b>Examples</b>: Sometimes an example or two can help clarify what the method does.
+</ul>
+<p>
+The key to writing good specs is to think of the spec as a <b>contract</b> between the client and the implementer.
+Like a legal contract, its main goal is to help everyone figure out who to blame when things go wrong. This is
+very important for successful software engineering, especially in a large team.
+</p>
+
+
+<h4>Using Javadoc</h4>
+<p>Javadoc doesn't completely support the clauses we have described so
+far, although there are ongoing efforts to improve it. If you want to use Javadoc to
+generate HTML documentation, you will need to adapt this documentation strategy
+accordingly. The key is not that you need to have explicit clauses, but that
+you should know for each thing you write in the comment which clause
+it belongs to.
+</p>
+
+<h3>Step 4: implement operations</h3>
+<p>Now we are ready to implement our specifications. And we will want to write
+some documentation of that implementation.
+</p>
+
+</body>
+</html>

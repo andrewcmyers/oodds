@@ -1,0 +1,608 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
+<div id="content">
+
+<h1>Synchronization</h1>
+
+<h2>Synchronization and happens-before</h2>
+<p>
+As we have seen, a write to memory by one thread (e.g., an assignment to
+an instance variable) is not necessarily seen by a later
+read from the same location by another thread. Java, like most
+programming languages, offers only a <b>weak consistency</b> model that does
+not guarantee that every write is seen by every later read. When the consistency
+model considers two events to be causally related in this way, we say that
+one operation has a <b>happens-before</b> relationship to the other. A write
+that happens-before a read is guaranteed to be seen by the read (though it is
+also possible that the read will return the result of an even later write).
+Conversely, a read that happens-before a write is guarantee <em>not</em> to see
+the value written by that write.
+</p>
+<h3>Release consistency</h3>
+<p>
+Different weak consistency models make different guarantees about happens-before
+relationships. However, a useful least common denominator is <b>release consistency</b>.
+It guarantees that any operation performed by a thread to a location before releasing a lock
+will happen-before any operation by another thread to the same location after a later
+acquisition of the same lock. Any release and acquire operations on the same lock are always
+related by the happens-before relation. 
+</p>
+<p>
+For example, suppose we have two threads, T1 and T2, as depicted in the timelines below.
+Thread T1 performs some set of updates during period A, then releases a mutex m, and then
+performs some updates during period B. Thread T2 executes and at some point tries to acquire
+the mutex m, forcing it to wait until T1 has released it. In this case, period A happens-before
+T2's execution after acquiring the mutex. Therefore, before acquiring the
+mutex, T2 is not guaranteed to see <em>any</em> of the updates by T1, but <em>may</em> see some arbitrary 
+subset of them. After acquiring the mutex, T2 is guaranteed to see <em>all</em> of T1's updates during
+period A, and <em>may</em> see some arbitrary subset of the updates during period B.
+</p>
+
+<div class=figure>
+  <canvas id="rc-guarantees"
+          style="height:200px; width:500px">
+  </canvas>
+  <p class="caption">
+    Figure 1: Guarantees made by release consistency
+  </p>
+  <script class=graphics>
+    with (new CFigure("rc-guarantees")) {
+        let l1 = horzLine().setEndArrow("arrow")
+        let l2 = horzLine().setEndArrow("arrow")
+        let t1 = label("T1"), t2 = label("T2")
+        let cr = canvasRect().inset(2)
+        align("abut", "center", t1, l1)
+        align("abut", "center", t2, l2)
+        align("left", "none", cr, t1, t2)
+        align("right", "none", cr, l1, l2)
+        // align("none", "abut", l1, vspace(30), l2)
+        align("left", "none", t1, t2)
+        let f = 0.55, g = 1-f
+        let p1 = point(plus(times(l1.x0(), f), times(l1.x1(), g)), l1.y())
+        let p2 = point(plus(times(l2.x0(), g), times(l2.x1(), f)), l2.y())
+        let c1 = circle().setW(5).setFillStyle("black").at(p1)
+        let c2 = circle().setW(5).setFillStyle("black").at(p2)
+        connector(c1, c2).setEndArrow("arrow").setLineDash([4,4])
+        let lb1 = label("release m").at(c1.toTop(8))
+        let lb2 = label("acquire m").at(c2.toBottom(8))
+        let lbA = label("A").at(average(l1.start(), c1).toTop(8)).setFontSize(16)
+        let lbB = label("B").at(average(l1.end(), c1).toTop(8)).setFontSize(16)
+        align("none", "top", canvasRect().inset(10), lb1)
+        let exp1 = textFrame("may see updates in A and B")
+                    .setFontStyle("italic")
+                    .setJustification("center")
+                    .setTextStyle("blue")
+        let exp2 = textFrame("must see updates in A, may see updates in B")
+                    .setJustification("center")
+                    .setTextStyle("blue")
+                    .setFontStyle("italic")
+
+        align("none", "top", l2, exp2)
+        align("none", "top", exp1, l2)
+        //equal(exp1.y0(), l2.y0())
+
+        align("left", "none", l2.start(), exp1)
+        align("right", "none", lb2.ul().toLeft(10), exp1)
+
+        align("left", "none", lb2.ur().toRight(10), exp2)
+        align("right", "none", exp2, l2.end().toLeft(15))
+
+        align("none", "bottom", canvasRect().inset(10), exp2.uc().toBottom(50))
+    }
+  </script>
+</div>
+
+<p>
+Thus, to make sure that updates done to shared state by one thread are seen by other threads,
+all accesses to the shared state must be guarded by the same lock.
+</p>
+
+<h2>Condition variables</h2>
+<p>
+Given that synchronization is needed for threads to see each other's effects, is there
+a way to successfully implement the earlier example that broke due to weak memory consistency?
+</p>
+
+<table class="sidebysidecode"><tr><td>
+Thread 1:
+<pre>
+y = 1;
+x = 1;
+</pre>
+</td>
+<td>
+Thread 2:
+<pre>
+while (x == 0) {}
+print (y);</pre></td></tr></table>
+
+<p>
+Since we know synchronization is needed, we might start by guarding the shared variables <code>x</code>
+and <code>y</code> with a mutex <code>m</code>:
+</p>
+
+<table class="sidebysidecode"><tr><td>
+Thread 1:
+<pre>
+synchronized (m) {
+    y = 1;
+    x = 1;
+}
+</pre>
+</td>
+<td>
+Thread 2:
+<pre>
+synchronized (m) {
+    while (x == 0) {}
+    print (y);
+}</pre></td></tr></table>
+<p>
+But this won't work either: if thread 2 gets a head start, it will acquire the mutex and then spin forever in the <code>while</code>
+loop, preventing thread 1 from making any progress.
+</p>
+<p>
+To allow one thread to wait for updates from another, we need a <b>condition
+variable</b>, a mechanism for blocking a thread until some condition becomes
+true. A condition variable is always associated with a mutex that guards the condition and
+any mutable state used in it.
+</p>
+<p>
+Every Java object implicitly has not only a mutex but also a single condition
+variable tied to that mutex. The main operations of a condition variable are
+<code>wait()</code> and <code>notifyAll()</code>, which have the following
+specs:
+</p>
+<pre>
+  /** Requires: the mutex of the condition variable is held.
+   *  Effect: block this thread and release the mutex; reacquire the mutex
+   *  when the thread is unblocked.
+   */
+  void wait();
+
+  /** Requires: the mutex of the condition variable is held.
+   *  Effect: Unblock all threads waiting on this condition variable.
+   */
+  void notifyAll();
+</pre>
+
+<p>
+The <code>wait()</code> method is used when a thread wants to wait for some
+condition to become true. It may only be called when the lock is
+held. The act of calling <code>wait()</code>
+atomically releases the lock and blocks the current thread on the condition variable.
+The thread will only wake up and start executing when <code>notifyAll()</code>
+or <code>notify()</code> are called on that lock.
+Java also has a version of <code>wait()</code> that includes a timeout
+period, after which it will automatically wake itself up.</p>
+<p>
+In addition to these methods, there is also a <code>notify()</code> method, but it should
+usually be avoided: <code>notifyAll()</code> is more useful and less error-prone.
+</p>
+<p>
+Note that a Thread waiting on a condition variable via <code>wait()</code>
+will not wake up simply because the lock has been released by some other thread. The other
+thread must call <code>notifyAll()</code> or <code>notify()</code>.
+</p><p>
+Another thread should call the <code>notifyAll()</code> method when the condition
+of the condition variable might have become true. Its effect is to wake up all
+threads waiting on that condition variable. When a thread wakes up
+from <code>wait()</code>, it immediately tries to acquire the lock. Only one thread can win;
+the others block, waiting for the winner to release the lock.
+Eventually they acquire the lock, though there is no guarantee that
+the condition is true when any of the threads awake.
+</p><p>
+After a thread calls <code>wait()</code>, the condition it is waiting for might
+be true when <code>wait()</code> returns. But it need not be. Some other thread
+might have been scheduled first and may have made the condition false.
+So <code>wait()</code> is always called in a loop:
+</p><p>
+<pre>
+while (!condition) wait();
+</pre>
+</p><p class="cont">
+Failure to test the condition after <code>wait()</code> leads to what
+is called a <b>wakeup–waiting race</b>, in which threads awakened by
+<code>notifyAll()</code> race to observe the condition as true. The winners of
+the race can then spoil things for later awakeners.
+</p>
+<h2>Monitors</h2>
+</p><p>
+The <b>monitor</b> pattern is a design pattern for managing synchronization.
+It builds synchronization into objects: a monitor
+is an object with a built-in lock on which all of the monitor's
+public methods are synchronized. This design is accomplished in Java easily, because
+every object can be used as a lock, and the <code>synchronized</code> keyword enforces the
+monitor pattern. Java objects are designed to be used as monitors. A monitor
+also has some number of condition variables. Java objects only have
+one condition variable but this suffices, as discussed below.
+</p><p>
+The only objects that should be shared between threads are therefore
+immutable objects and objects protected by locks. Objects protected by
+locks include both monitors and objects encapsulated inside monitors,
+since an object encapsulated inside a monitor is protected by the monitor's lock.
+</p>
+
+<h3>Supporting multiple conditions</h3>
+    
+<p>In general, a monitor may have multiple conditions under which it wants to wake
+up threads. Given that a Java object has only one built-in condition variable,
+how can this be managed? One possibility is to use a <code>ConditionObject</code>
+object from the <code>java.util.concurrent</code> package. A second easy technique
+is to combine all the multiple conditions into one condition variable that
+represents the boolean disjunction (“or”) of all of the conditions. A <code>notifyAll()</code>
+is sent whenever any of the conditions might become true; threads awakened by
+<code>notifyAll()</code> then test to see if their particular condition has
+become true; otherwise, they go back to sleep.</p>
+
+<p>
+As an example of this disjunction pattern, here is another use of condition
+variables: a blocking queue. The <code>put</code> method blocks whenever it
+would put too many elements into the queue, waiting for another thread to take
+an element out. The <code>take</code> method blocks whenever there is no
+element to take. The same condition variable keeps track of two
+conditions at the same time: queue full <i>or</i> queue empty. It is (always)
+the responsibility of the waiting thread to ensure that the condition is true.
+</p>
+
+<pre>
+public class BlockingQueue<T> {
+
+    private Queue<T> queue = new LinkedList<T>();
+    private int capacity;
+
+    public BlockingQueue(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public synchronized void put(T element) throws InterruptedException {
+        while (queue.size() == capacity) {
+            wait();
+        }
+
+        queue.add(element);
+        notifyAll();
+    }
+
+    public synchronized T take() throws InterruptedException {
+        while (queue.isEmpty()) {
+            wait();
+        }
+
+        T item = queue.remove();
+        notifyAll();
+        return item;
+    }
+}
+</pre>
+
+</p>
+<h2>Deadlock</h2>
+<p>
+Monitors ensure consistency of data. But the locking they engage in
+can cause <b>deadlock</b>, a condition in which every thread is waiting to
+acquire a lock that some other thread is holding. For example,
+consider two monitors <code>a</code> and <code>b</code> of classes
+<code>A</code> and <code>B</code>, respectively,
+where <code>a.f()</code> calls <code>b.g()</code> and
+vice-versa:
+</p>
+<pre class=code>
+class A {
+    synchronized void f() { b.g(); }
+}
+
+class B {
+    synchronized void g() { a.f(); }
+}
+</pre>
+
+<table class="sidebysidecode"><tr>
+<td>
+Thread 1:<pre>a.f();</pre>
+</td>
+<td>
+Thread 2:<pre>b.g();</pre>
+</td>
+</tr>
+</table>
+<p>Suppose two threads try to call <code>a.f()</code> and <code>b.g()</code>,
+respectively. The two threads can acquire locks on <code>a</code> and <code>b</code>,
+respectively, then deadlock trying to acquire the remaining lock.
+We can represent this situation using a diagram like the following,
+in which the deadlock shows up as a cycle in the graph.
+</p>
+<div class="figure">
+<img src="synchronization/deadlock.png">
+</div>
+<p>
+To avoid creating cycles in the graph, the usual approach is to define
+an <em>ordering</em> on locks. If lock \(L_1\) is acquired before \(L_2\),
+then \(L_1\) must be earlier (lower) in the ordering, which is written as \(L_1 &lt; L_2\).
+In general, when at the same time a thread holds multiple locks acquired in the order
+\(L_1, L_2, L_3, ..., L_n \), the order in which they are acquired must
+respect the ordering: \(L_1 &lt; L_2 &lt; ... &lt;L_n\).
+</p>
+<p>
+In the example above, we might have a lock ordering in which <tt>a &lt; b</tt>.
+In this scenario, <tt>b</tt> could not be waiting on the lock for <tt>a</tt>,
+because a method of <tt>b</tt> already holds a lock that is higher in the ordering,
+so it must already have acquired the lock for <tt>a</tt>.
+</p>
+<p>
+In general, a thread may acquire a lock on (synchronize on) an object only
+if that object comes later in the lock ordering than all locks that the thread
+already holds.
+</p>
+<h3>Locking level</h3>
+<p>
+To prevent deadlock, we can impose a requirement that a method only hold
+locks up to a certain level in the order &lt;. This requirement becomes part
+of the precondition of the method and is called the <b>locking level</b>
+of the method, written \(LL\). The locking level \(LL\) specifies the highest level lock in the lock
+ordering that might be held when the method is called.
+</p>
+<p>
+Since a monitor acquires its lock when public methods are called, the locking level on 
+entry to a monitor method must be less than or equal to the monitor itself. Otherwise
+the lock ordering could be violated. Thus, public methods have a precondition \(LL ≤ \texttt{this}\).
+</a>
+<p>
+If we apply this approach to the example above, we might specify that <tt>a &lt; b</tt> in the lock ordering.
+The methods <tt>f()</tt> then requires \(LL &lt; a\) and <tt>g()</tt> requires \(LL &lt; b\). The
+call to <tt>a.f()</tt> in <tt>B.g()</tt> is then illegal, because it violates the lock ordering,
+and as we saw it leads to possible deadlock.
+</p>
+<pre class=code>
+class A {
+    /** Requires: LL ≤ this */
+    synchronized void f() { b.g(); }
+}
+
+class B {
+    /** Requires: LL ≤ this */
+    synchronized void g() { a.f(); }
+}
+</pre>
+<h3>Sorting locks</h3>
+<p>
+In general, a thread might need to acquire multiple locks. How can we be sure that they will be acquired in 
+lock order? A useful technique is to sort the locks according to the lock ordering, then acquire all the locks
+in that order. This technique requires that we know ahead of time which locks will be needed.
+</p>
+<p>
+For example, suppose we want to implement bank transactions that withdraw money from two accounts and deposit
+into a third. But if either of the two source accounts does not have enough money, the transaction should not
+take place. We can start from a definition of an <code>Account</code> class like the one we saw previously,
+except that it throws an exception if a withdrawal would leave the account overdrawn:
+<pre class=load>
+<a href="synchronization/Account.java">Deadlock.java</a>
+</pre>
+</p>
+<p>Using this class, we can create an array of many accounts and then implement the transaction. It is necessary
+to acquire a lock on both of the accounts being withdrawn to make sure that they both have money at the same
+time. In the following code, if the withdrawal succeeds from the first account but then fails on the second account,
+the first account is then refunded in the <code>catch</code> clause:
+<pre class=load>
+<a href="synchronization/Deadlock.java">Deadlock.java</a>
+</pre>
+<p>
+Unfortunately, if this transaction is run concurrently in multiple threads, it will often deadlock. The
+transaction acquires locks on <code>accounts[i]</code>, <code>accounts[j]</code>, and <code>accounts[k]</code>,
+but nothing ensures that these locks are ordered.</p>
+<p>
+The fix to this deadlock is to impose an ordering on the bank accounts. Suppose we choose the ordering that
+<code>accounts[i] &lt; accounts[j]</code> exactly when <code>i &lt; j</code>.
+To simplify the acquisition order graph, we first pull the update to <code>accounts[k]</code> out of the critical section
+involving the other two accounts; that update does not need to happen while locks <code>i</code> and <code>j</code> are held
+unless we are demanding that the whole transaction occur atomically. Then, we
+sort <code>i</code> and <code>j</code> before acquiring their locks:
+</p>
+<pre class=load>
+<a href="synchronization/Deadlock_fixed.java">Deadlock_fixed.java</a>
+</pre>
+<p>
+
+<h2>Barriers</h2>
+<p>
+As we've seen, programming with locks and condition variables can be tricky,
+even when we use the monitor pattern correctly.  Fortunately, for many
+applications, simpler synchronization abstractions are good enough.
+<p>
+In scientific computing applications, <b>barriers</b> are a popular way
+to ensure that updates by one thread or set of threads are seen by 
+other threads.  A barrier is created with a specified number of threads that
+must reach the barrier. Each thread that reaches the barrier will block until
+the specified number of threads have all reached it, at which point all the
+threads unblock and are able to go forward. All operations in all threads that
+occur before the barrier is reached are guaranteed to happen-before all
+operations that occur after the barrier.
+Thus, barriers help ensure a consistent view of memory. Once threads waiting at
+a barrier unblock, they are guaranteed to see all the memory updates
+that other threads performed <em>before</em> reaching the barrier. 
+<p>
+Barriers make it easy to divide up a parallel computation into a sequence of
+stages, where the threads running concurrently within each stage are sharing
+little or no mutable data. Work can be divided among a set of threads that
+exchange information at barriers.  For this simple but common use of
+concurrency, barriers make it easy to build race-free, deadlock-free code.
+<p>
+The Java system library provides a barrier abstraction,
+<code>java.util.concurrent.CyclicBarrier</code>. An instance of this class is
+created with the number of threads that are expected to reach the barrier.  A
+thread "reaches the barrier" by calling the barrier's <code>await()</code>
+method.  The thread blocks at the barrier until the required number of threads
+reach the barrier, at which point all the waiting threads unblock and resume
+execution immediately after the <code>await()</code> call.  The barrier resets
+when all the threads resume, and can be used again.
+</p>
+<h3>Implementing barriers</h3>
+<p>
+We can use monitors to build higher-level synchronization abstractions.  For
+example, suppose we want a barrier-like abstraction that runs \(n\) threads in
+parallel to compute a result and waits until both results are available. The
+using code might look like the following:
+</p><pre>
+w = new Workers(n);           // spawn n threads to compute parts of a value
+double value = w.getResult(); // wait for all n threads to complete
+</pre><p>
+We might try to write the class <code>Workers</code> as follows:
+</p>
+<pre>
+class Workers extends Runnable {
+    int working; // number of threads that have not finished
+    double result;
+    Workers(int n) {
+	working = n;
+        for (int i = 0; i &lt; n; i++)
+            new Thread(this).start();
+    }
+    public void run() {
+	double x = doWork();
+	synchronized(this) {
+            working--;
+	    result += x; // accumulate into final result
+	}
+    }
+
+    // not synchronized, to allow concurrent execution<
+    public void doWork() {
+        ...avoid using shared mutable state...
+    }
+
+    double getResult() {
+	while (working &gt; 0) {} // oops: wasteful!
+	return result;         // oops: not synchronized!
+    }
+}
+</pre>
+<p>
+The idea is that the variable <code>working</code> keeps track of the number of
+threads that are still running, and the final result of the computation (the
+sum of the results computed by the threads) is released via
+<code>getResult()</code> only once the number of working threads is zero.
+<p>
+Notice that the methods <code>run()</code> and <code>doWork()</code> are not
+synchronized, which is essential for the class to work as intended. If they
+were synchronized, only one thread would be able to do useful work at a time.
+Therefore, these methods must use synchronization internally to protect any
+shared mutable state such as the instance variables <code>result</code> and
+<code>working</code>.
+</p>
+<p>
+As the comments in the code suggest, there are two serious problems
+with the <code>getResult</code> implementation. First, the loop on <code>working &gt; 0</code>
+will waste a lot of time and energy. This is called <b>busy waiting</b> and should be avoided.
+Second, there is no synchronization ensuring that updates to <code>result</code> are seen.
+</p><p>
+How can we fix this? We cannot make <code>getResult()</code>
+synchronized, because this would block the final assignment
+to <code>done</code> and <code>result</code> in the <code>run</code> method. We can't use the
+lock of <code>w</code> to wait until <code>working</code> becomes 0.
+</p>
+<p>
+Using condition variables, we can correctly implement <code>getResult()</code> as follows,
+using a loop to avoid wakeup-waiting races:
+</p><p>
+<pre>
+synchronized double getResult() {
+    while (working &gt; 0) wait();
+    return result;
+}
+</pre>
+</p><p>
+With this implementation, the lock is not held while the thread waits.
+The implementation of <code>run()</code> must also be modified to call <code>notifyAll()</code>
+when the condition <code>working == 0</code> holds:
+</p><p>
+<pre>
+...
+synchronized(this) {
+    working--;
+    result += x;
+    if (working == 0) notifyAll();
+}
+</pre>
+</p><p>
+Recall that the call to <code>notifyAll()</code> must be done when the lock is
+held. Waiting threads will awaken but will immediately block trying to acquire
+the lock. If there are threads waiting, one of them will win the race and
+acquire the lock.  In fact, since each awakened thread must test the
+condition for itself, we need not even test it before calling <code>notifyAll()</code>:
+</p>
+<pre>
+...
+synchronized(this) {
+    working--;
+    result += x;
+    notifyAll();
+}
+</pre>
+<p>
+Java objects also have a <code>notify()</code> method that wakes just one thread
+instead of all of them. The use of <code>notify()</code> is error-prone and usually
+should be avoided.
+</p>
+<h2>Using background threads with JavaFX</h2>
+</p><p>
+In JavaFX, any background work should be done not by the Application thread,
+but rather in a separate thread. If the Application thread is busy doing work
+instead of handling user interface events, the UI becomes unresponsive.
+However, UI nodes are not thread-safe, so only the Application thread may
+access the component hierarchy.
+</p>
+<p>
+The
+<a href="http://docs.oracle.com/javafx/2/api/javafx/concurrent/Task.html">
+<code>Task</code></a> class encapsulates useful functionality for
+starting up background threads and for obtaining results from them.
+This is easier than coding up your own mechanism using locks and
+condition variables. The key methods are these:
+</p>
+<pre class=load>
+<a href="synchronization/Task.java">Task.java</a>
+</pre>
+<p>
+Some of the methods are designed to be used within the implementation of
+the task, and others are designed to be used by client code in other threads,
+to control the task and to interact with it.
+</p>
+<p>
+To compute something of type <code>V</code>
+in the background, a subclass of <code>Task&lt;V&gt;</code> is defined that
+overrides the method <code>call()</code>. Because a <code>Task</code> is a
+<code>Runnable</code>, the task can be
+started by creating a new thread to run it:
+<pre>
+Thread th = new Thread(task);
+th.start();
+</pre>
+<p>
+The work done by the tasks is defined in the <code>call()</code> method;
+it should simply return the desired result at the end of the method in the
+usual way. Notice that the <code>call()</code> method is not supposed to be
+called by clients or by any subclass code; instead, it is automatically
+called by the <code>run</code> method of the task.
+</p>
+<p>
+To report progress back to the Application thread,
+it may also call <code>reportProgress()</code>. When the task completes by returning
+a value of type <code>V</code> from the <code>call()</code> method, the event handler
+<tt>h</tt> defined by calling <code>setOnSucceeded(h)</code> is invoked in the
+Application thread.
+</p>
+<p>
+It is possible for a task to be canceled by calling the <code>cancel()</code> method;
+however, it is incumbent on the implementation of the task to periodically check
+whether the task has been canceled by using the <code>isCancelled()</code> method.
+</p>
+<p>
+By listening on the property <code>progressProperty()</code>, client code in
+the Application thread can keep track of the progress of the task and update
+the GUI to reflect how far along the task is. The Task can also communicate
+back to the Application thread by using method
+<code>Platform.runLater()</code>, but this approach may couple the task
+implementation with the GUI more than is desirable.
+</p>

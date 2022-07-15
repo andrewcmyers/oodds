@@ -1,0 +1,511 @@
+<h1>Representing Java Values</h1>
+
+<h2>The Java language abstraction vs. hardware implementation</h2>
+<p>
+The Java language is an abstraction. Java is implemented on top of hardware
+using a compiler and the software for its run-time system, presenting you with
+the illusion that there are really ints, booleans, objects, and so forth.  In
+reality there are circuits and electrons. For most part, you can ignore the
+lower-level details of what is really happening when Java programs run. That's
+because the Java abstraction is very effective. But computer scientists ought
+to have a model of how computers really work.
+</p>
+
+<h2>Memory, memory addresses, and words</h2>
+
+<p>
+The computer memory is actually a big grid in which a bit is stored at every
+intersection. But the hardware itself offers a more abstract view of memory as
+a big array. The memory can be accessed using <b>memory addresses</b> that
+start at 0 and go up to some large number (usually 2<sup>32</sup> or
+2<sup>64</sup>, depending on whether the computer is 32-bit or 64-bit).
+Each address names a group of 8 bits (a <b>byte</b>). However, usually
+computer memories give back multiple bytes at once. When given an address
+divisible by four, the computer memory can read the four bytes beginning
+at that address, containing 32 bits. These four bytes are called a <b>word</b>.
+On 64-bit machines, the memory can fetch 64 bits at a time; for simplicity
+we'll call a set of eight bytes a <b>double word</b>.
+</p>
+
+<div class="figure">
+<img src="02java_rep/memory.png" alt="memory layout" />
+</div>
+
+<h2>Integral types (<code>int</code>, <code>short</code>, <code>byte</code>) and signed (two's-complement) representations.</h2>
+
+<p>
+Internally, computers represent numbers using binary (base 2) numbers rather
+than the decimal (base 10) representations we've grown up with. In base 2,
+there are only two possible digits, 0 and 1, which can be represented in the
+computer's hardware as a switch that is turned off or on, or a voltage that is
+low or high.
+</p>
+<p>
+Binary digits stand for coefficients on powers of two rather than on
+powers of ten, so 1101<sub>2</sub> = 8<sub>10</sub> + 4<sub>10</sub> + 0 + 1 = 13<sub>10</sub>.
+(Note that we write a subscript 2 or 10 to indicate the base of a number when there is
+ambiguity.)
+</p>
+<p>
+In base 10, a number of <span class=m>n</span> digits can represent any number from 0 up to but not including
+the number 10<sup><span class=m>n</span></sup>. For example, in three decimal digits we can
+represent any number between 0 and \( 999 = 10^3 - 1\).  Similarly, <span class=m>n</span> binary digits can
+represent any number from 0 up to 2<sup>n</sup>-1. Therefore, a byte containing
+8 bits could represent any number between 0 and 255, since 2<sup>8</sup> = 256. The Java <code>char</code>
+type is a 16-bit number, so it can have any value between 0 and 2<sup>16</sup>-1 = 65535. A 32-bit word
+can represent any number between 0 and 2<sup>32</sup>-1 = 4294967295.
+</p>
+<p>That may sound good enough for most uses, but what about negative numbers? To handle them, we
+need a way to represent the sign of a number.
+</p>
+
+<div class="figure">
+<img src="02java_rep/integral.png" alt="integral types" />
+</div>
+    <ol>
+	<li>Signed: <code>int</code> (32 bits), <code>short</code> (16 bits), <code>long</code> (64 bits), <code>byte</code> (8 bits)</li>
+	<li>Unsigned: <code>char</code> (16 bits, 0&ndash;65535)</li>
+    </ol>
+
+    <p><b>Two's complement representation</b>: in a signed n-bit representation, the most
+    significant bit stands for -2<sup>n-1</sup> instead of 2<sup>n&minus;1</sup>,
+    which would be its value in the unsigned representation we have been discussing above.
+    For Java's type <code>byte</code>, the bits 01111111 represent 127 but 10000000 is &minus;128.
+    </p>
+    <p>
+    Adding these together as binary numbers in the usual way, we get 11111111,
+    which represents &minus;1, just as we'd expect when we add &minus;128 and 127. Adding one more to this—and dropping the
+    final carry—we have 00000000, the representation of 0, also as we would like. Some other representations for
+    bytes are as follows:
+    </p>
+    <table>
+    <tr><td>&minus;7</td><td>11111001</td></tr>
+    <tr><td>&minus;4</td><td>11111100</td></tr>
+    <tr><td>&minus;2</td><td>11111110</td></tr>
+    <tr><td>&minus;1</td><td>11111111</td></tr>
+    <tr><td>0</td><td>00000000</td></tr>
+    <tr><td>1</td><td>00000001</td></tr>
+    <tr><td>2</td><td>00000010</td></tr>
+    <tr><td>4</td><td>00000100</td></tr>
+    <tr><td>7</td><td>00000111</td></tr>
+    </table>
+    <p>
+    In effect, going from an unsigned representation to a two's-complement
+    signed representation takes the upper half of the representable numbers and
+    makes them wrap around to become negative numbers. This works because
+    numeric computations are done modulo 2<sup>n</sup>, and 128 and &minus;128
+    are the same number modulo 2<sup>8</sup>. By the properties of modular arithmetic,
+    the addition, subtraction, and multiplication operators can be implemented
+    exactly the same way for signed and unsigned numbers in the two's-complement
+    representation.
+    </p>
+
+    <div class=figure><canvas id=wraparound_new style="width:550px; height:80px"></canvas>
+    </div>
+    <script class=graphics>
+    with (new CFigure("wraparound_new", true)) {
+        const f1 = addFrame(), f2 = addFrame().setLength(700), f3 = addFrame()
+            u0_127 = rectangle().addText("0..127"),
+            u128_255 =rectangle().addText("128..255")
+            s0_127 = rectangle().addText("0..127"),
+            s128_n1 = rectangle().addText("-128..-1"),
+            u128_255_2 = drawBetween(f2, f3, rectangle().addText("128..255"))
+            signed = label("signed representation"),
+            unsigned = label("unsigned representation")
+
+        sameSize(u0_127, u128_255, s0_127, s128_n1, u128_255_2)
+
+        align("abut", "center", u0_127, u128_255, hspace(20), unsigned)
+        align("abut", "center", s128_n1, s0_127)
+        align("left", "none", u0_127, s0_127)
+        align("left", "bottom", canvasRect().inset(2), s128_n1)
+        align("none", "top", canvasRect().inset(2), u0_127)
+        align("none", "center", s128_n1, s0_127, signed)
+        align("left", "none", signed, unsigned)
+        align("right", "none", unsigned, canvasRect().lr().toLeft(60))
+        pin(u128_255_2, smooth(f2, u128_255, s128_n1))
+
+        equal(u0_127.h(), 20)
+        f3.setAutoAdvance(true)
+    }
+    </script>
+
+    <p>Everything we have said about the <code>byte</code> applies to the other signed Java types (<code>short</code>,
+    <code>int</code>, and <code>long</code>), except that those types have more bits (16, 32, and 64 respectively).
+    </p>
+
+    <p>An interesting identity is that to negate a number, you simply invert
+    all of its bits and then add one, discarding any final carry. Considering
+    bytes, we have &minus;1 = 11111110 + 1 = 11111111. What about negating 0? In
+    this case, &minus;0 = 11111111 + 1 = 100000000, but this is just 0 once we
+    discard the 9th digit.
+    </p>
+
+    <p>Other representations for numbers exist, such as one's-complement, in which
+    the negation of a number is performed by inverting all of its bits. But
+    the usual two's-component representation is more convenient to work with and
+    leads to simpler, faster implementations in hardware. At this point
+    essentially everyone uses two's complement.
+    </p>
+
+<h3>Bit-level operators</h3>
+
+<p>We've seen that we can view an integral type like <code>int</code>   
+as a sequence of bits. Java supports several operators on integral      
+types that operate at the level of bits. For example, given a number    
+<code>x</code>, the unary operation <code>~x</code> inverts all         
+of the bits in the number. Perhaps surprisingly, this operator is       
+closely related to negation. If <code>-x</code> is representable,       
+then <code>-x</code> is equal to <code>~x + 1</code>.  We can see       
+why this works by considering that we can also flip all the bits in     
+<code>x</code> by subtracting it from -1, which, after all, is just a   
+sequence of 1 bits. Therefore, <code>~x</code> = <code>-1 - x</code>.   
+Adding 1 to both sides, we get <code>~x + 1</code> = <code>-x</code>.   
+</p>                                                                    
+<p>It is interesting to see how powers of two and negated powers of
+two are represented. A power of two (say, 8) is all zeros except for
+a single 1 digit: 00001000. To get the corresponding negative number,
+we can flip all the bits and add one: 11110111 + 1 = 11111000. Thus,
+a negated power of two looks just like the power of two except that
+all of its leading digits are 1 instead of 0.
+</p>
+<p>Integral types also support bitwise "and" and "or" operations, written
+<code>&amp;</code> and <code>|</code>.  For example, <code>10 &amp; 6</code>
+written in binary is <code>1010 &amp; 0110</code>. Taking the logical "and" of
+each corresponding bit, we get <code>0010</code>, or 2. The logical "or" is
+<code>1110</code>, so <code>10|6</code> = <code>14</code>. There is also a
+bitwise "exclusive or" operation, written <code>^</code>. Exclusive or acts
+like or but <code>1^1</code> = <code>0</code>.
+</p>
+<p>Java also supports shift operators that slide the bits of a number left or
+right. The left shift operator <code>&lt;&lt;</code> moves the bits of number
+left by the designated number of positions, shifting in <code>0</code> on
+the right. For example, on the <code>byte</code> type we would have:
+<pre>
+    00000011 &lt;&lt; 1 = 00000110
+    00000101 &lt;&lt; 3 = 00101000
+    11111110 &lt;&lt; 2 = 11111000
+</pre>
+<p>
+Notice that moving a bit leftward by one position doubles its value. Therefore,
+as long as the two most significant bits are the same, shifting left by one bit
+is the same as multiplying by two. If they are not the same, then the result
+of multiplying by two would not be representable in that numeric type anyway.
+Therefore, shifting left by one bit is exactly the same as multiplying by 2.
+</p>
+<p>
+It is possible to <i>divide</i> by shifting <i>right</i>. The (arithmetic) right-shift
+operator <code>&gt;&gt;</code> shifts all bits in a number to the right by
+the specified number of positions. However, unlike the left-shift operator,
+it does not change the most significant bit. By keeping the most significant
+bit, it preserves the sign of the result and therefore inverts the effect of
+<code>&lt;&lt;</code> when that operator would have successfully multiplied by 2.
+</p>
+<p>
+There is also a <i>logical</i> right shift operator <code>&gt;&gt;&gt;</code>,
+which shift all bits to the right but changes the high bit to <code>0</code>.
+On nonnegative numbers, shifting right by one bit still has the effect of
+dividing by two, but its effect on negative numbers is not so easy (or useful) to interpret
+arithmetically.
+</p>
+
+<h2>Variables</h2>
+
+<p>When Java variables (both local variables and instance variables)
+are stored in the computer's memory, they may
+take up more space than the number of bits indicated.  In particular,
+variables are stored in memory on word boundaries and always take up
+an integral number of words. So variables with types
+<code>short</code>, <code>int</code>, <code>byte</code>, and
+<code>char</code> all take up one full 32-bit word, whereas variables with
+type <code>long</code> take up two consecutive words. For example,
+given these variable declarations:
+</p>
+
+<pre>
+char c = 'a';
+long x = 1;
+</pre>
+
+<p>
+We might find variables <code>c</code> and <code>x</code> stored in
+consecutive memory locations 10012&ndash;10023 as in the following
+figure showing the contents of each byte. Notice that the high 32 bits
+of <code>x</code> are all zero, and that the high 16 bits of the word containing
+<code>c</code> are unused and probably contain zeros.
+</p>
+
+<div class="figure">
+<canvas id="vars" style="width: 260px; height: 140px"></canvas>
+</div>
+<script class=graphics type="application/javascript">
+  with (new CFigure("vars")) {
+    function byte(x) {
+        const r = rectangle().setH(18).setW(22)
+        if (x) r.addText(subscript(x))
+        else r.setFillStyle("#ccc")
+        return r
+    }
+    function word(b3, b2, b1, b0) {
+        return group(byte(b3), byte(b2), byte(b1), byte(b0)).align("abut", "top bottom")
+    }
+    const row1 = word(null, null, "0", "97"),
+          row2 = word("0", "0", "0", "1"),
+          row3 = word("0", "0", "0", "0")
+    align("left right", "abut", row1, row2, row3)
+    const ll = vertLine(), rl = vertLine()
+    align("none", "top bottom", ll, rl)
+    align("left", "none", ll, row1)
+    align("right", "none", rl, row1)
+    equal(ll.y0(), minus(row1.y0(), 25), 2)
+    equal(minus(ll.y1(), row3.y1()), minus(row1.y0(), ll.y0()))
+    let c = label("c"), x = label("x"),
+        a1 = label("10012"), a2 = label("10016"), a3 = label("10020")
+    equal(c.x0(), canvasRect().x0())
+    align("center", "none", c, x)
+    align("distribute", "center", c, a1, row1)
+    align("distribute", "center", x, a2, row2)
+    align("distribute", "center", a3, row3)
+    align("right", "none", a1, a2, a3)
+  }
+</script>
+
+<p>Fields of objects (instance variables) are stored in the same way as
+variables, taking up an integral number of words that are located contiguously
+in memory. (By contrast to Java, languages like C and C++ try to pack fields
+into memory more.) </p>
+
+<h2>Objects and pointers</h2>
+
+<p>
+We have been drawing object diagrams that include pointers, which might have
+been a little mysterious. However, the representation of pointers is quite
+straightforward: a pointer is represented just like the (unsigned) number that is
+the memory address of the memory location it points to. Since modern computers
+have addresses up to 2<sup>64</sup-1, the representation of a pointer takes up
+64 bits, or two 32-bit words.
+</p>
+
+<p>For example, consider the following code:</p>
+<pre>
+class A {
+    char c;
+    B y;
+}
+class B {
+    long z;
+}
+...
+B b = new B();
+b.z = 1;
+A a = new A();
+a.c = 'a';
+a.y = b;
+</pre>
+<p>Suppose that object b is located at memory location 14404 and
+object a is located at 22288. Then memory looks something
+like the following:
+</p>
+
+<div class="figure">
+<canvas id="objects" style="width: 260px; height: 350px"></canvas>
+<script class=graphics type="application/javascript">
+  with (new CFigure("objects")) {
+    function unused() { return rectangle().setStrokeStyle(null).setFillStyle("#bbb").setW(80) }
+    let u, a, b, ao, bo
+
+    align("right", "abut",
+        u = unused().setH(20),
+        b = varBoxes("b=14404", "=0"),
+        unused().setH(10),
+        a = varBoxes("a=22288", "=0"),
+        unused().setH(15),
+        bo = varBoxes("14404=B", "z  14408=1", "14412=0"),
+        unused().setH(20),
+        ao = varBoxes("22288=A", "c  22292=97", "y  22296=14404", ""),
+        unused().setH(25)
+    )
+    equal(u.y0(), 2)
+    let vl = vertLine(), vr = vertLine()
+    align("left", "top", u, vl)
+    align("right", "top", u, vr)
+    align("none", "top bottom", vl, vr)
+    equal(vl.y0(), 0)
+    equal(vl.y1(), canvasRect().y1())
+    pointer(b.getVar(0), bo.getVar(0).cr().toRight(50), bo.getVar(0).cr()).setLineDash([4, 4]).setStrokeStyle("#888").setFillStyle("#888")
+    pointer(a.getVar(0), ao.getVar(0).cr().toRight(50), ao.getVar(0).cr()).setLineDash([4, 4]).setStrokeStyle("#888").setFillStyle("#888")
+  }
+
+</script>
+</div>
+
+<p>Notice that each object starts with one header word that describes its
+class. This word actually contains a pointer to another memory location
+that is shared by all objects of that class.</p>
+
+<p>Because the actual memory addresses and the sizes of numbers and pointers
+don't matter much, it is sufficient for understanding this program to look at the
+simpler object diagrams we have been using:</p>
+
+<div class="figure">
+<canvas id="boxes-arrows" style="width: 260px; height: 170px"></canvas>
+<script class=graphics type="application/javascript">
+  with (new CFigure("boxes-arrows")) {
+    let a = varBoxes("class=A", "c=97", "y=")
+    let b = varBoxes("class=B", "z=1")
+    equal(b.y0(), plus(a.y1(), 0))
+    equal(plus(a.x1(), 50), b.x0())
+    pointer(a.getVar(2), b.getVar(0).cl().toLeft(30), b.getVar(0).cl())
+  }
+</script>
+</div>
+
+<h2>Arrays</h2>
+
+<p>Unlike variables, array elements are usually stored in a more compact way in
+memory in which no space is wasted. An array of characters
+(a <code>char[]</code> value) is stored with the characters packed contiguously in
+memory, with two characters per 32-bit word. Similarly, a <code>byte[]</code>
+array is stored with each byte of the array taking up exactly one byte in
+memory.
+</p>
+<p>
+The exception is arrays of <code>boolean</code>, which are stored with one full
+word per boolean value. It is therefore prudent to avoid the type
+<code>boolean[]</code> for large arrays. The Java class
+<a href="https://docs.oracle.com/javase/7/docs/api/java/util/BitSet.html"><code>BitSet</code></a>
+offers the functionality of an array of booleans (and more) but has a much more
+compact representation for large arrays.
+</p>
+
+<h2>Floating point representations</h2>
+
+<p>Java supports <b>floating-point</b> numbers that act a lot like real numbers. But it takes an unbounded amount
+of memory to store a real number, so floating-point numbers are only an approximation. There are two floating-point
+types in Java. The type <code>float</code> is a <b>single-precision</b> floating point number taking up one word, and
+the type <code>double</code> is a <b>double-precision</b> floating point number taking up two words.</p>
+<p>It is possible to see how floating point numbers are represented in Java by using the methods <code>Float.floatToRawIntBits</code>
+and <code>Double.doubleToRawLongBits(double)</code>, which return an <code>int</code> and a <code>long</code> containing the
+same bits as the respective <code>float</code> and <code>double</code>. <a href="02java_rep/src/dumpFloat.java">Here</a> is some Java code that uses these
+methods to explore how floating point numbers are represented.</p>
+
+<p>
+According to the IEEE 754 specification, which is almost universally followed at this point,
+A single-precision floating point number is represented as shown:</p>
+
+<div class="figure"><img src="02java_rep/float.png" alt="floating-point representation" /></div>
+
+<p>A floating point number is represented using three components, the sign, the exponent, and the mantissa,
+respectively taking up 1, 8, and 23 bits of the 32-bit word.
+</p>
+<p>
+Given components s (sign), exp (exponent), and m (mantissa), where the exponent is between &minus;126 and 127,
+the floating point number represents the real number
+</p>
+<p class="mathdisplay">
+(&minus;1)<sup>s</sup>·2<sup>exp</sup>·(1.m)
+</p>
+<p>Here, we intepret m as a sequence of binary digits, so &ldquo;1.m&rdquo; represents a binary number that is at least 1 (and equal to 1 in the case where
+m = "000000...") and less than 2. The maximum number that 1.m can represent is "1.11111...", which is a binary representation of a
+number less than 2 by the small amount 2<sup>&minus;23</sup>.</p>
+<p>
+Thus, if we want to represent the number 1, we choose s=0, exp=0, m=0000... .
+To represent numbers outside the interval [1,2), an exponent is needed. To
+represent 2, we use s = 0, exp = 1, m=0000..., since 1·2<sup>1</sup> = 2.
+To represent 3, we choose s=0, exp=1, m=10000..., since
+1.1 in binary represents 3/2, and 3/2·2<sup>1</sup> = 3. And so on.</p>
+<p>The exponent is stored with a &ldquo;bias&rdquo; or offset of 127, so the actual
+bit-level representation of 1.0 has s = 0, bexp = 01111111, m =
+00000000000000000000000, and the whole word contains exactly the bits
+00111111100000000000000000000000.</p>
+<p>Some special exponents follow different rules. If the exponent is &minus;127
+(and hence the biased exponent is 0), the represented number is instead:</p>
+<p class="mathdisplay">
+(&minus;1)<sup>s</sup>·2<sup>&minus;126</sup>·(0.m)
+</p>
+
+<p>Therefore, a word consisting entirely of 0's represents the        
+floating point number 0.0, since 0.m = 0 in that case.  It is         
+also possible to represent the floating point number &minus;0.0,      
+which behaves slightly differently, such as when its reciprocal is    
+computed.</p>                                                         
+
+<p>An exponent of 128 is represented by a biased exponent of 255      
+(all 1's). &ldquo;Numbers&rdquo; represented with this exponent       
+include positive and negative infinity, with a mantissa of 0 and      
+the appropriate sign bit. If the mantissa is anything other than 0,   
+the represented &ldquo;number&rdquo; is called NaN, for &ldquo;not    
+a number&rdquo;.  The value NaN arises when there is no reasonable    
+answer to the computation, such as when adding positive and negative  
+infinity.  Any computation performed using NaN produces NaN, so a     
+final result of NaN indicates that something went wrong during the    
+computation. </p>                                                     
+
+<p>A single decimal digit corresponds to log<sub>2</sub> 10 = 3.32
+bits, so the number of decimal digits represented by 23 bits of mantissa
+is 23/3.32 = 6.93.  You can therefore think of floating point numbers
+as representing numbers to about 7 digits of precision. However, errors
+tend to accumulate with each computation, so a long computation often has
+fewer digits of precision. For example, if you subtract 1000000.0 from
+1000000.1, the result will be 0.1 but with only 1 digit of precision.
+In fact, as the <a href="02java_rep/src/dumpFloat.java">attached code</a> showed,
+the result is reported to be 0.125. Oops!</p>
+
+<p>The other thing to watch out for is that the order of operations may affect
+what you compute, because rounding gets done at different places. Just because two
+formulas produce the same real number doesn't mean they will produce the same floating-point
+number. As a result, it is usually necessary when comparing two floating-point numbers
+for equality to instead check that their difference lies within some <b>tolerance</b>
+corresponding to the largest expected round-off error.
+</p>
+
+<p>The largest number representable using <code>float</code> is
+Float.MAX_VALUE, which is about 3.0·10<sup>38</sup>. And the smallest positive
+number representable with full precision is about 10<sup>&minus;38</sup>. It is
+possible to represent smaller numbers down to about 10<sup>&minus;45</sup>
+using the <b>denormalized</b> representation in which the exponent is
+&minus;127, but in this case the precision of the number is reduced.</p>
+
+<p>Because of the limited precision of single-precision floating point, it's
+usually a good idea to use <code>double</code> for any computations you really
+care about. A double-precision number has 11 exponent bits with a bias of
+1023 and 53 mantissa bits (52 explicitly stored), so about 16 decimal digits
+of precision. The number represented with sign bit <code>s</code>, biased exponent <code>e</code>, and
+mantissa bits <code>b<sub>51</sub>b<sub>50</sub>...b<sub>1</sub>b<sub>0</sub></code> is</p>
+
+<p class="mathdisplay">
+(&minus;1)<sup>s</sup>·2<sup>e-1023</sup>·(1.b<sub>51</sub>b<sub>50</sub>···b<sub>1</sub>b<sub>0</sub>).
+</p>
+
+<p>
+For most applications, that's plenty of precision and range.
+</p>
+
+<p>
+If you're interested in looking at how floats and doubles are represented, the methods
+<code>Double.doubleToLongBits()</code> and <code>Float.floatToIntBits()</code> give
+you the same bits as a <code>long</code> or a <code>int</code>, respectively. Bitwise operators
+like <code>&amp;</code> and <code>&lt;&lt;</code> can then be used to inspect the bits.
+</p>
+
+<h2>Garbage collection</h2>
+<p>
+Objects take up space in memory, so if the program allocates enough objects, the computer
+could potentially run out of space to store objects in memory. To help with this problem,
+Java has the feature of <b>garbage collection</b>. Objects that the Java runtime system
+can figure out will never be used again are automatically garbage-collected and their space
+is reclaimed for use by other objects. The runtime may also move objects around in memory
+to create large contiguous chunks of memory.
+</p>
+<p>
+How does the runtime system know which objects will never be used again? In
+general, it can't know that precisely. As a safe approximation, an object is
+considered to be <b>garbage</b> if the running program has no way to ever reach
+the object again by following a chain of pointers.
+</p>
+<p>
+Conversely, a program that unintentionally retains references to useless
+objects can prevent them being reclaimed as garbage.  Usually, programmers do
+not need to worry about this issue, but it can become a real problem in
+long-running programs with complex data structures.
+</p>

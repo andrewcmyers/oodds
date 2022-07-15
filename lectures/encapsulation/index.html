@@ -1,0 +1,522 @@
+<h1>Encapsulation and Information Hiding</h1>
+
+<h2>The object-oriented programming model</h2>
+<p>
+A major topic of this course is object-oriented design. We use an
+object-oriented language, Java, as a vehicle for exploring
+object-oriented design. We assume some prior familiarity with Java,
+but will focus on how to use it in an object-oriented way.
+</p>
+<p>
+It is useful to distinguish between object-oriented (OO) <em>languages</em> and
+the object-oriented <em>programming model</em>. A programming model is an
+approach to solving programming problems. There are many programming
+models and variants thereof. For example, in addition to the
+object-oriented model, there is a <em>functional</em> programming model that
+you will learn about in CS 3110. And there are variations on the
+object-oriented model such as the <em>event-driven</em> model.
+</p>
+<p>
+Some languages are designed to support some programming models better
+than others, and it makes sense to use an OO language like Java for
+learning OO design. But this course is not primarily about Java. It is a
+course about object-oriented design (and other computer science
+topics), and the lessons you learn about object-oriented design should
+apply to other programming languages.
+</p>
+<h2>Elements of OO programming</h2>
+<p>
+What makes a language object-oriented? It should support the essential
+elements of object-oriented programming. There are three key elements,
+which we will discuss in the following three lectures:
+</p>
+<ol>
+<li>Encapsulation (also called Information Hiding)</li>
+<li>Subtyping</li>
+<li>Inheritance</li>
+</ol>
+
+<p>
+We'll start by talking about encapsulation, an idea that Java supports
+with the keywords <code>public</code>, <code>private</code>, and
+<code>protected</code>. The use of these keywords prevents code and
+data from being used, which may seem strange: why is it important
+to take power away from the programmer? The answer is that limiting
+access supports <em>modularity</em>.
+</p>
+
+<h2>The need for modular programming</h2>
+
+<div class="figure">
+<canvas style="width: 400px; height: 300px" id="procedural-fig"></canvas>
+<span class="caption">
+Figure 1: Procedural programming: data is fully accessible from all code,
+          restructuring data can break all code
+</span>
+<script type="application/javascript" class=graphics>
+let procedural_fig = new CFigure("procedural-fig", false)
+with (procedural_fig) {
+    function shadowedBox(name, w, h) {
+        let shadow = roundedRectangle(w,h).setFillStyle("gray").setStrokeStyle(undefined),
+            r = roundedRectangle(w,h)
+        label(name).at(r)
+        shadow.at(r.center().toRight(2).toBottom(2))
+        return r
+    }
+
+    function code() {
+        return shadowedBox("Code", 60, 40)
+    }
+
+    setFontName("Copperplate")
+    setFontSize(14)
+    let data = shadowedBox("Data", 80, 50).at(canvasRect()).setFillStyle("#ddd"),
+        c1 = code(), c2 = code(), c3 = code(), c4 = code()
+    let g = makeGraph()
+    hint(c1, [0,0])
+    hint(c2, [300,0])
+    hint(c3, [0,300])
+    hint(c4, [300,300])
+    g.edge(c1, data)
+    g.edge(c2, data)
+    g.edge(c3, data)
+    g.edge(c4, data)
+    g.repulsion *= 100
+    //  procedural_fig.animatedSolving = true
+}
+</script>
+</div>
+
+<div class=figure>
+<canvas style="width: 350px; height: 220px" id="modular-fig"></canvas>
+<span class=caption>
+Figure 2: Modular programming: access to data is mediated by code; restructuring
+    data affects one module
+</span>
+<script type="application/javascript" class=graphics>
+let modular_fig = new CFigure("modular-fig", false)
+with (modular_fig) {
+    function codeDataBox() {
+        let w = 100, h = 55,
+            shadow = roundedRectangle(w,h).setFillStyle("gray").setStrokeStyle(undefined),
+            r = roundedRectangle(w,h)
+        shadow.at(r.center().toRight(2).toBottom(2))
+        let r2 = roundedRectangle(44, 38).setFillStyle("#ddd"), grp = group(label("Code"), hspace().setW(10), r2),
+            d = label("Data").setFillStyle("black")
+        pin(r2.center(), d.center())
+        align("abut", "center", ...grp.children())
+        pin(grp.center(), r.center())
+        return r
+    }
+
+    setFontName("Copperplate")
+    setFontSize(12)
+    let c1 = codeDataBox(), c2 = codeDataBox(), c3 = codeDataBox(), c4 = codeDataBox()
+    let g = makeGraph()
+    with (g) {
+        dedge(c2, c1)
+        dedge(c2, c3)
+        dedge(c2, c4)
+    }
+    g.repulsion *= 10
+    g.branchSpread *= 10
+    // modular_fig.animatedSolving = true
+}
+</script>
+</div>
+
+<p>
+In early programming languages, the information manipulated by the
+program got short shrift. Programs were organized around the
+algorithms doing the computation, as illustrated in
+Figure 1. Those algorithms had full access to the data that they
+were computing with. This is the procedural model of programming.
+It involves building bigger procedures out of smaller ones, creating
+<b>procedural abstractions</b> that could be reused in a powerful way.
+</p>
+<p>
+As software systems became increasingly complex, the procedural model stopped
+working well. Procedural abstraction by itself did not scale
+up to big software systems. The problem was that the
+procedural model offers no control over
+which program code can access a given part of the data. Code
+can reach into the program data and use it or update in an arbitrary
+way. Working on a team of programmers is difficult in the procedural
+model because the different parts of the code tend to be <em>tightly coupled</em>.
+A bug in one software component can corrupt program data and look like a bug in
+a different component. Code is hard to maintain and to evolve without
+breaking it, and changes to way data is represented in the program tend to
+affect all of the program code rather than being isolated to a small part 
+of the code.
+</p>
+
+<h2>Modular programming</h2>
+<p>
+To address these problems, <em>modular programming</em> was developed.
+(Object-oriented programming extends modular programming with some additional
+ideas that we get to soon.) The idea of modular programming is that the
+software should be broken up into distinct <em>modules</em> that can be
+developed relatively independently. A good modular design respects the
+principle of <em>separation of concerns</em>, which says that different aspects
+of the design should be designed separately. With a good modular design,
+changes can be made to one module without changing other modules, and it is
+relatively easy for programmers to know whether their changes will affect other
+modules that are perhaps owned by other programmers. Separation of concerns
+is strengthened by <em>information hiding</em> in which modules do not take
+advantage of knowledge about how other modules are
+implemented. Information hiding provides <em>loose coupling</em> that tends
+to make code evolution easier. In a loosely coupled system, changes to
+the way information is represented or modules are implemented
+tend to propagate less to other modules, much as loosely coupled train cars
+can start moving without trying to move the whole train.
+</p>
+<p>
+A key insight in programming language design was that modular programming can
+be enforced by a programming language mechanism that <em>encapsulates</em> its
+state and behavior, enforcing information hiding and controlling how other
+modules can access it. This approach is suggested by Figure 2.  Code outside a
+module cannot directly access the data that is internal to the module. Any
+access from outside to a module's data must occur via the module's code, and
+only the code that the module chooses to expose to the outside. Access to the
+data is <em>mediated</em> by this public code.
+</p>
+<p>
+By <em>client code</em> we mean code outside the module that is using the
+module through a set of publicly exposed operations. These operations we
+called the <em>interface</em> of the module, which should not be confused
+with the Java language feature <code>interface</code> (which is, however, an
+example of the more general interface idea, and one we will return to).
+</p>
+<p>
+The interface that a module exposes to client code is a kind of contract with
+the rest of the program. The idea of modular programming is that if every module
+lives up to its contract, the whole program will work correctly. Programmers
+can then think about and program each module in isolation from the rest.
+Instead of thinking about the correctness of the entire program, a
+bewilderingly complex problem, they can just think about the correctness of the
+particular module they are working on now.  This nice property of modular
+programming is called <em>local reasoning</em>.
+</p>
+<p>
+Modules also make it possible to use data from other modules without knowing
+exactly how that data is represented. All they have to know is what operations
+(from the public interface) can be performed on the data. The data is opaque
+to the client code, which means that the module implementer is free to change
+how the data is represented because no client code can depend on the precise
+representation.  This powerful idea is called <em>data abstraction</em>.
+The word <em>abstraction</em> refers to the idea of hiding inessential detail.
+In this case, the inessential detail is, for the client code, the precise
+way that information is represented inside the module.
+</p>
+
+<h2>An example: rational numbers</h2>
+<p>
+In an object-oriented language like Java, encapsulation and data abstraction
+are primarily provided by classes, though <em>packages</em> are also
+used as an encapsulation mechanism. A class and its code are shared by all objects of
+that class (the <em>instances</em> of the class), and the class's code can
+mediate access to all information stored in instances. For example, suppose we
+want objects that act like rational numbers, allowing us to write code like the
+following, using a class <code>Rational</code>:
+</p>
+
+<pre class="load">
+<a href="encapsulation/src/Main.java">Main.java</a>
+</pre>
+
+<p>
+A class implementing rational numbers is shown here (you can click on code examples to
+download them).
+</p>
+
+<div class="figure">
+<pre class="load">
+<a href="encapsulation/src/Rational.java">Rational.java</a>
+</pre>
+<span class="caption">
+Example: Rational numbers
+</span>
+</div>
+
+<p>
+There are many interesting things going on in this implementation. We start out with a very
+important comment, which we call the <em>class overview</em>. This describes how client
+code programmers should think about the values of class <code>Rational</code>. 
+To the client, the objects are simply rational numbers, with a numerator p and a denominator q.
+The overview also gives the client a notation for talking about these objects abstractly, as a fraction p/q.
+Having a notation for objects of the class is helpful for expressing the specifications of the methods.
+</p>
+<p>
+The data in
+<code>Rational</code> objects is the fields <code>p</code> and <code>q</code>, with type <code>int</code>.
+This is just one possible representation of rational numbers. For example, it would probably be better
+to make the types of these fields <code>long</code> or even use <code>BigInteger</code>. We could also
+imagine keeping track of the sign of the number in a separate boolean field, leaving both p and q as
+nonnegative numbers. The point is that the client doesn't and shouldn't need to know how the number
+is represented internally. The client should think of the objects of class <code>Rational</code>
+as simply rational numbers.
+</p>
+<p>The fields of the class are marked <code>private</code> to ensure that they
+are encapsulated inside the class. The keywords <code>public</code> and
+<code>private</code> are known as <em>visibility modifiers</em>, because they
+control which parts of the class are visible outside the class, and hence can
+be accessed.
+</p><p>
+The methods <code>add</code> and <code>equals</code> and the constructor
+<code>Rational</code> are marked <code>public</code> and hence can be used by
+external clients.
+</p>
+<p>
+Inside the method <code>add</code>, there is a special variable <code>this</code> that
+refers to the object on which the method was invoked, called the
+<em>receiver object</em>. It happens that <code>add</code> does not mention <code>this</code>
+explicitly, but it does refer to the fields of <code>this</code> as <code>p</code> and <code>q</code>.
+Writing these names is equivalent to writing <code>this.p</code> and <code>this.q</code>
+respectively.
+</p><p>
+The method <code>plus</code> is a <em>static</em> method, which means that it does not
+have a receiver object. The special variable <code>this</code> is not <em>in scope</em>
+in a static method. That means it cannot be used within the method. A
+static method should be called using the name of its class, as in the
+following code:
+</p>
+<pre>
+Rational r3 = Rational.plus(r1, r2);
+</pre>
+<p>
+It is also possible to declare fields to be static, in which
+case they are shared by all objects of their class.
+</p>
+
+<h2>Visibility modifiers</h2>
+<p>
+As we have seen, the annotations <code>public</code> and <code>private</code> can be used
+to control which code outside a class can access its components. The full list of visibility
+modifiers is as follows:
+</p>
+<table>
+<tr><th>Modifier</th><th>Significance</th><th>Comments</th></tr>
+<tr><td><code>public</code></td>
+<td>Accessible everywhere</td>
+<td>Instance variables should almost never be public</td></tr>
+<tr><td><code>private</code></td>
+<td>Accessible only within the class</td>
+<td>May limit future extensibility</td></tr>
+<tr><td>(no modifier)</td>
+<td>Accessible from classes in the same package</td>
+<td>Does not apply to nested packages</td></tr>
+<tr><td><code>protected</code></td>
+<td>Accessible from subclasses and other classes in the same package</td>
+<td></td></tr>
+</table>
+
+
+<h2>Preconditions and postconditions</h2>
+
+<p>The specification of the constructor has a Requires clause stating that
+the argument <code>den</code> must be non-zero. This clause is a form of
+<em>precondition</em> that must be satisfied by any correct client implementation.
+It is a mistake for client code to call the constructor without satisfying
+the precondition: in particular, it is a mistake by the programmer writing the client code.
+Thus, when mistakes are made, preconditions help us figure out whose fault they are.
+</p>
+<p>
+Similarly, <em>postconditions</em> (sometimes called Returns clauses) specify what
+a method is supposed to do. If a method doesn't satisfy its postcondition, the mistake
+is not the client's; it's the implementer's.
+</p>
+<p>
+Clear preconditions and postconditions means the public interface of the class
+forms a clear contract between the client and the implementer. Like legal
+contracts in law, clear contracts allow blame to be assigned when someone makes
+a mistake. For large software projects, this clear assignment of responsibility
+is extremely valuable.
+</p>
+
+<h2>Class invariants</h2>
+<p>
+An early comment in the <code>Rational</code> example expresses an <em>invariant</em> regarding the fields <code>p</code> and
+<code>q</code>:</p>
+<pre class=code>
+ // class invariant: q &gt; 0, gcd(p, q) = 1
+</pre>
+An invariant is something that is always true at certain points in the program,
+though in programming, invariants can be violated temporarily. This particular invariant is an
+invariant about the state of objects of the class, and is variously called a
+<em>class invariant</em>, <em>data structure invariant</em>, or
+<em>representation invariant</em>.
+The invariant states that <code>q</code> is
+positive and that the rational number is always stored in the reduced form
+where <code>p</code> and <code>q</code> are relatively prime. A class invariant is expected
+to hold at the beginning and end of every public method, but may be temporarily violated
+in the middle of a method. Knowing that the class invariant is true
+is very helpful because when writing the code for the methods of the class, you
+can ignore the possibility of a zero denominator. 
+</p>
+<p>Having invariants that you can rely on is critical to being able to easily
+write working code. It is much easier to make sure you can rely on invariants
+if the code that enforces the invariant is localized to one class, as a class
+invariant (or, at least, to a small number of classes in a package).
+</p>
+<p>
+Encapsulation aids with this goal of localization.
+Because the fields <code>p</code> and <code>q</code>
+are private, the code of the class can enforce this invariant. Code
+outside the current class has no way to, say, modify <code>q</code> to be zero.
+Conversely, we can see that making any assignable
+field public completely destroys the ability to enforce class invariants involving
+that field: client code can assign an arbitrary value to the field.
+</p>
+<p>
+Like the method <code>plus</code>,
+the class constructor, which must also be named <code>Rational</code> like its class,
+is also static in the sense
+that it is not called using a receiver object. Unlike in a static method, the variable
+<code>this</code> and its fields <em>are</em> in scope inside the constructor. They
+refer to the fields of the object currently being constructed. Notice that the
+constructor does not simply accept the numerator and denominator
+directly, but instead computes a new numerator and denominator that
+represent the same number while satisfying the invariant. This ensures that at
+the end of the constructor, the invariant holds.
+</p><p>
+Because of the invariant, the method <code>equals</code> can be implemented very
+simply and efficiently, by comparing the corresponding fields of
+<code>this</code> and <code>r</code>. This implementation relies on the fact that the
+invariant we chose ensures there is only
+one way to represent a given rational number. In general, it is not required that there be
+a unique representation for any rational number, but it's handy here.  Without the invariant,
+we would have to write something more expensive like the following:
+</p><pre>
+  public boolean equals(Object o) {
+    ...
+    return (p*r.q == q*r.p);
+  }
+</pre><p class="cont">
+There is no free lunch here, of course.  We had to pay up front for the
+simplicity of <code>equals</code> (and <code>toString</code>), by enforcing the
+invariant elsewhere in the code.
+</p>
+<h2>Assertions</h2>
+<p>
+Preconditions and postconditions define a contract between the client and the
+implementer, and class invariants are an internal contract between the module
+implementation and itself.  If everyone is obeying the contract, the program
+will work.  But if someone doesn't follow their part of a contract, the program
+may fail in a way that is hard to debug.  How can we gain confidence that these
+contracts are all being obeyed?
+</p><p>
+Using <em>assertions</em> is very helpful for catching these contract
+violations and speeding up debugging. The <code>assert</code> statement stops
+the program (with an <code>AssertionError</code>) if the tested condition is
+false. Assertions can be used to double-check that anything the programmer 
+believes ought to be true, actually is. While this has some performance impact,
+assertions can be turned off for production code.
+</p>
+<p>Assertions (that is, <tt>assert</tt>) are extremely useful:</p>
+<ol>
+<li>They put useful tests into the code itself where you don't have to remember to run them.</li>
+<li>They also add useful documentation about things the implementer expected to be true, so they
+don't clutter the code in the process.</li>
+</ol>
+<p>But what to use <code>assert</code> on? One obvious target is preconditions and postconditions.
+On entry to a method, use an <code>assert</code> to check that the requires clause holds. On
+every exit from a method, check that the returns clause is satisfied. If a method fails to live
+up to its spec, you'll know immediately and be able to debug the right code.
+</p>
+<pre>
+/* Requires/Checks: X
+ * Returns: Y
+ */
+m() {
+    assert X;
+    ...// method impl here
+    assert Y;
+    return;
+}
+</pre>
+
+<p>
+One thing to watch out for with assertions is that they are turned off by default!
+You should always have them turned on when developing code. This is achieved by
+giving the Java VM the <tt>-ea</tt> flag. We recommend setting this
+flag by default for your projects.  If you are using Eclipse, you can find this setting in
+Preferences→Java→Installed JREs→Edit, where you set &ldquo;Default VM arguments&rdquo;
+to <tt>-ea</tt>. Other IDEs like IntelliJ allow VM arguments to be set similarly.
+</p>
+<p>You might be worried that checking preconditions is very expensive. Fortunately, assertion checking can be turned on and off by providing options to the JVM:
+<ul>
+<li><tt>-ea</tt> : enable assertions everywhere except in system libraries
+<li><tt>-esa</tt> : enable assertions in system libraries
+<li><tt>-ea:&lt;classname&gt;</tt> : enable assertions in class <tt>&lt;classname&gt;</tt>
+<li><tt>-ea:&lt;packagename&gt;</tt> : enable assertions in all classes in this package and subpackages.
+</ul>
+
+<p>Corresponding <tt>-da</tt> options can be used to turn off assertion checking selectively.</p>
+
+
+<h3>Adding assertions to <code>Rational</code></h3>
+
+<p>Checking preconditions and postconditions is very useful, but one important
+and unused technique for building working code is to check class invariants
+using assertions. Class invariants can be checked at the beginning of every public method
+and also at the end of the method, to make sure that any violation of the invariant is
+caught as soon as possible.
+</p>
+<p>
+If the code of our example class <code>Rational</code>, is augmented with
+assertions to check preconditions, postconditions, and the class invariant, we
+arrive at an implementation that uses assertions as follows:
+</p>
+
+<div class="figure">
+<pre class="load">
+<a href="encapsulation/src/withAssertions/Rational.java">withAssertions.Rational</a>
+</pre>
+<span class="caption">
+Example: class <code>Rational</code> with assertions added to check class invariants and preconditions
+</span>
+</div>
+
+<h2>Names and packages</h2>
+<p>
+Classes in Java live in <em>packages</em>. For example, the class <code>String</code>
+is really a shorthand for the <em>fully qualified class name</em> <code>java.lang.String</code>,
+where <code>java.lang</code> is the name of a Java package containing many standard
+Java types.
+</p>
+<p>
+The dot symbol <code>.</code> is used for several things in Java. As we've seen earlier,
+it is used to indicate use of a method or field. Beyond this, it is used to indicate
+which package a class lives in. Package
+names can have dots inside them, and those happen to define how Java
+source code and compiled code are stored in the file system of the computer.
+Perhaps surprisingly, it is incorrect to think of <code>java.lang</code> as being
+&ldquo;inside&rdquo; the package <code>java</code>. In particular, something
+that is made visible just to classes in the <code>java</code> package will
+not be visible to classes in the <code>java.lang</code> package, or vice versa.
+These are two different packages whose names happen to be related.
+</p>
+<p>
+When referring to a class in a different package, it is necessary either to
+use the fully qualified name for those classes or to use an
+<code>import</code> statement at the top of the source file. Thus, we can write
+the fully qualified class name <code>cs2112.lec03.Rational</code> to refer to
+the <code>Rational</code> class from a package other than
+<code>cs2112.lec03</code>; alternatively, we can write a statement <code>import
+cs2112.lec03.Rational;</code> at the top of the file and then just refer to the
+class as <code>Rational</code>. It is also possible to use a <em>wildcard
+import</em> to import all classes in a single package: for example, <code>import
+cs2112.lec03.*;</code>. In fact, the entire package <code>java.lang</code> is
+automatically imported in this way, which is why we can talk about classes like
+<code>String</code> and <code>Integer</code> without qualifying their names.
+In general, however, the danger of a wildcard import is that it may import
+many classes you don't need, creating confusion about what some names refer to.
+It is usually better to import just the classes you are actually using.
+</p>
+
+<h2>Further information</h2>
+<ul><li>
+<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/language/assert.html">
+A useful Oracle web page about programming with assertions</a>.</li>
+</ul>
+</p>

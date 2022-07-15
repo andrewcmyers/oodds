@@ -1,0 +1,400 @@
+<h1>Inheritance and the specialization interface</h1>
+
+<p>
+Recall that we identified three key elements of OO programming:
+</p>
+
+<ul class="bullets">
+<li>Encapsulation</li>
+<li>Subtyping</li>
+<li>Inheritance</li>
+</ul>
+
+<p>
+We now discuss the third of these, <em>inheritance</em>.
+Inheritance is a mechanism that supports extensibility and reuse of
+code, both across programs and within programs.
+</p>
+
+<h2>Motivating example</h2>
+
+<p>
+Suppose someone gives us an implementation of the <code>Puzzle</code> interface
+that we saw in the previous lecture. In the <code>APuzzle</code> implementation, the puzzle is
+represented by a 2D array of integers:
+</p>
+
+<pre>
+class APuzzle implements Puzzle {
+   private int[][] tiles;
+
+   public int tile(int r, int c) {
+      return tiles[r][c];
+   }
+   public void move(Direction d) { ... }
+   ...
+}
+</pre>
+<p>
+Now suppose that we want to build a better puzzle implementation by
+reusing this code. For example, we might want the puzzle to
+log all of the moves that have been made. We could proceed by
+copying the code of <code>APuzzle</code> to create a new class <code>LogPuzzle</code>, which
+we could then add new fields and methods to. But this strategy doesn't work
+very well when the original supplier of <code>APuzzle</code> fixes some bugs and
+gives us a new version <code>APuzzle'</code>. Now we have to either apply the same bug fixes to
+<code>LogPuzzle</code> on the code that we copied from <code>APuzzle</code>
+to get a new </code>LogPuzzle'</code>,
+or start afresh from <code>APuzzle'</code> and build a new <code>LogPuzzle'</code> from it.
+Either way, it will be a lot of work and difficult to automate.
+</p>
+<div class="figure">
+<canvas id="merging-updates" style="width: 200px; height: 100px"></canvas>
+<p>
+Figure 1: The problem of merging upgrades
+</p>
+</div>
+<script class=graphics>
+with (new CFigure("merging-updates")) {
+    const i = 4,
+          l1 = label("APuzzle").expand(i), l2 = label("APuzzle'").expand(i),
+          l3 = label("LogPuzzle").expand(i), l4 = label("LogPuzzle'").expand(i)
+    align("none", "center", l1, l2)
+    align("none", "center", l3, l4)
+    align("center", "none", l1, l3)
+    align("center", "none", l2, l4)
+    align("left", l1, l3, canvasRect())
+    align("right", l2, l4, canvasRect())
+    align("none", "top", l1, l2, canvasRect().toTop(-3))
+    align("none", "bottom", l3, l4, canvasRect().toBottom(-8))
+    connector(l1, l2).setLineWidth(2).setEndArrow("arrow")
+    connector(l1, l3).setLineWidth(2).setEndArrow("arrow")
+    connector(l2, l4).setLineWidth(2).setEndArrow("arrow").setLineDash([4,4])
+    connector(l3, l4).setLineWidth(2).setEndArrow("arrow").setLineDash([4,4])
+}
+</script>
+
+<p>
+At least for some kinds of changes that we might make between
+<code>APuzzle</code> and <code>LogPuzzle</code>, <b>inheritance</b> offers a solution to this
+problem. We can think of inheritance as a language mechanism for
+<i>copying</i> a class and making certain kinds of changes to that class, without
+actually physically copying the code.
+</p><p>
+To add the new functionality to <code>APuzzle</code>, we build a new class
+<code>LogPuzzle</code> that inherits all the functionality from <code>APuzzle</code>.
+This is done by declaring that <code>LogPuzzle</code> <b>extends</b> <code>APuzzle</code>:
+</p>
+
+<pre>
+class LogPuzzle extends APuzzle {
+   private int numMoves;
+
+   public int numMoves() {
+      return numMoves;
+   }
+
+   public void move(Direction d) {
+      numMoves++;
+      super.move(d);
+   }
+}
+</pre>
+
+<p>
+Here <code>APuzzle</code> is the <em>superclass</em> and <code>LogPuzzle</code> is the <em>subclass</em>.
+In general, classes inheriting from other classes form an <em>inheritance
+hierarchy</em> or <em>class hierarchy</em>, in which superclasses are above their
+subclasses.
+</p><p>
+The <code>LogPuzzle</code> class is just like the <code>APuzzle</code> class, except:
+</p>
+<ul class="bullets">
+<li>
+It has an additional method, <code>numMoves</code>, and a
+new field, <code>numMoves</code>, that <code>APuzzle</code> does not have.
+</li>
+<li> It has a new version of the <code>move</code> method that <em>overrides</em> the original
+version from <code>APuzzle</code>. It overrides the original because it has the
+same name and signature as the original method. (Recall that the <em>signature</em>
+consists of the name of the method, the types of its arguments, and its return type.)
+</li>
+<li> The type <code>LogPuzzle</code> is a subtype of the type <code>APuzzle</code>. That
+is, <code>LogPuzzle</code> &lt;: <code>APuzzle</code>.
+</li>
+</ul>
+
+<h2>Method dispatch and inheritance</h2>
+<p>
+Because of the subtyping relationship between the two classes, we
+can write the following code:
+</p>
+<pre>
+APuzzle p = new LogPuzzle();
+p.move(up); // which move?
+</pre>
+
+<p class="cont">
+Now here is an interesting question. There are <code>move</code> methods in
+both <code>LogPuzzle</code> and <code>APuzzle</code>, and they do different
+things. Which one is executed in the call <code>p.move(up)</code>? The
+<em>static</em> type of <code>p</code> is <code>APuzzle</code>, but at the time
+of the call, <code>p</code> refers to an object of <em>dynamic</em> type
+<code>LogPuzzle</code>.</p>
+
+<p>In Java, instance (non-static) methods such as <code>move</code> are dispatched according to the
+dynamic type of the receiver object (the class from which it was originally created via <code>new</code>).
+So it is the <code>LogPuzzle</code> version that is run. This is known as <em>dynamic dispatch</em>.
+</p>
+
+<p>
+As a slightly more complicated example, suppose the
+superclass <code>APuzzle</code> has a method <code>scramble</code> that calls <code>move</code>,
+but <code>LogPuzzle</code> does not have a <code>scramble</code> method:
+</p>
+
+<pre>
+class APuzzle {
+   public void scramble() {
+      ... move(randomDir) ...
+   }
+}
+
+APuzzle p = new LogPuzzle();
+p.scramble();
+// is p.numMoves() equal to 0?
+</pre>
+
+<p>
+When <code>p.scramble()</code> is called, the <code>scramble</code> method of
+<code>APuzzle</code> is invoked. But when that method calls <code>move</code>,
+which version of <code>move</code> is dispatched?
+It is the <code>move</code> method of <code>LogPuzzle</code>. The
+<code>move</code> method is still an instance method, and as above, the method
+dispatch mechanism starts at the dynamic class of the receiver object and
+searches upward until finding an implementation. In this case it finds one
+immediately in the <code>LogPuzzle</code> class, and that is the one that is
+dispatched.
+</p>
+
+<p>
+There are two different ways to understand how inheritance works when an instance
+method is invoked. One way is to say that the system <i>searches
+upward</i> through the inheritance hierarchy starting at the dynamic type of the object,
+looking for the first implementation of the method. But it is (almost) equivalent to say that the
+methods from the superclasses are <i>copied down</i> to their subclasses,
+except when overridden.</p>
+
+<p>
+We say "almost" because there are some cases where code cannot be naively
+copied down verbatim.  For example, a method in the superclass can refer to a
+instance variable in the superclass that is <i>shadowed</i> by a instance
+variable of the same name in a subclass. If the method in the superclass refers
+to this instance variable, then it still refers to the same instance variable
+even after it is copied down to the subclass.  The identity of the instance
+variable being named is fixed at the time the superclass is compiled.
+</p>
+<p>
+For example, consider these class definitions:
+</p>
+<pre>
+class A {
+   int x = 3;
+   void print() {
+      System.out.println(x);
+   }
+}
+
+class B extends A {
+   int x = 4;
+   void print() {
+      System.out.println(x);
+   }
+}
+</pre>
+<p>
+If you write <code>A a = new B(); a.print()</code>, then <code>4</code> will be
+printed (dynamic dispatch!). However, if you got rid of the <code>print</code>
+method in <code>B</code>, say</p>
+<pre>
+class A {
+   int x = 3;
+   void print() {
+      System.out.println(x);
+   }
+}
+
+class B extends A {
+   int x = 4;
+}
+</pre>
+<p>and then said <code>B b = new B(); b.print()</code>, then <code>3</code>
+would be printed. When the inherited method refers to <code>x</code>, it
+still refers to the original, shadowed instance variable rather than the
+newly declared one.
+</p>
+
+<h2>Inheritance and static methods</h2>
+
+<p>
+Static methods complicate the story slightly, because they cannot be
+overridden by subclasses. Unlike instance methods, the choice of what version to call is based
+purely on static information available at compile time, before the program is run.
+The version that is invoked is the version of the class to which
+the method belongs, and does not change when
+the code making the call is inherited by a subclass. Consider the
+following code:
+</p>
+
+<pre>
+class A {
+   static int f() { ... }
+   void g() {
+      f();
+   }
+}
+
+class B extends A {
+   static int f() { ... }
+}
+
+A x = new B();
+x.g();
+</pre>
+
+<p>
+Classes <code>A</code> and <code>B</code> both have static methods <code>f()</code>.
+When the method <code>g()</code> is called, the call to <code>f()</code> inside
+<code>g()</code> invokes the <code>A</code>
+version of <code>f</code> rather than the <code>B</code> version. Because <code>f</code> is a static
+method, the call to <code>f()</code> is exactly the same as if it were written
+<code>A.f()</code>. It does not change in meaning when it is inherited
+by <code>B</code>.
+</p><p>
+The special syntax <code>super.f()</code> is also a static call that always
+invokes the parent class's version of <code>f</code>.
+</p>
+
+<h2>Constructors</h2>
+
+<p>
+<em>Constructors</em> are special static methods that are called with <code>new</code>
+to create and initialize new instances of the class. If the programmer does not specify
+a constructor, there is an implicit one with no arguments that just creates the object
+but doesn't do anything else. If the programmer specifies an explicit constructor,
+the implicit constructor with no arguments is no longer available.
+In that case, the constructors of a subclass must call a
+superclass constructor explicitly, as in the following example:
+</p>
+
+<pre>
+class APuzzle {
+   private int[][] tiles;
+   public APuzzle(int size) {
+      tiles = new int[size][size];
+   }
+}
+
+class LogPuzzle extends APuzzle {
+   private int numMoves;
+   public LogPuzzle() {
+      super(4);
+      numMoves = 0;
+   }
+}
+</pre>
+
+<p class="cont">
+Here, the constructor <code>LogPuzzle</code> always creates puzzles of
+size 4×4, which is accomplished by calling the superclass constructor
+with <code>super(4)</code>. The call to the superclass constructor is static.
+</p>
+
+<h2>Protected visibility</h2>
+
+<p>
+What if we want the <code>LogPuzzle</code> code to access the <code>tiles</code> field
+directly? As defined, we cannot, because <code>tiles</code> is declared <code>private</code>.
+However, if we give <code>tiles</code> the <code>protected</code> visibility in
+<code>APuzzle</code>, it becomes visible to subclasses:
+</p>
+<pre>
+class APuzzle {
+   protected int[][] tiles;
+   ...
+}
+</pre>
+<p>
+Protected fields and methods form a second interface to a class.
+Public methods and fields are the <em>public interface</em>, which is exposed
+to client code. Protected methods and fields are the <em>specialization
+interface</em>, which is available to subclasses but not to ordinary
+clients. One of the challenges of good object-oriented design is to
+design both of these interfaces effectively, without confusing their
+roles. Designing a good specialization interface is especially
+important for object-oriented libraries where the classes provided
+by the library are intended to be extended through inheritance.
+</p>
+
+<div class="figure">
+<img src="inheritance/specintf.png" alt="specialization interface" /><br><br>
+Figure 2: the specialization interface
+</div>
+
+<h2>Protected methods and the specialization interface</h2>
+
+<p>
+Suppose that <code>scramble()</code> had been defined to call a protected method
+<code>internalMove</code> instead of the public <code>move</code> method:
+</p>
+
+<pre>
+class APuzzle {
+   public void scramble() {
+      ... internalMove(n); ...
+   }
+   protected internalMove(int d) { ... }
+}
+
+class LogPuzzle extends APuzzle {
+   private int numMoves = 0;
+   protected internalMove(int d) {
+      numMoves++;
+      super.internalMove(d);
+   }
+}
+</pre>
+<p>
+This example shows that the specialization interface of <code>APuzzle</code>
+allows the <code>LogPuzzle</code> class to change the behavior of existing
+public methods without overriding them directly. Protected methods
+are hooks for future extensibility of OO code. The specialization
+interface defines how code can be extended.
+</p>
+
+<h2>Abstract classes</h2>
+<p>
+An abstract class is a class that provides some state and behavior that
+can be inherited by other classes, but that cannot be instantiated with <code>new</code>.
+Thus an abstract class cannot be the dynamic class
+of any object. An abstract class, indicated by the keyword <code>abstract</code>
+in the class declaration, may similarly declare methods that are marked
+<code>abstract</code>. Such methods do not need to come with an implementation,
+but any non-abstract subclass must implement them.
+</p>
+<p>
+Abstract classes are useful as a way to factor out and centralize common
+functionality needed by a group of related classes. Using inheritance in this
+way is much better than copying the code and state into all the classes,
+because the code occurs only in one place.
+</p>
+<p>
+One useful pattern is to use such methods as holes in the implementation to be
+filled in by subclasses. In this case, the <code>protected</code> visibility
+is appropriate because the methods are not intended to be used directly by
+clients.
+
+<h2>Behavioral subtyping</h2>
+
+<p>
+</p>

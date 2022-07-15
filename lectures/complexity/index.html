@@ -1,0 +1,220 @@
+<h1>Asymptotic Complexity</h1>
+<p>
+We are going to start exploring more interesting algorithms and data structures, and
+we need a clear way to talk about their performance. But the performance of an algorithm
+depends on what computer the algorithm is run on, what inputs are chosen for the algorithm,
+and even environmental properties like the temperature. So if we measure how long our
+algorithm takes on a series of input problems of various sizes, we might get results
+that look rather noisy, and subsequent attempts to repeat the experiement will often
+yield similar but somewhat different results. Even worse, when the experiment is repeated
+on a second, slower computer, the results will be different:
+</p>
+
+<canvas id="runtime-examples" style="width:600px; height:240px"></canvas>
+<script class=graphics>
+with (new CFigure("runtime-examples", true)) {
+    let origin = point(), xaxis = origin.toRight(300), yaxis=origin.toTop(200)
+    let time = label("time"), size = label("problem size (n)")
+    align("center", "none", average(origin, xaxis), size, canvasRect())
+    align("none", "center", average(origin, yaxis), time, canvasRect())
+    connector(origin, xaxis).setEndArrow("arrow")
+    connector(origin, yaxis).setEndArrow("arrow")
+    align("abut", "none", time, hspace(5), origin)
+    align("none", "abut", origin, vspace(5), size)
+    for (j = 0; j < 5; j++) {
+        const a = [], pts = 20, f = addFrame()
+        for (let i = 0; i < pts; i++) {
+            a[i] = point(plus(origin.x(), times(i/pts, minus(xaxis.x(), origin.x()))),
+                        minus(origin.y(), i*i/2 + Math.random()*30))
+        }
+        drawAfter(f, connector(a).setStrokeStyle(["#00f", "#02d", "#04b", "#06a"][j]))
+        if (j == 0) drawAfter(f, label("computer 1").at(a[pts-1]).setFillStyle("#00f"))
+    }
+    for (j = 0; j < 5; j++) {
+        const a = [], pts = 20, f = addFrame()
+        for (let i = 0; i < pts; i++) {
+            a[i] = point(plus(origin.x(), times(i/pts, minus(xaxis.x(), origin.x()))),
+                        minus(origin.y(), i*i + Math.random()*30 - 10))
+        }
+        drawAfter(f, connector(a).setStrokeStyle(["#f00", "#d20", "#b40", "#960", "#780"][j]))
+        if (j == 0) drawAfter(f, label("computer 2").at(a[12]).setFillStyle("#f00"))
+    }
+}
+</script>
+
+<p>     
+Instead, we want to be able to describe performance in a way that is
+independent of transient factors and random variations. Even though there is
+variation across different experimental runs and a difference between the two
+computers, we can see that there is some basic similarity of shape. If we
+plot the timing data for sufficiently large problem sizes \(n\), and
+rescale the vertical axis to account for the relative speed of the computers,
+we typically see a more well-behaved plot like the following:
+</p>
+<canvas id="idealized-runtime" style="width:600px; height:240px"></canvas>
+<script class=graphics>
+with (new CFigure("idealized-runtime")) {
+    let origin = point(), xaxis = origin.toRight(300), yaxis=origin.toTop(200)
+    let time = label("time"), size = label("problem size (n)")
+    align("center", "none", average(origin, xaxis), size, canvasRect())
+    align("none", "center", average(origin, yaxis), time, canvasRect())
+    connector(origin, xaxis).setEndArrow("arrow")
+    connector(origin, yaxis).setEndArrow("arrow")
+    align("abut", "none", time, hspace(5), origin)
+    align("none", "abut", origin, vspace(5), size)
+    const pts = 20
+    const a = []
+    for (let i = 0; i < pts; i++) {
+        a[i] = point(plus(origin.x(), times(i/pts, minus(xaxis.x(), origin.x()))),
+                    minus(origin.y(), i*i/2))
+    }
+    connector(a)
+}
+</script>
+<p>
+Asymptotic complexity gives us a way to describe performance in this machine-independent
+way.
+</p>
+<p>
+There is an additional wrinkle: even at a given problem size, the performance of
+an algorithm may differ widely for different inputs. For example, some sorting algorithms
+run faster when the array is already sorted. To account for this variability, we usually
+characterize the <b>worst-case</b> performance of the algorithm on inputs of a given size,
+though sometimes, <b>average-case</b> performance is a more important performance measure.
+</p>
+
+<h2>Big-O notation</h2>
+<p>
+We write expressions like \( O(n) \) and \( O(n^2) \) to describe the performance
+of algorithms. This is called <b>&ldquo;big-O&rdquo; notation</b>, and describes
+performance in a way that is largely independent of the kind of computer on
+which we are running our code.
+</p>
+<p>
+The statement that \( f(n) \) is \( O(g(n)) \) means that \( g(n) \) is an upper bound for \( f(n) \)
+within a constant factor, for large enough \( n \). That is, there exists some \( k \) such
+that \( f(n) ≤ k·g(n) \) for sufficiently large n.
+</p>
+<p>For example, the function \( f(n) = 3n&minus;2 \) is <span
+class=m>O(n)</span> because \( (3n&minus;2) ≤ 3n \) for all
+\( n &gt; 0 \). That is, the constant \( k \) is
+3.  Similarly, the function \( f'(n) = 3n + 2 \) is
+<em>also</em> \( O(n) \). It is bounded above by \( 4n \)
+for any \( n \) larger than 2.  This shows that
+\( kg(n) \) doesn't have to be larger than \( f(n) \)
+for all \( n \), just for <em>sufficiently large</em> <span
+class=m>n</span>. That is, there must be some value <span
+class=m>n<sub>0</sub></span> such that for all \( n ≥ n_0 \), \( kg(n) \) is larger than \( f(n) \).
+</p>
+<p>
+A perhaps surprising consequence of the definition of <span
+class=m>O(g(n))</span> is that both \( f \) and <span
+class=m>f'</span> are also \( O(n^2) \), because the
+quantity \( (3n&pm;2) \) is bounded above by <span
+class=m>kn<sup>2</sup></span> (for any \( k \)) as <span
+class=m>n</span> grows large. In other words, big-O notation only establishes
+an <b>upper bound</b> on how the function grows.</p>
+<p>
+A function that is \( O(n) \) is said to be asympotically <b>linear</b> and a
+function that is \( O(1) \) is said to be <b>constant-time</b> because it is always
+less than some constant \( k \). A function that is \( O(n^2) \) is called
+<b>quadratic</b>, and a function that is \( O(n^y) \) for some positive
+integer \( y \) is said to be <b>polynomial</b>.
+</p>
+<h2>Reasoning with asymptotic complexity</h2>
+<p>An expression like \( O(g(n)) \) is <em>not</em> a function. It really
+describes a set of functions: all functions for which the appropriate constant
+factor k can be found.  For example, when we write \( O(10) = O(1) \) or \( O(n+1) = O(n) \), 
+these are (true) statements about the equality of sets of functions.
+Sometimes people write “equations” like \( 5n+1 = O(n) \)
+that are not really equations. What is meant is that the function \( f(n) = 5n + 1 \)
+is in the set \( O(n) \).
+It is also a common shorthand to use mathematical operations
+on big-O expressions as if they were numbers.
+For example, we might write \( O(n) + O(n^2) = O(n^2) \) to mean
+the true statement
+that the sum of any two functions that are respectively asymptotically linear
+and asymptotically quadratic is asymptotically quadratic.
+</p>
+<p>
+It helps to have some rules for reasoning about asymptotic complexity. Suppose
+f and g are both functions of n, and c is an arbitrary constant. Then using the
+shorthand notation of the previous paragraph, the following rules hold:
+</p>
+<blockquote>
+\( c = O(1) \)<br>
+\( O(c·f) = c·O(f) = O(f) \)<br>
+\( cn^m = O(n^k) \)     if \( m ≤ k \) <br/>
+\( O(f) + O(g) = O(f + g) \)<br>
+\( O(f)·O(g) = O(f·g) \)<br>
+if \(f\) is \(O(g)\) and \(g\) is \(O(h)\), then \(f\) is \(O(h)\)<br>
+\( \log_c n = O(\log n) \)
+</blockquote>
+<p>
+However, we might expect that \(O(k^n) = O(m^n) \) when
+\( k≠m \),
+but this is <em>not</em> true when \( k ≠ m \). In particular,
+when \( m &gt; k \), the ratio
+\( m^n/k^n\) grows without bound.
+</p>
+<h2>Deriving asymptotic complexity</h2>
+<p>
+Together, the constants \(k\) and \(n_0\) form a <b>witness</b> to the
+asymptotic complexity of the function. To show that a function has a particular
+asymptotic complexity, the direct way to produce the necessary witness. For
+the example of the function \( f'(n) = 3n + 2 \), one witness is, as we saw above,
+the pair \( (k=3, n_0=2)\). Witnesses are not unique. If
+\((k, n_0\) is a witness,
+so is \((k', n'_0) \) whenever \( k'≥k \) and \( n'_0≥n_0 \).
+</p>
+<p>
+Often, a simple way to show asymptotic complexity is to use the limit of the
+ratio \( f(n)/g(n) \) as \( n \) goes to infinity.  If this ratio has a finite limit, then
+\( f(n) \) is \( O(g(n)) \).
+On the other hand, if the ratio limits to infinity, \( f(n) \) is
+<em>not</em> \( O(g(n)) \). (Both of these shortcuts can be proved using the
+definition of limits.)
+</p>
+<p>
+To evaluate the limit of \( f(n)/g(n) \), L'Hôpital's rule often comes in handy.
+When both \( f(n) \) and \( g(n) \) go to infinity as \( n \) goes to infinity, the ratio
+of the two functions \( f(n)/g(n) \) limits to the same value as the limit of their
+derivatives: \( f'(n)/g'(n) \).
+</p>
+<p>
+For example, \( \lg n \) is \( O(n) \) because
+\( \lim_{n→&infin;} (\ln n)/n = \lim_{n→&infin;} (1/n)/1 = 0 \). In turn, this means that 
+\(\ln^k n\) is \( O(n) \) for any \( k \) because
+the derivative of \( \ln^k n \) is \( (k \ln^{k-1} n)/n\).
+Since \( \ln n \) is \(O(n)\) so is \(\ln^2 n \), and therefore
+\(ln^3 n\), and so on for any positive \(k\).  (This is an argument by induction.)
+
+<h2>Example</h2>
+<p>
+Binary search is a useful algorithm for finding information efficiently in a
+sorted array. The following code example is a recursive implementation of binary search
+that finds an integer in a sorted array of integers:
+</p>
+
+<pre class=code>
+/** Returns: i∈[l..r] such that a[i] = k.
+ *  Requires: a[l..r] is sorted in ascending order, and there exists such an i.
+ */
+int search(int[] a, int k, int l, int r) {
+    if (l == r) return l;
+    int m = (l + r)/2;
+    if (k &lt;= a[m]) return search(a, k, l, m);
+    else return search(a, k, m+1, r);
+}
+</pre>
+
+<p>Let \(T(n)\) be the running time of this algorithm on an array range of size
+\(n = r - l + 1\). Then \(T(1)\) is at most  some constant \(c_1\), which is \(O(1)\).
+For larger values, the time taken is at most some constant \(c_2\), plus the time
+needed to find the element in an array range of half the size. We can write this
+as a <b>recurrence</b>: \(T(n) = c_2 + T(n/2)\). For powers of two, the solution to this
+recurrence is \(c_2 + c_1 \lg n\), which is \(O(\lg n)\). Thus, this algorithm offers
+<b>logarithmic performance</b>—a big speedup over the obvious, naive algorithm
+that loops through the array. For an array of a billion elements, it will be much faster
+to do ~30 recursive calls than to loop a billion times!
+</p>

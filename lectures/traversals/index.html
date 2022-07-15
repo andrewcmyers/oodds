@@ -1,0 +1,698 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
+
+<div id="content">
+
+<h1>Graph traversals</h1>
+
+<h3>Topics:</h3>
+<ul class=bullets>
+<li>tricolor algorithm</li>
+<li>breadth-first search</li>
+<li>depth-first search</li>
+<li>cycle detection</li>
+<li>topological sort</li>
+<li>connected components</li>
+</ul>
+
+<h2>Graph traversals</h2>
+
+<p>
+We often want to solve problems that are expressible in terms of a traversal or search over a graph. Examples include:</p>
+
+<ul class=bullets>
+<li>Finding all reachable nodes (e.g., for garbage collection)</li>
+<li>Finding the best reachable node (e.g., single-player game search) or
+the minmax best reachable node (e.g., two-player game search)</li>
+<li>Finding the best path through a graph (e.g., routing and map directions)</li>
+<li>Determining whether a graph is a dag (directed acyclic graph).</li>
+<li>Topologically sorting a dag.</li>
+</ul>
+
+<p>
+Generally, the goal of a graph traversal is to visit all nodes reachable
+from a given root node or set of root nodes. In an undirected graph we follow all edges; in
+a directed graph we follow only out-edges.</p>
+
+<h2>Tricolor algorithm</h2>
+
+<p>
+Abstractly, graph traversal can be expressed in terms of the <b>tricolor
+algorithm</b> due to Dijkstra and others. In this algorithm, graph nodes are
+assigned one of three colors that can change over time:
+</p>
+
+<ul>
+<li><b>White</b> nodes are undiscovered nodes that have not been seen yet in the current traversal and may even be unreachable.
+<li><b>Black</b> nodes are reachable nodes that the algorithm has already visited and is finished processing.
+<li><b>Gray</b> nodes are nodes that have been discovered but that the algorithm is still processing. These nodes are on the <em>frontier</em> between white and black.
+</ul>
+
+<p>
+The progress of the algorithm is depicted by the following figure. Initially there are no black nodes and the root is gray.
+As the algorithm progresses, white nodes turn into gray nodes and gray nodes turn into black nodes.
+Eventually there are no gray nodes left and the algorithm is done.
+</p>
+
+<div class=figure>
+<canvas id=tricolor style="width: 650px; height: 220px"></canvas>
+<script class=graphics>
+with (new CFigure("tricolor")) {
+    let cr = canvasRect().inset(4)
+    let c1 = ellipse(), c2 = ellipse().addText("undiscovered").setVerticalAlign("top"),
+        c3 = ellipse().addText("unreachable").setVerticalAlign("top")
+
+    equal(c1.w(), c2.w(), c3.w())
+
+    align("abut", "TB", c1, hspace(20), c2, hspace(20), c3)
+    align("left", "none", c1, cr)
+    align("right", "none", c3, cr)
+    align("none", "top", c1, c2, c3, cr)
+
+    let c1g = ellipse().at(c1).setFillStyle("#ddd").addText("roots").setW(60).setH(40),
+        c2g = ellipse().at(c2).setFillStyle("#ddd").addText("frontier").setW(minus(c2.w(), 40)).setH(minus(c2.h(), 80)).setVerticalAlign("top"),
+        c2b = ellipse().at(c2).setFillStyle("black").addText("finished").setTextStyle("white")
+                    .setW(minus(c2g.w(), 70))
+                    .setH(minus(c2g.h(), 60)),
+        c3b = ellipse().at(c3).setFillStyle("black").addText("finished, reachable").setTextStyle("white")
+
+    let l1, l2, l3
+    align("center", "abut", c1, vspace(20), l1 = label("initial state"))
+    align("center", "abut", c2, vspace(20), l2 = label("during traversal"))
+    align("center", "abut", c3, vspace(20), l3 = label("during traversal"))
+    align("none", "bottom", l1, l2, l3, cr)
+}
+</script>
+</div>
+
+<p>
+The algorithm maintains a key <em>black–white invariant</em> at all times:</p>
+<blockquote>
+<p>1. <i>The root is not white.</i><br>
+2. <i>There is no edge from a black node to a white node.</i></p>
+</blockquote>
+<p>
+This is clearly true initially, and because it is
+true at the end, we know that any remaining white nodes cannot be reached from
+the black nodes.
+</p>
+
+<p>
+The algorithm pseudo-code is as follows:
+</p>
+
+<ul>
+<li>Color the root node gray and all other nodes white;
+<li>while some gray node <span class=m>g</span> exists:
+<ul>
+<li>color some white successors of <span class=m>g</span> gray;
+<li>if <span class=m>g</span> has no white successors, optionally color <span class=m>g</span> black.
+</ul>
+</ul>
+
+<p>This algorithm is abstract enough to describe many different graph
+traversals. It allows the particular implementation to choose the node <span class=m>n</span> from
+among the gray nodes; it allows choosing which and how many white successors to
+color gray; and it allows delaying the coloring of gray nodes black. We say
+that such an algorithm is <i>nondeterministic</i> because its next step is not uniquely
+defined. However, as long as it does some work on each gray node that it picks,
+any implementation that can be described in terms of this algorithm will finish. Moreover,
+because the black–white invariant is maintained, it must reach all reachable nodes in the graph.
+</p>
+
+<p>One advantage of defining graph search in terms of the tricolor algorithm is
+that the tricolor algorithm works even when gray nodes are processed
+concurrently, as long as the black–white invariant is maintained. The invariant
+ensures that whatever graph traversal we choose, the algorithm will work even when
+parallelized.
+</p>
+
+<h2>Breadth-first search</h2>
+<p>
+The two most common graph traversal algorithms are <em>breadth-first search</em> (BFS) and <em>depth-first search</em> (DFS). The BFS pseudocode looks like this:
+</p>
+
+<pre>
+frontier = new Queue();
+frontier.push(root);
+root.color = gray;
+for (v != root) v.color = white;
+
+while (frontier not empty) {
+    Node g = frontier.pop(); // g is a gray node
+    for (v successor of g) {
+        if (v.color == white) {
+            frontier.push(v);
+            v.color = gray;
+        }
+    }
+    g.color = black;
+}
+</pre>
+
+<p>
+Breadth-first search is so called because it explores nodes in the order of
+their distance from the root, where <em>distance</em> is defined as the minimum
+path length from a root to the node. We can compute distances explicitly by
+replacing the colors with a <code>distance</code> field:
+</p>
+
+<pre>
+frontier = new Queue();
+frontier.push(root);
+root.distance = 0;
+for (v != root) v.distance = ∞;
+
+while (frontier not empty) {
+    g = frontier.pop();
+    for (v successor of g) {
+        if (v.distance == ∞) {
+            frontier.push(v);
+            v.distance = g.distance + 1;
+        }
+    }
+}
+</pre>
+
+<p>
+Here the white nodes are those whose <code>distance</code> field is ∞, the gray nodes are those
+whose <code>distance</code> field is finite and that are in <code>frontier</code>, and the black nodes are
+those whose <code>distance</code> field is finite and that are not in <code>frontier</code>.
+When a new white node is discovered, its <code>distance</code> is set to a finite value one greater than its predecessor, and it is pushed onto the queue; this corresponds to turning the node from white to gray. All nodes on the queue are gray. When a node <code>v</code> is popped off the queue, we look at all its successors; any that are white are colored gray and pushed onto the queue. When done, <code>v</code> changes from gray to black.</p>
+
+<p>
+The search is breadth-first because <code>frontier</code> is a first-in, first-out (FIFO) queue.
+The final <code>distance</code> value of a node is the length of the minimum path from a
+root to that node.
+All the nodes on the queue have <code>distance</code> within one of each other.
+In general, there is a set of nodes to be popped off,
+at some distance <i>k</i> from the source, and another set of elements, later
+on the queue, at distance <i>k+1</i>. Every time a new node is pushed onto the
+queue, it is at distance <i>k+1</i> until all the nodes at distance <i>k</i>
+are gone, and <i>k</i> then increases by one.
+</p>
+
+<p>Suppose that we run this algorithm on the following graph, starting with the
+root <code>A</code> and assuming that the successors of any node are pushed onto the queue in alphabetic order:</p>
+
+<div align="center"><img src="traversals/graph1.png"></div>
+
+<p>
+The following sequence of nodes pass through the queue,
+where each node is annotated by its minimum distance from the root A.
+(We are pushing onto the right end of the queue and popping from the left.)
+</p>
+
+<pre>
+A0  B1  D1  E1  C2
+</pre>
+
+<p>
+Clearly, nodes are pushed and popped in distance order: A, B, D, E, C. This is very useful
+when we are trying to find the shortest path through the graph from a root to a node.
+When a queue is used in this way, it is known as a <b>worklist</b>; it keeps
+track of work left to be done.</p>
+
+<h2>Depth-first search</h2>
+<p>
+What if we replace the FIFO queue with a LIFO stack?
+That is, suppose we change the first line of the program to
+<pre>
+frontier = new Stack();
+</pre>
+
+In that case we get a completely different order of traversal.
+Assuming that successors are pushed onto the stack in <i>reverse</i>
+alphabetic order, the successive stack states look like this
+(elements are pushed and popped on the left):
+</p>
+
+<pre>
+A
+B D E
+C D E
+D E
+E
+</pre>
+
+<p>With a stack, the search will proceed from a given node as far as it can
+before backtracking and considering other nodes on the stack. For example,
+the node E had to wait until all nodes reachable from B and D were considered.
+This is <b>depth-first search</b>.
+</p>
+
+<p>
+A more standard way of writing depth-first search is as a recursive function,
+using the call stack instead of an explicit stack. We start with every node
+white except the (gray) root node and apply the function <code>DFS</code> to
+the root:
+</p>
+
+<pre>
+/** Effect: Color black all nodes reachable on paths from g where all
+ *  nodes on the path except g are white.
+ *  Requires: g is gray
+ */
+DFS(Node g) {
+    for (v successor of g) {
+        if (v.color == white) {
+            v.color = gray;
+            DFS(v);
+        }
+    }
+    v.color = black;
+}
+</pre>
+
+<p>
+You can think of this as a person walking through the graph following arrows
+and never visiting a node twice except when backtracking, when a dead end is
+reached. Running this code on the graph above yields the following graph
+colorings in sequence, which are reminiscent of but a bit different from what
+we saw with the stack-based version:
+</p>
+
+<img src="traversals/dfsgraph1.png">
+<img src="traversals/dfsgraph2.png">
+<img src="traversals/dfsgraph3.png">
+<img src="traversals/dfsgraph4.png">
+<img src="traversals/dfsgraph5.png">
+<img src="traversals/dfsgraph6.png">
+<img src="traversals/dfsgraph7.png">
+<img src="traversals/dfsgraph8.png">
+<img src="traversals/dfsgraph9.png">
+<img src="traversals/dfsgraph10.png">
+
+<p>
+Note that at any point in time, there is a single path of gray nodes
+leading from the starting node and leading to the current node
+<code>v</code>. This path corresponds to the stack in the earlier
+implementation.
+</p>
+
+<h2>The DFS number</h2>
+
+<p>
+With DFS, the <code>distance</code> field does not necessarily represent the
+shortest distance from the root, so let's get rid of it. A much more useful
+datum is the <em>DFS number</em>, which gives the order in which we first
+visit the nodes. Here is the modified DFS algorithm that computes the DFS
+number, again using a LIFO stack as the frontier:
+</p>
+
+<pre>
+frontier = new Stack();
+frontier.push(root);
+nextDfs = 0;
+for (v) v.dfs = ∞;
+
+while (frontier not empty) {
+   g = frontier.pop();
+   if (g.dfs < ∞) continue; // dup on stack popped
+   g.dfs = nextDfs++;
+   for (v successor of g)
+     if (v.dfs == ∞) frontier.push(v);
+}
+</pre>
+
+or as a recursive method:<br>
+ 
+<pre>
+nextDfs = 0;
+for (v) v.dfs = ∞;
+DFS(root);
+
+DFS(Node g) {
+    g.dfs = nextDfs++;
+    for (v successor of g)
+        if (v.dfs == ∞) DFS(v);
+}
+</pre>
+
+<h2>Time and space complexity</h2>
+
+<p>
+For both BFS and DFS, there are at most |V| executions of the while loop, as a
+node can go on the stack or queue at most once, and the body of the loop
+on successors can be executed at most |E| times over all executions, since
+each edge is looked at only once. So the asymptotic time complexity of
+BFS and DFS is linear, i.e. O(|V| + |E|).
+</p>
+
+<p>During execution, the BFS and DFS algorithms maintain an amount of state 
+proportional to the size of the queue or stack. For DFS, this
+is proportional to the length of the path from the root to the node currently
+being visited. For BFS, this is proportional to the
+size of the perimeter of nodes at distance <i>k</i> or <i>k+1</i>
+from the root. In both algorithms, the amount of state can be O(|V|). For DFS this
+happens when searching a linked list. For BFS this happens when
+searching a graph with a lot of branching, such as a binary tree,
+because there can be as many as 2<i><sup>k</sup></i> nodes at distance <i>k</i> from
+the root. For balanced binary trees, DFS maintains state proportional to
+the height of the tree, or O(log |V|). On such graphs, DFS requires less space.
+</p>
+
+<h2>The DFS forest</h2>
+
+<p>The sequence of calls to DFS form a tree: the <b>DFS tree</b> of the
+program. This is a subgraph of the original graph. In the above example, the DFS tree is:</p>
+
+<center>
+<img src="traversals/call-tree.png">
+</center>
+
+<p>
+The DFS numbering is a preorder numbering of the DFS tree.</p>
+
+<p>
+If we want to search the whole graph, then a single traversal may not
+be enough, because there may be vertices that are not reachable from the root.
+For example, consider the original graph expanded with two new
+nodes F and G:
+</p>
+<center>
+<img src="traversals/graph2.png">
+</center>
+
+<p>
+A DFS traversal starting at A will see the nodes A&ndash;E as before, but will not see G and F, since they are not reachable from A.
+To ensure that all nodes are visited, we must check after each traversal whether there still exist
+unvisited nodes, and start a new traversal from one of the unvisited nodes if so.
+For example, suppose we next choose F to
+start from. Then we will reach all nodes. Instead of constructing just one
+tree that is a subgraph of the original graph, we get a <b>DFS forest</b> consisting of two trees:
+</p>
+<center>
+<img src="traversals/graph2-forest.png">
+</center>
+
+<h2>Topological sort</h3>
+
+<p>
+One of the most useful algorithms on graphs is <em>topological sort</em>, in
+which the nodes of an acyclic graph are placed in a total order consistent with the
+edges of the graph; that is, if there is an edge (<i>u</i>,<i>v</i>), then <i>u</i> comes before <i>v</i> in 
+the total order. This is useful when you need to order a set of
+elements and some elements have no ordering constraint relative to other elements.
+</p>
+
+<p>
+For example, suppose you have a set of tasks to perform, but some tasks
+have to be done before other tasks can start. In what order should you
+perform the tasks? This problem can be solved by representing the tasks
+as nodes in a graph with an edge from task 1 to task 2 if
+task 1 must be done before task 2. A topological sort of the
+graph will give an ordering in which all of these constraints are satisfied.
+</p>
+
+<p>For example, to make lasagna, you might need to carry out tasks described by
+the following graph:
+</p>
+<img src="traversals/lasagna.png">
+
+<p>There is some flexibility about the order to perform the steps, but clearly we
+need to make the sauce before we assemble the lasagna.  A topological sort will
+find some ordering that obeys this and the other ordering constraints.</p>
+
+<p>Of course, it is impossible to topologically sort a graph with a cycle in it.
+So to topologically sort a graph, it must be a dag.
+But the interesting thing is that the condition of being a dag is not
+only necessary for the existence of a topological sort, it is also sufficient.
+That is, all dags have at least one topological sort.
+</p>
+
+<p>We can obtain a linear-time algorithm for topological sort from DFS.
+The key observation is that a node finishes (is marked black) only after all
+of its descendants have been marked black. Therefore, a node that is marked
+black later must come earlier when topologically sorted. A 
+a <i>postorder</i> traversal generates nodes in the reverse of
+a topological sort:
+</p>
+
+<blockquote>
+<b>Algorithm:</b><br>
+<p>
+Perform a depth-first search over the entire graph, starting anew with
+an unvisited node if previous starting nodes did not visit every node.
+As each node is finished (colored black), put it on the head of an
+initially empty list.
+</p>
+</blockquote>
+<p> This takes time linear in the size of the graph: O(|V| + |E|).</p>
+
+<p>
+For example, in the traversal example above, nodes are marked black in the
+order C, E, D, B, A. Reversing this, we get the ordering A, B, D, E, C. This is
+a topological sort of the graph. Similarly, in the lasagna example, assuming
+that we choose successors top-down, nodes are marked black in the order bake,
+assemble lasagna, make sauce, fry sausage, boil pasta, grate cheese. So the
+reverse of this ordering gives us a recipe for successfully making lasagna,
+even though successful cooks are likely to do things more in parallel!
+</p>
+
+<!--
+<p>Now, why does this work? The algorithm puts nodes onto the list in
+the reverse order in which they are finished. So the algorithm works as
+long as for every edge v&rarr;v', v' is finished later than v.  Because
+the graph is acyclic, DFS only finds white and black nodes when
+traversing the graph. So when it follows the edge from v to v', it will
+either discover that v' is white or black. If v' is white, the algorithm
+will make a recursive call that will turn v' black before the current
+node, v,  is turned black. And if it finds that v' is black, that node
+is already finished, yet v is not. So in either case, v' is finished
+before v.
+</p>
+-->
+
+<h2>Edge classification</h2>
+<p>
+We can classify the various edges of the graph based on the color of the node
+and DFS numbers when the DFS algorithm follows that edge. There are four classes:
+<b>tree edges</b>, <b>back edges</b>, <b>forward edges</b>, and <b>cross edges</b>.
+The classification is not an absolute property of the graph, but
+depends on what node(s) we choose as root(s) and in what order the algorithm selects successors to push.
+</p>
+
+<p>Here is the expanded (A&ndash;G) graph
+with the edges colored to show their classification.</p> 
+
+<center>
+<img src="traversals/graph1-classified.png">
+</center>
+
+<p>
+When the sink node of the edge is white, the edge is a <b>tree edge</b>, shown as solid black
+arrows in the diagram. (The graph looks different in this picture because the nodes have been
+moved to make all the tree edges go downward, but it is the same graph.)  The tree
+edges give the sequence of recursive calls performed in the recursive implementation of DFS.
+A tree edge always goes to a successor in the DFS forest.
+</p>
+
+<p> When the sink node of the edge is gray, it is a <b>back
+edge</b>, shown in red. Because there is only a single path of gray
+nodes, a back edge loops back to an earlier gray node that is still on the stack,
+creating a cycle. Back edges always go to an ancestor in the DFS forest.
+A graph has a cycle if and only if it contains a back edge.
+</p>
+
+<p> When the sink node of the edge is black, it is either a
+<b>forward edge</b> or a <b>cross edge</b>. It is a forward edge if it goes to
+a descendant in the DFS tree, and it is a cross edge if it does not. We can tell
+the difference by looking at the DFS number: a forward edge goes to a black node
+with a higher DFS number, and a cross edge goes to a black node with a lower DFS number.
+</p>
+
+<p>We can classify and label the edges during DFS if we like, and the algorithm
+is still linear time.</p>
+
+<h2>Cycle detection</h2>
+
+<p>It is often useful to know whether a graph is acyclic. To detect
+whether a graph has a cycle, we can perform DFS with edge classification on
+the entire graph and ask whether there exists a back edge anywhere in the graph.
+By a fairly intricate argument, it can be shown that the node with the smallest
+DFS number in any directed cycle lies at the root of a subtree of the DFS tree
+containing all nodes of the cycle. Then the cycle must contain a back edge,
+since that is the only way a node can go to an ancestor in the DFS tree. Conversely, if there
+is a back edge, then there is a cycle consisting of that back edge and tree edges.
+Thus the existence of cycles can be detected in linear time.
+</p>
+
+<h2>Connected components</h2>
+
+<p>An undirected graph is <b>connected</b> if there is a path between any two nodes.
+Graphs need not be connected (although we have been drawing
+only connected graphs so far). However, it is entirely possible to have a graph
+in which there is no path between two nodes. A <b>connected component</b> of an
+undirected graph is a maximal connected subgraph; that is, a subgraph that is connected,
+but not contained in any larger connected subgraph. 
+For example, the following undirected graph has three
+connected components:
+</p>
+<img src="traversals/components.png">
+<p>
+The <b>connected components problem</b> is to find the connected
+components of a graph and to make it possible to quickly determine for a given
+node which connected component it belongs to. This can be very useful.
+For example, suppose
+that different nodes correspond to different jobs that need to be
+done, and there is an edge between two nodes if they need to be
+done on the same day. Then to find out the maximum number of
+days that are needed to carry out all the jobs, we only need to count the
+components.
+</p>
+
+<blockquote>
+<b>Algorithm:</b><br>
+<p>
+Perform a DFS or BFS over the graph. As each traversal starts,
+create an object representing a new component. All nodes reached during the traversal belong
+to that component and can be made to point to the component object.
+The number of traversals is the number of components.
+</p>
+</blockquote>
+
+<h2>Strongly Connected Components</h2>
+
+<p>For directed graphs, <b>strong connectivity</b> is the more useful notion.
+A directed graph is <b>strongly connected</b> if every vertex is reachable from 
+every other vertex by a directed path. A <b>strongly connected component</b>
+(or just <b>strong component</b>) of a directed
+graph is a maximal strongly connected subgraph. For example, the following
+directed graph has four strong components consisting of vertices
+{A}, {B,C}, {D,E,F}, and {G}, respectively.
+
+<!-- center>
+<img src="traversals/scc-example.png">
+</center -->
+
+<div class=figure>
+<img src="traversals/scc-example2.png">
+<p>
+A graph and its dag of strong components
+</p>
+</div>
+
+<p>Note that all nodes in a cycle are always part of the
+same strong component, so every graph can be
+viewed as a dag composed of strong components, as illustrated on the right
+in the above figure.
+
+<h4>Kosaraju's algorithm</h4>
+
+<p>
+An efficient algorithm due to Kosaraju finds strong components by performing DFS twice:</p>
+
+<ol>
+<li>Run DFS on the graph with edge classification.
+<li>Topologically sort the nodes, ignoring the back edges (recall that without the back edges, the graph is acyclic).
+Order the nodes in topological order so that all tree, forward, and cross edges go from left to right.
+Then all the back edges go from right to left (why?). 
+<li>For all nodes <i>v</i> in topological order from left to right, do a DFS starting
+at <i>v</i> on the <em>transpose</em> of the graph (the digraph obtained by reversing all the edges) and mark all
+previously unmarked nodes reachable from <i>v</i> as being in the same strong component as <i>v</i>. 
+</ol>
+</p>
+
+<p>
+For example, consider the graph in the above figure.
+Running a DFS and choosing children top to bottom, we will obtain tree
+edges (A,B), (B,C), (C,G), (A,D), (D,E), and (E,F), back edges (C,B), (F,E) and (F,D), and cross edges (D,C) and (F,G).
+Ignoring back edges and topologically sorting, we might get the sequence A,D,E,B,C,F,G. The first DFS in step 3 starting at A would give the strong component {A}. The second starting at D would give {D,E,F}. The third starting at B would give {B,C}. The last starting at G would give {G}. Collapsing strong components into single nodes gives the dag shown on the right in the figure. Note that the dag of strong components will also be topologically sorted by the algorithm.</p>
+
+<!-- center>
+<img src="traversals/example-dag.png">
+</center -->
+
+<h4>Tarjan's algorithm</h4>
+
+<p>
+Although Kosaraju's algorithm takes linear time, it requires DFS on both
+the graph and its transpose, requiring construction or mainenance of the transposed graph.
+However, Tarjan's linear-time algorithm performs just one DFS on the graph
+and is only slightly more complicated than the DFS algorithm itself.
+Each node has a variable <code>dfs</code> that keeps track of the DFS number and another variable
+<code>low</code> that keeps track of the lowest DFS number of any node
+that is part of the same strong component, which can be computed recursively
+during the DFS traversal.
+</p>
+
+<pre>
+scc(Vertex v) {
+    v.dfs = v.low = dfs++;
+    s.push(v);
+    foreach (v → w) {
+        if (w.dfs == ∞) {
+            scc(w);
+            v.low = min(v.low, w.low);
+        } else if (w is on the stack s) {
+            v.low = min(v.low, w.dfs);
+        }
+    }
+    if (v.low == v.dfs) {
+        // pop everything up to v and make a strong component from it 
+        SCC nodes = new SCC();
+        do {
+            w = s.pop();
+            nodes.add(w);
+        } while (w != v);
+        SCCs.add(nodes);
+    }
+}
+</pre>
+
+<p>See [2] for more details.</p>
+
+<!-- p>
+At the time each node finishes, the <tt>low</tt> variable contains
+the index of the earliest stack node that is part of the same strong component.
+The algorithm returns from the recursive calls until that node is reached,
+at which point all nodes pushed on the stack after that node are part
+of the same SCC. Its nodes are popped off the stack to form the new SCC.
+The new SCC is then prepended to the head of the current list of SCCs.
+</p>
+<p>
+For example, consider running this algorithm on the following graph:
+</p>
+<div class=figure>
+<img src="traversals/scc-example2.png">
+<p>
+A graph and its DAG of SCCs
+</p>
+</div>
+<p>
+The state of the stack and the SCCs as the algorithm executes is as follows.
+Node names are followed by the values of <tt>index</tt> and <tt>lowlink</tt>
+at that point during execution, and a dot marks the current node v, which is
+not necessarily at the top of the stack.
+</p>
+<pre>
+<u>Stack s →</u>                           <u>SCCs</u>
+A:0,0•
+A:0,0   B:1,1•
+A:0,0   B:1,1   C:2,2•
+A:0,0   B:1,1   C:2,1•
+A:0,0   B:1,1   C:2,1   G:3,3•
+A:0,0   B:1,1   C:2,1•              {G}
+A:0,0   B:1,1•  C:2,1               {G}
+A:0,0•                              {B,C}, {G}
+A:0,0   D:4,4•                      {B,C}, {G}
+A:0,0   D:4,4   E:5,5•              {B,C}, {G}
+A:0,0   D:4,4   E:5,5   F:6,4•      {B,C}, {G}
+A:0,0   D:4,4   E:5,4•  F:6,4       {B,C}, {G}
+A:0,0   D:4,4•  E:5,4   F:6,4       {B,C}, {G}
+A:0,0•                              {D,E,F}, {B,C}, {G}
+                                    {A}, {D,E,F}, {B,C}, {G}
+</pre>
+<p>The output is a topologically ordered list of SCCs. Ignoring back edges,
+each SCC is also topologically ordered.</p -->
+
+<hr>
+<h2>Further reading</h2>
+<ul>
+<li>[1] Carrano. <i>Data Structures and Abstractions with Java</i>, Chapter 31.
+<li>[2] Cormen, Leiserson, and Rivest. <i>Introduction to Algorithms</i>, Chapter 23.
+</ul>
+</html>

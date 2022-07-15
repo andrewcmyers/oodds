@@ -1,0 +1,490 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
+
+<div id="content">
+<h1>Dijkstra's single-source shortest path algorithm</h1>
+
+<h3>Topics:</h3>
+<ul class=bullets>
+<li>The single-source shortest path problem</li>
+<li>Dijkstra's algorithm</li>
+<li>Proving correctness of the algorithm</li>
+<li>Extensions: generalizing distance</li>
+<li>Extensions: A*</li>
+</ul>
+
+<h2>The single-source shortest path problem</h2>
+
+<div class=floatfigure>
+<img class="whitebg" src="ssp/example-graph.png" />
+</div>
+<p>Suppose we have a weighted directed graph,
+and we want to find the path between two vertices with the minimum
+total weight.
+Interpreting edge weights as distances, this is a <b>shortest-path
+problem</b>. In the example illustrated, there is a path with total weight 50, but may
+not be easy to find it. We could find the shortest path by enumerating all possible
+permutations of the vertices and checking which one, but there are
+O(V!) such permutations.
+</p>
+<p>
+Finding shortest paths in graphs is very useful. We have already seen an
+algorithm for finding shortest paths when all weights are 1, namely
+breadth-first search. BFS finds shortest paths from a root node or nodes to
+all other nodes when the distance along a path is simply the number of
+edges. In general it is useful to have edges with
+different &ldquo;distances&rdquo;, so shortest-path problems are
+expressed in terms of weighted graphs, where the weights represent
+distances. (Weighted <em>undirected</em> graphs can be regarded as weighted
+directed graphs with directed edges of equal weight in each direction.)
+</p>
+<p>
+Both breadth- and depth-first search are instances of the
+abstract tricolor algorithm. The tricolor algorithm is <em>nondeterministic</em>: it
+allows a range of possibilities for each next step. BFS and DFS resolve the nondeterminism
+in different ways and visit nodes in different orders. In
+this lecture we will see another instance of the tricolor algorithm due to
+Edsger Dijkstra, which solves the <b>single-source shortest path</b> problem.
+The algorithm is known as <b>Dijkstra's algorithm</b>.
+</p>
+<p>For simplicity, we will assume that all edge weights are nonnegative.
+The <b><a href="http://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm">
+Bellman-Ford algorithm</a></b> is a generalization of Dijkstra's algorithm that can be
+used in the presence of negative weights, provided there are no negative-weight cycles.
+Minimum distance doesn't make sense in graphs with negative-weight cycles, because one could
+traverse a negative-weight cycle an arbitrary number of times, and there would be
+no lower bound on the weight.
+</p>
+<p>
+We will solve the problem of finding the shortest path from a given root
+node to all other nodes. To find a path from multiple root nodes, the single-source shortest path algorithm
+can be used repeatedly, once for each starting node; but if the graph is
+dense, it is more efficient to use a different algorithm for solving the
+<b>all-pairs shortest-path problem</b>. The <b>Floyd-Warshall algorithm</b>
+is the standard algorithm for this task and is covered in CS 3110 or CS 4820.
+</p>
+
+<h2>Dijkstra's algorithm</h2>
+
+<p>
+Dijkstra's algorithm is a generalization of BFS. Like BFS,
+it visits nodes in order of distance from the root, although in this case
+&ldquo;distance&rdquo; is defined more generally as the length of a shortest path,
+where &ldquo;length&rdquo; and &ldquo;shortest&rdquo; refer to
+the sum of the edge weights along the path.
+</p>
+
+<p>
+Also like BFS, Dijkstra's algorithm is an instance of the tricolor algorithm.
+Recall that the tricolor algorithm changes nodes from white to gray and from gray
+to black, never allowing an edge from a black node to a white node.
+In Dijkstra's algorithm, the nodes
+are not discovered (turned from white to gray) in distance order, but they are
+finished (turned from gray to black) in distance order.
+</p>
+<p>Like BFS and the iterative version of DFS, Dijkstra's algorithm can be implemented
+as a <b>worklist algorithm</b>. Recall that in BFS and DFS, the worklist is a queue and a stack, respectively.
+In Dijkstra's algorithm, the worklist is a <b>priority queue</b>, which we will explain shortly.
+The three colors represent the following situations:
+<ul>
+<li><b>White</b> nodes are undiscovered. Their distance field is set to
+∞ because no path to them has been found yet. (<code>v.dist = ∞</code>)
+<li><b>Gray</b> nodes are frontier nodes. They are on the priority queue, which 
+we call <code>frontier</code>.
+Their distance field is finite and is set to the distance along the shortest
+<b>known</b> path from the root to that node. 
+(<code>v.dist &lt; ∞</code>, <code>v ∈ frontier</code>)
+<li><b>Black</b> nodes are finished nodes. The value of their distance field is the
+true minimum distance from the root, and they are not on the priority queue.
+(<code>v.dist &lt; ∞</code>, <code>v ∉ frontier</code>)
+</ul>
+
+<p>
+Dijkstra's algorithm starts with the root in the priority queue
+at distance <code>0</code> (<code>v.dist = 0</code>), so it is gray. All other nodes are 
+at distance ∞ and are white. The algorithm then works roughly like BFS, except
+that when node is popped from the priority queue, the node with
+the <em>smallest</em> <code>v.dist</code> value among all those on
+the queue is popped. When the algorithm completes,
+all reachable nodes are black and hold their true minimum distance.
+</p>
+<p>Here is the pseudo-code:</code>
+<pre>
+1    frontier = new PriorityQueue();
+2    root.dist = 0;
+3    fronter.push(root);
+
+4    while (frontier not empty) {
+5       g = frontier.pop();  // extract gray node with least <code>g.dist</code> in queue
+6       foreach (edge (g →<sub>d</sub> v) in E) {
+7          if (v.dist == ∞) {
+8             <code>v.dist</code> = <code>g.dist</code> + d;
+9             frontier.push(v);      // color v gray
+10         } else {
+11            <code>v.dist</code> = min(v.dist, <code>g.dist</code> + d);
+12              // v was already gray, but update to possibly shorter distance
+13            frontier.adjust_priority(v);
+14         }
+15      }
+16      // color g black
+17   }
+</pre>
+<p>
+Dijkstra's algorithm is an example of a <b>greedy algorithm</b>: an algorithm
+in which simple local choices (like choosing the gray vertex with the
+smallest <code>g.dist</code>) lead to global optimal results (minimal distances computed
+to all vertices). Many other problems, such as finding a minimum spanning
+tree, can be solved by greedy algorithms. Other problems, such as Traveling Salesperson,
+cannot.
+</p>
+
+<h4>Example</h4>
+<p>
+Let us run the algorithm on the graph above with v<sub>0</sub> as the
+root. In the first loop interation, we pop v<sub>0</sub> and push its
+three successors, updating their distances accordingly. The
+root v<sub>0</sub> turns black.</p>
+
+<p>In the
+second iteration, we pop the node with the lowest distance (9) and 
+add its successor to the queue at distance 9+23=32. The new gray
+frontier consists of the three nodes shown. The node at distance 9
+turns black; 9 is the shortest distance to that node.
+</p>
+<div class="figure">
+<center>
+<img class="whitebg" src="ssp/mid-alg.png">
+<br/><b>After the second iteration</b>
+</center>
+</div>
+
+<p>
+The next node to come off the queue is the one at distance 14. Inspecting
+its successors, we discover a new white vertex and set its distance to 44=14+30.
+We also discover a new path of length 31=14+17 to a node already on the frontier,
+which is shorter than the previous best known path of length 32, so we adjust its distance.
+</p>
+
+<div class="figure">
+<center>
+<img class="whitebg" src="ssp/next-alg.png">
+<br/><b>After the third iteration</b>
+</center>
+</div>
+
+<p>
+We continue in this fashion until the queue becomes empty.
+At that point, all reachable nodes are black,
+and we have computed the minimum distance to each of them.
+</p>
+
+<div class="figure">
+<img class="whitebg" src="ssp/final-spanning-tree.png">
+</div>
+
+<h3>Recovering the shortest path</h3>
+
+<p>
+We have shown how to calculate the minimum distance from the root to all
+reachable nodes, but how do we recover the actual shortest paths? A slight
+modification of the algorithm does the trick. Whenever the <code>v.dist</code>
+value decreases in line 8 or 11, we save a back pointer from <code>v</code> to
+<code>g</code>, as the shortest known path from the root to <code>v</code> at
+that point goes through <code>g</code>. When the algorithm is finished, we can
+follow these back pointers from any node along a shortest path back to the
+root.
+</p>
+
+<p>
+Another approach is as follows. Observe that along any shortest path containing
+an edge <code>(v,w)</code> of weight <code>d</code>, the equation <code>w.dist = v.dist +
+d</code> must hold. If that were not true, there would have to be another shorter path.
+We can't have <code>w.dist &gt; <code>v.dist</code> + d</code> because there is
+clearly a path to <code>w</code> with length <code>v.dist + d</code>. And we
+can't have <code>w.dist &lt; <code>v.dist</code> + d</code>, because that means
+the original path through <code>(v,w)</code> was not a shortest path.  We can
+find shortest paths by working backward from any vertex, at each step finding a
+predecessor satisfying this equation.
+</p>
+
+<p>
+The thick edges in the previous figure show the shortest paths from the root <code>v<sub>0</sub></code>
+to every other node. They form a <b>spanning tree</b> that includes every vertex in the graph and shows
+the minimum distance to each of them.
+</p>
+
+<h3>Performance of Dijkstra's algorithm</h3>
+
+<p>
+The algorithm does some work per vertex and some work per edge.
+The outer loop happens once for each vertex. The loop uses the
+priority queue to retrieve the vertex of minimum distance among
+the vertices on the queue, and there can be up to \(|V|\) vertices on the queue.
+If we implement the priority queue with a balanced binary tree,
+we can retrieve the minimum vertex in \(O(\log V)\) time. (We cannot hope
+to do better than this; otherwise, we could use a priority queue to sort
+faster than the known lower bound of \(\Omega(n \log n)\) for comparison sorting.)
+</p>
+<p>
+We also do work proportional to the number of edges \(|E|\); in the worst case, every
+edge will cause the distance to its sink vertex to be adjusted. The priority
+queue needs to be informed of the new distance. This will take \(O(\log V)\) time per
+edge if we use a balanced binary tree. So the total time taken by the algorithm
+is \( O(V \log V) + O(E \log V)\). Since the number of reachable vertices
+is \(O(E)\), this is \(O(E \log V)\).
+</p>
+<p>
+It turns out there is a way to implement a priority queue as
+a data structure called a <b>Fibonacci heap</b>, which makes the
+operation of updating the distance \(O(1)\). The total time is
+then \(O(V \log V + E)\). Fibonacci heaps have worse
+constant factors and they are complicated to implement, so they are rarely used in practice.
+They only make sense for large, dense graphs where \(|E|\) is not \(O(V)\).
+</p>
+
+<h3>Correctness of Dijkstra's algorithm</h3>
+
+<p>
+To show this algorithm works as advertised, we will need a loop invariant.
+</p>
+<p>
+At any stage of the algorithm, define an <b>interior path</b> to a node <code>v</code>
+to be a path from the root to <code>v</code> that goes through only black vertices,
+except possibly for <code>v</code> itself.
+</p>
+<p>
+The loop invariant for the outer loop is then the usual
+tricolor black&ndash;white invariant, plus the following:
+</p>
+<ol type="1">
+<li><p>For every black vertex <code>b</code> and gray vertex <code>g</code>, <code>b.dist ≤ g.dist</code>.</p></li>
+<li><p>For every gray or black vertex <code>v</code>, <code>v.dist</code> is the distance of the shortest <em>interior</em> path to <code>v</code>.</p></li>
+</ul>
+<br>
+<p>
+<b>Initialization.</b>
+Part 1 of the invariant is vacuously true initially, because there are no black vertices.
+Part 2 is true initially, because the root is the only gray or black vertex, and <code>root.dist</code> is 0,
+which is the length of the shortest path from the root to itself.
+</p>
+<p>
+<b>Postcondition.</b>
+When the loop finishes, all paths are interior paths, so
+by part 2 of the invariant, each <code>v.dist</code> is the length of the shortest path to <code>v</code>.
+</p>
+<p>
+<b>Preservation.</b>
+Suppose the invariant holds at the beginning of the loop.
+We consider each of the two parts of the invariant in turn.</p>
+<ol>
+<li>
+<p>Each iteration of the loop first colors the minimum-distance
+gray node <code>g</code> black. This preserves part 1, since the new black node
+was at the minimum distance over all gray nodes. Newly discovered white successors of <code>g</code>
+will now be colored gray, but their new distances will all be
+greater than or equal to <code>g.dist</code> too.
+So the first part of the invariant is preserved. We can see from this
+that vertices are moved from gray to black in order of nondecreasing
+distance.</p>
+</li>
+<li>
+<p>We need to show that we also have the correct interior path distance
+to every gray or black vertex. Coloring <code>g</code> black doesn't create new
+interior paths to it, but it might create new interior paths to other nodes, since
+<code>g</code> can now appear in the middle of an interior path.
+</p>
+<p>
+We don't have to worry about new interior paths to any black node <code>b</code> because
+invariant part 1 means <code>b</code> is already at a distance no greater than
+<code>g.dist</code>. So any new interior path to <code>b</code> that includes <code>g</code> must be
+at least as long as the already known interior path with distance <code>b.dist</code>.
+</p>
+<p>
+However, we still need to think about the interior paths to gray nodes. If another gray node
+<code>v</code> is not a successor to <code>g</code>, any new interior path to it that
+goes via <code>g</code> must have as its second-to-last node a black node whose distance
+is no more than than of <code>g</code>. Hence, the new interior path via <code>g</code> cannot
+be better than the existing interior path.
+</p>
+<p>
+What about gray successor nodes? All such nodes are considered in the inner loop.
+A successor node <code>v</code> can have one of three colors:
+<ul>
+<li><p><b>Black.</b> As argued above, by part 1 of the invariant, any black successor <code>v</code> must
+have <code>v.dist ≤ g.dist</code>, so there can be no shorter interior path via <code>g</code>.</p></li>
+<li><p><b>White.</b> These nodes will be colored gray. By the tricolor invariant, there is no preexisting
+interior path to <code>v</code>. Therefore the new path via <code>g</code> with distance <code>g.dist + d</code>
+is the <em>only</em> interior path.</p>
+<li>
+<div class=floatfigure>
+<canvas style="width: 300pt; height: 300pt" id=graycase>
+</canvas>
+<script class=graphics>
+const SQUIGGLE_WIDTH = 15, SQUIGGLE_HEIGHT = 10
+class SquigglyArrow extends Constrain.Line {
+    constructor(figure, a, b) {
+        super(figure)
+        figure.pin(a, figure.point(this.x0(), this.y0()))
+        figure.pin(b, figure.point(this.x1(), this.y1()))
+        this.lineDash = []
+        this.setEndArrow("arrow")
+    }
+    render() {
+        const figure = this.figure, ctx = figure.ctx,
+              valuation = figure.currentValuation
+        const mul = numeric.mul, add = numeric.add
+        
+        let [x0, x1, y0, y1] = Constrain.evaluate([this.x0(), this.x1(), this.y0(), this.y1()],
+                                                  valuation)
+        let dist = Math.sqrt((x1-x0)*(x1-x0) + (y1-y0)*(y1-y0)),
+            n = Math.floor(dist / SQUIGGLE_WIDTH)
+        if (dist < 1) return
+        let ux = (x1 - x0)/dist, uy = (y1 - y0)/dist,
+            vx = -uy, vy = ux
+        let bs_pts = [], s = dist/n
+        for (let i = 0; i <= n; i++) {
+            let off = 2*SQUIGGLE_HEIGHT*(Math.random()-0.5)
+            if (i <= 2 || i >= n-2) off = 0
+            let x = x0 + ux * s * i + vx * off,
+                y = y0 + uy * s * i + vy * off
+            bs_pts.push([x, y])
+        }
+        ctx.setLineDash(this.lineDash)
+
+        Constrain.Paths.bsplines(ctx, bs_pts)
+        ctx.stroke()
+        let len = bs_pts.length
+        Constrain.drawLineEndSeg(ctx, this.endArrowStyle,
+            this.arrowSize,
+            bs_pts[len - 1][0], bs_pts[len - 1][1],
+            bs_pts[len - 1][0] - ux, bs_pts[len - 1][1] - uy)
+    }
+}
+
+CFigure.prototype.wavyConnector = function(fig, a, b) {
+    return new SquigglyArrow(fig, a, b)
+}
+
+let fig
+with (fig = new CFigure("graycase")) {
+    let cr = canvasRect()
+    let explored = circle().setFillStyle("#aaa").setLineWidth(20).setStrokeStyle("#ccc").at(cr).setW(minus(cr.w(),30))
+    function node() {
+      return circle().setFillStyle("#000").setW(8)
+    }
+    let root = node().at(cr)
+    align("center", "abut", root, vspace(10), label("root"))
+    let g = node(), v = node(), b = node()
+    align("none", "center", root, g)
+    equal(distance(g, root), times(0.5, explored.w()), distance(v, root))
+    equal(distance(g, v), times(0.45, explored.w()))
+    align("center", "abut", g, vspace(5), label("g"))
+    align("center", "abut", v, vspace(5), label("v"))
+    pin(b, average(average(g, v), root))
+    align("none", "center", root, g)
+    geq(v.y(), root.y())
+    align("center", "abut", b, vspace(5), label("b"))
+    wavyConnector(fig, root, v)
+    wavyConnector(fig, root, g)
+    wavyConnector(fig, root, b).setLineDash([5,3])
+    wavyConnector(fig, b, v).setLineDash([5,3])
+    wavyConnector(fig, g, b).setLineDash([5,3])
+    connector(g, v).setEndArrow("arrow").addLabel(lineLabel("d", 0.5, 10)).setLineWidth(2)
+}
+</script>
+</div>
+<p><b>Gray.</b> If the node <code>v</code> is already on the frontier, there is an existing
+interior path whose length is recorded in <code>v.dist</code>. In addition, there is a
+new interior path to <code>v</code> via <code>g</code>, with total distance <code>g.dist + d</code>. The code compares
+these two paths and picks the shorter one. Coloring <code>g</code> black can also create
+other new interior paths that don't go directly to <code>v</code> via the new edge,
+but instead go via some other black node <code>b</code>. By invariant part 1, <code>b.dist
+≤ g.dist</code>, so any such interior path must be at least as long as the
+preexisting interior path that goes from the roots directly to <code>b</code> and then
+to <code>v</code>, and we know by invariant part 2 that <em>that</em> path is no
+shorter than <code>v.dist</code>.</p>
+</ul>
+</ol>
+
+<h2>Generalizing shortest paths</h2>
+<p>
+The weights in a shortest path problem need not represent distance,
+of course. They could represent time, for example. They could also
+represent probabilities. For example, suppose that we had a
+state machine that transitioned to new states with some given
+probability on each outgoing edge. The probability of taking
+a particular path through the graph would then be the <em>product</em>
+of the probabilities on edges along that path. We can then answer
+questions such as, &ldquo;What is the most likely path that the system will
+follow in order to arrive at a given state?&rdquo; by solving
+a shortest path problem in a weighted graph in which the weights
+are the negative logarithms of the probabilities, since
+\( (-\log a) + (-\log b) = - \log ab\).
+</p>
+
+<h2>Heuristic search (A*)</h2>
+<p>
+Dijkstra's algorithm is a simple and efficient way to find the shortest
+path from a root node to all other nodes in a graph.
+However, if we are only interested in the shortest path to
+a particular vertex, it may search much more of the graph
+than necessary. One simple optimization is to stop the
+algorithm at the point when the destination vertex is popped off
+the priority queue. We know that <code>v.dist</code> is the minimal distance to <code>v</code>
+at that point because it will be colored black.
+</p>
+<p>
+A second and more interesting optimization is to take advantage of more
+knowledge of distances in the graph. Dijkstra's algorithm searches outward
+in distance order from the source node and finds the best route to every node
+in the graph. In general we don't want to know every best route. For example,
+if we are trying to go from NYC to Mount Rushmore, we don't need to
+explore the streets of Miami, but that is what Dijkstra's algorithm will do.
+</p>
+<div class=figure>
+<img src="ssp/map.png" width="500px">
+</div>
+<p> The A* search algorithm generalizes Dijkstra's algorithm to to take advantage of
+knowledge about the node we are trying to find. The idea is that for any given
+vertex, we may be able to estimate the remaining distance to the destination.
+We define a <b>heuristic function</b> <code>h(v)</code> that constructs this estimate. Then,
+the priority queue uses <code>v.dist + h(v)</code> as the priority instead of just <code>v.dist</code>.
+Depending on how accurate the heuristic function is, this change causes the
+search to focus on nodes that look like they are in the right direction.</p>
+<p>
+Adding the heuristic to the node distance effectively changes the weights of
+edges. Given an edge from vertex <code>v</code> to <code>w</code> with weight <code>d</code>, the change in priority
+along the edge is <code>d + h(w) &minus; h(v)</code>. If <code>h(v)</code> is a perfect estimator of
+remaining distance, this quantity will be zero along the optimum path; in
+that case we can trivially "search" for the optimum path by simply following
+such zero-weight edges. More realistically, <code>h(v)</code> will be inaccurate. If it is
+inaccurate by up to an amount ε, we end up searching around the optimum path in
+a region whose size is determined by ε.</p>
+<p>
+However, we have to be careful when defining <code>h(v)</code>. If for an edge <code>(v,w)</code>
+of weight <code>d</code>, the total distance including the heuristic function
+<em>decreases</em> along the edge, the conditions of Dijkstra's algorithm
+(nonnegative edge weights) are no longer met. In that case we have an
+<b>inadmissible heuristic</b> that could cause us to miss the optimal
+solution. A heuristic function is <b>admissible</b> if it never
+overestimates the true remaining distance. When searching with an admissible
+heuristic, each node is seen only once and the optimum path has been found
+immediately when the goal node is reached. 
+</p>
+<p>
+If using an inadmissible heuristic, negative-weight edges might cause us to
+find a new path to an already “finished” node, pushing it back on to the
+frontier queue. Even after finding the goal node at some distance D, It is
+necessary to keep searching <em>above</em> priority level D to account for
+these negative-weight edges. Despite this issue, the reason we might want to
+use an inadmissible heuristic is that it can be more <em>accurate</em> than an
+admissible heuristic, and thus guide the search more effectively to the goal.
+In some cases inadmissible heuristics can pay off.
+</p>
+<p>
+The A* search algorithm is often used for single-player game search and various
+other optimization problems.
+</p>
+</html>

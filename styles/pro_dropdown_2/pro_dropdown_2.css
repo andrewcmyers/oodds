@@ -1,0 +1,25 @@
+/* ================================================================ 
+This copyright notice must be kept untouched in the stylesheet at 
+all times.
+
+The original version of this stylesheet and the associated (x)html
+is available at http://www.stunicholls.com/menu/pro_drop_2.html
+Copyright (c) 2005-2007 Stu Nicholls. All rights reserved.
+This stylesheet and the associated (x)html may be modified in any 
+way to fit your requirements.
+=================================================================== */
+
+#nav {list-style:none; position:relative; z-index:500; }
+#nav li.top {display:block; float:left; }
+
+#nav li:hover {position:relative; z-index:200;}
+
+#nav li:hover ul.sub
+{left:1px; top:28px; background: #ddd; padding:3px; border:1px solid #ccc; white-space:nowrap; width:auto; height:auto; z-index:300;}
+#nav li:hover ul.sub li a
+{display:block; font-size:11px; color:#000; text-decoration:none; }
+#nav li:hover ul.sub li a:hover
+{color:#fff; }
+
+#nav ul
+{position:absolute; left:-9999px; top:-9999px; width:0; height:0; margin:0; padding:0; list-style:none; }

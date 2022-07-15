@@ -1,0 +1,336 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<h1>Lecture 13: More testing and documenting code</h1>
+
+<h2>More testing techniques</h2>
+<p>
+Recall that the goal of testing is to see how the program behaves in some
+situations and on some inputs and from that derive confidence that it works in
+all situations and all inputs.  This is challenging because the number of possible ways
+to run the program is typically infinite. On the other hand, most possible tests are redundant.
+The idea is to achieve <b>coverage</b> of the space of possible program executions by
+making sure that all interesting distinct regions of the space of executions are tested.
+</p>
+<p>As we discussed last time, one way to achieve coverage is to carefully
+design test cases, aiming for good coverage.  To identify the interesting
+regions of the input space, we can look at the program or module specification.
+A good spec will identify interesting boundaries and seams in the input space
+that help us decide what needs to be tested.  This approach is <b>black-box
+testing</b>.
+</p>
+A second approach is to look at the implementation code as a way of identifying
+the interesting possible executions. This is <b>glass-box testing</b>. For
+example, different execution paths in the implementation correspond to
+different kinds of executions that should all be tested.  Code coverage and
+path coverage are ways to get assurance that the whole space is covered.
+</p>
+
+<h3>Random testing</h3>
+
+<p>A different approach to getting coverage is <b>random testing</b>. We
+generate many test cases, hoping that some test case hits each interesting
+region of the input space. This can be very effective, especially for unit
+testing of small modules. The weakness of this approach is that there may be
+corner cases that are very unlikely to be hit randomly, because they are such a
+small part of the input space as a whole. In general it is challenging to
+generate random test cases that cover the whole input space, perhaps also 
+trying to bias random choices to try to hit more interesting regions.
+</p>
+
+<h3>Bounded exhaustive testing</h3>
+
+<p>Testing cannot be exhaustive, in general. We cannot hope to test all
+possible inputs.  But what is feasible in many cases is to test all inputs of
+up to some small size. For example, if testing a tree implementation, we might
+test all the tree operations on all trees of up to height 5. This approach
+relies on a rule of thumb, the <b>small counterexample hypothesis</b>, which
+says that there is usually a small test case that exposes any given bug.
+Equivalently, we could conjecture that every interesting region in the input
+space contains a small test case, so by testing all small test cases, we cover
+all the interesting regions.</p>
+<p>
+Bounded exhaustive testing can be highly effective at catching bugs. The
+weakness, like with random testing, is that it is challenging in general to
+enumerate all possible legal small test cases.  In Java, this kind of code is
+particularly awkward to write because of the weak support for iteration.
+</p>
+<p>
+The small counterexample hypothesis frequently holds, but not always! For example,
+the Java sorting algorithm (Timsort) is known to be incorrect but only for very large
+arrays. Its incorrectness was not discovered via testing, but by trying to formally prove
+it correct—and failing.
+</p>
+
+<h3>Symbolic execution</h3>
+<p>
+Another way to reduce the space of inputs is <b>symbolic execution</b>, in which
+program execution is simulated in an environment in which some variables or fields are
+represented symbolically rather than as actual values in the programming languages.
+The execution environment tracks constraints on (i.e., knowledge about) the values of
+these variables. At points where, say, an assertion happens or a null pointer might
+occur, these constraints can be inspected to see whether they guarantee that no
+error results.
+</p>
+<p>
+Running a program with symbolic execution is much more expensive than running
+it normally, and it requires special software support that is not yet
+mainstream. However, each symbolic execution of a program potentially
+represents a large number of regular executions, so it can be much more
+efficient at finding bugs. Symbolic execution can also be used along with
+random testing or bounded exhaustive testing to make them more effective.
+</p>
+<h2>Using assertions</h2>
+<p>Assertions (that is, <tt>assert</tt>) are extremely useful:</p>
+<ol>
+<li>They put useful tests into the code itself where you don't have to remember to run them.</li>
+<li>They also add useful documentation about things the implementer expected to be true, so they
+don't clutter the code in the process.</li>
+</ol>
+<p>But what to use <code>assert</code> on? One obvious target is preconditions and postconditions.
+On entry to a method, use an <code>assert</code> to check that the requires clause holds. On
+every exit from a method, check that the returns clause is satisfied. If a method fails to live
+up to its spec, you'll know immediately and be able to debug the right code.
+</p>
+<pre>
+/* Requires/Checks: X
+ * Returns: Y
+ */
+m() {
+    assert X;
+    ...// method impl here
+    assert Y;
+    return;
+}
+</pre>
+
+<p>You might be worried that checking preconditions is very expensive. Fortunately, assertion checking can be turned on and off by providing options to the JVM:
+<ul>
+<li><tt>-ea</tt> : enable assertions everywhere except in system libraries
+<li><tt>-esa</tt> : enable assertions in system libraries
+<li><tt>-ea:&lt;classname&gt;</tt> : enable assertions in class <tt>&lt;classname&gt;</tt>
+<li><tt>-ea:&lt;packagename&gt;</tt> : enable assertions in all classes in this package and subpackages.
+</ul>
+
+<p>Corresponding <tt>-da</tt> options can be used to turn off assertion checking selectively.</p>
+
+<h2>Representation invariants</h2>
+
+<p>Checking preconditions and postconditions is very useful, but the real
+secret to building working code is checking <b>data structure invariants</b>,
+also known as <b>representation (rep) invariants</b>. For example, when
+building a binary search tree implementation, we want every node in the tree to
+satisfy the binary search tree invariant that all elements in the left subtree
+are less and all elements in the right subtree are greater.
+<p>
+An invariant is something that is &ldquo;always&rdquo; true. In this case
+&ldquo;always&rdquo; means at the beginning and end of methods. In the middle of
+a method, the rep invariant might be temporarily violated.
+</p>
+<p>
+Rep invariants alert maintainers about the need to keep object state in
+sync. Updating one field may force updates to others to maintain the
+invariant.
+</p>
+<p>
+Interesting rep invariants are almost always worth checking. To do this we implement
+a method that checks the rep invariant:
+</p>
+<pre>
+/** Returns whether this satisfies the rep invariant. */
+boolean RI() {
+    ...
+}
+</pre>
+
+<p>We can then use the <code>RI()</code> to check the rep invariant at the beginnings and ends
+of methods:</p>
+
+<pre>
+/* Requires/Checks: X
+ * Returns: Y
+ */
+m() {
+    assert X &amp;&amp; RI();
+    ...// method impl here
+    assert Y &amp;&amp; RI();
+    return;
+}
+</pre>
+
+<p>
+There are two benefits here:
+</p>
+<ol>
+<li>If the rep invariant is broken by some method, we find out immediately and we know which method to fix.
+Data structure corruption bugs are otherwise often very difficult to fix.
+<li>The <code>RI()</code> also is a kind of very precise documentation of the rep invariant, which is
+useful for maintenance and extension of the code.
+</ol>
+
+<h3>Example: checking the BST invariant</h3>
+
+<pre>
+/** Check the BST invariant. */
+boolean RI() {
+    return root == null || elemsBetween(root, null, null);
+}
+
+/** Whether n satisfies the BST invariant and
+ *  whether all elems under n are less than upper (if upper != null) and
+ *  whether all elems under n are greater than lower (if lower != null).
+ */
+boolean elemsBetween(Node<T> n, T lower, T upper) {
+    if (lower != null &amp;&amp; n.data.compareTo(lower) &lt;= 0)
+	return false;
+    if (upper != null &amp;&amp; n.data.compareTo(upper) &gt;= 0)
+	return false;
+    return (left == null || elemsBetween(left, lower, n.data)) &amp;&amp;
+           (right == null || elemsBetween(right, n.data, upper));
+}
+</pre>
+
+<p>Now we stick calls to <code>RI()</code> into all tree methods, e.g.:
+</p>
+<pre>
+void add(T elem) {
+    assert RI();
+    // do usual tree insertion here
+    assert RI();
+    return;
+}
+</pre>
+
+
+<h2>Documenting implementations: The implementer's view</h2>
+<div class="figure">
+<img src="lec13/codeberg.png"/>
+</div>
+<p>
+Our goal for documenting the implementation is to support implementation and
+maintenance by describing implementation methods and even abstracting them.
+Therefore, private methods have the same clauses as public ones.
+</p><p>
+We also want to write specifications for fields where it is not obvious.
+Two kinds of information are essential:
+<ol>
+<li>describing what values of the fields mean in terms of the client's abstract view.
+<li>stating the rep invariant that these fields must satisfy.
+</ol>
+</p>
+<p>
+Example of field specifications including rep invariants:
+</p><p>
+<pre>
+class LinkedList<T> {
+  /** First node. May be null when list is empty. */
+  Node<T> first;
+  /** The number of nodes in the list. size ≥ 0. */
+  int size;
+  /** Last node. last.next = null. May be null when list is empty. */ 
+  Node<T> last;
+  ...
+</pre>
+
+<p>
+When we write methods like <code>LinkedList.add</code>, these invariants may be temporarily
+broken:
+</p>
+
+<pre>
+  /** Append x to the end of the list. */
+  void add(T x) {
+    // Algorithm: Create a new node. Make it the new head of the list
+    // if the list is empty. Otherwise attach it to "last".
+    if (first == null) {
+      first = last = new Node(x, null); // size invariant broken here
+    } else {
+      last = last.next = new Node(x, null); // size invariant broken
+    }
+    size++; // invariant restored here
+  }
+</pre>
+
+<h2>Documenting implementations: the specializer's view</h2>
+
+<p>
+The specializer uses the code as a superclass, with the goal of
+producing a subclass that reuses superclass functionality. The
+specializer may override the behavior of existing methods that have
+public or protected visibility. When we write a specification for 
+a method that can be overridden, there are really two separate goals:
+</p>
+
+<ol>
+<li> Client specification. Define the contract with the client that
+this class and all subclasses must enforce. The client specification
+is all that the client can count on, because the dynamic type of 
+the object being used may not be the same the static type.
+</li>
+<li> Overridable behavior. Define the behavior of this particular
+method implementation. This behavior must be compliant with the client
+specification, but it may guarantee more than the client specification
+does.
+</li>
+</ol>
+
+<p>
+For example, consider an implementation of an extensible chess game.
+We might define a class "Piece" that gives an interface for
+manipulating pieces, with subclasses such as "King" that specialize
+it:
+</p>
+
+<pre>
+/** A chess piece */
+class Piece {
+    /** Spec: Iterates over all the legal moves for this piece.
+     *  Overridable behavior: uses legal_destinations() to construct
+     *  the legal moves.
+     */
+    public Iterator<Move> legal_moves();
+
+    /** Iterates over all destinations this piece can move to in an
+     * ordinary move, including captures. */
+    protected Iterator<Location> legal_destinations();
+}
+</pre>
+<p>
+Given this specification for "Piece", we can implement a piece such as
+a king with extra castling moves that are not computed from the legal
+destinations as with other pieces:
+</p>
+
+<pre>
+class King extends Piece {
+    public Iterator<Move> legal_moves() {
+        Collection moves = ...;
+	for (m:super.legal_moves()) { // rely on superclass overridable behavior
+	    moves.add(m);
+	}
+	m.add(new CastleMove(...));
+	return moves.iterator();
+    }
+
+    /** Overridable behavior: iterate over the squares adjacent
+     *  to the current location. */
+    public Iterator<Location> legal_destination() {
+      ...
+    }
+}
+</pre>
+
+<p>
+Note that "King.legal_moves" obeys the specification of
+"Piece.legal_moves", but overrides its behavior. Because the
+implementer of "Piece" defined overridable behavior of the method, the
+implementer of "King" can rely on this behavior in implementing their
+own method, without needing to read the details of the implementation
+of "Piece.legal_moves".
+</p>
+
+<p>
+Writing classes that can be inherited and reused effectively requires
+keeping these two different kinds of specification separate.
+</p>
+
+</html>

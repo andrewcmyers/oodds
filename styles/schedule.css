@@ -1,0 +1,73 @@
+a            { text-decoration: none }
+h1>a:link, h2>a:link, h1>a:visited, h2>a:visited { color: #283 }
+a:link       { color: #263; background-color: transparent }
+a:visited    { color: #253; background-color: transparent }
+a:hover      { color: #0000FF; background-color: transparent }
+a.special    { color: #009955; background-color: transparent }
+
+table.schedule { background-color: #FFFFF0; width: 100% }
+table.schedule td, table.schedule th { font-family: Verdana, Trebuchet, Helvetica, Arial }
+
+table.schedule td.specialrow { text-align: center }
+table.schedule tr.week_even td:first-child {text-align: right; width: 0%}
+table.schedule tr.week_odd td:first-child {text-align: right; width: 0%}
+table.schedule tr.week_even td:first-child + td {text-align: right; white-space: nowrap; width: 0%}
+table.schedule tr.week_odd td:first-child + td {text-align: right; white-space: nowrap; width: 0%}
+table.schedule tr.week_even td { background-color: #dfdfd0 }
+table.schedule tr.week_odd td { background-color: #efefe0 }
+table.schedule tr.holiday td:first-child {text-align: right}
+table.schedule table.index td {background-color: #fffff0}
+
+table.schedule tr.holiday td { font-style: italic; background-color: #bba }
+table.schedule tr.exam td:first-child {text-align: right}
+table.schedule tr.assignment_due td:first-child {text-align: right}
+table.schedule tr.exam td {font-weight: bold; background-color: #ffc}
+table.schedule tr.assignment_due td {font-weight: bold; background-color: #ffc}
+
+table.schedule th#topic_heading {width: 40%}
+table.schedule th#lecture_heading {padding-left: 1ex; padding-right: 0; margin: 0}
+
+table.schedule tr.topic td {text-align: center; font-weight: bold; background-color: #a88 }
+
+table.schedule .th { background-color: #b31b1b; font-weight: bold; color: white }
+table.schedule th { background-color: #b31b1b; font-weight: bold; color: white }
+table.schedule td.recitation { background-color: #FFF0d0 }
+table.schedule td.reading { text-indent: -1em; padding-left: 1em; font-size: 80% }
+table.schedule td {padding: 2px 5px }
+table.schedule div.section {margin-left: 2em; font-size: 90%; text-indent: -1em}
+
+.titlelike   { color: #034; font-weight: bold }
+
+/* Use this style to highlight changes to problem sets */
+.change      { color: #034; background-color: #99CCFF }
+
+div#changes {margin: 0 2em 0 2em; padding: 0 2em 0 2em; float: right; border-style: solid; border-width: 1px}
+
+/* Use this style to highlight HW items appearing in the schedule */
+.hw { color: #800000; font-weight:bold }
+
+/* used for mathematics */
+.math        { color: black; font-family: Times New Roman, Times, serif; font-size: 110%; background-color: transparent }
+.symbol      { font-family: Symbol, symbol }
+
+table.schedule span.special_date { font-weight: bold }
+
+img#map { border: solid black 1px;
+    -moz-box-shadow: 3px 3px 5px #aaa;
+    -webkit-box-shadow: 3px 3px 5px #aaa;
+    box-shadow: 3px 3px 5px #aaa;
+}
+
+span.swapout {
+    font-size: 90%;
+    font-style: italic;
+    font-family: serif
+    }
+
+#cu-identity {
+	/*
+	Comment out the following line to remove the Ezra Cornell background image from the header.
+	Change 1.jpg to any number up to 8.jpg to use other header background images.
+	*/
+	background: #b31b1b url('images/layout/header_bg/1.jpg') no-repeat top center;
+	}

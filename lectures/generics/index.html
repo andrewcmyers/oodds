@@ -1,0 +1,367 @@
+<h1>Parametric Polymorphism (Generics)</h1>
+
+<p>
+    We have already seen that object-oriented languages support
+    <b>subtype polymorphism</b>; generics give us a different kind of polymorphism,
+    <b>parametric polymorphism</b>.  Recall that polymorphism means that something
+    can be used at multiple types. Subtype polymorphism allows client code to be written with
+    respect to a single type (as specified by, say, an interface or abstract class)
+    while interoperating with multiple implementations of
+    that type. Parametric polymorphism, also known as <b>generics</b>, solves the opposite problem, in a sense: it
+    allows a single implementation to interoperate with multiple clients who want
+    to use that implementation for different types. This goal is achieved by writing
+    the implementation with respect to a <b>type parameter</b>, a variable ranging over
+    types that can be instantiated with different concrete types.
+    Support for generics is not an essentially object-oriented idea, and was not
+    originally part of Java, having been first introduced in Java 5.
+</p>
+    
+<h2>
+Collections
+</h2>
+<p>
+The main motivation for adding parametric polymorphism and generic types to Java was the
+<b>Java Collections Framework</b>. This is a built-in
+library of different abstractions and implementations
+for <b>collections</b>: types that one can put things into, take things out of, test for membership in, and iterate over.
+Generics were introduced in Java 5 to make the Collections Framework more effective.
+Prior to this time, the interface <code>Collection</code> looked like the following:
+</p>
+<pre>
+/** A mutable collection. */
+interface Collection {
+    /** Test whether object o is in the collection. */
+    boolean contains(Object o);
+    /** Add object o to the collection. Return true if this changes
+     *  the state of the collection.
+     */
+    boolean add(Object o);
+    /** Remove object o from the collection. Return true if this changes
+     *  the state of the collection.
+     */
+    boolean remove(Object o);
+    ...[other methods]...
+}
+</pre>
+<p>
+All the compiler knows about a contained element at the type level is that it
+is an <code>Object</code>. This loss of information leads to programming errors
+and makes code more awkward. Here is an example:
+</p>
+<pre>
+Collection c = ...;
+c.add(new Integer(2)); // no check that we are inserting an Integer
+...
+for (Object o : c) {
+    Integer i = (Integer) o;
+    // use i here
+}
+</pre>
+<p>
+This code only ever puts <code>Integer</code> objects into <code>c</code>, but every time
+an element of <code>c</code> is extracted, it must be downcasted to use it as an <code>Integer</code>.
+These downcasts are awkward, verbose, and error prone. Any downcast
+might fail at run time, because there is nothing about the collection that prevents
+us from accidentally putting something into it of the wrong type. In addition,
+the run-time type checks take time.
+</p>
+<p>We don't have these problems when we use an array. All the operations are
+statically checked:</p>
+<pre>
+Integer[] c;
+c[0] = 2; // statically checked
+...
+for (Integer i : c) {
+    // use i here
+}
+</pre>
+<p>
+The reason is that arrays are a <b>parameterized type</b>. We can think of the type
+<code>Integer[]</code> as the application of a type-level function (we might call it <code>array</code>
+if we were to give it a readable name)
+to the type parameter <code>Integer</code> and returning the type <code>Integer[]</code>.
+Obviously, parameterized types are useful. The idea of generics is to allow the programmer to
+define their own parameterized types, to obtain the same static checking that is available with
+the built-in array type.
+</p>
+
+<h2>Type parameterization</h2>
+<p>
+The generics feature allows programmers to define their own parameterized types. For example, we
+can make <code>Collection</code> become a parameterized type that can be applied to an arbitrary
+type T using the “angle bracket” syntax: <code>Collection&lt;T&gt;</code>. Thus, 
+the type <code>Collection&lt;Integer&gt;</code> is a collection of <code>Integer</code>s,
+the type <code>Collection&lt;String&gt;</code> is a collection of <code>String</code>s,
+and the type <code>Collection&lt;Collection&lt;String&gt;&gt;</code> is a collection of
+collections of strings.
+</p>
+<p>
+A parameterized type is declared by giving it a <b>formal type parameter</b> that
+can then be used as a type inside the type's definition—for example, in method signatures:
+</p>
+<pre class="load">
+<a href="generics/Interface.java">
+Interface.java
+</a>
+</pre>
+<p>
+Inside the definition, the type parameter T stands for whatever actual type the client chooses to apply it
+to. A type like <code>Collection&lt;String&gt;</code> is called an <b>instantiation</b> of the
+parameterized type <code>Collection</code>
+on the type argument <code>String</code>.
+The signatures of the methods of <code>Collection&lt;String&gt;</code> are exactly
+the signatures appearing in the declaration of <code>Collection&lt;T&gt;</code>,
+except that every occurrence of T is replaced with <code>String</code>. For example, the
+<code>add</code> method of <code>Collection&lt;String&gt;</code> 
+behaves exactly as if its signature were <code>boolean add(String x)</code>.
+</p>
+<p>
+Now, the compiler can tell when we are trying to add an element of the wrong type, and we
+don't have to worry about getting the wrong type of element out of the collection at run time:
+</p>
+<pre class="load">
+<a href="generics/InterfaceUse.java">
+InterfaceUse.java
+</a>
+</pre>
+
+<h2>Implementing generics</h2>
+<p>
+Parametric polymorphism also helps us when we are implementing abstractions. Let's consider
+implementing the <code>Collection</code> interface using a linked list. First, we will want generic linked list nodes that can contain data of an arbitrary type:
+</p>
+<pre class="load">
+<a href="generics/Node.java">Node.java</a>
+</pre>
+<p>
+Then we can build a generic linked list class for null-terminated lists of generic nodes:
+</p>
+<pre class="load">
+<a href="generics/LinkedList.java">LinkedList.java</a>
+</pre>
+
+<h2>Generic methods</h2>
+<p>
+So far we've seen that classes and interfaces can be parameterized. We can also
+give methods their own type parameters. For example, suppose we would like to write a
+method that could print out a collection regardless of what kind of elements it contains.
+We can define a generic method to accomplish this. The syntax is a bit awkward in that
+the formal type parameter is written <em>before</em> the name of the method:
+</p>
+<pre class="load">
+<a href="generics/generic_print.java">generic_print.java</a>
+</pre>
+<p>Notice that a call to the <code>print</code> method does not need to specify the
+actual type parameter <code>Integer</code>. The compiler is able to <b>infer</b> the missing
+parameter automatically. It is also possible to supply type parameters to generic
+method calls explicitly, by putting the type parameter in angle brackets after the dot.
+</p>
+<h2>Subtyping</h2>
+<p>
+Like other <code>implements</code> declarations, the declaration above that
+<code>LList&lt;T&gt; implements Collection&lt;T&gt;</code> generates a subtype relationship:
+in fact, a family of subtype relationships, because the subtype relationship holds regardless
+of what actual type T is chosen. The compiler therefore understands that the relationship
+<code>LList&lt;String&gt; &lt;: Collection&lt;String&gt;</code> holds. What about these other
+possible relationships?
+</p>
+<ul>
+<li><code>LList&lt;String&gt; &lt;: LList&lt;Object&gt; ?</code></li>
+<li><code>LList&lt;String&gt; &lt;: Collection&lt;Object&gt; ?</code></li>
+</ul>
+<p>
+Both of these look reasonable at first glance. But they are actually unsound, leading to
+possible run-time type errors. The following example shows the problem:
+</p>
+<pre class="load">
+<a href="generics/variance-unsound.java">variance-unsound.java</a>
+</pre>
+<p>
+The head element of the list, which is assigned to a variable of type <tt>String</tt>,
+is actually an <tt>Integer</tt>! This is erroneous, so the Java compiler will not
+allow it. A similar situation arises with arrays, although in that case the error is unfortunately only caught at run time.
+</p>
+</p>
+<pre class="load">
+<a href="generics/array-unsound.java">variance-unsound.java</a>
+</pre>
+
+<p>The idea that there can be a subtyping relationship between different instantiations
+of the same generic type is called <b>variance</b>. Variance is tricky to support in a
+sound way, so Java does not support variance. Other languages such as Scala do have variance.
+</p>
+
+<h2>Wildcards</h2>
+<p>
+To make up for the lack of variance, Java has a feature called
+<b>wildcards</b>, in which question marks are used as type arguments. The type
+<code>LList&lt;?&gt;</code> represents an object that is an <code>LList&lt;T&gt;</code>
+for <em>some</em> type T, though precisely <em>which</em> type T is not known at compile
+time (or for that matter, even at run time).
+</p>
+<p>
+A value of type <code>LList&lt;T&gt;</code> (for any T) can be used as if it had
+type <code>LList&lt;?&gt;</code>, so there is a family of subtyping relationships
+<code>LList&lt;T&gt;</code> &lt;: <code>LList&lt;?&gt;</code>. This means that a method
+can provide a caller with a list of any type without the client knowing what is
+really stored in the list; the client can get elements
+from the list but cannot change the list:
+</p>
+<pre class="load">
+<a href="generics/usesite.java">usesite.java</a>
+</pre>
+<p>
+Note that the type of the elements iterated over is not really known either, but
+at least we know that the type hidden by ? is a subtype of <code>Object</code>. So it is
+type-safe to declare the variable <code>o</code> as an <code>Object</code>.
+</p>
+<p>
+We cannot implement the type-unsafe code shown above because the wildcard type makes the collection
+effectively immutable. For example, the attempt to add the integer 7 to the variable <code>lst</code>
+fails because the compiler does not know that the actual type argument is <code>Integer</code>.
+Operationally, when the compiler sees a type containing wildcards, like <code>LList&lt;?&gt;</code>,  it invents a fresh type
+name (say, <code>T137</code>) not used anywhere else in the program, and constructs the method signatures
+for the wildcard type by replacing the formal type parameter <code>T</code> with the fresh type name. At the
+call <code>lst.add(7)</code> above, the actual argument has type <code>Integer</code> but the expected type
+is <code>T137</code>. Since <code>T137</code> has no relationship to <code>Integer</code>,
+the code does not type-check. Instantiation with fresh type names is
+done for every distinct occurrence of wildcard type, so the compiler does not
+even assume that two objects of the wildcard type have the same underlying type
+argument.
+</p>
+<p>
+If we need to know more about the type hidden by the question mark, it is possible to 
+add an <code>extends</code> clause. For example, suppose we have an interface
+<code>Animal</code> with two implementing classes <code>Elephant</code> and
+<code>Rhino</code>. Then
+the type <code>Collection&lt;? extends Animal&gt;</code> is a supertype of both
+<code>Collection&lt;Elephant&gt;</code> and <code>Collection&lt;Rhino&gt;</code>,
+and we can iterate over the collection and extract <code>Animal</code>s rather
+than just <code>Object</code>s.
+</p>
+<pre class="load">
+<a href="generics/usesite2.java">usesite2.java</a>
+</pre>
+<h2>Limitations</h2>
+<p>
+The way generics are actually implemented in Java is that all actual type parameters are
+<b>erased</b> at run time.  This implementation choice leads to a number of limitations of
+the generics mechanism in Java when in a generic context where T is a formal parameter:
+</p>
+<ol>
+<li>Constructors of T cannot be used; we cannot write <code>new T()</code>. The workaround for
+this limitation is to have an object with a <b>factory method</b> for creating <code>T</code> objects.</li>
+
+<li>Arrays with T as elements cannot be created, either. We cannot write <code>new T[n]</code>,
+because the type T is not known at run time and so the type <code>T[]</code> cannot be installed
+into the object's header. The workaround for this limitation is to use an array of type
+<code>Object[]</code> instead:
+<pre>
+T[] a = (T[]) new Object[n];
+</pre>
+<p>
+This of course creates an array that could in principle be used to store things other than T's, but
+as long as we use that array through the variable <code>a</code>, we won't. The compiler
+gives us an alarming warning when we use this trick because of the unchecked cast, but when used in this
+limited way, this programming idiom is fairly safe. Note that if we need to
+create an array of <code>T</code> in a context where <code>T</code> is known to
+be a subtype of some type, then the array that should be created is an array of
+that other type, rather than of <code>Object</code>.
+</p>
+<p>
+Similarly, we can't create an array whose type includes a parameter type:
+</p>
+<pre>
+HashSet&lt;String&gt;[] sets = new HashSet&lt;String&gt;[n]; // error: generic array creation
+</pre>
+<p>One workaround is to use a wildcard type to create the array, and dynamically cast it to the
+desired type:
+<pre>
+HashSet&lt;String&gt;[] sets = (HashSet&lt;String&gt;[]) new HashSet&lt;?&gt;[n];
+</pre>
+<p>
+Equivalently, one can use a <b>raw type</b>, a type in which type parameters have been explicitly erased,
+to create the array:
+<pre>
+HashSet&lt;String&gt;[] sets = new HashSet[n];
+</pre>
+<p>
+Raw types are an unchecked end run around the Java type system: Java allows a
+raw type to be used as if it were any particular instantiation <em>without</em>
+a cast.  Raw types make it easy to introduce run-time type errors into
+programs, so they should be used sparingly, limited to idioms like this one
+where it is clear that they do not pose a threat.
+</p>
+</li>
+<li>We can't use <code>instanceof</code> to find out what type parameters are, because the
+object does not contain that information. If, for example, we create an <code>LList&lt;String&gt;</code>
+object, the object's header word only records that it is an <code>LList</code>. So
+an <code>LList&lt;String&gt;</code> object that is statically typed as an <code>Object</code>
+can be tested to see if it is some kind of <code>LList</code>, but not whether the actual
+type parameter is <code>String</code>:
+<pre class="load">
+<a href="generics/instanceof.java">instanceof.java</a>
+</pre>
+<p>
+The last four lines above illustrate how downcasts interoperate with generics. Code <em>can</em> cast to
+a type with an actual type parameter, but the type parameter is not actually checked at
+run time; Java takes the programmer's word that the type parameter is correct. We can cast to a wildcard
+instantiation, but such a cast is not very useful if we need to use the elements at their actual
+type. Finally, we can cast to the raw type <code>LList</code>. Casting to raw types is unsafe;
+it is essentially the same as casting to <code>LList&lt;?&gt;</code> but less safe.
+</p>
+</li>
+</ol>
+
+<h2>Accessing type operations</h2>
+
+<p>
+What if we want to use methods of T in a generic context where T is a formal parameter? There
+is more than one way to do this, but in Java the most powerful approach is to provide a
+separate <em>model object</em> that knows how to perform the operations that are needed. For example, suppose
+we want to compare objects of type T using the <code>compareTo</code> method. We declare a
+generic interface <code>Comparator&lt;T&gt;</code>:
+</p>
+<pre class="load">
+<a href="generics/Comparator.java">Comparator.java</a>
+</pre>
+<p>
+Now, a generic method for sorting an array takes an extra comparator parameter:
+</p>
+<pre class="load">
+<a href="generics/comparator_sort.java">comparator_sort.java</a>
+</pre>
+<p>
+A class can then implement the comparator interface and be used to make the right comparator
+operation available to the generic code.
+</p>
+<pre class="load">
+<a href="generics/comparator_impl.java">comparator_sort.java</a>
+</pre>
+<p>
+Notice that here we are using <tt>String</tt>'s own <tt>compareTo</tt>
+operation as a model for the comparator, but we don't have to. For example, we
+could have used the <tt>compareToIgnoreCase</tt> method to sort strings while
+ignoring the difference between upper and lower case. It turns out that we can
+also use Java 8's new <b>lambda expressions</b> to implement the interface even more
+compactly. Here is how we would sort the array using a lambda expression while
+also ignoring case:
+</p>
+<pre>
+sort(a, (x,y) -&gt; x.compareToIgnoreCase(y));
+</pre>
+<p class=cont>
+The lambda expression <tt>(x,y) -&gt; x.compareToIgnoreCase(y)</tt> is actually
+just a very convenient syntactic sugar for declaring a class like the one above
+and instantiating it with <code>new</code>.
+</p>
+<p>
+Generic classes may need to access parameter type operations too. The typical
+approach is to accept the model object in constructors, then to
+store it in an instance variable for later use by other methods:
+</p>
+<pre class="load">
+<a href="generics/SortedList.java">
+SortedList.java
+</a>
+</pre>

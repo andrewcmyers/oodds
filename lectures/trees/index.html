@@ -1,0 +1,417 @@
+<h1>Trees</h1>
+<p>
+Trees are a very useful class of data structures. Like (singly-)linked lists, trees
+are <b>acyclic</b> graphs of node objects in which each node may have some
+attached information. Whereas linked list nodes have zero or one successor
+nodes, tree nodes may have more.
+Having multiple successor nodes (called
+<b>children</b>) makes trees more versatile as a way to represent information
+and often more efficient as a way to find information within the data
+structure.
+</p>
+<p>
+Like lists, trees are recursive data structures. A non-empty tree has a single <b>root node</b> that
+is the starting point for searching in the tree. All nodes in the tree are
+reachable from the root by following a path of edges.
+All nodes except the root have exactly one predecessor node, called its
+<b>parent</b>. The root is the only node with no parent.</p>
+
+<p>In computer science, it is customary to draw trees growing downward:
+</p>
+<div class="figure">
+<img src="trees/tree-pics.png" alt="trees" />
+</div>
+<p>
+Because a tree is a recursive data structure, each node in the tree is
+the root of a <b>subtree</b>. For example, in the following tree, the node G has
+two children B and H, each of which is the root of a subtree. This tree is
+a <b>binary</b> tree in which each node has up to two children. We say that
+a binary tree has a <b>branching factor</b> of 2. The children of a node are usually
+ordered from left to right, so B is the left child of G and root of the left
+subtree of G, and H is the right child of G and root of the right subtree of G.
+A node with no children is called a <b>leaf</b>.
+</p>
+<div class="figure">
+<img src="trees/tree_anatomy.png" alt="tree anatomy" />
+</div>
+<p>
+Each node in a tree has a <b>height</b> and a <b>depth</b>. The <b>depth</b> of a node
+is the length of the (unique) path from the root down to that node. The length of a
+path is the number of edges in the path. Thus the depth of the root is always 0.
+The <b>height</b> of a node is the length of the longest path from that node to
+a leaf below it. The height of the tree is the height of its root, which is the same
+as the depth of its deepest leaf.
+</p>
+<p>
+We can represent a binary tree using a class with instance variables for
+the left and right children:
+</p>
+<pre class="load">
+<a href="trees/BinaryNode.java">BinaryNode</a>
+</pre>
+<p>For trees with a larger branching factor, the children can be stored in another
+data structure such as an array or linked list:
+</p>
+<pre class="load">
+<a href="trees/NAry.java">NAry</a>
+</pre>
+<p>
+Analogously to doubly-linked lists, tree nodes in some tree data structures
+maintain a pointer to their parent node. A parent pointer can be
+useful for walking upward in a tree, though it takes up extra memory and
+creates additional maintenance requirements.
+</p>
+<h2>Why trees?</h2>
+<p>There are two main reasons why tree data structures are important:</p>
+<ol>
+<li><p>Some information has a natural tree-like structure, so storing it
+in trees makes sense. Examples of such information include parse trees of expressions,
+inheritance and subtyping hierarchies, game search trees, and decision trees.</p></li>
+<li><p>Trees make
+it possible to find information within the data structure relatively quickly.
+If a significant fraction of the nodes have more than one child, it can be
+arranged that all nodes are fairly close to the root. For simplicity, let's
+think about a <b>complete binary tree of height h</b> in which all leaves are at equal depth <code>h</code> and all non-leaves have exactly two children. In a complete binary tree of depth h, there are 1 + 2
++ 4 + ･･･ + 2<sup>h</sup> = 2<sup>h+1</sup> &minus; 1 nodes. Calling this number
+of nodes n, we have h = log(n+1)-1, so h is O(log n). (Here log x is the
+base 2 logarithm of x). Thus, if we are looking for information in a complete binary
+tree, it can be reached along a path whose length is logarithmic in the total
+information stored in the tree.
+</p>
+<p>For large n, logarithmic time is a big speedup over the linear-time
+performance offered by data structures like linked lists and arrays. For example,
+log 1,000,000 is approximately 20, a speedup of around 50,000, and log 1,000,000,000 is about
+30, a speedup of more than 30,000,000.
+</p>
+</li>
+</ol>
+<h2>Binary search trees</h2>
+<p>
+Of course, the preceding analysis relies on us knowing which path to take through the
+tree to find information. This can be arranged by organizing the tree as a
+<b>binary search tree</b>. Assume that the data stored in the nodes can be ordered
+according to some ordering relation. A binary search tree is a binary tree that
+satisfies the following data structure invariant:</p>
+<table>
+<th>For each node n in the tree, all data elements stored in n's left subtree
+are less than the element stored at n, and all elements stored in n's right
+subtree are greater than the element stored at n.</th>
+</table>
+<p>Pictorially, we can visualize the tree relative to a given node as follows:
+</p>
+<center>
+<img src="trees/bst-invariant.png" alt="binary search tree invariant" />
+</center>
+<p>
+We can express this data structure invariant as a class invariant:
+</p>
+<pre class="load">
+<a href="trees/BST.java">BST</a>
+</pre>
+<p class="cont">
+Since the invariant is defined on a recursive type, it applies recursively
+throughout the tree, ensuring that data structure invariant holds for every node.</p>
+<p>
+For the invariant to make sense, we must be able to
+compare two elements to see which is greater (in some ordering).
+One way to provide such an ordering is to require the parameter
+type <code>T</code> to extend the interface <code>Comparable<T></code>:
+<pre class="load">
+<a href="trees/comparable.java">BST</a>
+</pre>
+Here, the ordering is specified by the operation <code>compareTo()</code>. To
+ensure that the type <code>T</code> has such an operation, we specify
+in the class declaration that <code>T extends Comparable&lt;T&gt;</code>,
+where <code>Comparable&lt;T&gt;</code> is the generic interface shown above.
+The keyword <code>extends</code> signifies that <code>T</code>
+is a <em>subtype</em> of <code>Comparable&lt;T&gt;</code>. Thus
+<code>T</code> can be a class that implements the interface.
+The compiler will prevent us from instantiating the class <code>BinaryNode</code>
+on any type T that is not a declared subtype of <code>Comparable&lt;T&gt;</code>,
+therefore the code of <code>BinaryNode</code> can assume that <code>T</code>
+has the <code>compareTo()</code> method.
+</p>
+<p>
+A more flexible way to define the ordering is to provide it through a
+<b>comparator object</b> that implements the Comparator interface:
+<pre class="load">
+<a href="trees/Comparator.java">BST</a>
+</pre>
+<p>
+The comparator approach has slightly higher storage requirements, since the
+comparator must be remembered, but its advantage is that it allows the binary
+serach tree to be used with <em>any</em> type for which a reasonable comparison
+operation can be defined, not just with those types <code>T</code> that happen to declare that
+they extend <code>Comparable&lt;T&gt;</code>.  This looser coupling can be helpful when
+you don't have control over classes that you would like to put into a tree.
+</p>
+
+<h3>Searching in a binary search tree</h3>
+<p>
+Consider what happens when we try to find a path down through the tree looking for an
+arbitrary element x. We compare x to the root data value. If x is equal to the data value,
+then we've already found it. If x is less than the data value and it's in the tree, it
+<em>must</em> be in the left subtree, so we can walk down to the left subtree and look for
+the element there. Conversely, if x is greater than the data value and it's in the tree, it
+must by in the right subtree, so we should look for it there. In either case,
+if the subtree where x must be is empty (null), the element must not be in the tree. This
+algorithm can be expressed compactly as a (tail-)recursive method on <code>BinaryNode</code>:
+</p>
+<pre class="load">
+<a href="trees/contains.java">BST</a>
+</pre>
+<p>
+We've used Java's &ldquo;ternary expression&rdquo; here to make the code
+more compact (and to show off another coding idiom!) The expression
+<code><i>b</i> ? <i>e</i><sub>1</sub> : <i>e</i><sub>2</sub></code> is a
+<b>conditional expression</b> whose value is the result of either
+<i>e</i><sub>1</sub> or <i>e</i><sub>2</sub>, depending on whether the boolean
+expression <i>b</i> evaluates to <code>true</code> or <code>false</code>.</p>
+<p>
+Since the method is tail-recursive, we can also write it as a loop. Here is a
+version where the root of the tree is passed in explicitly as a parameter
+<code>n</code>:
+</p>
+<pre class="load">
+<a href="trees/contains-loop.java">contains-loop</a>
+</pre>
+<h3>Adding an element to a binary search tree</h3>
+<p>
+To add an element so we can find it later, it has to be added along
+the search path that will be used. To add an element, we first search for it.
+If found, it need not be added; if not found,
+it is added as a child of the leaf node reached along the search path.
+Again, this can be written easily as a tail-recursive method:
+</p>
+<pre class="load">
+<a href="trees/add.java">add</a>
+</pre>
+<p>
+To see how this algorithm works, consider adding the element 3 to the tree
+shown with the black arrows in the following diagram. We start at the root (2)
+and go to the right (5) because 3 &gt; 2. In the recursive call we then go to
+the left (3 &lt; 5) to node 4. Since 3 &lt; 4, we try to go to the left but
+observe <code>left == null</code>, and therefore create a left child containing 3,
+shown by the gray arrow.
+</p>
+<div class="figure">
+<img src="trees/add-diagram.png" alt="insertion into binary search tree" />
+</div>
+
+<h3>Using trees to implement maps</h3>
+
+<p>
+A map abstraction lets us associate values with keys and look up the value
+corresponding to a given key. This can be implemented storing both the keys
+and their associated values in the nodes and ordering the nodes in the tree
+by the keys. When the key is found, so is the associated value.
+</p>
+<h3>Supporting duplicate elements</h3>
+<p>
+For some applications, it may be useful to allow duplicate elements.
+To allow equal elements to be stored in the same tree, we need to relax the
+BST invariant slightly. Given a node containing value x, we must know whether
+to go left or right to find the other occurrences of x. To build a tree
+where we go left, we relax the BST invariant so that the left subtree contains
+elements less than <em>or equal</em> to x, whereas the right subtree contains
+elements strictly greater than x.
+</p>
+<h3>N-ary search trees</h3>
+<p>
+It is possible to define search trees with more than two children per node. The
+higher branching factor means paths through the tree are shorter, but considerably
+complicates all of the algorithms involved. B-trees are an example of an N-ary
+search tree structure. In an N-ary search tree, each node contains up to N-1 elements
+e<sub>1</sub>,...,e<sub>N-1</sub>
+and has up to N children c<sub>0</sub>,...,c<sub>N-1</sub> arranged so that the subtrees of the children contain only
+elements between successive elements at the node. If a node has n children, the node
+contains n-1 elements obeying the following invariant:
+</p>
+<div class="figure">
+c<sub>0</sub> &lt; e<sub>1</sub> &lt; c<sub>1</sub> &lt; e<sub>2</sub> &lt; c<sub>2</sub> &lt; e<sub>3</sub> &lt; ･･･ &lt; e<sub>n-1</sub> &lt; c<sub>n-1</sub>
+</div>
+<p>
+To search for a given element, we do a binary search on the elements e<sub>i</sub>. If it is not
+found, the invariant indicates the appropriate child subtree to search.
+</p>
+<h3>Parent pointers</h3>
+<p>
+So far we have only had pointers going downward in the tree. It is sometimes
+handy to have pointers going from nodes to their parents, much as nodes in a
+doubly linked list contain pointers to their predecessor nodes. Parent pointers
+can simplify some algorithms, but they do take up space and require enforcing
+additional invariants: in particular, that the parent of the root node is null
+and that for any node <code>n</code>, the parents of its children (if any) are equal to <code>n</code>.
+</p>
+<h3>Removing elements from a binary search tree</h3>
+<p>
+Removing elements from a tree is generally more complicated than adding them, because the
+elements to be removed are not necessarily leaves. The algorithm starts by first finding the
+node containing the value x to be removed and its parent node p.
+There are three cases to consider:
+</p>
+<ol>
+<li><em>Node x is a leaf.</em>
+<p>In this case, we <b>prune</b> the node x from the tree by setting the pointer to it from p to <code>null</code>. The other subtree of p (shown as a white triangle, but it may be empty) is unchanged.</p>
+<div class="figure">
+<img src="trees/delete-leaf.png" alt="BST deletion from leaf" />
+</div>
+</li>
+<li><em>Node x has one child.</em>
+<p>We <b>splice out</b> node x from the tree by redirecting the pointer from p
+to x to now point to the single child of x. Since the BST invariant guarantees
+that A &lt; x &lt; p &lt; B, this operation preserves the invariant.
+</p>
+<div class="figure">
+<img src="trees/delete-one-child.png" alt="BST deletion with one child" />
+</div>
+</li>
+<li><em>Node x has two children.</em>
+<p>In this case it's not as easy to remove node x. Instead, we <b>replace</b> the
+data in the node with the data from either the immediate next or the immediate
+previous element in the tree. Let's take the immediate next; call it x'.
+Since x' is the immediately next element, it must occur in the right subtree, and
+its node cannot possibly have a left child.
+Therefore, we either <em>prune</em> x' (if it is a leaf) or
+<em>splice it out</em> (if it is not), and then overwrite the data in node x with
+the data from node x'.
+</p>
+<div class="figure">
+<img src="trees/delete-two-children.png" alt="BST deletion with two children" />
+</div>
+<p>
+To find x' from x, we walk one step down the tree to the
+right, then walk down to the left as far as possible. The last node we
+encounter is x'. If x' is a leaf, we can simply remove it. If x' has a right child y,
+we splice x' out by making y a new child of the parent p of x'. The node y becomes the
+new left child of p unless p is x, in which case y becomes the new right child of x.
+The BST invariant is maintained!
+</p>
+</li>
+</ol>
+
+<h3>Asymptotic performance of binary search trees</h3>
+<p>
+The time required to search for elements in a search tree is in the worst case
+proportional to the longest path from the root of the tree to a leaf, or the
+height of the tree, h. Therefore, tree operations take O(h) time.
+</p>
+<p>
+With the simple binary search tree implementation we've seen so far,
+the worst performance is seen when elements are inserted in order, e.g.:
+<code>add(1)</code>, <code>add(2)</code>, <code>add(3)</code>, ..., <code>add(n)</code>. The resulting binary tree
+will only have right children and will be functionally identical to a linked list!
+</p>
+<div class="figure">
+<img src="trees/list-tree.png" alt="unbalanced tree" />
+</div>
+<p>
+For this tree, h is O(n), and tree operations are O(n). Our goal is logarithmic performance,
+which requires h to be O(log n). A tree in which h is O(log n) is said to be <b>balanced</b>.
+Many techniques exist for obtaining balanced trees. 
+</p>
+<p>
+One simple-minded way to balance trees is to insert elements into the tree in a
+random order. This turns out to result in a tree whose expected height is O(log
+n) (Proving this is outside the scope of this course,
+but see [<a href="#references">1, Chapter 12.4</a>] or [<a href="#references">2, Lecture 13</a>] for a proof).
+However, we need to know how to shuffle a collection of elements into a
+random order, which involves a small digression:
+</p>
+<div class="digression">
+<h3>How to place a sequence of elements in random order</h3>
+<p>
+The <a href="http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">
+Fisher–Yates algorithm</a> (developed in 1938) places N elements into random
+order. Recall that there are N! possible permutations of N elements; a
+perfectly random shuffle should have equal probability 1/N! of producing any
+given permutation. The algorithm works as follows. Assume we have the N elements
+in an array. We iterate from N&ndash;1 down to 0 deciding which element to place into
+a given array index. In each array index we randomly choose one of the elements
+in the array indices up to that point and swap it with the current array index.
+</p>
+<pre class="load">
+<a href="trees/fisher-yates.java">fisher-yates.java</a>
+</pre>
+<p>
+The first iteration generates one of N possible values, the second iteration one of N&ndash;1 possible
+values, and so on until the final iteration generates one of two possible values. Therefore, the
+total number of possible ways to execute is N × (N&ndash;1) × (N&ndash;2) × ･･･ × 2 = N!.
+Furthermore, given a
+particular permutation, there is exactly one way for the algorithm to produce it. Therefore,
+all permutations are produced with equal probability, assuming the random number generator is
+truly random.
+</p>
+</div>
+
+<h2>Traversing trees</h2>
+<p>
+Given a tree containing some number of elements, it is sometimes useful to
+<b>traverse</b> the tree, visiting each element and doing something with it,
+such as printing it out or adding it to another collection.
+</p>
+<p>The most common traversal strategy is <b>in-order traversal</b>, in which
+each element is visited between the elements of the subtrees. In-order traverse
+can be expressed easily using recursion:
+</p>
+<pre class="load">
+<a href="trees/inorder-traverse.java">inorder</a>
+</pre>
+<p>(Here the <code>visit</code> method is just some function that does something with the data.)
+For example, consider using this algorithm on the following search tree:</p>
+<div class="figure">
+<img src="trees/traverse-tree.png" alt="traversal example" />
+</div>
+<p>
+The elements will be visited in the order 1, 3, 5, 10, 11, 17.
+</p>
+<p>
+The traversal is not tail-recursive and therefore cannot be easily converted into a loop,
+but this is not a problem unless the tree is very deep. If iterative traversal is required, it
+can be done if nodes contain parent pointers, or with a stack to remember the nodes in the path
+from the root down to the node currently being visited.
+</p>
+<p>
+Note that an in-order traversal of a binary search tree visits the elements in sorted order.
+This observation gives us an asymptotically efficient sorting
+algorithm. Given a collection of elements to sort, we first shuffle them
+into a random order, then add them one at a time into a BST, taking O(hn) time.
+Because the elements are in random order, the expected height h is O(log n),
+so adding all the elements takes O(n log n) time.
+Then we can use an in-order traversal, taking O(n) time, to extract all the
+elements in their proper order. While no general sorting algorithm is more efficient
+asymptotically than O(n log n), we will later see some other sorting algorithms
+that are just as asymptotically efficient but have lower constant factors.
+</p>
+<p> Since it is easy to visit elements in sorted order, search trees also
+support efficient <b>range queries</b>. Given two elements, we can find all
+elements between them, in sorted order, by doing modifying the in-order
+traversal to skip parts of the tree that are outside the desired range. If a
+node's element is above the range, then its right subtree can be skipped
+entirely; symmetrically, if the element is below the range, its left subtree
+can be skipped.
+</p>
+<p>
+Other traversals than in-order can be done.
+By visiting a node <i>before</i> visiting either of its children,
+we obtain <b>preorder</b> traversal. By visiting a node <i>after</i> visiting both of its children,
+we obtain <b>postorder</b> traversal.
+</p>
+<pre class="load">
+<a href="trees/pre-order-traverse.java">pre</a>
+</pre>
+<pre class="load">
+<a href="trees/postorder-traverse.java">post</a>
+</pre>
+<p>
+For example, a preorder traversal of the tree above would visit the nodes in the order 5, 3, 1, 11, 10, 17, and a postorder traversal would visit the nodes in the order 1, 3, 10, 17, 11, 5.
+</p>
+<p>
+Postorder traversals have the useful property that a node is visited only after
+all of its descendants; conversely, a preorder traversal visits a node before
+all of its descendants.
+</p>
+<a name="references"></a>
+<h3>References</h3>
+[1] Cormen, Leiserson, Rivest, Stein. <a href="http://www.amazon.com/Introduction-algorithms-Edition-Thomas-Cormen/dp/0262033844"><cite>Introduction to Algorithms.</cite></a><br>
+[2] Kozen. <a href="https://www.amazon.com/Analysis-Algorithms-Monographs-Computer-Science/dp/0387976876"><cite>Design and Analysis of Algorithms.</cite></a>
