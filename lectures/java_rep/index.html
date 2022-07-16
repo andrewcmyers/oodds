@@ -28,7 +28,7 @@ we'll call a set of eight bytes a <b>double word</b>.
 </p>
 
 <div class="figure">
-<img src="02java_rep/memory.png" alt="memory layout" />
+<img src="memory.png" alt="memory layout" />
 </div>
 
 <h2>Integral types (<code>int</code>, <code>short</code>, <code>byte</code>) and signed (two's-complement) representations.</h2>
@@ -60,7 +60,7 @@ need a way to represent the sign of a number.
 </p>
 
 <div class="figure">
-<img src="02java_rep/integral.png" alt="integral types" />
+<img src="integral.png" alt="integral types" />
 </div>
     <ol>
 	<li>Signed: <code>int</code> (32 bits), <code>short</code> (16 bits), <code>long</code> (64 bits), <code>byte</code> (8 bits)</li>
@@ -386,14 +386,14 @@ types in Java. The type <code>float</code> is a <b>single-precision</b> floating
 the type <code>double</code> is a <b>double-precision</b> floating point number taking up two words.</p>
 <p>It is possible to see how floating point numbers are represented in Java by using the methods <code>Float.floatToRawIntBits</code>
 and <code>Double.doubleToRawLongBits(double)</code>, which return an <code>int</code> and a <code>long</code> containing the
-same bits as the respective <code>float</code> and <code>double</code>. <a href="02java_rep/src/dumpFloat.java">Here</a> is some Java code that uses these
+same bits as the respective <code>float</code> and <code>double</code>. <a href="src/dumpFloat.java">Here</a> is some Java code that uses these
 methods to explore how floating point numbers are represented.</p>
 
 <p>
 According to the IEEE 754 specification, which is almost universally followed at this point,
 A single-precision floating point number is represented as shown:</p>
 
-<div class="figure"><img src="02java_rep/float.png" alt="floating-point representation" /></div>
+<div class="figure"><img src="float.png" alt="floating-point representation" /></div>
 
 <p>A floating point number is represented using three components, the sign, the exponent, and the mantissa,
 respectively taking up 1, 8, and 23 bits of the 32-bit word.
@@ -448,7 +448,7 @@ as representing numbers to about 7 digits of precision. However, errors
 tend to accumulate with each computation, so a long computation often has
 fewer digits of precision. For example, if you subtract 1000000.0 from
 1000000.1, the result will be 0.1 but with only 1 digit of precision.
-In fact, as the <a href="02java_rep/src/dumpFloat.java">attached code</a> showed,
+In fact, as the <a href="src/dumpFloat.java">attached code</a> showed,
 the result is reported to be 0.125. Oops!</p>
 
 <p>The other thing to watch out for is that the order of operations may affect

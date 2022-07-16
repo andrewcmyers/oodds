@@ -71,7 +71,6 @@ var lectures = [
     'undecidability'
 ];
 
-var recpat = /^[0-9][0-9]/;
 var locstr = location.toString();
 function load_code_examples() {
     var nodenum = 0;
@@ -170,9 +169,8 @@ function add_to_toc(node, name) {
 
 // Append the content found at URL url into a new content div at the end of the
 // children of HTML element id, and add it to the table of contents (toc) under
-// the name 'name'. If 'recitation' is true, fix the TOC link so it points to
-// the recitation hierarchy. After all this is done, invoke cont().
-function append_content(id, url, name, recitation, cont) {
+// the name 'name'. After all this is done, invoke cont().
+function append_content(id, url, name, cont) {
     with (EZDom) {
       let node = document.getElementById(id);
       read_from_url(url,
@@ -180,9 +178,6 @@ function append_content(id, url, name, recitation, cont) {
             var content = div({className: "content"});
             content.innerHTML = responseText;
             node.appendChild(content);
-            if (recitation) {
-                fix_recitation_links(content);
-            }
             add_to_toc(content, name);
             var undefined;
             if (cont != undefined) cont();
@@ -198,14 +193,8 @@ function append_content(id, url, name, recitation, cont) {
 // Load all lectures starting from index i
 function load_from_i(i) {
     var url;
-    var recitation = false;
-    if (lectures[i].match(recpat)) {
-        recitation = true;
-        url = "recitations/" + lectures[i] + "/index.html";
-    } else {
-        url = "lectures/" + lectures[i] + "/index.html";
-    }
-    append_content("content", url, lectures[i], recitation,
+    url = "lectures/" + lectures[i] + "/index.html";
+    append_content("content", url, lectures[i],
         function() {
             content_node.appendChild(EZDom.div({className: "pagebreak"},
                                      EZDom.hr({className: "endChapter"})));
