@@ -3,7 +3,7 @@
 function read_from_url(url, cont, err, mimetype) {
     var undefined;
     if (mimetype == undefined) mimetype = 'text/xml';
-    var req;
+    let req;
     if (window.XMLHttpRequest) { // Mozilla, Safari, ...
         req = new XMLHttpRequest();
         if (req.overrideMimeType)
@@ -21,7 +21,7 @@ function read_from_url(url, cont, err, mimetype) {
         }
     }
     if (!url.match(/^http:/) && !url.match(/^https:/)) {
-        var prefix = location.href;
+        let prefix = location.href;
         url = prefix.replace(/\/[^\/]*$/, '/') + url;
     }
     req.open("GET", url, true);
@@ -29,9 +29,9 @@ function read_from_url(url, cont, err, mimetype) {
 }
 
 function post_to_url(url, params, cont, err, mimetype) {
-    var undefined;
+    let undefined;
     if (mimetype == undefined) mimetype = 'text/xml';
-    var req;
+    let req;
     if (window.XMLHttpRequest) { // Mozilla, Safari, ...
         req = new XMLHttpRequest();
         if (req.overrideMimeType)
@@ -49,11 +49,11 @@ function post_to_url(url, params, cont, err, mimetype) {
         }
     }
     if (!url.match(/^http:/) && !url.match(/^https:/)) {
-        var prefix = location.href;
+        let prefix = location.href;
         url = prefix.replace(/\/[^\/]*$/, '/') + url;
     }
 
-    var data = new FormData();
+    let data = new FormData();
     for (var prop in params) {
 	data.append(prop, params[prop]);
     }
@@ -66,12 +66,12 @@ function post_to_url(url, params, cont, err, mimetype) {
 // Once successful, apply the optionally provided function "cont()".
 function fetch_content_node(node, url, cont, mimetype) {
     read_from_url(url,
-        function(responseText) {
+        responseText => {
             node.innerHTML = responseText;
-            var undefined;
+            let undefined;
             if (cont != undefined) cont();
         },
-        function(errmsg) {
+        errmsg => {
             node.innerHTML = errmsg;
         }, mimetype);
 }
@@ -79,6 +79,6 @@ function fetch_content_node(node, url, cont, mimetype) {
 // fetch the contents from the URL "url" into the DOM node with id attribute
 // "id".  Once successful, apply the optionally provided function "cont()".
 function fetch_content(id, url, cont, mimetype) {
-    var node = document.getElementById(id);
+    const node = document.getElementById(id);
     fetch_content_node(node, url, cont, mimetype);
 }

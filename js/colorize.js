@@ -111,15 +111,15 @@ function colorize_node(n) {
     n.innerHTML = colorize_text(t, false);
 }
 
-// Apply coloring to all text inside <pre> or <code> elements in the document.
-function colorize_all() {
-    let codes = document.getElementsByTagName('code');
-    for (let i=0; i < codes.length; i++) {
-	colorize_node(codes[i]);
+// Apply coloring to all text inside <pre> or <code> elements in the specified node,
+// or in the entire document if no argument is provided.
+function colorize_all(node) {
+    if (!node) node = document
+    for (const code of node.getElementsByTagName('code')) {
+	colorize_node(code)
     }
-    let pres = document.getElementsByTagName('pre');
-    for (let i = 0; i < pres.length; i++) {
-	colorize_node(pres[i]);
+    for (const pre of node.getElementsByTagName('pre')) {
+	colorize_node(pre)
     }
 }
 

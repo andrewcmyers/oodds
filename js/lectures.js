@@ -1,12 +1,13 @@
 var base_url = basename(window.location.origin + window.location.pathname)
 
 function load_lecture() {
-    const idpat = /\?id=([_a-z]*)/;
-    const locstr = location.toString();
-    const a = locstr.match(idpat);
-    if (a) {
-        url = base_url + "/lectures/" + a[1] + "/index.html";
-        fetch_content("content", url, () => localizeContent(url), "text/html");
+    const idpat = /\?id=([_a-z]*)/,
+          locstr = location.toString(),
+          match = locstr.match(idpat)
+    if (match) {
+        url = base_url + "/lectures/" + match[1] + "/index.html"
+        const content = elem("content")
+        fetch_content_node(content, url, () => localizeContent(content, url), "text/html")
     }
 }
 
@@ -15,50 +16,51 @@ function basename(url) {
 }
 var base_url = basename(window.location.origin + window.location.pathname)
 
-
 function relativize(url, lecture_base, base) {
     url = url.replace(base, lecture_base)
     return url
 }
 
-function localizeContent(lecture_url) {
+function localizeContent(node, lecture_url) {
     const lecture_base = basename(lecture_url)
-    let nodenum = 0;
-    const pre_nodes = document.getElementsByTagName('pre');
+    let nodenum = 0
+    const pre_nodes = node.getElementsByTagName('pre')
     for (const n of pre_nodes) {
-        if (n.className != "load") continue;
-        const id = n.id;
-        const kids = n.childNodes;
-        const link = kids[0];
-        if (link.tagName != 'A') continue;
+        if (n.className != "load") continue
+        const id = n.id,
+              kids = n.childNodes,
+              link = kids[0]
+        if (link.tagName != 'A') continue
         if (id == null || id == "") {
-            n.id = "id_pre_node_" + (++nodenum);
+            n.id = "id_pre_node_" + (++nodenum)
         }
-        n.removeChild(link);
-        fetch_code(n.id, relativize(link.href, lecture_base, base_url));
+        n.removeChild(link)
+        fetch_code(n.id, relativize(link.href, lecture_base, base_url))
     }
-    const img_nodes = document.getElementsByTagName('img')
-    for (const img of img_nodes) {
+    for (const img of node.getElementsByTagName('img')) {
         img.src = relativize(img.src, lecture_base, base_url)
     }
-    colorize_all();
-    italicize_document_math();
-    for (const script of document.getElementsByClassName('graphics')) {
+    for (const anchor of node.getElementsByTagName('a')) {
+        anchor.href = relativize(anchor.href, lecture_base, base_url)
+    }
+    colorize_all(node)
+    italicize_document_math()
+    for (const script of node.getElementsByClassName('graphics')) {
       try {
-        eval(script.textContent);
+        eval(script.textContent)
       } catch (err) {
-        console.error('Error setting up web page: ' + err);
+        console.error('Error setting up web page: ' + lecture_url)
       }
     }
     MathJax.typeset()
 }
 
 function elem(n) {
-  if (n == "") alert("empty id?!");
-  return document.getElementById(n);
+  if (n == "") alert("empty id?!")
+  return document.getElementById(n)
 }
 
 function clear(node) {
-  if (node == undefined) return;
-  while (node.firstChild) node.removeChild(node.firstChild);
+  if (node == undefined) return
+  while (node.firstChild) node.removeChild(node.firstChild)
 }
