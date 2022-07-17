@@ -88,7 +88,7 @@ with (procedural_fig) {
 </div>
 
 <div class=figure>
-<canvas style="width: 350px; height: 220px" id="modular-fig"></canvas>
+<canvas style="width: 350px; height: 230px" id="modular-fig"></canvas>
 <span class=caption>
 Figure 2: Modular programming: access to data is mediated by code; restructuring
     data affects one module
@@ -106,7 +106,7 @@ with (modular_fig) {
         pin(r2.center(), d.center())
         align("abut", "center", ...grp.children())
         pin(grp.center(), r.center())
-        return r
+        return r.expand(5)
     }
 
     setFontName("Copperplate")
@@ -221,7 +221,7 @@ following, using a class <code>Rational</code>:
 </p>
 
 <pre class="load">
-<a href="encapsulation/src/Main.java">Main.java</a>
+<a href="src/Main.java">Main.java</a>
 </pre>
 
 <p>
@@ -231,10 +231,10 @@ download them).
 
 <div class="figure">
 <pre class="load">
-<a href="encapsulation/src/Rational.java">Rational.java</a>
+<a href="src/Rational.java">Rational.java</a>
 </pre>
-<span class="caption">
-Example: Rational numbers
+<span class=caption>
+  Example: Rational numbers
 </span>
 </div>
 
@@ -470,7 +470,7 @@ arrive at an implementation that uses assertions as follows:
 
 <div class="figure">
 <pre class="load">
-<a href="encapsulation/src/withAssertions/Rational.java">withAssertions.Rational</a>
+<a href="src/withAssertions/Rational.java">withAssertions.Rational</a>
 </pre>
 <span class="caption">
 Example: class <code>Rational</code> with assertions added to check class invariants and preconditions

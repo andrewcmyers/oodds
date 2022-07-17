@@ -467,9 +467,9 @@ is 23/3.32 = 6.93.  You can therefore think of floating point numbers
 as representing numbers to about 7 digits of precision. However, errors
 tend to accumulate with each computation, so a long computation often has
 fewer digits of precision. For example, if you subtract 1000000.0 from
-1000000.1, the result will be 0.1 but with only 1 digit of precision.
-In fact, as the <a href="src/dumpFloat.java">attached code</a> showed,
-the result is reported to be 0.125. Oops!</p>
+1000000.1, the true result will be 0.1, but it is computed with only 1 digit of precision.
+In fact, as the <a href="src/dumpFloat.java">attached code</a> shows,
+the result is reported to be 0.125, a relative error of 25%. Oops!</p>
 
 <p>The other thing to watch out for is that the order of operations may affect
 what you compute, because rounding gets done at different places. Just because two
@@ -480,7 +480,7 @@ corresponding to the largest expected round-off error.
 </p>
 
 <p>The largest number representable using <code>float</code> is
-Float.MAX_VALUE, which is about 3.0·10<sup>38</sup>. And the smallest positive
+<code>Float.MAX_VALUE</code>, which is about 3.0·10<sup>38</sup>. And the smallest positive
 number representable with full precision is about 10<sup>&minus;38</sup>. It is
 possible to represent smaller numbers down to about 10<sup>&minus;45</sup>
 using the <b>denormalized</b> representation in which the exponent is

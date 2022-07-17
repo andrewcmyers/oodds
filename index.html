@@ -134,13 +134,11 @@ function append_content(id, url, name, cont) {
 
 // Load all lectures starting from index i
 function load_from_i(i) {
-    console.log("Loading " + i)
     var url = "lectures/" + lectures[i] + "/index.html";
     append_content("content", url, lectures[i],
         (div) => {
             content_node.appendChild(EZDom.div({className: "pagebreak"},
                                      EZDom.hr({className: "endChapter"})));
-            console.log("localizing " + url)
             i++
             if (i < lectures.length) load_from_i(i);
             localizeContent(div, url)

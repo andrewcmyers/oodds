@@ -36,13 +36,13 @@ on the module they are communicating with. Assuming that the values communicated
 T, the communication we want can be depicted as follows:
 </p>
 
-<div class="figure"><img src="patterns/atob.png"/></div>
+<div class="figure"><img src="atob.png"/></div>
 
 <p>The Iterator design pattern is one way to solve this programming problem. Module A
 constructs objects that provide the ability for the consumer to &ldquo;pull&rdquo;
 values from the producer. These object provide an interface like the following:
 <pre class=load>
-<a href="patterns/Iterator.java">Iterator.java</a>
+<a href="Iterator.java">Iterator.java</a>
 </pre>
 <p>
 This is a polling-style interface, in which the consumer can ask any
@@ -68,13 +68,13 @@ for (T x : c) { ... body ... }
 </pre>
 <p>is syntactic sugar for</p>
 <pre class=load>
-<a href="patterns/foreach.java">foreach.java</a>
+<a href="foreach.java">foreach.java</a>
 </pre>
 
 <p>To use this syntactic sugar, it is necessary that <code>c</code> either be
 an array or implement the interface <code>Iterable&lt;T&gt;</code>:
 <pre class=load>
-<a href="patterns/Iterable.java">Iterable.java</a>
+<a href="Iterable.java">Iterable.java</a>
 </pre>
 
 <h3>Implementing iterators</h3>
@@ -132,7 +132,7 @@ the loop body are <b>coroutines</b>. For example, with
 generators, an iterator for trees can be implemented very easily using recursion:
 </p>
 <pre class=load>
-<a href="patterns/tree_iterator.java">tree_iterator.java</a>
+<a href="tree_iterator.java">tree_iterator.java</a>
 </pre>
 <p class=cont>
 By contrast, a Java implementation of the same iterator will take at least 50 lines of
@@ -158,13 +158,13 @@ think of the information being pushed as events that the consumer wants to know
 about. This is the idea behind the Observer pattern, which works 
 in the opposite way as the Iterator pattern:
 <div class=figure>
-<img src="patterns/iterator-observer.png"/>
+<img src="iterator-observer.png"/>
 </div>
 <p>
 In the Observer pattern, the consumer provides an object implementing the interface
 <code>Observer&lt;T&gt;</code>:
 <pre class=load>
-<a href="patterns/Observer.java">Observer.java</a>
+<a href="Observer.java">Observer.java</a>
 </pre>
 
 <p>Whenever the producer has a new event <code>x</code> to report to the
@@ -180,7 +180,7 @@ How does the producer know which observers to notify? This is accomplished by
 <b>registering</b> the observer(s) with the producer. The producer implements
 an interface similar to this:
 <pre class=load>
-<a href="patterns/Observable.java">Observable.java</a>
+<a href="Observable.java">Observable.java</a>
 </pre>
 <p>
 When the producer receives a call to <code>registerObserver</code>, it records
@@ -329,7 +329,7 @@ in which an <code>EmployeeBuilder</code> class makes it
 easy to build up an <code>Employee</code> object through a series of cascaded
 method calls.
 </p>
-<pre class=load><a href="patterns/builder.java">builder.java</a></pre>
+<pre class=load><a href="builder.java">builder.java</a></pre>
 <p>
 A builder class is designed to construct objects of some particular type; it may
 choose dynamically which particular class to create based on the arguments it is
@@ -461,12 +461,12 @@ default behavior for the various types, which may be to do nothing or
 to perform some default traversal of child nodes. Subclasses of Visitor
 can then override that behavior if desired.
 </p>
-<pre class="load"><a href="patterns/Visitor.java">Visitor.java</a>
+<pre class="load"><a href="Visitor.java">Visitor.java</a>
 </pre>
 <p>The classes on which visitors operate supply a method <code>accept(v)</code>
 method that invokes the appropriate visitor operation:
 </p>
-<pre class="load"><a href="patterns/Node.java">Node.java</a>
+<pre class="load"><a href="Node.java">Node.java</a>
 </pre>
 <p>
 One variation on the Visitor pattern that is useful for traversing
@@ -579,7 +579,7 @@ systematically organizes the code that implements a state machine. The
 following code suggests how our window example might look in this style.
 </p>
 
-<pre class=load><a href="patterns/window.java">window.java</a></pre>
+<pre class=load><a href="window.java">window.java</a></pre>
 
 <h2>Model-View-Controller</h2>
 <p>
@@ -602,7 +602,7 @@ classes; the <b>view</b>, which provides a graphical view of the model; and the
 <b>controller</b>, which handles user input and translates it into either changes to the view or
 commands to be performed on the model.
 <div class=figure>
-<img src="patterns/mvc-MDD.png"/>
+<img src="mvc-MDD.png"/>
 </div>
 <p>
 The idea is that the view may hold some state, but only state related to how
@@ -619,7 +619,7 @@ observers to be registered on its state; the view is then notified when the
 state changes.
 </p>
 <div class=figure>
-<img src="patterns/mvc-flows.png"/>
+<img src="mvc-flows.png"/>
 </div>
 <p>
 This separation between model, view, and controller will be very important for

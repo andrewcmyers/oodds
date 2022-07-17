@@ -55,6 +55,7 @@ span.subscript {font-size:smaller; vertical-align:sub;}
 .cont {text-indent: 0}
 div.figure .caption, div.floatfigure .caption {
     display: block;
+    color: #644;
     text-align: center;
     margin: 0 auto;
     padding: 0

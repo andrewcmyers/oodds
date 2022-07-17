@@ -23,7 +23,7 @@ to make moves in the game.</p>
 Let's define an interface to the game. We'll call it <code>Puzzle</code>:
 </p>
 <pre class="load">
-<a href="subtyping/Puzzle.java">Puzzle.java</a>
+<a href="Puzzle.java">Puzzle.java</a>
 </pre>
 
 <p>
@@ -40,7 +40,7 @@ how to represent the tiles of the puzzle. One obvious representation is as a two
 array of integers, with 0 representing blank tiles:
 </p>
 <pre class="load">
-<a href="subtyping/APuzzle.java">APuzzle.java</a>
+<a href="APuzzle.java">APuzzle.java</a>
 </pre>
 
 <p>
@@ -64,7 +64,7 @@ interface, in which the tiles are represented as characters in a string:
 </p>
 
 <pre class="load">
-<a href="subtyping/SPuzzle.java">SPuzzle.java</a>
+<a href="SPuzzle.java">SPuzzle.java</a>
 </pre>
 
 <h3>Using objects at type Puzzle</h3>
@@ -77,7 +77,7 @@ that displays a puzzle. That code can be written so it works on objects from
 either implementation:
 </p>
 <pre class="load">
-<a href="subtyping/Display.java">display.java</a>
+<a href="Display.java">display.java</a>
 </pre>
 <p>The client code can use <code>display()</code> on either kind of object, because
 both <code>APuzzle</code> and <code>SPuzzle</code> are implementations of <code>Puzzle</code>.
