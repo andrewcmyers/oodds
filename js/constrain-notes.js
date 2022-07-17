@@ -13,7 +13,7 @@ class CFigure extends Constrain.Figure {
         this.setLineWidth(1)
         this.setFontName("verdana, helvetica, arial, sans-serif")
         this.setFontSize(12)
-        this.setFadeColor("#f0eee4")
+        this.setFadeColor("#eee")
         this.boxw = 80
         this.boxh = 20
 

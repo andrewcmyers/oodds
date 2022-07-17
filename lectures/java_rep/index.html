@@ -378,10 +378,31 @@ offers the functionality of an array of booleans (and more) but has a much more
 compact representation for large arrays.
 </p>
 
+<h2>Garbage collection</h2>
+<p>
+Objects take up space in memory, so if the program allocates enough objects, the computer
+could potentially run out of space to store objects in memory. To help with this problem,
+Java has the feature of <b>garbage collection</b>. Objects that the Java runtime system
+can figure out will never be used again are automatically garbage-collected and their space
+is reclaimed for use by other objects. The runtime may also move objects around in memory
+to create large contiguous chunks of memory.
+</p>
+<p>
+How does the runtime system know which objects will never be used again? In
+general, it can't know that precisely. As a safe approximation, an object is
+considered to be <b>garbage</b> if the running program has no way to ever reach
+the object again by following a chain of pointers.
+</p>
+<p>
+Conversely, a program that unintentionally retains references to useless
+objects can prevent them being reclaimed as garbage.  Usually, programmers do
+not need to worry about this issue, but it can become a real problem in
+long-running programs with complex data structures.
+</p>
 <h2>Floating point representations</h2>
 
-<p>Java supports <b>floating-point</b> numbers that act a lot like real numbers. But it takes an unbounded amount
-of memory to store a real number, so floating-point numbers are only an approximation. There are two floating-point
+<p>Java supports <b>floating-point</b> numbers that act a lot like real numbers. But it would take an unbounded amount
+of memory to store a real number, in general, so floating-point numbers are only an approximation to real numbers. There are two floating-point
 types in Java. The type <code>float</code> is a <b>single-precision</b> floating point number taking up one word, and
 the type <code>double</code> is a <b>double-precision</b> floating point number taking up two words.</p>
 <p>It is possible to see how floating point numbers are represented in Java by using the methods <code>Float.floatToRawIntBits</code>
@@ -391,7 +412,7 @@ methods to explore how floating point numbers are represented.</p>
 
 <p>
 According to the IEEE 754 specification, which is almost universally followed at this point,
-A single-precision floating point number is represented as shown:</p>
+a single-precision floating point number has the following representation:</p>
 
 <div class="figure"><img src="float.png" alt="floating-point representation" /></div>
 
@@ -399,34 +420,33 @@ A single-precision floating point number is represented as shown:</p>
 respectively taking up 1, 8, and 23 bits of the 32-bit word.
 </p>
 <p>
-Given components s (sign), exp (exponent), and m (mantissa), where the exponent is between &minus;126 and 127,
-the floating point number represents the real number
-</p>
-<p class="mathdisplay">
-(&minus;1)<sup>s</sup>·2<sup>exp</sup>·(1.m)
-</p>
-<p>Here, we intepret m as a sequence of binary digits, so &ldquo;1.m&rdquo; represents a binary number that is at least 1 (and equal to 1 in the case where
-m = "000000...") and less than 2. The maximum number that 1.m can represent is "1.11111...", which is a binary representation of a
+Given representation components \(s\) (sign), \(exp\) (exponent), and \(m\) (mantissa), where the exponent \(exp\) is between &minus;126 and 127,
+the following real number is signified:
+\[
+(&minus;1)^s·2^{\mathit{exp}}·(1.m)
+\]
+<p>Here, we intepret m as a sequence of binary digits, so &ldquo;\(1.m\)&rdquo; represents a binary number that is at least 1 (and equal to 1 in the case where
+m = "000000...") and less than 2. The largest number that \(1.m\) can represent is "1.11111...", which is a binary representation of a
 number less than 2 by the small amount 2<sup>&minus;23</sup>.</p>
 <p>
-Thus, if we want to represent the number 1, we choose s=0, exp=0, m=0000... .
+Thus, if we want to represent the number 1, we choose \(s=0\), \(exp=0\), and \(m=0000\dots\)
 To represent numbers outside the interval [1,2), an exponent is needed. To
-represent 2, we use s = 0, exp = 1, m=0000..., since 1·2<sup>1</sup> = 2.
-To represent 3, we choose s=0, exp=1, m=10000..., since
-1.1 in binary represents 3/2, and 3/2·2<sup>1</sup> = 3. And so on.</p>
-<p>The exponent is stored with a &ldquo;bias&rdquo; or offset of 127, so the actual
-bit-level representation of 1.0 has s = 0, bexp = 01111111, m =
-00000000000000000000000, and the whole word contains exactly the bits
-00111111100000000000000000000000.</p>
-<p>Some special exponents follow different rules. If the exponent is &minus;127
+represent 2, we use \(s = 0\), exp = \(1\), \(m=0000\dots\), since \(1·2^1 = 2\).
+To represent 3, we choose \(s=0\), \(exp=1\), \(m=10000\dots\), since
+1.1 in base 2 represents 3/2, and 3/2·2<sup>1</sup> = 3. And so on.</p>
+<p>The exponent is stored with a <b>bias</b> of 127, so the actual
+bit-level representation of the number 1.0 has \(s = 0,\) \(bexp = 01111111\), and
+\(m = 00000000000000000000000\), and the whole word contains exactly the 32 bits
+\(00111111100000000000000000000000\).</p>
+<p>Some special exponents follow different rules. If the exponent is \(&minus;127\)
 (and hence the biased exponent is 0), the represented number is instead:</p>
-<p class="mathdisplay">
-(&minus;1)<sup>s</sup>·2<sup>&minus;126</sup>·(0.m)
-</p>
+\[
+(-1)^s·2^{-126}·(0.m)
+\]
 
 <p>Therefore, a word consisting entirely of 0's represents the        
-floating point number 0.0, since 0.m = 0 in that case.  It is         
-also possible to represent the floating point number &minus;0.0,      
+floating-point number 0.0, since \(0.m = 0\) in that case.  It is         
+also possible to represent the floating point number \(-0.0\),      
 which behaves slightly differently, such as when its reciprocal is    
 computed.</p>                                                         
 
@@ -466,46 +486,20 @@ possible to represent smaller numbers down to about 10<sup>&minus;45</sup>
 using the <b>denormalized</b> representation in which the exponent is
 &minus;127, but in this case the precision of the number is reduced.</p>
 
-<p>Because of the limited precision of single-precision floating point, it's
-usually a good idea to use <code>double</code> for any computations you really
-care about. A double-precision number has 11 exponent bits with a bias of
-1023 and 53 mantissa bits (52 explicitly stored), so about 16 decimal digits
-of precision. The number represented with sign bit <code>s</code>, biased exponent <code>e</code>, and
-mantissa bits <code>b<sub>51</sub>b<sub>50</sub>...b<sub>1</sub>b<sub>0</sub></code> is</p>
+<p>Because single-precision floating point has limited precision, it's
+usually better to use the more precise type <code>double</code> instead.
+A double-precision number has 11 exponent bits with a bias of
+1023 and 53 mantissa bits (52 explicitly stored), so it has about 16 decimal digits
+of precision. The number represented with sign bit \(s\), biased exponent \(\mathit{bexp}\), and
+52 mantissa bits \(m\) is:
 
-<p class="mathdisplay">
-(&minus;1)<sup>s</sup>·2<sup>e-1023</sup>·(1.b<sub>51</sub>b<sub>50</sub>···b<sub>1</sub>b<sub>0</sub>).
-</p>
-
-<p>
-For most applications, that's plenty of precision and range.
-</p>
+\[
+(&minus;1)^s·2^{\mathit{bexp}-1023}·(1.m)
+\]
 
 <p>
-If you're interested in looking at how floats and doubles are represented, the methods
-<code>Double.doubleToLongBits()</code> and <code>Float.floatToIntBits()</code> give
-you the same bits as a <code>long</code> or a <code>int</code>, respectively. Bitwise operators
-like <code>&amp;</code> and <code>&lt;&lt;</code> can then be used to inspect the bits.
+For most applications, that's plenty of precision and range. Neither <code>float</code> nor <code>double</code>
+is actually the same thing as a real number in mathematics, but if you stick to <code>double</code>, you are much
+less likely to get into trouble pretending that it is.
 </p>
 
-<h2>Garbage collection</h2>
-<p>
-Objects take up space in memory, so if the program allocates enough objects, the computer
-could potentially run out of space to store objects in memory. To help with this problem,
-Java has the feature of <b>garbage collection</b>. Objects that the Java runtime system
-can figure out will never be used again are automatically garbage-collected and their space
-is reclaimed for use by other objects. The runtime may also move objects around in memory
-to create large contiguous chunks of memory.
-</p>
-<p>
-How does the runtime system know which objects will never be used again? In
-general, it can't know that precisely. As a safe approximation, an object is
-considered to be <b>garbage</b> if the running program has no way to ever reach
-the object again by following a chain of pointers.
-</p>
-<p>
-Conversely, a program that unintentionally retains references to useless
-objects can prevent them being reclaimed as garbage.  Usually, programmers do
-not need to worry about this issue, but it can become a real problem in
-long-running programs with complex data structures.
-</p>

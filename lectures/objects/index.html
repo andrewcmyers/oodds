@@ -2,14 +2,14 @@
 
 <h2>Primitive values</h2>
 <p>
-Programming languages describe computations that compute over <em>values</em>. 
-These values include <em>primitive values</em> such as integers and characters,
-which in some sense exist even before programs start running, and <em>objects</em>,
+Programming languages describe computations that compute over <b>values</b>. 
+These values include <b>primitive values</b> such as integers and characters,
+which in some sense exist even before programs start running, and <b>objects</b>,
 which are created by programs as they run.
 </p>
 <p>
 The Java language supports a variety of different primitive values. Each value
-has a corresponding <em>run-time type</em>. Here are some examples of primitive values:
+has a corresponding <b>run-time type</b>. Here are some examples of primitive values:
 </p>
 <table>
 <tr>
@@ -61,18 +61,18 @@ has a corresponding <em>run-time type</em>. Here are some examples of primitive 
 </table>
 
 <p>
-An expression like <code>2+3</code> is a <em>computation</em> that produces a value
-(5, of course). The expression <code>+</code> is a <em>binary operator</em> (binary, because it
+An expression like <code>2+3</code> is a <b>computation</b> that produces a value
+(5, of course). The expression <code>+</code> is a <b>binary operator</b> (binary, because it
 takes two arguments). There are also unary operators like logical negation (<code>!</code>).
 For example, <code>!true</code> evaluates to <code>false</code>.
 </p>
 <p>
 Java prevents us from writing certain computations that don't make sense. For
-example, the expression <code>2 + true</code> would be a <em>run-time type
-error</em> if allowed to proceed. However, Java will not allow this expression to
+example, the expression <code>2 + true</code> would be a <b>run-time type
+error</b> if allowed to proceed. However, Java will not allow this expression to
 be written because it can tell that a run-time type error might (and will, in this case)
 result. In fact, run-time type errors are not possible in Java. For that reason we
-say that Java is a <em>strongly typed language</em>.
+say that Java is a <b>strongly typed language</b>.
 </p>
 
 <h2>Variables</h2>
@@ -94,7 +94,7 @@ We can see this because as an equation, <code>y = y+1</code> doesn't make much s
 </p>
 <p>
 A useful way to understand what is happening when we run Java programs is to
-draw an <em>object diagram</em>. There are different styles of object diagrams;
+draw an <b>object diagram</b>. There are different styles of object diagrams;
 here are two ways to draw what is going in the code above (click on the "play button"
 in the figure to step through the code and see its effects):
 </p>
@@ -128,7 +128,7 @@ with (new CFigure("var-model-diagrams", true)) {
 </script>
 <p>
 The view expressed by the picture on the left is that variables contain
-<em>references</em> to values; the view of the picture on the right is that variables
+<b>references</b> to values; the view of the picture on the right is that variables
 contain the values themselves. In the view on the left, the variables
 x and y are pointing to values that in some sense live outside the computer; we can't
 really put the number 2 in the variable x because there is only one 2, and we certainly
@@ -153,22 +153,22 @@ references to values of primitive types.
 
 <h2>Types and declarations</h2>
 <p>
-Java is a <em>statically typed language</em>, which means that the compiler tries to figure
+Java is a <b>statically typed language</b>, which means that the compiler tries to figure
 out before the program runs what the type of each expression will be. To help it do this,
 the programmer is required to declare the type of all variables. (Some languages, such as
-OCaml, actually can automatically <em>infer</em> the types of variables.) This is different
-from <em>dynamically typed</em> languages such as Python, where variables do not have a static type
+OCaml, actually can automatically <b>infer</b> the types of variables.) This is different
+from <b>dynamically typed</b> languages such as Python, where variables do not have a static type
 and can even be used to store values of different types.
 </p>
 <p>
-In Java we can write a <em>variable declaration</em> by writing the new variable name preceded
+In Java we can write a <b>variable declaration</b> by writing the new variable name preceded
 by its type, e.g.:
 </p>
 <pre>
 int x;
 </pre>
 <p>
-We can both declare a new variable and <em>initialize</em> it with a value in one statement:
+We can both declare a new variable and <b>initialize</b> it with a value in one statement:
 </p>
 <pre>
 int y = x + 1;
@@ -193,9 +193,9 @@ the integer 2 that the type <code>double</code> supports.
 
 <h2>Defining and calling methods</h2>
 <p>
-To compute something in Java, we need to put it into a <em>method</em>, which
-can either define a <em>function</em> (which returns a value) or a
-<em>procedure</em> (which doesn't). For example, if we want to compute the
+To compute something in Java, we need to put it into a <b>method</b>, which
+can either define a <b>function</b> (which returns a value) or a
+<b>procedure</b> (which doesn't). For example, if we want to compute the
 triple of numbers, we might define a method to do it:
 </p>
 <pre>
@@ -206,26 +206,26 @@ int triple(int n) {
 }
 </pre>
 <p>
-Let's dissect this a bit. We start with a <em>specification</em> (or just
-<em>spec</em>) describing what the method does. This is a comment that the
+Let's dissect this a bit. We start with a <b>specification</b> (or just
+<b>spec</b>) describing what the method does. This is a comment that the
 Java compiler ignores. However, the Javadoc tool will read the comment and
 use it to construct web page documentation for the method. It's a good idea
 when writing a method to start with the spec. We'll talk more later about how to
 effectively use specs and Javadoc.
 </p>
 <p>
-The expression <code>int triple(int n)</code> is the <em>signature</em> of the
+The expression <code>int triple(int n)</code> is the <b>signature</b> of the
 method. It starts with the return type (<code>int</code>), and also gives the
-types of the expected arguments. The <em>formal parameter</em> (or just
-<em>formal</em>) <code>n</code> takes on the value of whatever argument (aka
-<em>actual</em>) is provided to the function when the function is <em>invoked</em>
-(aka <em>called</em>). The <em>body</em> of the method is the part in braces (<tt>{</tt>...<tt>}</tt>).
+types of the expected arguments. The <b>formal parameter</b> (or just
+<b>formal</b>) <code>n</code> takes on the value of whatever argument (aka
+<b>actual</b>) is provided to the function when the function is <b>invoked</b>
+(aka <b>called</b>). The <b>body</b> of the method is the part in braces (<tt>{</tt>...<tt>}</tt>).
 The body defines what computation is done by the method.
 The
-bolded <em>keyword</em> <code>return</code> causes the function to produce
+bolded <b>keyword</b> <code>return</code> causes the function to produce
 the value that its expression <code>n + n + n</code> computes. If we've done
 our job correctly, this computation agrees with the spec.
-Note that in Java, braces (&ldquo;{&rdquo; and &ldquo;}&rdquo;) are used as
+In Java, braces are used as
 a way to group one or more statements together, much like parentheses are
 used for grouping expressions.
 </p>
@@ -240,9 +240,9 @@ int z = triple(y+1);
 <p>
 The following figure shows what happens as the code executes. Initially only the
 variable <code>y</code> exists, with value 1000. When the call to <code>triple</code>
-happens, the argument 1001 is first computed. Then, an <em>activation record</em>
-is created (often called a <em>stack frame</em>, though this is really a name for a way to
-<i>implement</i> an activation record). The activation record holds all the local variables
+happens, the argument 1001 is first computed. Then, an <b>activation record</b>
+is created (often called a <b>stack frame</b>, though this is really a name for a way to
+<em>implement</em> an activation record). The activation record holds all the local variables
 for the function being called, which in this case is both the formal parameter <code>n</code>,
 bound to the value of the argument 1001, and the local variable <code>r</code>. The desired
 result, 3003, is computed and stored into <code>r</code>, and then
@@ -288,10 +288,10 @@ activation record of the calling code to the returned result.
 <h2>Classes and objects</h2>
 
 <p>Objects are unlike primitive values in that programs can create them at run time. The
-form of an object is defined by its <em>class</em>, which describes the state of the object
+form of an object is defined by its <b>class</b>, which describes the state of the object
 and the operations the object supports. For example, suppose we want values that represent
 points in the plane. We might define a class <code>Point</code> that describes the objects
-that are <em>instances</em> of the class:
+that are <b>instances</b> of the class:
 </p>
 <pre>
 class Point {
@@ -300,8 +300,8 @@ class Point {
 }
 </pre>
 <p>The class contains two variable definitions. The variables x and y are called
-<em>instance variables</em>. Each object that is an instance of <code>Point</code> has
-its own instance variables x and y. Instance variables are also called <em>fields</em>,
+<b>instance variables</b>. Each object that is an instance of <code>Point</code> has
+its own instance variables x and y. Instance variables are also called <b>fields</b>,
 a term that was inherited from the C programming language.
 </p>
 <p>
@@ -315,8 +315,8 @@ Point b = new Point();
 <p>
 Even though these objects represent the same point on the plane, they are
 different objects.  We represent this by drawing objects as boxes. Viewed as a
-value, the object <i>is</i> the box, so we refer to objects as <em>boxed
-values</em>, whereas primitive values are <em>unboxed values</em>. The object
+value, the object <i>is</i> the box, so we refer to objects as <b>boxed
+values</b>, whereas primitive values are <b>unboxed values</b>. The object
 diagram for the above code shows that we have two distinct values in play:
 </p>
 <div class="figure">
@@ -380,8 +380,8 @@ r.UR = b;
 <p>
 Assuming variables a and b are initialized and updated as in the code above, we
 arrive at the following object diagram. Notice that the <code>Rectangle</code> object does not
-<i>contain</i> the two <code>Point</code> objects; it merely <em>references</em> them by containing
-<em>pointers</em> to the <code>Point</code> objects. Changes
+<i>contain</i> the two <code>Point</code> objects; it merely <b>references</b> them by containing
+<b>pointers</b> to the <code>Point</code> objects. Changes
 to the point objects through variables <code>a</code> and <code>b</code> will still
 affect what rectangle <code>r</code> represents.
 </p>
@@ -442,7 +442,7 @@ class Rectangle {
 }
 </pre>
 <p>In order to invoke this method, we need an instance, which is called the
-<em>receiver object</em>:
+<b>receiver object</b>:
 </p>
 <pre>
 Rectangle r = ...;
@@ -453,7 +453,7 @@ Inside the method, we can use the instance variables <code>UR</code> and <code>L
 These variable names denote the instance variables of the receiver object.
 </p>
 <p>Methods do not have to be functions; we can also define methods that are procedures,
-used for the <em>side effects</em> they cause. A procedure has a return type of <code>void</code>.
+used for the <b>side effects</b> they cause. A procedure has a return type of <code>void</code>.
 For example, suppose we want to be able to change <code>Point</code>s to be back at the origin:
 </p>
 <pre>
@@ -474,7 +474,7 @@ a.setOrigin(); // a refers to the same object, but its
 <p>
 It's awkward and error-prone to have to initialize the instance variables of
 objects after creating them with <code>new</code>. A better solution is to
-define one or more <em>constructors</em> that initialize the
+define one or more <b>constructors</b> that initialize the
 object to a &ldquo;good&rdquo; state. Constructors are methods whose name is
 exactly the same as that of the class.
 </p>
@@ -515,12 +515,12 @@ class Point {
 <h2>Class methods</h2>
 <p>
 Sometimes it is helpful to have methods attached to the class itself, rather
-than to its instances.  Such methods are called <em>class methods</em> (or
-<em>static methods</em>). They can be invoked edithout any receiver object, and
+than to its instances.  Such methods are called <b>class methods</b> (or
+<b>static methods</b>). They can be invoked edithout any receiver object, and
 they have no access to the instance variables of a receiver object.  The
 expression <code>this</code> cannot be used inside a static method.  A method
 is made static by adding the keyword <code>static</code> to its signature. For
-example, sometimes it is useful to define static <em>creator</em> (or <em>factory</em>)
+example, sometimes it is useful to define static <b>creator</b> (or <b>factory</b>)
 methods to a class:
 </p>
 
@@ -559,8 +559,8 @@ For example, we can write a program that prints &ldquo;Hello world!&rdquo;:
 </pre>
 <p>This program can be run using your IDE (such as Eclipse or IntelliJ), which will compile it automatically.
 Alternatively, you can run it from a shell such as <tt>bash</tt>
-(or, on Windows, <tt>cmd</tt> or <tt>Powershell</tt>, where the prompt <tt>$</tt>
-will be a <tt>&gt;</tt>):
+(or, on Windows, <tt>cmd</tt> or <tt>Powershell</tt>, where the prompt 
+will be <kbd>&gt;</kbd> instead of <kbd>$</kbd>):
 </p>
 <pre>
 $ javac Hello.java    # Compile the program by specifying the source files

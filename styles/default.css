@@ -1,3 +1,13 @@
+body {
+    background-color: #eee;
+    font-size: 12pt;
+    font-family: Palatino, Times, serif;
+}
+#content {
+    margin: 0 auto;
+    max-width: 100ex;
+}
+	
 td.lectnum {
    width: 3em;
    text-align: right;
@@ -24,8 +34,10 @@ div.floatfigure { display: float;
 		  page-break-inside: avoid; }
 div.floatfigure pre {text-align: left }
 img.whitebg {background-color: white}
-pre {padding: 1ex 2em;
-     background-color: #e8e4dc;
+pre {
+    padding: 1ex 2em;
+    background-color: #d8d8e0;
+    font-size: 90%;
 }
 pre.narrow { max-width: 40ex }
 h1,h2,h3,h4 {padding-top: 1ex; font-weight: medium; page-break-after: never}
@@ -33,7 +45,6 @@ span.comment {color: #008; font-style: italic}
 
 ul { font-size: 100% }
 ol > li { list-style-type: decimal }
-pre { font-size: 110% }
 span.lastupdate {font-size: 90%}
 span.lastupdate .ampm {font-size: 80%}
 .ampm {font-variant: small-caps}
@@ -81,7 +92,7 @@ a.pre {
 }
 
 pre { font-family: Menlo, consolas, monospace, Courier }
-tt, code { font-size: 100%; font-family: Menlo, consolas, monospace, Courier }
+tt, code { font-size: 90%; font-family: Menlo, consolas, monospace, Courier }
 h2 { font-weight: bold }
 
 table.staff_table {
@@ -114,6 +125,7 @@ blockquote {
 	margin-bottom: 2ex;
 }
 
+table th { background-color: #ddd }
 table.schedule td, table.schedule {
     border: none;
 }
