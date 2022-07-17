@@ -40,7 +40,7 @@ This recursive definition not only makes sense mathematically,
 it can be implemented in a direct way as Java code:
 </p>
 <pre class="load">
-<a href="recursion_lists/fibo.java">fibo.java</a>
+<a href="fibo.java">fibo.java</a>
 </pre>
 <p>
 This is very concise code, but not very efficient, as we'll see.
@@ -54,7 +54,7 @@ to implement the exponentiation needed by modern cryptography, because the expon
 are too large for the obvious, simple exponentiation algorithm to be practical.
 </p>
 <pre class="load">
-<a href="sorting/Exponentiation.java">Exponentiation.java</a>
+<a href="Exponentiation.java">Exponentiation.java</a>
 </pre>
 <p>
 It is not difficult to see that this code works correctly.
@@ -201,7 +201,7 @@ This data structure can be depicted graphically as shown in this figure, where
 the first three prime numbers are stored in the list.
 </p>
 <div class="figure">
-<img src="recursion_lists/llist.png" alt="linked list" />
+<img src="llist.png" alt="linked list" />
 </div>
 <p>
 The last node in the list does not point to another node; instead, it refers to
@@ -212,7 +212,7 @@ object</b> that is used to mark the end of the list.
 A linked list node is implemented with code like the following:
 </p>
 <pre class="load">
-<a href="recursion_lists/Node.java">Node.java</a>
+<a href="Node.java">Node.java</a>
 </pre>
 <p>
 Notice that the class <code>Node</code> has an instance variable of the same type. That is,
@@ -243,7 +243,7 @@ walk in both directions, at a cost of more storage to represent the extra links.
 The definition of a doubly linked list node looks something like the following:
 </p>
 <pre class="load">
-<a href="recursion_lists/DNode.java">DNode.java</a>
+<a href="DNode.java">DNode.java</a>
 </pre>
 <p>Doubly linked lists come in both linear and circular varieties, as
 illustrated below. In the linear variety, the first and last nodes have
@@ -255,7 +255,7 @@ The class <code>java.util.LinkedList</code> is actually implemented as a
 circular doubly linked list.
 </p>
 <div class="figure">
-<img src="recursion_lists/dlist.png" alt="doubly linked list" />
+<img src="dlist.png" alt="doubly linked list" />
 </div>
 <h3>Iterative list traversal</h3>
 <p>
@@ -343,7 +343,7 @@ For example, we can use a linked list to efficiently implement an <b>immutable
 list</b> of objects:
 </p>
 <pre class="load">
-<a href="recursion_lists/ImmList.java">ImmList.java</a>
+<a href="ImmList.java">ImmList.java</a>
 </pre>
 <p>
 To implement this interface using a <code>null</code>-terminated list, we will
@@ -352,7 +352,7 @@ with something other than <code>null</code>. (Notice that we don't bother to
 repeat the specifications from the interface. No need!)
 </p>
 <pre class="load">
-<a href="recursion_lists/ImmListImpl.java">ImmListImpl.java</a>
+<a href="ImmListImpl.java">ImmListImpl.java</a>
 </pre>
 <p>
 Notice that this implementation allows different lists to share the same list
@@ -390,7 +390,7 @@ linked lists to implement mutable lists. On the other hand, we can offer a large
 set of operations:
 </p>
 <pre class="load">
-<a href="recursion_lists/MutList.java">MutList.java</a>
+<a href="MutList.java">MutList.java</a>
 </pre>
 <p>Again, this abstraction can be implemented using a linked list.
 A header object is again handy, especially to keep track of auxiliary
@@ -419,11 +419,11 @@ time. The variable <code>n</code> points to the current node, and the <code>p</c
 to the previous node, or contains <code>null</code> if <code>n</code> is the first node:
 </p>
 <pre class="load">
-<a href="recursion_lists/MList.java">MList.java</a>
+<a href="MList.java">MList.java</a>
 </pre>
 <h2>Abstract data types vs. data structures</h2>
 <!-- this section was not covered during lecture -->
-<img style="float: right; padding: 2em" src="recursion_lists/listimpls.png" alt="abstraction barrier" />
+<img style="float: right; padding: 2em" src="listimpls.png" alt="abstraction barrier" />
 <p>
 A key observation is that singly or doubly
 linked lists are concrete data structures. They are implementations of a particular
@@ -449,7 +449,7 @@ A stack is a list that supports two operations:
 <p>The stack ADT is easily and efficiently implemented using linked lists:</p>
 
 <pre class="load">
-<a href="recursion_lists/Stack.java">Stack.java</a>
+<a href="Stack.java">Stack.java</a>
 </pre>
 
 <p>Keep in mind that data structures are ways to implement
@@ -497,7 +497,7 @@ We can also implement it recursively, in a way that makes it more obvious why
 it works.
 </p>
 <pre class="load">
-<a href="sorting/BinarySearch.java">BinarySearch.java</a>
+<a href="BinarySearch.java">BinarySearch.java</a>
 </pre>
 <p>
 Why does the algorithm work? First, consider the base case, which is when
@@ -531,7 +531,7 @@ to the method's formal parameters the new values that would have been passed in 
 Here is what the binary search code looks like after this transformation:
 </p>
 <pre class="load">
-<a href="sorting/BinarySearchIterative.java">BinarySearchIterative.java</a>
+<a href="BinarySearchIterative.java">BinarySearchIterative.java</a>
 </pre>
 <p>
 Of course, we can make further simplifications such as folding the base case

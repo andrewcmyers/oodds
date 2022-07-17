@@ -1,9 +1,3 @@
-<html>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
-<div id="content">
-
 <h1>Synchronization</h1>
 
 <h2>Synchronization and happens-before</h2>
@@ -315,7 +309,7 @@ We can represent this situation using a diagram like the following,
 in which the deadlock shows up as a cycle in the graph.
 </p>
 <div class="figure">
-<img src="synchronization/deadlock.png">
+<img src="deadlock.png">
 </div>
 <p>
 To avoid creating cycles in the graph, the usual approach is to define
@@ -378,7 +372,7 @@ into a third. But if either of the two source accounts does not have enough mone
 take place. We can start from a definition of an <code>Account</code> class like the one we saw previously,
 except that it throws an exception if a withdrawal would leave the account overdrawn:
 <pre class=load>
-<a href="synchronization/Account.java">Deadlock.java</a>
+<a href="Account.java">Deadlock.java</a>
 </pre>
 </p>
 <p>Using this class, we can create an array of many accounts and then implement the transaction. It is necessary
@@ -386,7 +380,7 @@ to acquire a lock on both of the accounts being withdrawn to make sure that they
 time. In the following code, if the withdrawal succeeds from the first account but then fails on the second account,
 the first account is then refunded in the <code>catch</code> clause:
 <pre class=load>
-<a href="synchronization/Deadlock.java">Deadlock.java</a>
+<a href="Deadlock.java">Deadlock.java</a>
 </pre>
 <p>
 Unfortunately, if this transaction is run concurrently in multiple threads, it will often deadlock. The
@@ -401,7 +395,7 @@ unless we are demanding that the whole transaction occur atomically. Then, we
 sort <code>i</code> and <code>j</code> before acquiring their locks:
 </p>
 <pre class=load>
-<a href="synchronization/Deadlock_fixed.java">Deadlock_fixed.java</a>
+<a href="Deadlock_fixed.java">Deadlock_fixed.java</a>
 </pre>
 <p>
 
@@ -562,7 +556,7 @@ This is easier than coding up your own mechanism using locks and
 condition variables. The key methods are these:
 </p>
 <pre class=load>
-<a href="synchronization/Task.java">Task.java</a>
+<a href="Task.java">Task.java</a>
 </pre>
 <p>
 Some of the methods are designed to be used within the implementation of

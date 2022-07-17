@@ -9,12 +9,12 @@ but will focus on how to use it in an object-oriented way.
 </p>
 <p>
 It is useful to distinguish between object-oriented (OO) <em>languages</em> and
-the object-oriented <em>programming model</em>. A programming model is an
+the object-oriented <b>programming model</b>. A programming model is an
 approach to solving programming problems. There are many programming
 models and variants thereof. For example, in addition to the
-object-oriented model, there is a <em>functional</em> programming model that
+object-oriented model, there is a <b>functional</b> programming model that
 you will learn about in CS 3110. And there are variations on the
-object-oriented model such as the <em>event-driven</em> model.
+object-oriented model such as the <b>event-driven</b> model.
 </p>
 <p>
 Some languages are designed to support some programming models better
@@ -42,7 +42,7 @@ with the keywords <code>public</code>, <code>private</code>, and
 <code>protected</code>. The use of these keywords prevents code and
 data from being used, which may seem strange: why is it important
 to take power away from the programmer? The answer is that limiting
-access supports <em>modularity</em>.
+access supports <b>modularity</b>.
 </p>
 
 <h2>The need for modular programming</h2>
@@ -142,7 +142,7 @@ procedural model offers no control over
 which program code can access a given part of the data. Code
 can reach into the program data and use it or update in an arbitrary
 way. Working on a team of programmers is difficult in the procedural
-model because the different parts of the code tend to be <em>tightly coupled</em>.
+model because the different parts of the code tend to be <b>tightly coupled</b>.
 A bug in one software component can corrupt program data and look like a bug in
 a different component. Code is hard to maintain and to evolve without
 breaking it, and changes to way data is represented in the program tend to
@@ -152,19 +152,19 @@ of the code.
 
 <h2>Modular programming</h2>
 <p>
-To address these problems, <em>modular programming</em> was developed.
+To address these problems, <b>modular programming</b> was developed.
 (Object-oriented programming extends modular programming with some additional
 ideas that we get to soon.) The idea of modular programming is that the
-software should be broken up into distinct <em>modules</em> that can be
+software should be broken up into distinct <b>modules</b> that can be
 developed relatively independently. A good modular design respects the
-principle of <em>separation of concerns</em>, which says that different aspects
+principle of <b>separation of concerns</b>, which says that different aspects
 of the design should be designed separately. With a good modular design,
 changes can be made to one module without changing other modules, and it is
 relatively easy for programmers to know whether their changes will affect other
 modules that are perhaps owned by other programmers. Separation of concerns
-is strengthened by <em>information hiding</em> in which modules do not take
+is strengthened by <b>information hiding</b> in which modules do not take
 advantage of knowledge about how other modules are
-implemented. Information hiding provides <em>loose coupling</em> that tends
+implemented. Information hiding provides <b>loose coupling</b> that tends
 to make code evolution easier. In a loosely coupled system, changes to
 the way information is represented or modules are implemented
 tend to propagate less to other modules, much as loosely coupled train cars
@@ -172,18 +172,18 @@ can start moving without trying to move the whole train.
 </p>
 <p>
 A key insight in programming language design was that modular programming can
-be enforced by a programming language mechanism that <em>encapsulates</em> its
+be enforced by a programming language mechanism that <b>encapsulates</b> its
 state and behavior, enforcing information hiding and controlling how other
 modules can access it. This approach is suggested by Figure 2.  Code outside a
 module cannot directly access the data that is internal to the module. Any
 access from outside to a module's data must occur via the module's code, and
 only the code that the module chooses to expose to the outside. Access to the
-data is <em>mediated</em> by this public code.
+data is <b>mediated</b> by this public code.
 </p>
 <p>
-By <em>client code</em> we mean code outside the module that is using the
+By <b>client code</b> we mean code outside the module that is using the
 module through a set of publicly exposed operations. These operations we
-called the <em>interface</em> of the module, which should not be confused
+called the <b>interface</b> of the module, which should not be confused
 with the Java language feature <code>interface</code> (which is, however, an
 example of the more general interface idea, and one we will return to).
 </p>
@@ -195,7 +195,7 @@ can then think about and program each module in isolation from the rest.
 Instead of thinking about the correctness of the entire program, a
 bewilderingly complex problem, they can just think about the correctness of the
 particular module they are working on now.  This nice property of modular
-programming is called <em>local reasoning</em>.
+programming is called <b>local reasoning</b>.
 </p>
 <p>
 Modules also make it possible to use data from other modules without knowing
@@ -203,8 +203,8 @@ exactly how that data is represented. All they have to know is what operations
 (from the public interface) can be performed on the data. The data is opaque
 to the client code, which means that the module implementer is free to change
 how the data is represented because no client code can depend on the precise
-representation.  This powerful idea is called <em>data abstraction</em>.
-The word <em>abstraction</em> refers to the idea of hiding inessential detail.
+representation.  This powerful idea is called <b>data abstraction</b>.
+The word <b>abstraction</b> refers to the idea of hiding inessential detail.
 In this case, the inessential detail is, for the client code, the precise
 way that information is represented inside the module.
 </p>
@@ -212,9 +212,9 @@ way that information is represented inside the module.
 <h2>An example: rational numbers</h2>
 <p>
 In an object-oriented language like Java, encapsulation and data abstraction
-are primarily provided by classes, though <em>packages</em> are also
+are primarily provided by classes, though <b>packages</b> are also
 used as an encapsulation mechanism. A class and its code are shared by all objects of
-that class (the <em>instances</em> of the class), and the class's code can
+that class (the <b>instances</b> of the class), and the class's code can
 mediate access to all information stored in instances. For example, suppose we
 want objects that act like rational numbers, allowing us to write code like the
 following, using a class <code>Rational</code>:
@@ -240,7 +240,7 @@ download them).
 
 <p>
 There are many interesting things going on in this implementation. We start out with a very
-important comment, which we call the <em>class overview</em>. This describes how client
+important comment, which we call the <b>class overview</b>. This describes how client
 code programmers should think about the values of class <code>Rational</code>. 
 To the client, the objects are simply rational numbers, with a numerator p and a denominator q.
 The overview also gives the client a notation for talking about these objects abstractly, as a fraction p/q.
@@ -258,7 +258,7 @@ as simply rational numbers.
 </p>
 <p>The fields of the class are marked <code>private</code> to ensure that they
 are encapsulated inside the class. The keywords <code>public</code> and
-<code>private</code> are known as <em>visibility modifiers</em>, because they
+<code>private</code> are known as <b>visibility modifiers</b>, because they
 control which parts of the class are visible outside the class, and hence can
 be accessed.
 </p><p>
@@ -269,13 +269,13 @@ external clients.
 <p>
 Inside the method <code>add</code>, there is a special variable <code>this</code> that
 refers to the object on which the method was invoked, called the
-<em>receiver object</em>. It happens that <code>add</code> does not mention <code>this</code>
+<b>receiver object</b>. It happens that <code>add</code> does not mention <code>this</code>
 explicitly, but it does refer to the fields of <code>this</code> as <code>p</code> and <code>q</code>.
 Writing these names is equivalent to writing <code>this.p</code> and <code>this.q</code>
 respectively.
 </p><p>
-The method <code>plus</code> is a <em>static</em> method, which means that it does not
-have a receiver object. The special variable <code>this</code> is not <em>in scope</em>
+The method <code>plus</code> is a <b>static</b> method, which means that it does not
+have a receiver object. The special variable <code>this</code> is not <b>in scope</b>
 in a static method. That means it cannot be used within the method. A
 static method should be called using the name of its class, as in the
 following code:
@@ -315,13 +315,13 @@ modifiers is as follows:
 
 <p>The specification of the constructor has a Requires clause stating that
 the argument <code>den</code> must be non-zero. This clause is a form of
-<em>precondition</em> that must be satisfied by any correct client implementation.
+<b>precondition</b> that must be satisfied by any correct client implementation.
 It is a mistake for client code to call the constructor without satisfying
 the precondition: in particular, it is a mistake by the programmer writing the client code.
 Thus, when mistakes are made, preconditions help us figure out whose fault they are.
 </p>
 <p>
-Similarly, <em>postconditions</em> (sometimes called Returns clauses) specify what
+Similarly, <b>postconditions</b> (sometimes called Returns clauses) specify what
 a method is supposed to do. If a method doesn't satisfy its postcondition, the mistake
 is not the client's; it's the implementer's.
 </p>
@@ -335,7 +335,7 @@ is extremely valuable.
 
 <h2>Class invariants</h2>
 <p>
-An early comment in the <code>Rational</code> example expresses an <em>invariant</em> regarding the fields <code>p</code> and
+An early comment in the <code>Rational</code> example expresses an <b>invariant</b> regarding the fields <code>p</code> and
 <code>q</code>:</p>
 <pre class=code>
  // class invariant: q &gt; 0, gcd(p, q) = 1
@@ -343,8 +343,8 @@ An early comment in the <code>Rational</code> example expresses an <em>invariant
 An invariant is something that is always true at certain points in the program,
 though in programming, invariants can be violated temporarily. This particular invariant is an
 invariant about the state of objects of the class, and is variously called a
-<em>class invariant</em>, <em>data structure invariant</em>, or
-<em>representation invariant</em>.
+<b>class invariant</b>, <b>data structure invariant</b>, or
+<b>representation invariant</b>.
 The invariant states that <code>q</code> is
 positive and that the rational number is always stored in the reduced form
 where <code>p</code> and <code>q</code> are relatively prime. A class invariant is expected
@@ -405,7 +405,7 @@ will work.  But if someone doesn't follow their part of a contract, the program
 may fail in a way that is hard to debug.  How can we gain confidence that these
 contracts are all being obeyed?
 </p><p>
-Using <em>assertions</em> is very helpful for catching these contract
+Using <b>assertions</b> is very helpful for catching these contract
 violations and speeding up debugging. The <code>assert</code> statement stops
 the program (with an <code>AssertionError</code>) if the tested condition is
 false. Assertions can be used to double-check that anything the programmer 
@@ -479,8 +479,8 @@ Example: class <code>Rational</code> with assertions added to check class invari
 
 <h2>Names and packages</h2>
 <p>
-Classes in Java live in <em>packages</em>. For example, the class <code>String</code>
-is really a shorthand for the <em>fully qualified class name</em> <code>java.lang.String</code>,
+Classes in Java live in <b>packages</b>. For example, the class <code>String</code>
+is really a shorthand for the <b>fully qualified class name</b> <code>java.lang.String</code>,
 where <code>java.lang</code> is the name of a Java package containing many standard
 Java types.
 </p>
@@ -504,8 +504,8 @@ the fully qualified class name <code>cs2112.lec03.Rational</code> to refer to
 the <code>Rational</code> class from a package other than
 <code>cs2112.lec03</code>; alternatively, we can write a statement <code>import
 cs2112.lec03.Rational;</code> at the top of the file and then just refer to the
-class as <code>Rational</code>. It is also possible to use a <em>wildcard
-import</em> to import all classes in a single package: for example, <code>import
+class as <code>Rational</code>. It is also possible to use a <b>wildcard
+import</b> to import all classes in a single package: for example, <code>import
 cs2112.lec03.*;</code>. In fact, the entire package <code>java.lang</code> is
 automatically imported in this way, which is why we can talk about classes like
 <code>String</code> and <code>Integer</code> without qualifying their names.

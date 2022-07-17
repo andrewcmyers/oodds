@@ -1,13 +1,8 @@
-<html>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
-
 <h1>Modular Design, Implementation, and Testing</h1>
 
 <h2>Documenting implementations: The implementer's view</h2>
 <div class="figure">
-<img src="intf_design/codeberg.png"/>
+<img src="codeberg.png"/>
 </div>
 <p>
 Our goal for documenting the implementation of a module is to support implementation and
@@ -189,13 +184,13 @@ inheritance, which is a specialized dependency, a "subclass of" relationship.
 We can illustrate these two kinds of relationships with arrows:
 </p>
 <div class=figure>
-  <img src="mod_design/dep-arrows.png">
+  <img src="dep-arrows.png">
 </div>
 <p>
 For example, consider Assignment 2. The MDD of one reasonable implementation
 of this assignment is something like the following:
 <div class=figure>
-  <img src="mod_design/a2-mdd.png">
+  <img src="a2-mdd.png">
 </div>
 <p class=cont>
 Notice that the subclass hierarchies appear as parts of the MDD, albeit
@@ -238,7 +233,7 @@ in which the whole system is being tested at once, and modulo any functionality
 not yet implemented in stubs, we can test as we develop.
 </p>
 <div class=figure>
-<img src="mod_design/top-down-stub.png"><br>
+<img src="top-down-stub.png"><br>
 top-down development
 </div>
 
@@ -254,7 +249,7 @@ particularly effective when it is not clear whether key parts of the
 system can be implemented with acceptable performance.
 </p>
 <div class=figure>
-<img src="mod_design/bottom-up.png"><br>
+<img src="bottom-up.png"><br>
 bottom-up development
 </div>
 
@@ -291,7 +286,7 @@ of development, testing is used for the validation step
 occurring late in the process:
 
 <div class=figure>
-<img src="mod_design/waterfall.png">
+<img src="waterfall.png">
 </div>
 
 <p>
@@ -593,5 +588,3 @@ But a more critical weakness is that it is cumbersome and does not scale to larg
 However, it can be very effective on smaller implementations. Tools for symbolic
 execution are still not mainstream but are maturing.
 </p>
-
-</html>

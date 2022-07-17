@@ -145,9 +145,12 @@ div#unit-signature-links a { color: white }
 		font-size: 12pt;
 		color: black;
 		background: white;	/* footer background color */
+                width: 6.5in;
+                margin: 1in;
 	}
 	@page {
-		height: 9in;
+                width: 8.5in;
+		height: 11in;
 	}
 	p {
 		font-size: 100%;

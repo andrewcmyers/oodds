@@ -1,9 +1,3 @@
-<html>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
-
-<div id="content">
 <h1>Dijkstra's single-source shortest path algorithm</h1>
 
 <h3>Topics:</h3>
@@ -18,7 +12,7 @@
 <h2>The single-source shortest path problem</h2>
 
 <div class=floatfigure>
-<img class="whitebg" src="ssp/example-graph.png" />
+<img class="whitebg" src="example-graph.png" />
 </div>
 <p>Suppose we have a weighted directed graph,
 and we want to find the path between two vertices with the minimum
@@ -155,7 +149,7 @@ turns black; 9 is the shortest distance to that node.
 </p>
 <div class="figure">
 <center>
-<img class="whitebg" src="ssp/mid-alg.png">
+<img class="whitebg" src="mid-alg.png">
 <br/><b>After the second iteration</b>
 </center>
 </div>
@@ -169,7 +163,7 @@ which is shorter than the previous best known path of length 32, so we adjust it
 
 <div class="figure">
 <center>
-<img class="whitebg" src="ssp/next-alg.png">
+<img class="whitebg" src="next-alg.png">
 <br/><b>After the third iteration</b>
 </center>
 </div>
@@ -181,7 +175,7 @@ and we have computed the minimum distance to each of them.
 </p>
 
 <div class="figure">
-<img class="whitebg" src="ssp/final-spanning-tree.png">
+<img class="whitebg" src="final-spanning-tree.png">
 </div>
 
 <h3>Recovering the shortest path</h3>
@@ -444,7 +438,7 @@ if we are trying to go from NYC to Mount Rushmore, we don't need to
 explore the streets of Miami, but that is what Dijkstra's algorithm will do.
 </p>
 <div class=figure>
-<img src="ssp/map.png" width="500px">
+<img src="map.png" width="500px">
 </div>
 <p> The A* search algorithm generalizes Dijkstra's algorithm to to take advantage of
 knowledge about the node we are trying to find. The idea is that for any given
@@ -487,4 +481,3 @@ In some cases inadmissible heuristics can pay off.
 The A* search algorithm is often used for single-player game search and various
 other optimization problems.
 </p>
-</html>

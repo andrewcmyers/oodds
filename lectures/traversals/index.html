@@ -1,10 +1,3 @@
-<html>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
-
-<div id="content">
-
 <h1>Graph traversals</h1>
 
 <h3>Topics:</h3>
@@ -197,7 +190,7 @@ are gone, and <i>k</i> then increases by one.
 <p>Suppose that we run this algorithm on the following graph, starting with the
 root <code>A</code> and assuming that the successors of any node are pushed onto the queue in alphabetic order:</p>
 
-<div align="center"><img src="traversals/graph1.png"></div>
+<div align="center"><img src="graph1.png"></div>
 
 <p>
 The following sequence of nodes pass through the queue,
@@ -274,16 +267,16 @@ colorings in sequence, which are reminiscent of but a bit different from what
 we saw with the stack-based version:
 </p>
 
-<img src="traversals/dfsgraph1.png">
-<img src="traversals/dfsgraph2.png">
-<img src="traversals/dfsgraph3.png">
-<img src="traversals/dfsgraph4.png">
-<img src="traversals/dfsgraph5.png">
-<img src="traversals/dfsgraph6.png">
-<img src="traversals/dfsgraph7.png">
-<img src="traversals/dfsgraph8.png">
-<img src="traversals/dfsgraph9.png">
-<img src="traversals/dfsgraph10.png">
+<img src="dfsgraph1.png">
+<img src="dfsgraph2.png">
+<img src="dfsgraph3.png">
+<img src="dfsgraph4.png">
+<img src="dfsgraph5.png">
+<img src="dfsgraph6.png">
+<img src="dfsgraph7.png">
+<img src="dfsgraph8.png">
+<img src="dfsgraph9.png">
+<img src="dfsgraph10.png">
 
 <p>
 Note that at any point in time, there is a single path of gray nodes
@@ -360,7 +353,7 @@ the height of the tree, or O(log |V|). On such graphs, DFS requires less space.
 program. This is a subgraph of the original graph. In the above example, the DFS tree is:</p>
 
 <center>
-<img src="traversals/call-tree.png">
+<img src="call-tree.png">
 </center>
 
 <p>
@@ -373,7 +366,7 @@ For example, consider the original graph expanded with two new
 nodes F and G:
 </p>
 <center>
-<img src="traversals/graph2.png">
+<img src="graph2.png">
 </center>
 
 <p>
@@ -385,7 +378,7 @@ start from. Then we will reach all nodes. Instead of constructing just one
 tree that is a subgraph of the original graph, we get a <b>DFS forest</b> consisting of two trees:
 </p>
 <center>
-<img src="traversals/graph2-forest.png">
+<img src="graph2-forest.png">
 </center>
 
 <h2>Topological sort</h3>
@@ -410,7 +403,7 @@ graph will give an ordering in which all of these constraints are satisfied.
 <p>For example, to make lasagna, you might need to carry out tasks described by
 the following graph:
 </p>
-<img src="traversals/lasagna.png">
+<img src="lasagna.png">
 
 <p>There is some flexibility about the order to perform the steps, but clearly we
 need to make the sauce before we assemble the lasagna.  A topological sort will
@@ -479,7 +472,7 @@ depends on what node(s) we choose as root(s) and in what order the algorithm sel
 with the edges colored to show their classification.</p> 
 
 <center>
-<img src="traversals/graph1-classified.png">
+<img src="graph1-classified.png">
 </center>
 
 <p>
@@ -531,7 +524,7 @@ but not contained in any larger connected subgraph.
 For example, the following undirected graph has three
 connected components:
 </p>
-<img src="traversals/components.png">
+<img src="components.png">
 <p>
 The <b>connected components problem</b> is to find the connected
 components of a graph and to make it possible to quickly determine for a given
@@ -565,11 +558,11 @@ directed graph has four strong components consisting of vertices
 {A}, {B,C}, {D,E,F}, and {G}, respectively.
 
 <!-- center>
-<img src="traversals/scc-example.png">
+<img src="scc-example.png">
 </center -->
 
 <div class=figure>
-<img src="traversals/scc-example2.png">
+<img src="scc-example2.png">
 <p>
 A graph and its dag of strong components
 </p>
@@ -603,7 +596,7 @@ edges (A,B), (B,C), (C,G), (A,D), (D,E), and (E,F), back edges (C,B), (F,E) and 
 Ignoring back edges and topologically sorting, we might get the sequence A,D,E,B,C,F,G. The first DFS in step 3 starting at A would give the strong component {A}. The second starting at D would give {D,E,F}. The third starting at B would give {B,C}. The last starting at G would give {G}. Collapsing strong components into single nodes gives the dag shown on the right in the figure. Note that the dag of strong components will also be topologically sorted by the algorithm.</p>
 
 <!-- center>
-<img src="traversals/example-dag.png">
+<img src="example-dag.png">
 </center -->
 
 <h4>Tarjan's algorithm</h4>
@@ -657,7 +650,7 @@ The new SCC is then prepended to the head of the current list of SCCs.
 For example, consider running this algorithm on the following graph:
 </p>
 <div class=figure>
-<img src="traversals/scc-example2.png">
+<img src="scc-example2.png">
 <p>
 A graph and its DAG of SCCs
 </p>
@@ -695,4 +688,3 @@ each SCC is also topologically ordered.</p -->
 <li>[1] Carrano. <i>Data Structures and Abstractions with Java</i>, Chapter 31.
 <li>[2] Cormen, Leiserson, and Rivest. <i>Introduction to Algorithms</i>, Chapter 23.
 </ul>
-</html>

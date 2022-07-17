@@ -22,7 +22,7 @@ than scanning from left to right: we can use <em>binary search</em>. Here is
 the binary search algorithm, written as a loop.
 </p>
 <pre class="load">
-<a href="loopinv/binary_search.java">binary_search.java</a>
+<a href="binary_search.java">binary_search.java</a>
 </pre>
 <p>
 Conceptually, this algorithm is simple. But it is deceptively tricky to get
@@ -92,7 +92,7 @@ For example, binary search can be converted into a tail-recursive
 function as follows:
 </p>
 <pre class="load">
-<a href="loopinv/binary_search_recursive.java">binary_search.java</a>
+<a href="binary_search_recursive.java">binary_search.java</a>
 </pre>
 <p>
 Notice that the precondition of the tail-recursive function
@@ -282,7 +282,7 @@ Here is an implementation of exponentiation that is efficient but
 whose correctness is not immediately apparent.
 </p>
 <pre class="load">
-<a href="loopinv/Pow.java">Pow.java</a>
+<a href="Pow.java">Pow.java</a>
 </pre>
 
 <p>Intuitively, this algorithm converts the exponent e into
@@ -337,7 +337,7 @@ Therefore, the loop terminates and returns the correct value of x<sup>e</sup>.
 <h2>Example: Insertion sort</h2>
 
 <pre class="load">
-<a href="loopinv/insertion_sort.java">insertion_sort.java</a>
+<a href="insertion_sort.java">insertion_sort.java</a>
 </pre>
 
 <p>
@@ -345,7 +345,7 @@ There are two loops, hence two loop invariants. These loop invariants can be
 visualized with the following diagram:
 </p>
 <div class="figure">
-<img src="loopinv/insertion-sort.png" alt="insertion sort loop invariants" />
+<img src="insertion-sort.png" alt="insertion sort loop invariants" />
 </div>
 <p>
 Notice that the loop invariant holds in <code>for</code> loops at the point

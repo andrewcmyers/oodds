@@ -52,7 +52,7 @@ elements (or keys) to integers in the range. Then we can use the indices produce
 by the function to decide at which index to store the elements in an array of size \(m\).
 </p>
 <div class="floatfigure">
-<img src="hashtables/dat.png" alt="direct address table" />
+<img src="dat.png" alt="direct address table" />
 </div>
 <p>
 For example, suppose we are maintaining a collection of objects representing
@@ -78,7 +78,7 @@ sometimes by two orders of magnitude.
 
 <h2>Step 2: Hashing</h2>
 <div class="floatfigure">
-<img src="hashtables/hashfn.png" alt="hash function" />
+<img src="hashfn.png" alt="hash function" />
 </div>
 <p>
 Instead of requiring that each key be mapped to a unique index,
@@ -114,7 +114,7 @@ than random choice.
 <h2>Step 3: Collision resolution</h2>
 <h3>Chaining</h3>
 <div class="floatfigure">
-<img src="hashtables/chaining.png" alt="separate chaining with linked lists" />
+<img src="chaining.png" alt="separate chaining with linked lists" />
 </div>
 <p>
 There are two main ideas for how to deal with collisions. The best way is
@@ -137,7 +137,7 @@ lists.
 </p>
 <h3>Probing</h3>
 <div class="floatfigure">
-<img src="hashtables/probing.png" alt="open addressing" />
+<img src="probing.png" alt="open addressing" />
 </div>
 <p>
 Another approach to collision resolution is
@@ -222,7 +222,7 @@ object that maintains a pointer to the current bucket array and the
 number of elements that are currently in the hash table.
 </p>
 <div class="floatfigure">
-<img src="hashtables/resizing.png" alt="resizable array" />
+<img src="resizing.png" alt="resizable array" />
 </div>
 <p>
 If adding an element would cause \(α\) to exceed \(α_{max}\),
@@ -491,7 +491,7 @@ but it should be avoided; the <code>HashMap</code> class is faster and better
 designed.
 </p>
 <div class="floatfigure">
-<img src="hashtables/hashcode.png" alt="hashCode()" />
+<img src="hashcode.png" alt="hashCode()" />
 </div>
 <p>
 All three of these hash table implementations rely on objects

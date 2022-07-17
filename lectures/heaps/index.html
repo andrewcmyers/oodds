@@ -1,9 +1,3 @@
-<html>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" media="screen" href="../styles/main.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="../styles/2112.css" />
-
-<div id="content">
 <h1>Priority Queues and Heaps</h1>
 <p>
 To implement Dijkstra's shortest-path algorithm, we need a <b>priority queue</b>: a queue
@@ -40,7 +34,7 @@ priority queues, this sorting algorithm is asymptotically optimal.
 <p>
 A priority queue can be described via the following interface:
 <pre class=load>
-<a href="heaps/pqueue.java">PriorityQueue.java</a>
+<a href="pqueue.java">PriorityQueue.java</a>
 </pre>
 </p>
 <p>
@@ -56,7 +50,7 @@ pass an object to the priority queue that provides operations for manipulating
 queue elements, providing an interface like the following:
 </p>
 <pre class=load>
-<a href="heaps/elemops.java">ElemOps.java</a>
+<a href="elemops.java">ElemOps.java</a>
 </pre>
 
 <h2>Implementation 1: list</h2>
@@ -112,7 +106,7 @@ priority element at the root, and the left and right subtrees are also both heap
   Note that the root of each subtree contains the highest-priority element in that subtree.
 </p>
 <div class=figure>
-<img src="heaps/heap_example.png">
+<img src="heap_example.png">
 </div>
 <p>
   It is possible to manipulate binary heaps as tree structures. However, additional
@@ -126,7 +120,7 @@ priority element at the root, and the left and right subtrees are also both heap
   depths h and h–1.
 </p>
    <div class=figure>
-    <img src="heaps/heap_shape.png">
+    <img src="heap_shape.png">
    </div>
 <p class=cont>In fact, the example tree above also satisfies this shape invariant.</p>
 <p>
@@ -137,7 +131,7 @@ nodes in the array from left to right. The heap structure illustrated above woul
 the following array of length 9, with array indices shown on the bottom.
 </p>
 <div class=figure>
-<img src="heaps/array_rep.png">
+<img src="array_rep.png">
 </div>
 <p>
 The nice thing about this representation is that it is possible to represent
@@ -156,7 +150,7 @@ Adding a new node to the heap is done by adding the element at the end of the ar
 </p>
 
 <div class=figure>
-<img src="heaps/heap_example_add.png">
+<img src="heap_example_add.png">
 </div>
 
 <h4>ExtractMin</h4>
@@ -176,7 +170,7 @@ which was the last element in the array. Then we bubble the 5 down. We compare i
 lower priority than both, so we swap it with the higher priority child, which is 2. (We must swap it with the higher priority child to maintain the heap invariant, because that child will become the parent of the other child.) We then compare with the new children, 6 and 3, and swap with 3, at which point 5 becomes a leaf. The heap invariant is now reestablished.
 </p>
 <div class=figure>
-<img src="heaps/heap_example_pop.png">
+<img src="heap_example_pop.png">
 </div>
 <p>Again, at most \(\lg n\) swaps are needed.</p>
 
@@ -296,7 +290,7 @@ priority order.
 <p>For example, the following is a treap where the keys are the letters and the priorities
 are the numbers.</p>
 <div class=figure>
-<img src="heaps/treap_example.png">
+<img src="treap_example.png">
 </div>
 <p>
 Elements are added to the treap in the usual way for binary search trees. However,
@@ -307,7 +301,7 @@ of a parent p, the tree rotation is performed by changing pointers so the data s
 on the left turns into the data structure on the right.
 </p>
 <div class=figure>
-<img src="heaps/tree_rot.png">
+<img src="tree_rot.png">
 </div>
 <p>
 Note that A, B, and C here represent entire subtrees that are not affected by the
@@ -329,11 +323,9 @@ For example, adding a node D with priority 2 to the treap above results in the f
 rotations being done to restore the heap invariant:
 </p>
 <div class=figure>
-<img src="heaps/treap_add.png">
+<img src="treap_add.png">
 </div>
 <p>
 This is exactly the tree structure we would have gotten if we had inserted all the nodes
 into a simple BST in the order specified by their priorities.
 </p>
-
-</html>

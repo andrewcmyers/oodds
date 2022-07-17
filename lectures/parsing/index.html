@@ -12,7 +12,7 @@ Our brains are remarkably good at parsing. When we hear a sentence like
 following diagram:
 </p>
 <div class="figure">
-<img src="parsing/simple-sentence.png" alt="parse tree of a simple sentence" />
+<img src="simple-sentence.png" alt="parse tree of a simple sentence" />
 </div>
 <p>Notice that the leaves of the tree, in left-to-right order, spell
 out the sentence, but there are also some other nodes higher up in
@@ -117,7 +117,7 @@ The symbol <b>n</b> stands for all possible numeric literals: 1, 2, 3, etc.
 With this grammar, a string like “2 + 3 × 5” has two possible parse trees, as shown:
 </p>
 <div class="figure">
-<img src="parsing/two-parses.png" alt="parse trees of ambiguous expression" />
+<img src="two-parses.png" alt="parse trees of ambiguous expression" />
 <p class="caption">
 Two parse trees for “2+3×5”
 </p>
@@ -156,7 +156,7 @@ the example string parses uniquely as follows:
 </p>
 
 <div class="figure">
-<img src="parsing/unambiguous.png" alt="parse tree of unambiguous expression" />
+<img src="unambiguous.png" alt="parse tree of unambiguous expression" />
 </div>
 
 <h2>Recursive-descent parsing</h2>
@@ -309,7 +309,7 @@ symbols. For example, if we parse the input 2+(3×5), we expect to get a tree
 like the following,
 </p>
 <div class="figure">
-<img src="parsing/ast.png" alt="abstract syntax tree" />
+<img src="ast.png" alt="abstract syntax tree" />
 <p class="caption">
 Abstract syntax tree
 </p>
@@ -452,7 +452,7 @@ void parseE() throws SyntaxError {
 the corresponding abstract syntax tree built by this code looks as follows:
 </p>
 <div class="figure">
-<img src="parsing/reassociation.png" alt="reassociation of a production" />
+<img src="reassociation.png" alt="reassociation of a production" />
 </div>
 <p>
 Because it allows parsing of left-associative operators, reassociation via
