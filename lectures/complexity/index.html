@@ -1,13 +1,15 @@
 <h1>Asymptotic Complexity</h1>
 <p>
-We are going to start exploring more interesting algorithms and data structures, and
-we need a clear way to talk about their performance. But the performance of an algorithm
-depends on what computer the algorithm is run on, what inputs are chosen for the algorithm,
-and even environmental properties like the temperature. So if we measure how long our
-algorithm takes on a series of input problems of various sizes, we might get results
-that look rather noisy, and subsequent attempts to repeat the experiement will often
-yield similar but somewhat different results. Even worse, when the experiment is repeated
-on a second, slower computer, the results will be different:
+In order to explore more interesting algorithms and data structures, we
+need a clear way to talk about their performance. But the performance of an
+algorithm depends on what computer the algorithm is run on, what inputs are
+chosen for the algorithm, and even environmental properties like the
+temperature. So if we measure how long our algorithm takes on a series of input
+problems of various sizes, we might get results that look rather noisy, and
+subsequent attempts to repeat the experiement could yield similar but
+somewhat different results. Even worse, if the experiment is repeated on a
+second, slower computer, the results will probably be different, as the following
+figure suggests.
 </p>
 
 <canvas id="runtime-examples" style="width:600px; height:240px"></canvas>
@@ -17,11 +19,11 @@ with (new CFigure("runtime-examples", true)) {
     let time = label("time"), size = label("problem size (n)")
     align("center", "none", average(origin, xaxis), size, canvasRect())
     align("none", "center", average(origin, yaxis), time, canvasRect())
-    connector(origin, xaxis).setEndArrow("arrow")
-    connector(origin, yaxis).setEndArrow("arrow")
+    arrow(origin, xaxis)
+    arrow(origin, yaxis)
     align("abut", "none", time, hspace(5), origin)
     align("none", "abut", origin, vspace(5), size)
-    for (j = 0; j < 5; j++) {
+    for (let j = 0; j < 5; j++) {
         const a = [], pts = 20, f = addFrame()
         for (let i = 0; i < pts; i++) {
             a[i] = point(plus(origin.x(), times(i/pts, minus(xaxis.x(), origin.x()))),
@@ -30,7 +32,7 @@ with (new CFigure("runtime-examples", true)) {
         drawAfter(f, connector(a).setStrokeStyle(["#00f", "#02d", "#04b", "#06a"][j]))
         if (j == 0) drawAfter(f, label("computer 1").at(a[pts-1]).setFillStyle("#00f"))
     }
-    for (j = 0; j < 5; j++) {
+    for (let j = 0; j < 5; j++) {
         const a = [], pts = 20, f = addFrame()
         for (let i = 0; i < pts; i++) {
             a[i] = point(plus(origin.x(), times(i/pts, minus(xaxis.x(), origin.x()))),
@@ -46,7 +48,7 @@ with (new CFigure("runtime-examples", true)) {
 Instead, we want to be able to describe performance in a way that is
 independent of transient factors and random variations. Even though there is
 variation across different experimental runs and a difference between the two
-computers, we can see that there is some basic similarity of shape. If we
+computers, we can see that the shape of the curve has an underlying similarity. If we
 plot the timing data for sufficiently large problem sizes \(n\), and
 rescale the vertical axis to account for the relative speed of the computers,
 we typically see a more well-behaved plot like the following:
@@ -58,12 +60,11 @@ with (new CFigure("idealized-runtime")) {
     let time = label("time"), size = label("problem size (n)")
     align("center", "none", average(origin, xaxis), size, canvasRect())
     align("none", "center", average(origin, yaxis), time, canvasRect())
-    connector(origin, xaxis).setEndArrow("arrow")
-    connector(origin, yaxis).setEndArrow("arrow")
+    arrow(origin, xaxis)
+    arrow(origin, yaxis)
     align("abut", "none", time, hspace(5), origin)
     align("none", "abut", origin, vspace(5), size)
-    const pts = 20
-    const a = []
+    const pts = 20, a = []
     for (let i = 0; i < pts; i++) {
         a[i] = point(plus(origin.x(), times(i/pts, minus(xaxis.x(), origin.x()))),
                     minus(origin.y(), i*i/2))
