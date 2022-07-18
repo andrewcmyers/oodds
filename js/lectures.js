@@ -1,3 +1,36 @@
+var lectures = [
+    'intro',
+    'objects',
+    'pitfalls',
+    'java_rep',
+    'encapsulation',
+    'subtyping',
+    'inheritance',
+    'intf_design',
+    'exceptions',
+    'mod_design',
+    'recursion_lists',
+    'generics',
+    'complexity',
+    'trees',
+    'hashtables',
+    'loopinv',
+    'sorting',
+    'parsing',
+    'patterns',
+    'gui',
+    'uidesign',
+    'concurrency',
+    'synchronization',
+    'graphs',
+    'traversals',
+    'ssp',
+    'heaps',
+    'avl',
+    'jvm',
+    'undecidability'
+]
+
 var base_url = basename(window.location.origin + window.location.pathname)
 
 function load_lecture() {

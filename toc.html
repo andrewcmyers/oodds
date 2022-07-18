@@ -71,7 +71,7 @@ function add_to_toc(node, name) {
             tocDiv.appendChild(toc);
         }
         var tocline = sentence_case(h.childNodes[0].textContent);
-        toc.appendChild(EZDom.li(EZDom.a({href: "#"+link}, tocline)));
+        toc.appendChild(EZDom.li(EZDom.a({href: "lecture.html?id="+link}, tocline)));
     }
 }
 
@@ -85,8 +85,7 @@ function append_content(id, url, name, cont) {
       read_from_url(url,
         responseText => {
             var content = div({className: "content"});
-            content.innerHTML = responseText;
-            node.appendChild(content);
+            content.innerHTML = responseText
             add_to_toc(content, name);
             var undefined;
             if (cont != undefined) cont(content);
@@ -102,13 +101,11 @@ function append_content(id, url, name, cont) {
 // Load all lectures starting from index i
 function load_from_i(i) {
     var url = "lectures/" + lectures[i] + "/index.html";
+    console.log("loading " + url)
     append_content("content", url, lectures[i],
-        (div) => {
-            content_node.appendChild(EZDom.div({className: "pagebreak"},
-                                     EZDom.hr({className: "endChapter"})));
+        div => {
             i++
             if (i < lectures.length) load_from_i(i);
-            localizeContent(div, url)
         });
 }
 
@@ -147,7 +144,7 @@ function load_all_lectures() {
 
 <div id="footer">
   <div id="footer-content">
-	&copy;2021 <a href="http://www.cornell.edu/">Cornell University</a>
+	&copy;2022 <a href="http://www.cornell.edu/">Cornell University</a>
   </div>
 </div>
 
