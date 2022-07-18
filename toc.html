@@ -64,7 +64,6 @@ function add_to_toc(node, name) {
         par.insertBefore(EZDom.a({name: link, className: "chapter"}), h);
         par.insertBefore(EZDom.p({className: 'noprint'}, '[', EZDom.a({href: '#toc'},
                 'back to table of contents'), ']'), h.nextSibling);
-        var undefined;
         if (toc == undefined) {
             toc = EZDom.ol();
             var tocDiv = document.getElementById("toc");
@@ -87,12 +86,10 @@ function append_content(id, url, name, cont) {
             var content = div({className: "content"});
             content.innerHTML = responseText
             add_to_toc(content, name);
-            var undefined;
             if (cont != undefined) cont(content);
         },
         errmsg => {
             node.appendChild(div(errmsg, a({href: url}, url)));
-
             if (cont != undefined) cont();
         }, "text/html");
     }
