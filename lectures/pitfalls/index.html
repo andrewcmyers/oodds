@@ -254,7 +254,7 @@ b[0] = b; // !
 <div class=figure>
 <canvas id="arrayobjs" style="width:420px; height:230px"></canvas>
 </div>
-<script class=graphics type="application/javascript">
+<script class=graphics>
     let fig = new CFigure("arrayobjs", true)
     with (fig) {
         setFontName("consolas, fixed")
@@ -263,7 +263,7 @@ b[0] = b; // !
             o2 = varBoxes("class=Object[]", "length=2", "", "")
         align("left", "abut", o1, vspace().setH(10), o2)
         equal(o2.y0(), canvasRect().y())
-        equal(o1.x1(), minus(canvasRect().x1(), 40))
+        equal(o1.x1(), minus(canvasRect().x1(), 50))
         let a, b
         align("left", "none", a = label("a").setY(o1.getVar(0).y()), canvasRect().toLeft(-150))
         b = label("b").setY(o2.getVar(0).y())
@@ -273,7 +273,7 @@ b[0] = b; // !
         drawAfter(f2, b, o2,
             connector(b.cr().toRight(5), o2.getVar(0).cl()).setEndArrow("arrow").setStartArrow("bullet").setLineWidth(2),
             pointer(o2.getVar(2), p1.toRight(30), p1),
-            pointer(o2.getVar(3), p2.toRight(50), p2))
+            pointer(o2.getVar(3), "right 25", p2.toRight(50), p2))
         pin(p1, smooth(f3, o1.getVar(0).cr().toBottom(5), o2.getVar(0).cr()))
         pin(p2, o1.getVar(0).cr().toTop(5))
         align("left", "center",
@@ -285,7 +285,7 @@ b[0] = b; // !
 </script>
 <p>
 While this code is legal, it is certainly confusing and
-not a good example of how to write code!
+not an example of good code!
 </p>
 
 <h2>Strings</h2>
