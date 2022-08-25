@@ -159,6 +159,10 @@ function fetch_code_region(id, url, tag) {
     fetch_code_redacted(id, url, extract_region);
 }
 
+// Fetch the source file at URL "url" and insert it into the <pre> with id
+// attribute "id". Certain comments may cause parts of the code to be redacted,
+// as defined by "redactor". The inserted code is hyperlinked so that clicking
+// on it retrieves the whole file.
 function fetch_code_redacted(id, url, redactor) {
     let node = document.getElementById(id);
     read_from_url(url,

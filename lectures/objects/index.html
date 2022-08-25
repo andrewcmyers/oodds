@@ -567,3 +567,56 @@ $ javac Hello.java    # Compile the program by specifying the source files
 $ java Hello          # Run the program, naming the main class of the program.
 Hello World!
 </pre>
+
+<h2>Names and scope</h2>
+<p>
+Names can refer to a variety of things: local variables (including the formal
+parameters of methods), instance fields, methods, types, classes, and
+packages. The basic rule for deciding what kind of thing a name refers to is
+to find the definition of the name with the smallest <em>scope</em> that includes
+the use of the name. Different kinds of names have different rule for scope.
+Local variables are in scope from the point of declaration until the end of the
+block in which they are declared. Method and field names are in scope
+throughout their class. Class and interface names are in scope throughout the
+program unless they are nested inside another class, in which case they are in
+scope throughout the containing class.
+</p>
+<p>
+If a name is in the scope of two different declarations at once, the outer declaration
+is said to be <em>shadowed</em> by the inner one. Java considers some shadowing to be
+illegal. For example, this code will not compile because the variable <code>x</code>
+is shadowed inside the <code>while</code> loop:
+</p>
+<pre>
+int x = 2;
+while (x != 0) {
+    int x = 5;
+    // both x's in scope here.
+}
+// only outer x in scope here.
+</pre>
+<p>
+One place where shadowing is allowed, often getting programmers into trouble, is when a local
+variable shadows an instance field. Shadowing often arises with constructors, because it is
+tempting to name formal parameters in the same way as instance variables:
+</p>
+<pre>
+class Point {
+    int x, y;
+    Point(int x, int y) {
+	// locals x and y shadow instance variables x and y
+	this.x = x;
+	this.y = y;
+    }
+}
+</pre>
+<p>
+As the example shows, there <i>is</i> a way to talk about shadowed instance
+variables, using the object reference <code>this</code>. The expression
+<code>this</code> can only be used inside instance methods (not static methods)
+and refers to the current object: in this case, the object being
+constructed. Alternatively, you can give the formal parameters different names
+(for example, by appending an underscore), and then the instance variables can
+be used directly, without the "<code>this</code>".
+</p>
+
