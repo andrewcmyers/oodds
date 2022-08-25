@@ -474,14 +474,17 @@ a.setOrigin(); // a refers to the same object, but its
 <p>
 It's awkward and error-prone to have to initialize the instance variables of
 objects after creating them with <code>new</code>. A better solution is to
-define one or more <b>constructors</b> that initialize the
-object to a &ldquo;good&rdquo; state. Constructors are methods whose name is
-exactly the same as that of the class.
+define one or more <b>constructors</b> that initialize the object to a
+&ldquo;good&rdquo; state. Constructors are special methods whose name is
+required to be exactly the same as that of the class. A constructor is
+called using the <code>new</code> keyword rather by supplying a receiver object.
+The constructor then creates the object and initializes it.
 </p>
 <p>
 For example, it would be convenient to be able to create <code>Point</code>
-objects to represent the appropriate coordinates directly. An appropriate
-constructor would be as follows:
+objects that represent the appropriate coordinates immediately, rather than
+overwriting the instance variables <code>x</code> and <code>y</code>. An
+appropriate constructor would be as follows:
 </p>
 <pre>
 class Point {
@@ -496,11 +499,27 @@ class Point {
 Point b = new Point(2,3);
 </pre>
 
-<p>A constructor has a receiver object, which is the object that is being constructed.
-Inside any method, including constructors, the special expression
-<code>this</code> may be used to name the receiver object. An idiomatic use of the
-expression <code>this</code> is inside constructors, to allow distinguishing the
-instances variables of the object from constructor parameters:
+<p>
+When called via the <code>new</code> keyword, a constructor performs the following sequence
+of steps:
+</p>
+<ol>
+<li>Create the new object to be initialized.
+<li>Initialize each instance variable to the default value of its type.
+<li>Run the constructor body to complete initialization. Any instance variable
+initializers are considered to be part of the constructor body, placed before any
+ordinary code in the constructor.
+</ol>
+<p>
+A constructor does have a receiver object, which is the object that is being
+constructed.  Inside any method, including constructors, the special expression
+<code>this</code> may be used to name the receiver object. An idiomatic use of
+the expression <code>this</code> is inside constructors, to allow
+distinguishing the instance variables of the object from constructor
+parameters. The following constructor behaves exactly like the one just above,
+but is more explicit about modifying the receiver object. Notice that the names
+<code>x</code> and <code>y</code> in this code sometimes refers to instance variables of <code>Point</code>
+and sometimes refer to the formal parameters.
 <pre>
 class Point {
     int x, y;
@@ -619,4 +638,3 @@ constructed. Alternatively, you can give the formal parameters different names
 (for example, by appending an underscore), and then the instance variables can
 be used directly, without the "<code>this</code>".
 </p>
-
