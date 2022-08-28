@@ -3,9 +3,8 @@
 <h2>The object-oriented programming model</h2>
 <p>
 A major topic of this course is object-oriented design. We use an
-object-oriented language, Java, as a vehicle for exploring
-object-oriented design. We assume some prior familiarity with Java,
-but will focus on how to use it in an object-oriented way.
+object-oriented language, Java, as a vehicle for exploring object-oriented
+design.
 </p>
 <p>
 It is useful to distinguish between object-oriented (OO) <em>languages</em> and
@@ -13,7 +12,8 @@ the object-oriented <b>programming model</b>. A programming model is an
 approach to solving programming problems. There are many programming
 models and variants thereof. For example, in addition to the
 object-oriented model, there is a <b>functional</b> programming model that
-you will learn about in CS 3110. And there are variations on the
+you might learn about in a course on functional programming, like
+Cornell's CS 3110. And there are variations on the
 object-oriented model such as the <b>event-driven</b> model.
 </p>
 <p>
@@ -28,16 +28,16 @@ apply to other programming languages.
 <p>
 What makes a language object-oriented? It should support the essential
 elements of object-oriented programming. There are three key elements,
-which we will discuss in the following three lectures:
+which we will discuss in upcoming lectures:
 </p>
 <ol>
-<li>Encapsulation (also called Information Hiding)</li>
+<li>Information Hiding (also called Encapsulation)</li>
 <li>Subtyping</li>
 <li>Inheritance</li>
 </ol>
 
 <p>
-We'll start by talking about encapsulation, an idea that Java supports
+We'll start by talking about information hiding, an idea that Java supports
 with the keywords <code>public</code>, <code>private</code>, and
 <code>protected</code>. The use of these keywords prevents code and
 data from being used, which may seem strange: why is it important
@@ -135,6 +135,13 @@ It involves building bigger procedures out of smaller ones, creating
 <b>procedural abstractions</b> that could be reused in a powerful way.
 </p>
 <p>
+Procedures (and here, the term encompasses functions that return a result) are
+an <b>abstraction</b> in the sense that they abstract away the details of how
+algorithms are implemented. Assuming that the procedure's behavior is well
+specified, a caller can use a procedure without knowing the internals of the
+procedure.
+</p>
+<p>
 As software systems became increasingly complex, the procedural model stopped
 working well. Procedural abstraction by itself did not scale
 up to big software systems. The problem was that the
@@ -172,8 +179,8 @@ can start moving without trying to move the whole train.
 </p>
 <p>
 A key insight in programming language design was that modular programming can
-be enforced by a programming language mechanism that <b>encapsulates</b> its
-state and behavior, enforcing information hiding and controlling how other
+be enforced by a programming language mechanism that <b>encapsulates</b> the
+state and behavior of a module, enforcing information hiding and controlling how other
 modules can access it. This approach is suggested by Figure 2.  Code outside a
 module cannot directly access the data that is internal to the module. Any
 access from outside to a module's data must occur via the module's code, and
@@ -203,7 +210,7 @@ exactly how that data is represented. All they have to know is what operations
 (from the public interface) can be performed on the data. The data is opaque
 to the client code, which means that the module implementer is free to change
 how the data is represented because no client code can depend on the precise
-representation.  This powerful idea is called <b>data abstraction</b>.
+representation.  This powerful form of information hiding is called <b>data abstraction</b>.
 The word <b>abstraction</b> refers to the idea of hiding inessential detail.
 In this case, the inessential detail is, for the client code, the precise
 way that information is represented inside the module.
@@ -211,8 +218,8 @@ way that information is represented inside the module.
 
 <h2>An example: rational numbers</h2>
 <p>
-In an object-oriented language like Java, encapsulation and data abstraction
-are primarily provided by classes, though <b>packages</b> are also
+In an object-oriented language like Java, encapsulation
+is primarily provided by classes, though <b>packages</b> are also
 used as an encapsulation mechanism. A class and its code are shared by all objects of
 that class (the <b>instances</b> of the class), and the class's code can
 mediate access to all information stored in instances. For example, suppose we
