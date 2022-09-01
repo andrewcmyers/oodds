@@ -234,10 +234,13 @@ subtyping is called <b>subtype polymorphism</b>.)
 Java's cast operator can be used to control the type at which we are using a
 value.  As an example, suppose we have a variable <code>a</code> of type
 <code>APuzzle</code>.  To force it to be treated as a <code>Puzzle</code>, we
-write <code>(Puzzle) a</code>.  Since <code>APuzzle</code> is a subtype of
+write a <b>cast expression</b>: <code>(Puzzle) a</code>.  Since <code>APuzzle</code> is a subtype of
 <code>Puzzle</code>, this cast will always succeed at runtime: it is
-<b>typesafe</b>. We refer to this kind of cast as an <b>upcast</b> because it
-shifts the type upward in the type hierarchy.
+<b>type-safe</b>. We refer to this kind of cast as an <b>upcast</b> because it
+shifts the type upward in the type hierarchy. In fact, it is not normally necessary to
+write a cast operation, since the language will automatically treat a subtype
+value as belonging to the supertype when necessary.  Occasionally it is useful
+to write an explicit upcast when debugging.
 </p>
 <p>
 It is also possible to cast downward in the subtype hierarchy. This gives us a <b>downcast</b>,
@@ -303,11 +306,12 @@ be ordered as follows:
 <code>private</code> &lt; (package) &lt; <code>protected</code> &lt; <code>public</code>
 </div>
 <p>
-To see why, suppose that a method is declared public in the supertype but is private
-in the subtype. If we have a reference to an object of the subtype, the method will
-be inaccessible, but will become accessible after an upcast to the supertype.
-Therefore, the private visibility modifier is not meaningful. On the other hand, it
-makes sense and is legal to have a method that is private in the supertype but public in the subtype.
+To see why, suppose that a method were declared public in the supertype but was private
+in the subtype. If we had a reference to an object of the subtype, the method would
+be inaccessible, but would become accessible after an upcast to the supertype.
+That private visibility modifier would be misleading and useless, so it is disallowed
+in Java. On the other hand, it makes sense and is legal to have a method that
+becomes more accessible in the subtype.
 </p>
 
 <h2>Interface subtyping</h2>
