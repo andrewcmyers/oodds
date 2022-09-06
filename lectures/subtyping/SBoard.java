@@ -1,9 +1,9 @@
-class SPuzzle implements Puzzle {
+class SBoard implements Board {
    
    private String tiles; // a 16-character string
    private int score;
 
-   public SPuzzle() {
+   public SBoard() {
       reset();
    }
 

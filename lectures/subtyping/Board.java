@@ -1,5 +1,5 @@
 /** A state of the 2048 game, which contains a 4x4 grid of numeric tiles. */
-interface Puzzle {
+interface Board {
    
    /** Reset the game to the initial state, with all tiles blank. */
    void reset();

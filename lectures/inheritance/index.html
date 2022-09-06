@@ -19,13 +19,13 @@ code, both across programs and within programs.
 <h2>Motivating example</h2>
 
 <p>
-Suppose someone gives us an implementation of the <code>Puzzle</code> interface
-that we saw in the previous lecture. In the <code>APuzzle</code> implementation, the puzzle is
-represented by a 2D array of integers:
+Suppose someone gives us an implementation of the <code>Board</code> interface
+that we saw in the previous lecture. In the <code>ABoard</code> implementation, the game state
+is represented by a 2D array of integers:
 </p>
 
 <pre>
-class APuzzle implements Puzzle {
+class ABoard implements Board {
    private int[][] tiles;
 
    public int tile(int r, int c) {
@@ -36,16 +36,16 @@ class APuzzle implements Puzzle {
 }
 </pre>
 <p>
-Now suppose that we want to build a better puzzle implementation by
-reusing this code. For example, we might want the puzzle to
+Now suppose that we want to build a better game implementation by
+reusing this code. For example, we might want the game to
 log all of the moves that have been made. We could proceed by
-copying the code of <code>APuzzle</code> to create a new class <code>LogPuzzle</code>, which
+copying the code of <code>ABoard</code> to create a new class <code>LogBoard</code>, which
 we could then add new fields and methods to. But this strategy doesn't work
-very well when the original supplier of <code>APuzzle</code> fixes some bugs and
-gives us a new version <code>APuzzle'</code>. Now we have to either apply the same bug fixes to
-<code>LogPuzzle</code> on the code that we copied from <code>APuzzle</code>
-to get a new </code>LogPuzzle'</code>,
-or start afresh from <code>APuzzle'</code> and build a new <code>LogPuzzle'</code> from it.
+very well when the original supplier of <code>ABoard</code> fixes some bugs and
+gives us a new version <code>ABoard'</code>. Now we have to either apply the same bug fixes to
+<code>LogBoard</code> on the code that we copied from <code>ABoard</code>
+to get a new </code>LogBoard'</code>,
+or start afresh from <code>ABoard'</code> and build a new <code>LogBoard'</code> from it.
 Either way, it will be a lot of work and difficult to automate.
 </p>
 <div class="figure">
@@ -57,8 +57,8 @@ Figure 1: The problem of merging upgrades
 <script class=graphics>
 with (new CFigure("merging-updates")) {
     const i = 4,
-          l1 = label("APuzzle").expand(i), l2 = label("APuzzle'").expand(i),
-          l3 = label("LogPuzzle").expand(i), l4 = label("LogPuzzle'").expand(i)
+          l1 = label("ABoard").expand(i), l2 = label("ABoard'").expand(i),
+          l3 = label("LogBoard").expand(i), l4 = label("LogBoard'").expand(i)
     align("none", "center", l1, l2)
     align("none", "center", l3, l4)
     align("center", "none", l1, l3)
@@ -76,18 +76,18 @@ with (new CFigure("merging-updates")) {
 
 <p>
 At least for some kinds of changes that we might make between
-<code>APuzzle</code> and <code>LogPuzzle</code>, <b>inheritance</b> offers a solution to this
+<code>ABoard</code> and <code>LogBoard</code>, <b>inheritance</b> offers a solution to this
 problem. We can think of inheritance as a language mechanism for
 <i>copying</i> a class and making certain kinds of changes to that class, without
 actually physically copying the code.
 </p><p>
-To add the new functionality to <code>APuzzle</code>, we build a new class
-<code>LogPuzzle</code> that inherits all the functionality from <code>APuzzle</code>.
-This is done by declaring that <code>LogPuzzle</code> <b>extends</b> <code>APuzzle</code>:
+To add the new functionality to <code>ABoard</code>, we build a new class
+<code>LogBoard</code> that inherits all the functionality from <code>ABoard</code>.
+This is done by declaring that <code>LogBoard</code> <b>extends</b> <code>ABoard</code>:
 </p>
 
 <pre>
-class LogPuzzle extends APuzzle {
+class LogBoard extends ABoard {
    private int numMoves;
 
    public int numMoves() {
@@ -102,25 +102,25 @@ class LogPuzzle extends APuzzle {
 </pre>
 
 <p>
-Here <code>APuzzle</code> is the <em>superclass</em> and <code>LogPuzzle</code> is the <em>subclass</em>.
+Here <code>ABoard</code> is the <em>superclass</em> and <code>LogBoard</code> is the <em>subclass</em>.
 In general, classes inheriting from other classes form an <em>inheritance
 hierarchy</em> or <em>class hierarchy</em>, in which superclasses are above their
 subclasses.
 </p><p>
-The <code>LogPuzzle</code> class is just like the <code>APuzzle</code> class, except:
+The <code>LogBoard</code> class is just like the <code>ABoard</code> class, except:
 </p>
 <ul class="bullets">
 <li>
 It has an additional method, <code>numMoves</code>, and a
-new field, <code>numMoves</code>, that <code>APuzzle</code> does not have.
+new field, <code>numMoves</code>, that <code>ABoard</code> does not have.
 </li>
 <li> It has a new version of the <code>move</code> method that <em>overrides</em> the original
-version from <code>APuzzle</code>. It overrides the original because it has the
+version from <code>ABoard</code>. It overrides the original because it has the
 same name and signature as the original method. (Recall that the <em>signature</em>
 consists of the name of the method, the types of its arguments, and its return type.)
 </li>
-<li> The type <code>LogPuzzle</code> is a subtype of the type <code>APuzzle</code>. That
-is, <code>LogPuzzle</code> &lt;: <code>APuzzle</code>.
+<li> The type <code>LogBoard</code> is a subtype of the type <code>ABoard</code>. That
+is, <code>LogBoard</code> &lt;: <code>ABoard</code>.
 </li>
 </ul>
 
@@ -130,50 +130,50 @@ Because of the subtyping relationship between the two classes, we
 can write the following code:
 </p>
 <pre>
-APuzzle p = new LogPuzzle();
+ABoard p = new LogBoard();
 p.move(up); // which move?
 </pre>
 
 <p class="cont">
 Now here is an interesting question. There are <code>move</code> methods in
-both <code>LogPuzzle</code> and <code>APuzzle</code>, and they do different
+both <code>LogBoard</code> and <code>ABoard</code>, and they do different
 things. Which one is executed in the call <code>p.move(up)</code>? The
-<em>static</em> type of <code>p</code> is <code>APuzzle</code>, but at the time
+<em>static</em> type of <code>p</code> is <code>ABoard</code>, but at the time
 of the call, <code>p</code> refers to an object of <em>dynamic</em> type
-<code>LogPuzzle</code>.</p>
+<code>LogBoard</code>.</p>
 
 <p>In Java, instance (non-static) methods such as <code>move</code> are dispatched according to the
 dynamic type of the receiver object (the class from which it was originally created via <code>new</code>).
-So it is the <code>LogPuzzle</code> version that is run. This is known as <em>dynamic dispatch</em>.
+So it is the <code>LogBoard</code> version that is run. This is known as <em>dynamic dispatch</em>.
 </p>
 
 <p>
 As a slightly more complicated example, suppose the
-superclass <code>APuzzle</code> has a method <code>scramble</code> that calls <code>move</code>,
-but <code>LogPuzzle</code> does not have a <code>scramble</code> method:
+superclass <code>ABoard</code> has a method <code>scramble</code> that calls <code>move</code>,
+but <code>LogBoard</code> does not have a <code>scramble</code> method:
 </p>
 
 <pre>
-class APuzzle {
+class ABoard {
    public void scramble() {
       ... move(randomDir) ...
    }
 }
 
-APuzzle p = new LogPuzzle();
+ABoard p = new LogBoard();
 p.scramble();
 // is p.numMoves() equal to 0?
 </pre>
 
 <p>
 When <code>p.scramble()</code> is called, the <code>scramble</code> method of
-<code>APuzzle</code> is invoked. But when that method calls <code>move</code>,
+<code>ABoard</code> is invoked. But when that method calls <code>move</code>,
 which version of <code>move</code> is dispatched?
-It is the <code>move</code> method of <code>LogPuzzle</code>. The
+It is the <code>move</code> method of <code>LogBoard</code>. The
 <code>move</code> method is still an instance method, and as above, the method
 dispatch mechanism starts at the dynamic class of the receiver object and
 searches upward until finding an implementation. In this case it finds one
-immediately in the <code>LogPuzzle</code> class, and that is the one that is
+immediately in the <code>LogBoard</code> class, and that is the one that is
 dispatched.
 </p>
 
@@ -288,16 +288,16 @@ superclass constructor explicitly, as in the following example:
 </p>
 
 <pre>
-class APuzzle {
+class ABoard {
    private int[][] tiles;
-   public APuzzle(int size) {
+   public ABoard(int size) {
       tiles = new int[size][size];
    }
 }
 
-class LogPuzzle extends APuzzle {
+class LogBoard extends ABoard {
    private int numMoves;
-   public LogPuzzle() {
+   public LogBoard() {
       super(4);
       numMoves = 0;
    }
@@ -305,7 +305,7 @@ class LogPuzzle extends APuzzle {
 </pre>
 
 <p class="cont">
-Here, the constructor <code>LogPuzzle</code> always creates puzzles of
+Here, the constructor <code>LogBoard</code> always creates boards of
 size 4×4, which is accomplished by calling the superclass constructor
 with <code>super(4)</code>. The call to the superclass constructor is static.
 </p>
@@ -313,13 +313,13 @@ with <code>super(4)</code>. The call to the superclass constructor is static.
 <h2>Protected visibility</h2>
 
 <p>
-What if we want the <code>LogPuzzle</code> code to access the <code>tiles</code> field
+What if we want the <code>LogBoard</code> code to access the <code>tiles</code> field
 directly? As defined, we cannot, because <code>tiles</code> is declared <code>private</code>.
 However, if we give <code>tiles</code> the <code>protected</code> visibility in
-<code>APuzzle</code>, it becomes visible to subclasses:
+<code>ABoard</code>, it becomes visible to subclasses:
 </p>
 <pre>
-class APuzzle {
+class ABoard {
    protected int[][] tiles;
    ...
 }
@@ -349,14 +349,14 @@ Suppose that <code>scramble()</code> had been defined to call a protected method
 </p>
 
 <pre>
-class APuzzle {
+class ABoard {
    public void scramble() {
       ... internalMove(n); ...
    }
    protected internalMove(int d) { ... }
 }
 
-class LogPuzzle extends APuzzle {
+class LogBoard extends ABoard {
    private int numMoves = 0;
    protected internalMove(int d) {
       numMoves++;
@@ -365,8 +365,8 @@ class LogPuzzle extends APuzzle {
 }
 </pre>
 <p>
-This example shows that the specialization interface of <code>APuzzle</code>
-allows the <code>LogPuzzle</code> class to change the behavior of existing
+This example shows that the specialization interface of <code>ABoard</code>
+allows the <code>LogBoard</code> class to change the behavior of existing
 public methods without overriding them directly. Protected methods
 are hooks for future extensibility of OO code. The specialization
 interface defines how code can be extended.

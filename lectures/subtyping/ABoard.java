@@ -1,9 +1,9 @@
-class APuzzle implements Puzzle {
+class ABoard implements Board {
    
    private int[][] tiles; // a 4x4 array
    private int score;
 
-   public APuzzle() {
+   public ABoard() {
       reset();
    }
 
