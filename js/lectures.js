@@ -55,7 +55,8 @@ function relativize(url, lecture_base, base) {
 }
 
 function localizeContent(node, lecture_url) {
-    const lecture_base = basename(lecture_url)
+    const lecture_base = basename(lecture_url),
+          lec_name = lecture_base.replace(/^.*\//, '')
     let nodenum = 0
     const pre_nodes = node.getElementsByTagName('pre')
     for (const n of pre_nodes) {
@@ -65,7 +66,7 @@ function localizeContent(node, lecture_url) {
               link = kids[0]
         if (link.tagName != 'A') continue
         if (id == null || id == "") {
-            n.id = "id_pre_node_" + (++nodenum)
+            n.id = "pre_node_" + lec_name + "_" + (++nodenum)
         }
         n.removeChild(link)
         fetch_code(n.id, relativize(link.href, lecture_base, base_url))
