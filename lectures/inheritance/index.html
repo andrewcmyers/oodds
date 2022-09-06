@@ -353,12 +353,12 @@ class APuzzle {
    public void scramble() {
       ... internalMove(n); ...
    }
-   protected internalMove(int d) { ... }
+   protected void internalMove(int d) { ... }
 }
 
 class LogPuzzle extends APuzzle {
    private int numMoves = 0;
-   protected internalMove(int d) {
+   protected void internalMove(int d) {
       numMoves++;
       super.internalMove(d);
    }
@@ -393,3 +393,4 @@ One useful pattern is to use such methods as holes in the implementation to be
 filled in by subclasses. In this case, the <code>protected</code> visibility
 is appropriate because the methods are not intended to be used directly by
 clients.
+</p>
