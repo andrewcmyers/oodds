@@ -56,12 +56,14 @@ extend, and reimplement without breaking client code.
 The rule of thumb, then, is that interfaces should be made only as wide as necessary
 for efficient client code to be written in a straighforward way.
 </p>
+
 <h3>Convenience methods</h3>
+
 <p>
 Often when a narrow interface feels awkward to use, it is possible to address
 this problem by writing <b>convenience methods</b> that are implemented
 outside the module, using only the narrow interface that the module provides.
-Clients can then use the convenience functions to avoid code duplication, but
+Clients can then use the convenience methods to avoid code duplication, but
 without widening the interface and thereby introducing new dependencies between
 modules.
 </p>
@@ -186,11 +188,12 @@ out of your design and to understand your design better. Typically, this makes b
 coding and debugging faster. Sometimes your code just works on the first try!
 </p>
 <p>
-The moral is that documentation is not some kind of esthetic decoration for your code. It
+The moral is that documentation is not mere esthetic decoration for your code. It
 is a tool that can improve your designs and save you time in the long run.
 </p>
 
 <h3><em>What</em> to write?</h3>
+
 <ol>
 <li><p><b>Know your audience</b>: Tell your reader the things they need
 to know in a way they can understand.
@@ -206,31 +209,48 @@ x = x + 1 // add one to x
 explanation than to intersperse explanatory comments throughout the code.</li>
 
 <li><p><b>Respect the abstraction barrier</b>: write specifications in terms the
-    reader/client can understand without knowing the implementation.</li>
+    reader/client can understand without knowing the implementation. Don't
+    expose implementation details in specifications.</li>
 </ol>
 </ul>
 
 <h2>An example: polynomials</h2>
 
-<h3>Step 1: describe the abstraction</h3>
+<h3>Step 1: describe the abstraction by writing an overview comment.</h3>
 <pre>
 /** A polynomial over a single variable x
  * Example: 2 + 3x - 5.3x<sup>3</sup>
  */
-interface Poly {
+class Poly {
   ...
 }
 </pre>
+<p>
+As this code example shows, it's often helpful in a class or interface overview
+to introduce a notation for describing the values of the abstraction. This
+notation can then be used when writing specifications of the methods.
+</p>
 
 <h3>Step 2: choose operations</h3>
 
-<p>Well-designed methods usually fall into one of three categories: <b>creators</b>, <b>observers</b> (also known as <b>queries</b>), and <b>mutators</b> (also known as <b>commands</b>).
+<p>Next, we think carefully about what methods are essential while trying to
+avoid unnecessarily widening the interface, and write specifications for
+these methods.
+</p>
+
+<p> In choosing operations, it is helpful to notice that well-designed methods
+usually fall into one of three categories: <b>creators</b>, <b>observers</b>
+(sometimes called <b>queries</b>), and <b>mutators</b> (also known as
+<b>commands</b>).
 
 <ul>
+
 <li><b>Creators</b>: these methods are used to create new objects, particularly
 those of the class being implemented.
 </li>
+
 <li><b>Observers</b>: these methods report on object state but have no side effects.</li>
+
 <li><b>Mutators</b>: the primary purpose of these methods is to have a side effect.</li>
 </ul>
 
@@ -254,8 +274,8 @@ have their uses. The advantage of immutable abstractions is that their objects c
 shared freely by different code modules.
 </p> 
 
-<p>The useful principle of <b>command-query
-separation</b> can guide how we design methods. The principle says that
+<p>The useful principle of <b>command–query
+separation</b> guides method design. The principle says that
 a given operation should fall into one of these three
 categories, rather than multiple categories. This makes the interface easier to
 use. For example, you don't want to be forced to have side effects in order to
@@ -280,14 +300,7 @@ check the state of an object.</p>
 	<li><code>equals</code>: report equality of a polynomial with another object.</li>
   </ul>
 <li><b>Mutators:</b>
-  We might not want to have mutators at all, so that we don't have to worry
-  about polynomials changing their values. If polynomials are to be mutable,
-  however, we need mutators, e.g.:
-  <ul>
-   <li><code>clear</code>: set this to the zero polynomial.</li>
-   <li><code>add</code>: add another polynomial to this.</li>
-  </ul>
-  </li>
+  Since polynomials are immutable, we should not have any mutators.
 </ul>
 
 <p>Notice that we have not discussed how we are going to implement
@@ -302,7 +315,8 @@ existing operations. For example, we might be tempted to have an operation that
 finds zeros of the polynomial. However, such an operation can probably be
 implemented efficiently using either factoring (for low-degree polynomials) or
 numerically via Newton's method, using <code>evaluate</code> and
-<code>derivative</code>.
+<code>derivative</code>. Such a convenience method can be provided by a different
+module.
 </p>
 
 <p><b>Standard operations.</b> Some operations are so useful
@@ -321,28 +335,85 @@ said that two things should be equal if and only if they are indistinguishable.
 </p>
 
 <li><b>State equality.</b> Some Java classes implement equality by comparing the
-current state of two objects. For example, two Java collections will report
-themselves equal if they contain the same objects. However, one of the
-collections might change later on, since collections are mutable. Thus, they
-would stop being “equal”. A notion of equality that can change is dangerous,
-because it can lead to invariants being broken. For example, objects used as
-keys in Java collections need to satisfy invariants with the data structure
-that implements the collection. Mutating these objects will break the invariants
-of the data structure.
+current state of two objects, as reported by all of their observers.  For
+example, two Java collections will report themselves equal if they contain the
+same objects. However, one of the collections might change later on, since
+collections are mutable. Thus, they would stop being “equal”. A notion of
+equality that can change is dangerous, because it can lead to invariants being
+broken. For example, objects used as keys in Java collections need to satisfy
+invariants with the data structure that implements the collection. Mutating
+these objects breaks the invariants of the data structure.
 </ol>
 
-<p>As a rule of thumb, it is best to use Leibniz equality when feasible.  Since
-mutable objects are only really indistinguishable when they are the same
-object, this rule implies that mutable objects should simply inherit
-<code>Object.equals()</code>.  However, two immutable objects, such as
-<code>String</code>s, can be indistinguishable through all of their observer
-operations and should in that case be considered equal.
+<p>
+Therefore, although the Java specification for the <code>equals()</code> method
+does not require Leibniz equality, as a rule of thumb, it is best to implement
+Leibniz equality when feasible to avoid the above problems. Since mutable
+objects are only really indistinguishable when they are the same object, this
+rule implies that mutable objects should not define their own
+<code>equals()</code>, but instead simply inherit <code>Object.equals()</code>.
 </p>
+
+<p>Two immutable objects, such as
+<code>String</code>s, can be indistinguishable through all of their observer
+operations and should in that case be considered equal. Immutable abstractions
+<em>should</em> override <code>equals()</code> and implement state equality, 
+since state equality and Leibniz equality are essentially the same for
+immutable objects.
+</p>
+
+<p>
+There is one important way that immutable objects can be distinguished even
+though they look the same through all of their observer methods, and that is to
+compare them using the operator <code>==</code>, which observes whether they
+have the same object identity. This operator unfortunately breaks the
+abstraction barrier for immutable abstractions, so good code will avoid using
+it on immutable abstractions except in very special situations.
+</p>
+
+<p>
+The Java specification for <code>Object.equals()</code> does not require
+Leibniz equality, but it does require that it satisfy some basic properties
+of an equivalence relation: it should be reflexive, symmetric, and transitive.
+Further, it should return <code>false</code> when a comparison is made to
+the special value <code>null</code>.
+</p>
+<p>
+Since our <code>Polynomial</code> class is immutable, we should override the
+<code>equals()</code> method to implement state equality. For example, the
+code might look like the following:
+</p>
+<pre>
+    boolean equals(Object o) {
+        if (o == null) return false;
+        if (getClass() != o.getClass()) return false;
+        Polynomial p = (Polynomial) o; // this cast is guaranteed to succeed
+        return Arrays.equal(coefficients, p.coefficients);
+    }
+</pre>
+<p>
+This code uses the method <code>getClass()</code> to access the run-time class
+of the objects being compared. This is an example of <b>reflection</b>, in
+which we access type properties of objects at run time. If we know that there
+will be no subclasses of <code>Polynomial</code> whose implementation might
+make equality assymetric, we can get away without using reflection and instead
+just use <code>instanceof</code>:
+</p>
+<pre>
+    boolean equals(Object o) {
+        if (o == null) return false;
+        if (o instanceof Polynomial p) {
+            return Arrays.equal(coefficients, p.coefficients);
+        } else {
+            return false;
+        }
+    }
+</pre>
 
 <li><p><b>toString</b>. It is very useful for debugging to be able to
 print a string representation of an object. Ideally, two objects should have
 equal answers for <code>toString()</code> if and only if they are equal
-according to <code>equals</code>.
+according to <code>equals()</code>.
 
 <li><p><b>hashCode</b>. If you want to use an object as key in a hash table,
 it needs to have a <code>hashCode()</code> method. Two objects that are equal
@@ -358,25 +429,38 @@ the original by mutating the copy, or vice versa. Among other uses, copies are
 handy for building test cases. The copying method should override <code>Object.clone()</code>.
 </ul>
 
-<p><b>Getters and setters</b>. Getters are observer methods that report the
-contents of fields, and setters are mutators that change the values of fields
-to a given value. Both getters and setters allow access to your object's data,
-and care should be taken to allow access in cases only where it is appropriate.
-It is not a good idea to indiscriminately add getters and
-setters to classes you write. Think about whether the client needs read or write
-access to the object's data and what restrictions apply.
-</p>
+<h4>Antipatterns in interface design</h4>
 <p>
-One can make a field public, but it is generally better to keep the field private
-and use a setter. Public fields allow completely unchecked access. With a setter,
-one can check to make sure data is of the correct form before updating. For example,
-if an integer field must never be negative, that check can be put in a setter. 
+<b>Getters and setters.</b>
+Getters are observer methods that report the contents of fields, and setters
+are mutators that change the values of instance variables to a given value. You
+may see advice that the programmer should implement getters and setters to
+allow access to private instance variables.  However, it is not a good idea to
+reflexively add getters and setters to classes you write. This pattern is
+actually an antipattern to be avoided. Getters and setters weaken the
+abstraction barrier by advertising the existence of instance
+variables—something that should be hidden by the abstraction barrier. Further,
+the instance variables do not necessarily correspond directly to the
+observations and mutations that make sense for the object.
 </p>
-<p>One pitfall with getters to be aware of is that they may inadvertently
-allow modification of the data by exposing mutable state from inside the abstraction.
-For example, suppose we store the coefficients of a polynomial as an array in the
-instance variable <tt>coefficients</tt> and provide a getter:
+
+<p>
+Pragmatically, if an instance variable has a getter and a setter, it becomes
+hard to enforce any kind of abstraction barrier, since clients can modify it
+arbitrarily. It is not much better than making the instance variable public.
+Of course, we can define setters with preconditions, but it is
+better to think of these setters as mutators.
 </p>
+
+<p>
+<b>Rep exposure.</b>
+Even getters can be dangerous. A common pitfall is to inadvertently allow
+modification of the data by exposing mutable state from inside the abstraction.
+This error is known as <b>rep exposure</b>.  For example, suppose we store the
+coefficients of a polynomial as an array in the instance variable
+<tt>coefficients</tt> and provide a getter:
+</p>
+
 <pre>
  private double[] coefficients;
  public double[] getCoefficients() {
@@ -386,18 +470,23 @@ instance variable <tt>coefficients</tt> and provide a getter:
 <p>
 Now a client can get access to the internal array of coefficients and
 change the polynomial in an unconstrained way, possibly breaking its class invariant.
-To avoid this, a copy of the array must be returned.
+Even wrose, the client may have no idea that it is causing damage by changing the 
+array. To avoid this damage, a new copy of the array should be returned to the client.
 </p>
 <p>The moral is that some observers and some mutators may look like getters and setters,
 but you should choose observers and mutators that are appropriate to the abstraction
-being designed rather than reflexively exporting access to all instance variables.
+being designed rather than reflexively exporting access to instance variables.
 </p>
 
-<p>Another operation that is overrated is the default constructor. It is the
+<p>
+<b>Default constructors.</b>
+Another overrated operation is the default constructor. It is the
 job of constructors to create a properly initialized object. Unfortunately,
 one often sees code that uses a default constructor to create the object,
-then initializes the fields using setters. A better approach is to use a constructor
-for initialization.
+then initializes the fields using setters. Until the fields are initialized,
+the object will not satisfy the class invariant, and the setters are prone to
+being misused by confused clients. A better approach is to use a constructor
+for initialization, or to use the Builder pattern, which we will discuss later.
 </p>
 
 <h3>Step 3: write specifications</h3>
@@ -419,11 +508,16 @@ int degree();
 <p>To help us construct a good spec, it is useful to think of the spec as being composed of
 various <b>clauses</b>. These cover different things the client needs to know about:</p>
 <ul>
-<li><b>Outputs</b>: The <b>returns clause</b> describes what results come back when the method is called.
-<li><b>Inputs</b>: The <b>requires clause</b> describes what arguments the caller is permitted to supply.
-<li><b>Effects</b>: The <b>effects clause</b> describes what side effects to the state of objects happen.
-<li><b>Errors</b>: To aid in debugging, we may want to explain what happens when the client supplies incorrect inputs.
-          This is usually done as part of the requires clause.
+<li><b>Postconditions</b>: The <b>returns clause</b> describes what results come back when the method is called.
+For creators, we can also write this as a <b>creates</b> clause, which is a shorthand promising that the
+client can treat the returned object as distinct from any existing object.
+<li><b>Preconditions</b>: The <b>requires clause</b> describes what arguments the caller is permitted to supply.
+   A variant of this clause is a <b>checks clause</b>, which promises that the code will check certain
+   preconditions and halt the program with an error if the preconditions are violated. THe only difference
+   between these two versions of the precondition is that one can make debugging easier.
+<li><b>Effects</b>: The <b>effects clause</b> describes what side effects happen to the state of objects.
+A related clause is a <b>modifies clause</b>, which enumerates objects to which some effect occurs without
+specifying what the change is.
 <li><b>Examples</b>: Sometimes an example or two can help clarify what the method does.
 </ul>
 <p>
@@ -432,11 +526,11 @@ Like a legal contract, its main goal is to help everyone figure out who to blame
 very important for successful software engineering, especially in a large team.
 </p>
 
-
 <h4>Using Javadoc</h4>
+
 <p>Javadoc doesn't completely support the clauses we have described so
 far, although there are ongoing efforts to improve it. If you want to use Javadoc to
-generate HTML documentation, you will need to adapt this documentation strategy
+generate HTML documentation, you ca adapt this documentation strategy
 accordingly. The key is not that you need to have explicit clauses, but that
 you should know for each thing you write in the comment which clause
 it belongs to.
