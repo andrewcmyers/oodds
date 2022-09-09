@@ -525,18 +525,24 @@ The key to writing good specs is to think of the spec as a <b>contract</b> betwe
 Like a legal contract, its main goal is to help everyone figure out who to blame when things go wrong. This is
 very important for successful software engineering, especially in a large team.
 </p>
+<p>
+To keep specs concise, it is useful to have some default preconditions that do
+not need to be stated explicitly. A good example of such a precondition is an
+expectation that no argument values to a method are <code>null</code>.  If a
+method might be able to handle a null argument, the method spec should
+explicitly say so.
+</p>
 
 <h4>Using Javadoc</h4>
 
-<p>Javadoc doesn't completely support the clauses we have described so
-far, although there are ongoing efforts to improve it. If you want to use Javadoc to
-generate HTML documentation, you ca adapt this documentation strategy
-accordingly. The key is not that you need to have explicit clauses, but that
-you should know for each thing you write in the comment which clause
-it belongs to.
+<p>Javadoc doesn't completely support the clauses described above, although
+there are ongoing efforts to improve it. If you want to use Javadoc to generate
+HTML documentation, you can adapt this documentation strategy accordingly. The
+key to success is not that you need to have explicit clauses, but that you
+should know for each thing you write in the comment which clause it belongs to.
 </p>
 
 <h3>Step 4: implement operations</h3>
-<p>Now we are ready to implement our specifications. And we will want to write
-some documentation of that implementation.
+<p>Now we are ready to implement our specifications! And we will want to write
+some documentation of that implementation. This is a topic for later.
 </p>
