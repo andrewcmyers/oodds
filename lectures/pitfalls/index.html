@@ -43,7 +43,8 @@ indices into the array are \(0,...,n-1\).
 As with objects, the variables <code>a</code> and <code>b</code> contain
 references to the arrays rather than the arrays themselves. If we wrote an
 assignment <code>a = b;</code>, they would subsequently refer to the same
-underlying array; <code>a</code> and <code>b</code> would be <em>aliases</em>.
+underlying array; in other words, <code>a</code> and <code>b</code> would be
+<em>aliases</em>.
 Each array contains a first slot that keeps track of the
 type of the elements in the array, and each has a single immutable instance
 variable <code>length</code> that keeps track of the number of elements. The
@@ -174,11 +175,11 @@ Java does not enforce that <code>m</code> represents
 a rectangular matrix. For example, we can change the length of one of its rows:
 </p>
 <pre>
-m[1] = new int[1];
+m[0] = new int[1];
 </pre>
 <p class="cont">
 which would make the first row have length 1.
-We can even make the rows alias each other:
+We can even make the rows alias each other.
 </p>
 <pre>
 m[1] = m[0];
