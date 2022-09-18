@@ -449,6 +449,12 @@ A stack is a list that supports two operations:
 <pre class="load">
 <a href="Stack.java">Stack.java</a>
 </pre>
+<p>
+The top of the stack is always the head of the list.  So, putting a new element
+on the top of the stack just means prepending a node at the beginning of the
+list. And to pop the top of the stack, we undo this action by changing
+<code>top</code> to point to the second entry on the stack.
+</p>
 
 <p>Keep in mind that data structures are ways to implement
 abstract data types, and using them through an abstraction barrier is preferable
