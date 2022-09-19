@@ -602,7 +602,8 @@ scope throughout the containing class.
 </p>
 <p>
 If a name is in the scope of two different declarations at once, the outer declaration
-is said to be <em>shadowed</em> by the inner one. Java considers some shadowing to be
+is said to be <em>shadowed</em> by the inner one. The scope of the outer declaration has
+a ``hole'' in it where the inner scope exists. Java considers some shadowing to be
 illegal. For example, this code will not compile because the variable <code>x</code>
 is shadowed inside the <code>while</code> loop:
 </p>
@@ -615,9 +616,10 @@ while (x != 0) {
 // only outer x in scope here.
 </pre>
 <p>
-One place where shadowing is allowed, often getting programmers into trouble, is when a local
-variable shadows an instance field. Shadowing often arises with constructors, because it is
-tempting to name formal parameters in the same way as instance variables:
+Local variables cannot have a hole in scope, but 
+one place where shadowing <em>is</em> allowed, often getting programmers into trouble, is when a local
+variable shadows an instance variable. Shadowing is especially common with constructors, because it is
+convenient to name formal parameters in the same way as the corresponding instance variables:
 </p>
 <pre>
 class Point {
