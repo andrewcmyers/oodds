@@ -1,6 +1,13 @@
 <h1>Exceptions</h1>
 
-<h2>Exceptions in Java</h2>
+<p>Exceptions are an important language mechanism for dealing with unexpected or
+unusual conditions that arise during the execution of a program.  How programming
+languages should support exceptions is still a subject of debate, but using
+exceptions well can make programs clearer and more reliable.
+
+</p>
+
+<h2>The Java exception mechanism</h2>
 <p>
 In general, a statement or expression may not evaluate in a normal way. For example,
 if we try to divide a number by zero, there is no sensible result. Java handles such
@@ -49,7 +56,7 @@ of the <code>try</code>.
 </p>
 <h3>Example: catching exceptions</h3>
 <p>
-Here is a small example of using exceptions.
+Here is a small example of catching exceptions.
 This code parses the command line of the program by scanning
 the argument list from left to right. It looks for a <kbd>--file</kbd> option
 that specifies a file name, but it needs to handle the case in which
@@ -159,7 +166,16 @@ throw an exception, client code could look like that above, and the compiler
 would force clients to remember to check for the case in which &ldquo;<tt>header:</tt>&rdquo;
 isn't found.
 </p>
+<p>
+Interestingly, the standard Java function for computing the square root of a
+number, <code>Math.sqrt</code>, takes the approach of returning a special
+return value. The return value <code>NaN</code> (“Not A Number”) is returned
+when the argument is negative. If the programmer is not careful, <code>NaN</code>s can
+propagate through a series of calculations, turning the final result into
+garbage---a dangerous approach if the calculations are used to control
+real-world systems like airplanes or spacecraft.
 </p>
+
 <h3>Checked or unchecked?</h3>
 <p>
 Given that some exceptions are checked and other unchecked, it may not be clear what
