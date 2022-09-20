@@ -45,7 +45,7 @@ to take power away from the programmer? The answer is that limiting
 access supports <b>modularity</b>.
 </p>
 
-<h2>The need for modular programming</h2>
+<h2>Abstraction and modularity</h2>
 
 <div class="figure">
 <canvas style="width: 400px; height: 300px" id="procedural-fig"></canvas>
@@ -134,13 +134,24 @@ were computing with. This is the procedural model of programming.
 It involves building bigger procedures out of smaller ones, creating
 <b>procedural abstractions</b> that could be reused in a powerful way.
 </p>
+<h3>Abstraction</h3>
+<p>
+What do we mean by <b>abstraction</b>? In computer science, abstraction
+means the suppression of unnecessary details about the implementation
+of some part of a program. Abstraction is helpful because it lets us use
+code without understanding exactly what is going on internally. Abstraction
+allows us to use functionality without having to confront and understand the
+full complexity of its implementation. Since humans have only finite memory
+and attention to spare, abstraction is an essential principle for engineering
+complex systems.
+</p>
 <p>
 Procedures (and here, the term encompasses functions that return a result) are
-an <b>abstraction</b> in the sense that they abstract away the details of how
-algorithms are implemented. Assuming that the procedure's behavior is well
-specified, a caller can use a procedure without knowing the internals of the
-procedure.
+abstractions because they abstract away the details of how algorithms are
+implemented. Assuming that the procedure's behavior is well specified, a caller
+can use a procedure without knowing the internals of the procedure.
 </p>
+<h3>Modularity vs. Tight Coupling</h3>
 <p>
 As software systems became increasingly complex, the procedural model stopped
 working well. Procedural abstraction by itself did not scale
@@ -154,16 +165,18 @@ A bug in one software component can corrupt program data and look like a bug in
 a different component. Code is hard to maintain and to evolve without
 breaking it, and changes to way data is represented in the program tend to
 affect all of the program code rather than being isolated to a small part 
-of the code.
+of the code. It was difficult to divide a large programming tasks into pieces
+that developers could work on somewhat independently. Procedural programming
+lacked <b>modularity</b>.
 </p>
 
 <h2>Modular programming</h2>
 <p>
 To address these problems, <b>modular programming</b> was developed.
-(Object-oriented programming extends modular programming with some additional
-ideas that we get to soon.) The idea of modular programming is that the
+(Object-oriented programming is a form of modular programming, but adds more
+ideas that we will discuss soon.) The idea of modular programming is that the
 software should be broken up into distinct <b>modules</b> that can be
-developed relatively independently. A good modular design respects the
+developed separately. A good modular design respects the
 principle of <b>separation of concerns</b>, which says that different aspects
 of the design should be designed separately. With a good modular design,
 changes can be made to one module without changing other modules, and it is
