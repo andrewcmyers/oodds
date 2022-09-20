@@ -109,6 +109,30 @@ class Negative extends Exception {}
 double sqrt(double x) throws Negative { ... }
 </pre>
 
+<p>Using code can handle the exception either with <code>try–catch</code> or by
+passing the exception up the stack where a caller will have to handle it.
+These two options are sketched in the code below:
+</p>
+
+<pre class="codeleft">
+void f() {
+    try {
+        ...
+        double z = sqrt(x) + sqrt(y);
+        ...
+    } catch (Negative exc) {
+        err.println("Out of bounds");
+    }
+}
+</pre>
+<pre class="coderight">
+void f() throws Negative {
+    ...
+    double z = sqrt(x) + sqrt(y);
+    ...
+}
+</pre>
+
 <h2>Exceptions vs. Errors</h2>
 <p>
 Exceptions allow the programmer to transfer control from one point in the

@@ -139,6 +139,12 @@ div#unit-signature-links a { color: white }
 .keyword {font-weight: bold}
 .m, .math { font-family:serif; font-size: 11pt }
 
+.codeleft, .coderight {
+    display: inline-block;
+    vertical-align: top;
+    width: 40%;
+}
+
 @media print {
 	body {
 		font-family: "Times New Roman", times;
