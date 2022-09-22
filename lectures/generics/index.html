@@ -272,18 +272,18 @@ that other type, rather than of <code>Object</code>.
 Similarly, we can't create an array whose type includes a parameter type:
 </p>
 <pre>
-HashSet&lt;String&gt;[] sets = new HashSet&lt;String&gt;[n]; // error: generic array creation
+HashSet&lt;T&gt;[] sets = new HashSet&lt;T&gt;[n]; // error: generic array creation
 </pre>
 <p>One workaround is to use a wildcard type to create the array, and dynamically cast it to the
 desired type:
 <pre>
-HashSet&lt;String&gt;[] sets = (HashSet&lt;String&gt;[]) new HashSet&lt;?&gt;[n];
+HashSet&lt;T&gt;[] sets = (HashSet&lt;T&gt;[]) new HashSet&lt;?&gt;[n];
 </pre>
 <p>
 Equivalently, one can use a <b>raw type</b>, a type in which type parameters have been explicitly erased,
 to create the array:
 <pre>
-HashSet&lt;String&gt;[] sets = new HashSet[n];
+HashSet&lt;T&gt;[] sets = (HashSet&lt;T&gt;)new HashSet[n];
 </pre>
 <p>
 Raw types are an unchecked end run around the Java type system: Java allows a
