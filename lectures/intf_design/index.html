@@ -454,9 +454,11 @@ better to think of these setters as mutators.
 
 <p>
 <b>Rep exposure.</b>
+
 Even getters can be dangerous. A common pitfall is to inadvertently allow
 modification of the data by exposing mutable state from inside the abstraction.
-This error is known as <b>rep exposure</b>.  For example, suppose we store the
+Making mutable parts of the representation directly accessible to clients is
+an error known as <b>rep exposure</b>.  For example, suppose we store the
 coefficients of a polynomial as an array in the instance variable
 <tt>coefficients</tt> and provide a getter:
 </p>
@@ -470,8 +472,20 @@ coefficients of a polynomial as an array in the instance variable
 <p>
 Now a client can get access to the internal array of coefficients and
 change the polynomial in an unconstrained way, possibly breaking its class invariant.
-Even wrose, the client may have no idea that it is causing damage by changing the 
+Even worse, the client may have no idea that it is causing damage by changing the 
 array. To avoid this damage, a new copy of the array should be returned to the client.
+</p>
+<p>
+Rep exposure can also be caused by creators and mutators.  If a creator or a mutator
+takes an argument that is a mutable object, and then makes that object directly
+part of the object representation, the client may retain the ability to modify the
+mutable object through a reference it is holding. For example,
+a setter <code>setCoefficients()</code> that allowed a client to override the polynomial's
+coefficients with a new array would be just as bad as <code>getCoefficients()</code>.
+A well-defended abstraction barrier.
+requires that clients not hold any references to mutable state inside the implementation,
+because they could use those references to break the implementation, whether accidentally
+or maliciously.
 </p>
 <p>The moral is that some observers and some mutators may look like getters and setters,
 but you should choose observers and mutators that are appropriate to the abstraction
