@@ -322,11 +322,11 @@ random order, which involves a small digression:
 <h3>How to place a sequence of elements in random order</h3>
 <p>
 The <a href="http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">
-Fisher–Yates algorithm</a> (developed in 1938) places N elements into random
-order. Recall that there are N! possible permutations of N elements; a
-perfectly random shuffle should have equal probability 1/N! of producing any
-given permutation. The algorithm works as follows. Assume we have the N elements
-in an array. We iterate from N&ndash;1 down to 0 deciding which element to place into
+Fisher–Yates algorithm</a> (developed in 1938) places \(N\) elements into random
+order. Recall that there are \(N! = 1×2×3×...×N\) possible permutations of \(N\) elements; a
+perfectly random shuffle should have equal probability \(1/N!\) of producing any
+given permutation. The algorithm works as follows. Assume we have the \(N\) elements
+in an array. We iterate from \(N-1\) down to \(0\) deciding which element to place into
 a given array index. In each array index we randomly choose one of the elements
 in the array indices up to that point and swap it with the current array index.
 </p>
@@ -334,9 +334,9 @@ in the array indices up to that point and swap it with the current array index.
 <a href="fisher-yates.java">fisher-yates.java</a>
 </pre>
 <p>
-The first iteration generates one of N possible values, the second iteration one of N&ndash;1 possible
+The first iteration generates one of \(N\) possible values, the second iteration one of \(N-1\) possible
 values, and so on until the final iteration generates one of two possible values. Therefore, the
-total number of possible ways to execute is N × (N&ndash;1) × (N&ndash;2) × ･･･ × 2 = N!.
+total number of possible ways for the algorithm to execute is \( N × (N-1) × (N-2) × ･･･ × 2 = N!\).
 Furthermore, given a
 particular permutation, there is exactly one way for the algorithm to produce it. Therefore,
 all permutations are produced with equal probability, assuming the random number generator is
