@@ -624,9 +624,6 @@ with (new CFigure("hashdigest")) {
         align("left right", "center", horzLine("black", 2), c)
         return c
     }
-    function arrow(...args) {
-        return connector(...args).setEndArrow("arrow")
-    }
     let d1, d2, dn
     align("distribute", "center", d1 = dv(1), d2 = dv(2), label("..."), dn = dv("n"))
     equal(d1.x0(), 2)

@@ -133,9 +133,6 @@ with (new CFigure("design-process", false)) {
         equal(r.w(), times(2, r.h()))
         return r
     }
-    function arrow(a, b) {
-        connector(a, b).setEndArrow("arrow")
-    }
     l1 = label("documenting late").setFontStyle("italic")
     align("center", "distribute",
         l2 = design_step("design"),
