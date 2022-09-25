@@ -328,3 +328,37 @@ clause it belongs to, and include all the information that should be
 found in the clauses that the spec of your code needs.
 </p>
 -->
+
+<h3>try-with-resources</h3>
+<p>
+Recent versions of Java have added a useful syntactic sugar that helps make
+sure that resources acquired by some code are released at the end.  A
+try-with-resources statement looks like an ordinary try-statement
+except that it can start with some variable initializers in parentheses. These
+variables name the resources used by the statement. They must have a type
+which is a subtype of <code>java.lang.AutoCloseable</code>:
+</p>
+<pre>
+interface AutoCloseable {
+    void close();
+}
+</pre>
+<p>
+The try-with-resources statement will ensure that the <code>close()</code> is
+invoked on all of the named resources. For example, if we wanted to read some
+data from a file, we might create a <code>FIleReader</code> to read from the
+file and a <code>BufferedReader</code> to buffer the input for efficiency:
+<pre>
+try (Reader fr = new FileReader(filename);
+     Reader br = new BufferedReader(fr)) {
+    // use br to read input from the file here
+} catch (IOException exc) {
+    System.err.println("IO exception: " + exc.message());
+}
+</pre>
+<p>
+At the end of a try-with-resources, the methods <code>fr.close()</code> and
+<code>br.close()</code> will be called, freeing up the corresponding resources
+in the operating system, even if an exception (either caught or uncaught) is
+raised. 
+</p>
