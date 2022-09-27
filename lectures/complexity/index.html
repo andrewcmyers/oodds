@@ -91,7 +91,8 @@ of algorithms in terms of asymptotic complexity.
 This notation is called <b>&ldquo;big-O&rdquo; notation</b>. It describes
 performance in a way that is largely independent of the kind of computer on
 which we are running our code. It is “asymptotic” in the sense that it describes how
-performance behaves as we increase \(n\) to large values.
+performance behaves as we increase \(n\) to large values. It places an upper bound on
+the amount of time taken by an algorithm, while ignoring constant factors.
 </p>
 <p>
 The statement that \( f(n) \) is \( O(g(n)) \) means that \( g(n) \) is an upper bound for \( f(n) \)
@@ -108,11 +109,17 @@ for all \( n \), just for <em>sufficiently large</em> \( n \). That is, there mu
 such that for all \( n ≥ n_0 \), \( kg(n) \) is larger than \( f(n) \).
 </p>
 <p>
+To show that \(f(n)\) is \(O(g(n))\), we demonstrate that there exists this pair of numbers \((k, n_0)\)
+which <b>witness</b> the property.
+</p>
+<p>
 A perhaps surprising consequence of the definition of \( O(g(n)) \) is that both \( f \) and
 \( f' \) are also \( O(n^2) \), because the
 quantity \( (3n&pm;2) \) is bounded above by
-\( kn^2 \) (for any \( k \)) as \( n \) grows large. In other words, big-O notation only establishes
-an <b>upper bound</b> on how the function grows.</p>
+\( kn^2 \) (for any \( k \)) as \( n \) grows large. The same witness pair \((4, 2)\) that worked for
+showing \(3n+2\) was \(O(n)\) also works for \(O(n^2)\), since \(4n^2 &gt; 4n\) for \(n ≥ 2\).
+This shows that big-O notation does not precisely characterize the behavior of the function; it
+only establishes an <b>upper bound</b> on how the function grows.</p>
 <p>
 A function that is \( O(n) \) is said to be asympotically <b>linear</b> and a
 function that is \( O(1) \) is said to be <b>constant-time</b> because it is always
@@ -218,4 +225,6 @@ For example, \( \lg n \) is \( O(n) \) because
 the derivative of \( \ln^k n \) is \( (k \ln^{k-1} n)/n\).
 Since \( \ln n \) is \(O(n)\) so is \(\ln^2 n \), and therefore
 \(ln^3 n\), and so on for any positive \(k\).  (This is an argument by induction.)
-
+No matter what power we raise \(\lg n\) to, it grows more slowly asymptotically than
+any polynomial \(n^k\) with \(k&gt; 0\). This fact is useful because logarithmic
+factors show up frequently in the analysis of algorithms.
