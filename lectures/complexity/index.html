@@ -180,11 +180,12 @@ if \(f\) is \(O(g)\) and \(g\) is \(O(h)\), then \(f\) is \(O(h)\)<br>
 \( \log_c n = O(\log n) \)
 </blockquote>
 <p>
-However, we might expect that \(O(k^n) = O(m^n) \) when
-\( k≠m \),
-but this is <em>not</em> true when \( k ≠ m \). In particular,
-when \( m &gt; k \), the ratio
-\( m^n/k^n\) grows without bound.
+However, we might expect that \(O(a^n) = O(b^n) \) when
+\( a≠b \),
+but this is <em>not</em> true. In particular,
+when \( a &gt; b \), the ratio
+\( a^n/b^n\) grows without bound. Conversely, if \(a &lt; b\) then
+\( O(a^n) \) is a strict subset of \(O(b^n)\).
 </p>
 <h2>Deriving asymptotic complexity</h2>
 <p>
