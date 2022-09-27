@@ -109,15 +109,10 @@ for all \( n \), just for <em>sufficiently large</em> \( n \). That is, there mu
 such that for all \( n ≥ n_0 \), \( kg(n) \) is larger than \( f(n) \).
 </p>
 <p>
-To show that \(f(n)\) is \(O(g(n))\), we demonstrate that there exists this pair of numbers \((k, n_0)\)
-which <b>witness</b> the property.
-</p>
-<p>
 A perhaps surprising consequence of the definition of \( O(g(n)) \) is that both \( f \) and
 \( f' \) are also \( O(n^2) \), because the
 quantity \( (3n&pm;2) \) is bounded above by
-\( kn^2 \) (for any \( k \)) as \( n \) grows large. The same witness pair \((4, 2)\) that worked for
-showing \(3n+2\) was \(O(n)\) also works for \(O(n^2)\), since \(4n^2 &gt; 4n\) for \(n ≥ 2\).
+\( kn^2 \) (for any \( k \)) as \( n \) grows large.
 This shows that big-O notation does not precisely characterize the behavior of the function; it
 only establishes an <b>upper bound</b> on how the function grows.</p>
 <p>
@@ -201,7 +196,7 @@ asymptotic complexity of the function. To show that a function has a particular
 asymptotic complexity, the direct way is to produce the necessary witness. For
 the example of the function \( f'(n) = 3n + 2 \), one witness is, as we saw above,
 the pair \( (k=3, n_0=2)\). Witnesses are not unique. If
-\((k, n_0\) is a witness,
+\((k, n_0)\) is a witness pair,
 so is \((k', n'_0) \) whenever \( k'≥k \) and \( n'_0≥n_0 \).
 </p>
 <p>
