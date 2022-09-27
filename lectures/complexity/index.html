@@ -202,17 +202,20 @@ so is \((k', n'_0) \) whenever \( k'≥k \) and \( n'_0≥n_0 \).
 </p>
 <p>
 Often, a simple way to show asymptotic complexity is to use the limit of the
-ratio \( f(n)/g(n) \) as \( n \) goes to infinity.  If this ratio has a finite limit, then
-\( f(n) \) is \( O(g(n)) \).
+ratio \( f(n)/g(n) \) as \( n \) goes to infinity. If \(g(n)\) always has a positive
+value, then \(f(n) ≤ k g(n)\) is equivalent to requiring that the ratio \(f(n)/g(n) ≤ k\).
+Thus, if this ratio has a finite limit, \( f(n) \) is \( O(g(n)) \).
 On the other hand, if the ratio limits to infinity, \( f(n) \) is
-<em>not</em> \( O(g(n)) \). (Both of these shortcuts can be proved using the
-definition of limits.)
+<em>not</em> \( O(g(n)) \). (Using the definition of limits, both of these
+shortcuts can be proved sound with respect to the definition of big-O,
+choosing a value of \(k\) that for the first shortcut is strictly
+larger than the ratio.)
 </p>
 <p>
 To evaluate the limit of \( f(n)/g(n) \), L'Hôpital's rule often comes in handy.
 When both \( f(n) \) and \( g(n) \) go to infinity as \( n \) goes to infinity, the ratio
-of the two functions \( f(n)/g(n) \) limits to the same value as the limit of their
-derivatives: \( f'(n)/g'(n) \).
+\( f(n)/g(n) \) of the two functions has the same limit as the ratio of
+their derivatives: \( f'(n)/g'(n) \).
 </p>
 <p>
 For example, \( \lg n \) is \( O(n) \) because
