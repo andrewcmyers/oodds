@@ -147,7 +147,7 @@ int search(int[] a, int k, int l, int r) {
 For larger values, the time taken is at most some constant \(c_2\), plus the time
 needed to find the element in an array range of half the size. We can write this
 as a <b>recurrence</b>: \(T(n) = c_2 + T(n/2)\). For powers of two, the solution to this
-recurrence is \(c_2 + c_1 \lg n\), which is \(O(\lg n)\). Thus, this algorithm offers
+recurrence is \(c_1 + c_2 \lg n\), which is \(O(\lg n)\). Thus, this algorithm offers
 <b>logarithmic performance</b>—a big speedup over the obvious, naive algorithm
 that loops through the array. For an array of a billion elements, it will be much faster
 to do ~30 recursive calls than to loop a billion times!
