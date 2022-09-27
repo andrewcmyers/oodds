@@ -153,11 +153,11 @@ to do ~30 recursive calls than to loop a billion times!
 <h2>Reasoning with asymptotic complexity</h2>
 <p>An expression like \( O(g(n)) \) is <em>not</em> a function. It really
 describes a set of functions: all functions for which the appropriate constant
-factor k can be found.  For example, when we write \( O(10) = O(1) \) or \( O(n+1) = O(n) \), 
+factor \(k\) can be found.  For example, when we write \( O(10) = O(1) \) or \( O(n+1) = O(n) \), 
 these are (true) statements about the equality of sets of functions.
 Sometimes people write “equations” like \( 5n+1 = O(n) \)
 that are not really equations. What is meant is that the function \( f(n) = 5n + 1 \)
-is in the set \( O(n) \).
+is in the set \( O(n) \), or that \(O(5n+1) = O(n)\)
 It is also a common shorthand to use mathematical operations
 on big-O expressions as if they were numbers.
 For example, we might write \( O(n) + O(n^2) = O(n^2) \) to mean
@@ -167,8 +167,8 @@ and asymptotically quadratic is asymptotically quadratic.
 </p>
 <p>
 It helps to have some rules for reasoning about asymptotic complexity. Suppose
-f and g are both functions of n, and c is an arbitrary constant. Then using the
-shorthand notation of the previous paragraph, the following rules hold:
+\(f\) and \(g\) are both functions of \(n\), and \(c\) is an arbitrary constant. Then using the
+shorthand notation of the previous paragraph, the following rules always hold:
 </p>
 <blockquote>
 \( c = O(1) \)<br>
