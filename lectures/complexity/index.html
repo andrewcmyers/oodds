@@ -148,10 +148,21 @@ For larger values, the time taken is at most some constant \(c_2\), plus the tim
 needed to find the element in an array range of half the size. We can write this
 as a <b>recurrence</b>: \(T(n) = c_2 + T(n/2)\). For powers of two, the solution to this
 recurrence is \(c_1 + c_2 \lg n\), which is \(O(\lg n)\). Thus, this algorithm offers
-<b>logarithmic performance</b>—a big speedup over the obvious, naive algorithm
-that loops through the array. For an array of a billion elements, it will be much faster
+<b>logarithmic performance</b>—a big speedup over the obvious, naive linear search algorithm
+that simply loops through the array until the element is found.
+For an array of a billion elements, it will be much faster
 to do ~30 recursive calls than to loop a billion times!
 </p>
+<p>
+Below is a plot of the running time (in microseconds) of both linear search and binary search
+on arrays of various sizes. As you can see, linear search (blue) is faster for small arrays (though not
+by much!) but binary search (red) is orders of magnitude faster at large sizes.
+</p>
+<div class=figure>
+<img width=500px src="perf-comparison.png">
+</div>
+
+</div>
 
 <h2>Reasoning with asymptotic complexity</h2>
 <p>An expression like \( O(g(n)) \) is <em>not</em> a function. It really
