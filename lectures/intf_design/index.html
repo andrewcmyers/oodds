@@ -133,9 +133,6 @@ with (new CFigure("design-process", false)) {
         equal(r.w(), times(2, r.h()))
         return r
     }
-    function arrow(a, b) {
-        connector(a, b).setEndArrow("arrow")
-    }
     l1 = label("documenting late").setFontStyle("italic")
     align("center", "distribute",
         l2 = design_step("design"),
@@ -539,12 +536,15 @@ The key to writing good specs is to think of the spec as a <b>contract</b> betwe
 Like a legal contract, its main goal is to help everyone figure out who to blame when things go wrong. This is
 very important for successful software engineering, especially in a large team.
 </p>
+
+<h4>Default conditions</h4>
 <p>
 To keep specs concise, it is useful to have some default preconditions that do
 not need to be stated explicitly. A good example of such a precondition is an
 expectation that no argument values to a method are <code>null</code>.  If a
 method might be able to handle a null argument, the method spec should
-explicitly say so.
+explicitly say so. Otherwise, clients should assume that null is an invalid
+argument.
 </p>
 
 <h4>Using Javadoc</h4>

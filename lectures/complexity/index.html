@@ -87,34 +87,34 @@ though sometimes, <b>average-case</b> performance is a more important performanc
 <h2>Big-O notation</h2>
 <p>
 We write expressions like \( O(n) \) and \( O(n^2) \) to describe the performance
-of algorithms. This is called <b>&ldquo;big-O&rdquo; notation</b>, and describes
+of algorithms in terms of asymptotic complexity.
+This notation is called <b>&ldquo;big-O&rdquo; notation</b>. It describes
 performance in a way that is largely independent of the kind of computer on
-which we are running our code.
+which we are running our code. It is “asymptotic” in the sense that it describes how
+performance behaves as we increase \(n\) to large values. It places an upper bound on
+the amount of time taken by an algorithm, while ignoring constant factors.
 </p>
 <p>
 The statement that \( f(n) \) is \( O(g(n)) \) means that \( g(n) \) is an upper bound for \( f(n) \)
 within a constant factor, for large enough \( n \). That is, there exists some \( k \) such
-that \( f(n) ≤ k·g(n) \) for sufficiently large n.
+that \( f(n) ≤ k·g(n) \) for all sufficiently large n.
 </p>
-<p>For example, the function \( f(n) = 3n&minus;2 \) is <span
-class=m>O(n)</span> because \( (3n&minus;2) ≤ 3n \) for all
+<p>For example, the function \( f(n) = 3n&minus;2 \) is \( O(n) \) because \( (3n&minus;2) ≤ 3n \) for all
 \( n &gt; 0 \). That is, the constant \( k \) is
 3.  Similarly, the function \( f'(n) = 3n + 2 \) is
 <em>also</em> \( O(n) \). It is bounded above by \( 4n \)
 for any \( n \) larger than 2.  This shows that
 \( kg(n) \) doesn't have to be larger than \( f(n) \)
-for all \( n \), just for <em>sufficiently large</em> <span
-class=m>n</span>. That is, there must be some value <span
-class=m>n<sub>0</sub></span> such that for all \( n ≥ n_0 \), \( kg(n) \) is larger than \( f(n) \).
+for all \( n \), just for <em>sufficiently large</em> \( n \). That is, there must be some value \( n_0 \)
+such that for all \( n ≥ n_0 \), \( kg(n) \) is larger than \( f(n) \).
 </p>
 <p>
-A perhaps surprising consequence of the definition of <span
-class=m>O(g(n))</span> is that both \( f \) and <span
-class=m>f'</span> are also \( O(n^2) \), because the
-quantity \( (3n&pm;2) \) is bounded above by <span
-class=m>kn<sup>2</sup></span> (for any \( k \)) as <span
-class=m>n</span> grows large. In other words, big-O notation only establishes
-an <b>upper bound</b> on how the function grows.</p>
+A perhaps surprising consequence of the definition of \( O(g(n)) \) is that both \( f \) and
+\( f' \) are also \( O(n^2) \), because the
+quantity \( (3n&pm;2) \) is bounded above by
+\( kn^2 \) (for any \( k \)) as \( n \) grows large.
+This shows that big-O notation does not precisely characterize the behavior of the function; it
+only establishes an <b>upper bound</b> on how the function grows.</p>
 <p>
 A function that is \( O(n) \) is said to be asympotically <b>linear</b> and a
 function that is \( O(1) \) is said to be <b>constant-time</b> because it is always
@@ -122,74 +122,6 @@ less than some constant \( k \). A function that is \( O(n^2) \) is called
 <b>quadratic</b>, and a function that is \( O(n^y) \) for some positive
 integer \( y \) is said to be <b>polynomial</b>.
 </p>
-<h2>Reasoning with asymptotic complexity</h2>
-<p>An expression like \( O(g(n)) \) is <em>not</em> a function. It really
-describes a set of functions: all functions for which the appropriate constant
-factor k can be found.  For example, when we write \( O(10) = O(1) \) or \( O(n+1) = O(n) \), 
-these are (true) statements about the equality of sets of functions.
-Sometimes people write “equations” like \( 5n+1 = O(n) \)
-that are not really equations. What is meant is that the function \( f(n) = 5n + 1 \)
-is in the set \( O(n) \).
-It is also a common shorthand to use mathematical operations
-on big-O expressions as if they were numbers.
-For example, we might write \( O(n) + O(n^2) = O(n^2) \) to mean
-the true statement
-that the sum of any two functions that are respectively asymptotically linear
-and asymptotically quadratic is asymptotically quadratic.
-</p>
-<p>
-It helps to have some rules for reasoning about asymptotic complexity. Suppose
-f and g are both functions of n, and c is an arbitrary constant. Then using the
-shorthand notation of the previous paragraph, the following rules hold:
-</p>
-<blockquote>
-\( c = O(1) \)<br>
-\( O(c·f) = c·O(f) = O(f) \)<br>
-\( cn^m = O(n^k) \)     if \( m ≤ k \) <br/>
-\( O(f) + O(g) = O(f + g) \)<br>
-\( O(f)·O(g) = O(f·g) \)<br>
-if \(f\) is \(O(g)\) and \(g\) is \(O(h)\), then \(f\) is \(O(h)\)<br>
-\( \log_c n = O(\log n) \)
-</blockquote>
-<p>
-However, we might expect that \(O(k^n) = O(m^n) \) when
-\( k≠m \),
-but this is <em>not</em> true when \( k ≠ m \). In particular,
-when \( m &gt; k \), the ratio
-\( m^n/k^n\) grows without bound.
-</p>
-<h2>Deriving asymptotic complexity</h2>
-<p>
-Together, the constants \(k\) and \(n_0\) form a <b>witness</b> to the
-asymptotic complexity of the function. To show that a function has a particular
-asymptotic complexity, the direct way to produce the necessary witness. For
-the example of the function \( f'(n) = 3n + 2 \), one witness is, as we saw above,
-the pair \( (k=3, n_0=2)\). Witnesses are not unique. If
-\((k, n_0\) is a witness,
-so is \((k', n'_0) \) whenever \( k'≥k \) and \( n'_0≥n_0 \).
-</p>
-<p>
-Often, a simple way to show asymptotic complexity is to use the limit of the
-ratio \( f(n)/g(n) \) as \( n \) goes to infinity.  If this ratio has a finite limit, then
-\( f(n) \) is \( O(g(n)) \).
-On the other hand, if the ratio limits to infinity, \( f(n) \) is
-<em>not</em> \( O(g(n)) \). (Both of these shortcuts can be proved using the
-definition of limits.)
-</p>
-<p>
-To evaluate the limit of \( f(n)/g(n) \), L'Hôpital's rule often comes in handy.
-When both \( f(n) \) and \( g(n) \) go to infinity as \( n \) goes to infinity, the ratio
-of the two functions \( f(n)/g(n) \) limits to the same value as the limit of their
-derivatives: \( f'(n)/g'(n) \).
-</p>
-<p>
-For example, \( \lg n \) is \( O(n) \) because
-\( \lim_{n→&infin;} (\ln n)/n = \lim_{n→&infin;} (1/n)/1 = 0 \). In turn, this means that 
-\(\ln^k n\) is \( O(n) \) for any \( k \) because
-the derivative of \( \ln^k n \) is \( (k \ln^{k-1} n)/n\).
-Since \( \ln n \) is \(O(n)\) so is \(\ln^2 n \), and therefore
-\(ln^3 n\), and so on for any positive \(k\).  (This is an argument by induction.)
-
 <h2>Example</h2>
 <p>
 Binary search is a useful algorithm for finding information efficiently in a
@@ -198,8 +130,9 @@ that finds an integer in a sorted array of integers:
 </p>
 
 <pre class=code>
-/** Returns: i∈[l..r] such that a[i] = k.
- *  Requires: a[l..r] is sorted in ascending order, and there exists such an i.
+/** Returns: i ∈ [l,r) such that a[i] = k.
+ *  Requires: a[l..r] is sorted in ascending order,
+ *            0 ≤ l ≤ r < a.length, and there exists such an i.
  */
 int search(int[] a, int k, int l, int r) {
     if (l == r) return l;
@@ -214,8 +147,94 @@ int search(int[] a, int k, int l, int r) {
 For larger values, the time taken is at most some constant \(c_2\), plus the time
 needed to find the element in an array range of half the size. We can write this
 as a <b>recurrence</b>: \(T(n) = c_2 + T(n/2)\). For powers of two, the solution to this
-recurrence is \(c_2 + c_1 \lg n\), which is \(O(\lg n)\). Thus, this algorithm offers
-<b>logarithmic performance</b>—a big speedup over the obvious, naive algorithm
-that loops through the array. For an array of a billion elements, it will be much faster
+recurrence is \(c_1 + c_2 \lg n\), which is \(O(\lg n)\). Thus, this algorithm offers
+<b>logarithmic performance</b>—a big speedup over the obvious, naive linear search algorithm
+that simply loops through the array until the element is found.
+For an array of a billion elements, it will be much faster
 to do ~30 recursive calls than to loop a billion times!
 </p>
+<p>
+Below is a plot of the running time (in microseconds) of both linear search and binary search
+on arrays of various sizes. As you can see, linear search (blue) is faster for small arrays (though not
+by much!) but binary search (red) is orders of magnitude faster at large sizes.
+</p>
+<div class=figure>
+<img width=500px src="perf-comparison.png">
+</div>
+
+</div>
+
+<h2>Reasoning with asymptotic complexity</h2>
+<p>An expression like \( O(g(n)) \) is <em>not</em> a function. It really
+describes a set of functions: all functions for which the appropriate constant
+factor \(k\) can be found.  For example, when we write \( O(10) = O(1) \) or \( O(n+1) = O(n) \), 
+these are (true) statements about the equality of sets of functions.
+Sometimes people write “equations” like \( 5n+1 = O(n) \)
+that are not really equations. What is meant is that the function \( f(n) = 5n + 1 \)
+is in the set \( O(n) \), or that \(O(5n+1) = O(n)\)
+It is also a common shorthand to use mathematical operations
+on big-O expressions as if they were numbers.
+For example, we might write \( O(n) + O(n^2) = O(n^2) \) to mean
+the true statement
+that the sum of any two functions that are respectively asymptotically linear
+and asymptotically quadratic is asymptotically quadratic.
+</p>
+<p>
+It helps to have some rules for reasoning about asymptotic complexity. Suppose
+\(f\) and \(g\) are both functions of \(n\), and \(c\) is an arbitrary constant. Then using the
+shorthand notation of the previous paragraph, the following rules always hold:
+</p>
+<blockquote>
+\( c = O(1) \)<br>
+\( O(c·f) = c·O(f) = O(f) \)<br>
+\( cn^m = O(n^k) \)     if \( m ≤ k \) <br/>
+\( O(f) + O(g) = O(f + g) \)<br>
+\( O(f)·O(g) = O(f·g) \)<br>
+if \(f\) is \(O(g)\) and \(g\) is \(O(h)\), then \(f\) is \(O(h)\)<br>
+\( \log_c n = O(\log n) \)
+</blockquote>
+<p>
+However, we might expect that \(O(a^n) = O(b^n) \) when
+\( a≠b \),
+but this is <em>not</em> true. In particular,
+when \( a &gt; b \), the ratio
+\( a^n/b^n\) grows without bound. Conversely, if \(a &lt; b\) then
+\( O(a^n) \) is a strict subset of \(O(b^n)\).
+</p>
+<h2>Deriving asymptotic complexity</h2>
+<p>
+Together, the constants \(k\) and \(n_0\) form a <b>witness</b> to the
+asymptotic complexity of the function. To show that a function has a particular
+asymptotic complexity, the direct way is to produce the necessary witness. For
+the example of the function \( f'(n) = 3n + 2 \), one witness is, as we saw above,
+the pair \( (k=3, n_0=2)\). Witnesses are not unique. If
+\((k, n_0)\) is a witness pair,
+so is \((k', n'_0) \) whenever \( k'≥k \) and \( n'_0≥n_0 \).
+</p>
+<p>
+Often, a simple way to show asymptotic complexity is to use the limit of the
+ratio \( f(n)/g(n) \) as \( n \) goes to infinity. If \(g(n)\) always has a positive
+value, then \(f(n) ≤ k g(n)\) is equivalent to requiring that the ratio \(f(n)/g(n) ≤ k\).
+Thus, if this ratio has a finite limit, \( f(n) \) is \( O(g(n)) \).
+On the other hand, if the ratio limits to infinity, \( f(n) \) is
+<em>not</em> \( O(g(n)) \). (Using the definition of limits, both of these
+shortcuts can be proved sound with respect to the definition of big-O,
+choosing a value of \(k\) that for the first shortcut is strictly
+larger than the ratio.)
+</p>
+<p>
+To evaluate the limit of \( f(n)/g(n) \), L'Hôpital's rule often comes in handy.
+When both \( f(n) \) and \( g(n) \) go to infinity as \( n \) goes to infinity, the ratio
+\( f(n)/g(n) \) of the two functions has the same limit as the ratio of
+their derivatives: \( f'(n)/g'(n) \).
+</p>
+<p>
+For example, \( \ln n \) is \( O(n) \) because
+\( \lim_{n→&infin;} (\ln n)/n = \lim_{n→&infin;} (1/n)/1 = 0 \). In turn, this means that 
+\(\ln^k n\) is \( O(n) \) for any \( k \) because
+the derivative of \( \ln^k n \) is \( (k \ln^{k-1} n)/n\).
+Since \( \ln n \) is \(O(n)\) so is \(\ln^2 n \), and therefore
+\(ln^3 n\), and so on for any positive \(k\).  (This is an argument by induction.)
+No matter what power we raise \(\lg n\) to, it grows more slowly asymptotically than
+any polynomial \(n^k\) with \(k&gt; 0\). This fact is useful because logarithmic
+factors show up frequently in the analysis of algorithms.

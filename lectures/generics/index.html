@@ -89,7 +89,7 @@ the built-in array type.
 <p>
 The generics feature allows programmers to define their own parameterized types. For example, we
 can make <code>Collection</code> become a parameterized type that can be applied to an arbitrary
-type T using the “angle bracket” syntax: <code>Collection&lt;T&gt;</code>. Thus, 
+type <code>T</code> using the “angle bracket” syntax: <code>Collection&lt;T&gt;</code>. Thus, 
 the type <code>Collection&lt;Integer&gt;</code> is a collection of <code>Integer</code>s,
 the type <code>Collection&lt;String&gt;</code> is a collection of <code>String</code>s,
 and the type <code>Collection&lt;Collection&lt;String&gt;&gt;</code> is a collection of
@@ -105,13 +105,13 @@ Interface.java
 </a>
 </pre>
 <p>
-Inside the definition, the type parameter T stands for whatever actual type the client chooses to apply it
+Inside the definition, the type parameter <code>T</code> stands for whatever actual type the client chooses to apply it
 to. A type like <code>Collection&lt;String&gt;</code> is called an <b>instantiation</b> of the
 parameterized type <code>Collection</code>
 on the type argument <code>String</code>.
 The signatures of the methods of <code>Collection&lt;String&gt;</code> are exactly
 the signatures appearing in the declaration of <code>Collection&lt;T&gt;</code>,
-except that every occurrence of T is replaced with <code>String</code>. For example, the
+except that every occurrence of <code>T</code> is replaced with <code>String</code>. For example, the
 <code>add</code> method of <code>Collection&lt;String&gt;</code> 
 behaves exactly as if its signature were <code>boolean add(String x)</code>.
 </p>
@@ -161,7 +161,7 @@ method calls explicitly, by putting the type parameter in angle brackets after t
 Like other <code>implements</code> declarations, the declaration above that
 <code>LList&lt;T&gt; implements Collection&lt;T&gt;</code> generates a subtype relationship:
 in fact, a family of subtype relationships, because the subtype relationship holds regardless
-of what actual type T is chosen. The compiler therefore understands that the relationship
+of what actual type <code>T</code> is chosen. The compiler therefore understands that the relationship
 <code>LList&lt;String&gt; &lt;: Collection&lt;String&gt;</code> holds. What about these other
 possible relationships?
 </p>
@@ -196,7 +196,7 @@ sound way, so Java does not support variance. Other languages such as Scala do h
 To make up for the lack of variance, Java has a feature called
 <b>wildcards</b>, in which question marks are used as type arguments. The type
 <code>LList&lt;?&gt;</code> represents an object that is an <code>LList&lt;T&gt;</code>
-for <em>some</em> type T, though precisely <em>which</em> type T is not known at compile
+for <em>some</em> type T, though precisely <em>which</em> type <code>T</code> is not known at compile
 time (or for that matter, even at run time).
 </p>
 <p>
@@ -246,23 +246,23 @@ than just <code>Object</code>s.
 <p>
 The way generics are actually implemented in Java is that all actual type parameters are
 <b>erased</b> at run time.  This implementation choice leads to a number of limitations of
-the generics mechanism in Java when in a generic context where T is a formal parameter:
+the generics mechanism in Java when in a generic context where <code>T</code> is a formal parameter:
 </p>
 <ol>
-<li>Constructors of T cannot be used; we cannot write <code>new T()</code>. The workaround for
+<li>Constructors of <code>T</code> cannot be used; we cannot write <code>new T()</code>. The workaround for
 this limitation is to have an object with a <b>factory method</b> for creating <code>T</code> objects.</li>
 
-<li>Arrays with T as elements cannot be created, either. We cannot write <code>new T[n]</code>,
-because the type T is not known at run time and so the type <code>T[]</code> cannot be installed
+<li>Arrays with <code>T</code> as elements cannot be created, either. We cannot write <code>new T[n]</code>,
+because the type <code>T</code> is not known at run time and so the type <code>T[]</code> cannot be installed
 into the object's header. The workaround for this limitation is to use an array of type
 <code>Object[]</code> instead:
 <pre>
 T[] a = (T[]) new Object[n];
 </pre>
 <p>
-This of course creates an array that could in principle be used to store things other than T's, but
-as long as we use that array through the variable <code>a</code>, we won't. The compiler
-gives us an alarming warning when we use this trick because of the unchecked cast, but when used in this
+This of course creates an array that could in principle be used to store things other than <code>T</code>'s, but
+as long as we use that array through the variable <code>a</code>, we won't. The compiler may
+give us an alarming warning when we use this trick because of the unchecked cast, but when used in this
 limited way, this programming idiom is fairly safe. Note that if we need to
 create an array of <code>T</code> in a context where <code>T</code> is known to
 be a subtype of some type, then the array that should be created is an array of
@@ -272,18 +272,18 @@ that other type, rather than of <code>Object</code>.
 Similarly, we can't create an array whose type includes a parameter type:
 </p>
 <pre>
-HashSet&lt;String&gt;[] sets = new HashSet&lt;String&gt;[n]; // error: generic array creation
+HashSet&lt;T&gt;[] sets = new HashSet&lt;T&gt;[n]; // error: generic array creation
 </pre>
 <p>One workaround is to use a wildcard type to create the array, and dynamically cast it to the
 desired type:
 <pre>
-HashSet&lt;String&gt;[] sets = (HashSet&lt;String&gt;[]) new HashSet&lt;?&gt;[n];
+HashSet&lt;T&gt;[] sets = (HashSet&lt;T&gt;[]) new HashSet&lt;?&gt;[n];
 </pre>
 <p>
 Equivalently, one can use a <b>raw type</b>, a type in which type parameters have been explicitly erased,
 to create the array:
 <pre>
-HashSet&lt;String&gt;[] sets = new HashSet[n];
+HashSet&lt;T&gt;[] sets = (HashSet&lt;T&gt;)new HashSet[n];
 </pre>
 <p>
 Raw types are an unchecked end run around the Java type system: Java allows a
@@ -316,10 +316,11 @@ it is essentially the same as casting to <code>LList&lt;?&gt;</code> but less sa
 <h2>Accessing type operations</h2>
 
 <p>
-What if we want to use methods of T in a generic context where T is a formal parameter? There
+What if we want to use methods of <code>T</code> in a generic context where <code>T</code>
+is a formal type parameter? There
 is more than one way to do this, but in Java the most powerful approach is to provide a
 separate <em>model object</em> that knows how to perform the operations that are needed. For example, suppose
-we want to compare objects of type T using the <code>compareTo</code> method. We declare a
+we want to compare objects of type <code>T</code> using the <code>compareTo</code> method. We declare a
 generic interface <code>Comparator&lt;T&gt;</code>:
 </p>
 <pre class="load">
@@ -357,8 +358,8 @@ and instantiating it with <code>new</code>.
 </p>
 <p>
 Generic classes may need to access parameter type operations too. The typical
-approach is to accept the model object in constructors, then to
-store it in an instance variable for later use by other methods:
+approach is to accept the model object in constructors, when then
+store it into an instance variable for later use by other methods:
 </p>
 <pre class="load">
 <a href="SortedList.java">

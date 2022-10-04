@@ -187,7 +187,7 @@ good hash function all hash table operations take expected time \(O(1 + α)\).
 <p>
 Therefore, if we have a good hash function and we can ensure that the load factor
 α never exceeds some fixed value \(α_{max}\), then all operations take \(O(1 +
-α_{max}) = O(1)\) time both on average and even in the worst case with high probability.
+α_{max}) = O(1)\) time on average.
 </p>
 <!--  Actually: O(lg n/lg lg n) for fixed α.
 <p>
@@ -623,9 +623,6 @@ with (new CFigure("hashdigest")) {
         align("center", "top bottom", vertLine("black", 2), c)
         align("left right", "center", horzLine("black", 2), c)
         return c
-    }
-    function arrow(...args) {
-        return connector(...args).setEndArrow("arrow")
     }
     let d1, d2, dn
     align("distribute", "center", d1 = dv(1), d2 = dv(2), label("..."), dn = dv("n"))

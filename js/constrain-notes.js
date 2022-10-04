@@ -89,6 +89,9 @@ class CFigure extends Constrain.Figure {
         connected =  [ objs[0].toRight(-15), objs[0].toRight(15), ...objs.slice(1) ]
         return this.connector(connected).setEndArrow("arrow").setStartArrow("bullet").setLineWidth(2)
     }
+    arrow(...objs) {
+        this.connector(...objs).setEndArrow("arrow")
+    }
 
     animateCode(...lines) {
         const ttfont = 'consolas, Menlo, monospace';

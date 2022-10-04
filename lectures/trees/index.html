@@ -138,12 +138,14 @@ A more flexible way to define the ordering is to provide it through a
 <a href="Comparator.java">BST</a>
 </pre>
 <p>
-The comparator approach has slightly higher storage requirements, since the
+The comparator approach, which is known as the Concept design pattern,
+has slightly higher storage requirements since the
 comparator must be remembered, but its advantage is that it allows the binary
-serach tree to be used with <em>any</em> type for which a reasonable comparison
-operation can be defined, not just with those types <code>T</code> that happen to declare that
+search tree to be used with <em>any</em> type for which a reasonable comparison
+operation can be defined, and not just with those types <code>T</code> that happen to declare that
 they extend <code>Comparable&lt;T&gt;</code>.  This looser coupling can be helpful when
-you don't have control over classes that you would like to put into a tree.
+you don't have control over the class that you would like to put into a tree, or when
+that class defines a notion of comparison that doesn't match the one you want.
 </p>
 
 <h3>Searching in a binary search tree</h3>
@@ -322,11 +324,11 @@ random order, which involves a small digression:
 <h3>How to place a sequence of elements in random order</h3>
 <p>
 The <a href="http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">
-Fisher–Yates algorithm</a> (developed in 1938) places N elements into random
-order. Recall that there are N! possible permutations of N elements; a
-perfectly random shuffle should have equal probability 1/N! of producing any
-given permutation. The algorithm works as follows. Assume we have the N elements
-in an array. We iterate from N&ndash;1 down to 0 deciding which element to place into
+Fisher–Yates algorithm</a> (developed in 1938) places \(N\) elements into random
+order. Recall that there are \(N! = 1×2×3×...×N\) possible permutations of \(N\) elements; a
+perfectly random shuffle should have equal probability \(1/N!\) of producing any
+given permutation. The algorithm works as follows. Assume we have the \(N\) elements
+in an array. We iterate from \(N-1\) down to \(0\) deciding which element to place into
 a given array index. In each array index we randomly choose one of the elements
 in the array indices up to that point and swap it with the current array index.
 </p>
@@ -334,9 +336,9 @@ in the array indices up to that point and swap it with the current array index.
 <a href="fisher-yates.java">fisher-yates.java</a>
 </pre>
 <p>
-The first iteration generates one of N possible values, the second iteration one of N&ndash;1 possible
+The first iteration generates one of \(N\) possible values, the second iteration one of \(N-1\) possible
 values, and so on until the final iteration generates one of two possible values. Therefore, the
-total number of possible ways to execute is N × (N&ndash;1) × (N&ndash;2) × ･･･ × 2 = N!.
+total number of possible ways for the algorithm to execute is \( N × (N-1) × (N-2) × ･･･ × 2 = N!\).
 Furthermore, given a
 particular permutation, there is exactly one way for the algorithm to produce it. Therefore,
 all permutations are produced with equal probability, assuming the random number generator is

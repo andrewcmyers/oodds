@@ -41,6 +41,7 @@ public class Rational {
     }
 
     public boolean equals(Object o) {
+        assert classInv();
         if (!(o instanceof Rational)) return false;
         Rational r = (Rational) o;
         assert r.classInv();
