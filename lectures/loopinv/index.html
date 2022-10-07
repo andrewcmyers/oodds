@@ -130,17 +130,19 @@ beginning the loop.  For for-loops <code>for (<i>init</i>; <i>guard</i>;
 the code <code><i>init</i></code>, which is not properly part of the loop because
 it is executed only once.</li>
 
+<li><b>Postcondition.</b> Show that if the <code>guard</code> is false (so the loop exits)
+and the loop invariant holds, then the desired result of the loop
+has been achieved: the loop postocondition holds.</li>
+
 <li><b>Preservation (aka Maintenance).</b> Show that whenever both the loop invariant and the
 <code>guard</code> are true just before executing the loop body, then the loop
 invariant is true just <em>after</em> executing the loop body. Note that the
 loop invariant may fail to be true at intermediate steps during the execution
 of the loop body, as long as it is reestablished by the end.  (For
 <code>for</code> loops, the loop body also includes the increment
-<code>incr</code>.) </li>
+<code>incr</code>.)
+</li>
 
-<li><b>Postcondition.</b> Show that if the <code>guard</code> is false (so the loop exits)
-and the loop invariant holds, then the desired result of the loop
-has been achieved: the loop postocondition holds.</li>
 </ol>
 
 <p>Other than coming up with the loop invariant in the first place, the Preservation
@@ -158,8 +160,8 @@ that the loop eventually terminates. To show this, there is a fourth step:
 <li value="4"><b>Termination.</b> Assuming the loop invariant holds at the start of
 each iteration, show that some quantity strictly decreases, and that it cannot
 decrease indefinitely.
-This quantity is called the <b>decrementing function</b> or <b>loop variant</b>.
-If we call the decrementing function DF, we need to show that if the loop guard is
+This quantity is called the <b>decrementing function</b>, <b>decreasing function</b>, or 
+<b>loop variant</b>.  If we call the decrementing function DF, we need to show that if the loop guard is
 true, then the value of DF after
 the loop body (call it DF') is strictly less than it was at the beginning: DF' &lt; DF.
 Further, we need to come up with some minimal value DF<sub>0</sub> such that if DF &lt; DF<sub>0</sub>,
@@ -172,7 +174,7 @@ eventually be less than DF<sub>0</sub>, and in that case the loop cannot still b
 Let's try these four steps on the binary search algorithm.
 </p>
 <ol>
-  <li><b>Initialization.</b>
+  <li><b>Establishment.</b>
   <p>The loop invariant has three clauses; we can argue that each one holds:
   <ol>
 <li>That array <code>a</code> is sorted is in the precondition of <code>search</code>.
@@ -182,6 +184,13 @@ Let's try these four steps on the binary search algorithm.
        guarantees that <code>k</code> is there.</li>
   </ol></p>
   </li>
+  <li><b>Postcondition.</b> <p>For the algorithm to be correct, we need
+  <code>a[l] = k</code>. If the loop guard is false, we know <code>l ≥
+  r</code>. But the invariant (2) guarantees <code>l ≤ r</code>, so we must
+  have <code>l = r</code>. We know from the invariant (3) that <code>k ∈
+  a[l..r]</code>, which has been reduced to a single element, so that must be
+  where k is.</p></li>
+
   <li><b>Preservation.</b>
   <p>Since the loop doesn't change the array, clearly the first clause of the invariant
    is preserved. Arguing the remaining clauses is a bit trickier.</p>
@@ -231,11 +240,6 @@ Let's try these four steps on the binary search algorithm.
 	</li>
   </ul>
   </li>
-  <li><b>Postcondition.</b> <p>For the algorithm to be correct, we need 
-  <code>a[l] = k</code>. If the loop guard is false, we know <code>l ≥ r</code>. But the invariant (2) guarantees <code>l ≤ r</code>,
-  so we must have <code>l = r</code>. We know from the invariant (3) that <code>k ∈ a[l..r]</code>,
-  which has been reduced to a single element, so that must be where k is.</p></li>
-
   <li><b>Termination.</b>
   <p>The value DF = <code>r &minus; l</code> is guaranteed by the invariant
   (1) to be nonnegative: we can choose DF<sub>0</sub> = 0.
@@ -249,10 +253,10 @@ Let's try these four steps on the binary search algorithm.
 <p>
 In this case, the loop invariant has three clauses, but it is easy to leave things out of the
 loop invariant. If clauses are omitted, the invariant may be too weak:
-Initialization is easier to argue, but it becomes impossible to show
+Establishment is easier to argue, but it becomes impossible to show
 Preservation or Postcondition. On the other hand, if the loop invariant is too
 strong because it contains clauses that shouldn't be there, then
-Initialization or Preservation become impossible to show.
+Establishment or Preservation become impossible to show.
 </p>
 <p>
 Let's consider what would have happened had we omitted any of the three clauses from
