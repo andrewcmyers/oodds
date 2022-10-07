@@ -216,12 +216,19 @@ effectively use specs and Javadoc.
 <p>
 The expression <code>int triple(int n)</code> is the <b>signature</b> of the
 method. It starts with the return type (<code>int</code>), and also gives the
-types of the expected arguments. The <b>formal parameter</b> (or just
-<b>formal</b>) <code>n</code> takes on the value of whatever argument (aka
-<b>actual</b>) is provided to the function when the function is <b>invoked</b>
-(aka <b>called</b>). The <b>body</b> of the method is the part in braces (<tt>{</tt>...<tt>}</tt>).
-The body defines what computation is done by the method.
-The
+types of the expected arguments by declaring a <b>formal parameter</b> named
+<code>n</code>. A formal parameter (<b>formal</b>) is a variable that, when the
+method is called, takes on the value of whatever argument value (<b>actual</b>)
+is provided to the function when the function is <b>invoked</b>
+(<b>called</b>). Since for any given call, the value of the formal is the
+argument, it is common to refer interchangeably to both formals and actuals as
+“arguments”, but when we want to be precise, the formal parameter is the variable
+itself whereas the argument is the value of that variable.
+</p>
+<p>
+The <b>body</b> of the method is the part in braces (<tt>{</tt>...<tt>}</tt>).
+The body defines what computation is done by the method, and what result
+it compputes. The
 bolded <b>keyword</b> <code>return</code> causes the function to produce
 the value that its expression <code>n + n + n</code> computes. If we've done
 our job correctly, this computation agrees with the spec.
