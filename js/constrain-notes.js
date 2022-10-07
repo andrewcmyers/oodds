@@ -90,7 +90,7 @@ class CFigure extends Constrain.Figure {
         return this.connector(connected).setEndArrow("arrow").setStartArrow("bullet").setLineWidth(2)
     }
     arrow(...objs) {
-        this.connector(...objs).setEndArrow("arrow")
+        return this.connector(...objs).setEndArrow("arrow")
     }
 
     animateCode(...lines) {

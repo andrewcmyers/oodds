@@ -162,34 +162,44 @@ especially tricky code, is correct. They also help us develop code
 that is correct in the first place, and they help us write efficient code.
 </p>
 <div class=floatfigure>
-<canvas id=loopinv_reasoning style="width:400px; height: 300px"></canvas>
+<canvas id=loopinv_reasoning style="width:370px; height: 300px"></canvas>
 </div>
 <script class=graphics>
 with (new CFigure("loopinv_reasoning")) {
     let [p1, p2, p3, p4, p5, p6] = arrObjects(6, () => point())
     let c = margin()
-    align("center", "distribute", p1, p2, p3, p4, p5, p6)
+    align("center", "distribute", p1, p2, p3, p4, p5)
+    align("none", "distribute", p1, p2, p3, p4, p5, p6)
     align("center", "top", p1, c)
     align("none", "bottom", p6, c)
     circle().setW(5).at(p2).setFillStyle('black')
-    circle().setW(5).at(p5).setFillStyle('black')
-    arrow(p1, p2)
-    arrow(p2, p3)
-    arrow(p4, p5)
-    arrow(p5, p6)
     let code = rectangle().addText("loop\nbody").setW(100)
-    equal(p3, code.uc())
-    equal(p4, code.lc())
+    let guard = rectangle().addText("guard").at(p3).setW(50).setH(25)
+    arrow(p1, p2)
+    arrow(p2, guard)
+    equal(p4, code.uc())
+    equal(p5, code.lc())
     let p7 = code.toRight(40)
-    arrow(p5, p5.toRight(80), p7, p2.toRight(80), p2)
+    arrow(guard, guard.toRight(40), point(p6.x(), guard.y()), p6.toTop(100), p6)
+    let li3
+    align("none", "center", average(guard.lc(), p4), hspace(5), li3 = label("loop invariant"))
+    align("center", "none", li3, average(p6, guard))
+    arrow(guard, p4)
     align("left", "top", p1.toRight(8), label("precondition"))
-    align("left", "bottom", p6.toRight(8), label("postcondition"))
-    align("right", "center", average(p2, p3).toLeft(8), label("loop invariant"))
-    align("right", "center", average(p4, p5).toLeft(8), label("loop invariant"))
-    align("left", "center", code.toRight(50), label("loop invariant"))
+    let post = label("postcondition")
+    align("left", "bottom", p6.toRight(8), post)
+    align("right", "bottom", post, c)
+    align("right", "center", average(p2, guard.uc()).toLeft(5), label("loop invariant"))
+    align("left", "top", code.lc().toBottom(5).toRight(5), label("loop invariant"))
+    // align("left", "center", code.toRight(50), label("loop invariant"))
+    let step2
     align("right", "center", label("1. Establishment").setFontStyle("bold"), p2.toLeft(20))
-    align("right", "center", label("2. Postcondition").setFontStyle("bold"), p5.toLeft(20))
-    align("right", "center", label("3. Preservation").setFontStyle("bold"), code.toLeft(20))
+    align("left", "center", step2 = label("2. Postcondition").setFontStyle("bold"), guard.toRight(20).toTop(15))
+    align("right", "center", label("3. Preservation").setFontStyle("bold"), code.toLeft(10))
+    arrow(p5, p5.toBottom(30), point(c.x0(), p5.toBottom(30).y()),  point(c.x0(), guard.y()), guard)
+    let p8 = circle().setW(5).setFillStyle('black')
+    align("none", "bottom", p8, li3)
+    align("center", "none", p8, p6)
 }
 </script>
 <p>
@@ -415,25 +425,6 @@ the loop must eventually terminate.</p></li>
 <p>
 Therefore, the loop terminates <em>and</em> returns the correct value of x<sup>e</sup>.
 </p>
-<h2>Example: Insertion sort</h2>
-
-<pre class="load">
-<a href="insertion_sort.java">insertion_sort.java</a>
-</pre>
-
-<p>
-There are two loops, hence two loop invariants. These loop invariants can be
-visualized with the following diagram:
-</p>
-<div class="figure">
-<img src="insertion-sort.png" alt="insertion sort loop invariants" />
-</div>
-<p>
-Notice that the loop invariant holds in <code>for</code> loops at the point
-when the loop guard (i.e., <tt>i &lt; a.length</tt>) is evaluated, and
-not necessarily at the point when the <code>for</code> statement starts
-executing. That is, the initialization expression in the <code>for</code>
-statement can help establish the loop invariant.
 
 <h2>Debugging and choosing loop invariants</h2>
 <p>
