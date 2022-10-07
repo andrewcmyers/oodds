@@ -161,9 +161,40 @@ Loop invariants can help us convince ourselves that our code,
 especially tricky code, is correct. They also help us develop code
 that is correct in the first place, and they help us write efficient code.
 </p>
+<div class=floatfigure>
+<canvas id=loopinv_reasoning style="width:400px; height: 300px"></canvas>
+</div>
+<script class=graphics>
+with (new CFigure("loopinv_reasoning")) {
+    let [p1, p2, p3, p4, p5, p6] = arrObjects(6, () => point())
+    let c = margin()
+    align("center", "distribute", p1, p2, p3, p4, p5, p6)
+    align("center", "top", p1, c)
+    align("none", "bottom", p6, c)
+    circle().setW(5).at(p2).setFillStyle('black')
+    circle().setW(5).at(p5).setFillStyle('black')
+    arrow(p1, p2)
+    arrow(p2, p3)
+    arrow(p4, p5)
+    arrow(p5, p6)
+    let code = rectangle().addText("loop\nbody").setW(100)
+    equal(p3, code.uc())
+    equal(p4, code.lc())
+    let p7 = code.toRight(40)
+    arrow(p5, p5.toRight(80), p7, p2.toRight(80), p2)
+    align("left", "top", p1.toRight(8), label("precondition"))
+    align("left", "bottom", p6.toRight(8), label("postcondition"))
+    align("right", "center", average(p2, p3).toLeft(8), label("loop invariant"))
+    align("right", "center", average(p4, p5).toLeft(8), label("loop invariant"))
+    align("left", "center", code.toRight(50), label("loop invariant"))
+    align("right", "center", label("1. Establishment").setFontStyle("bold"), p2.toLeft(20))
+    align("right", "center", label("2. Postcondition").setFontStyle("bold"), p5.toLeft(20))
+    align("right", "center", label("3. Preservation").setFontStyle("bold"), code.toLeft(20))
+}
+</script>
 <p>
 To use a loop invariant to argue that code does what we want, we
-use the following steps:
+use the following steps, depicted in the figure:
 </p>
 <ol>
 <li><b>Establishment (aka Initialization).</b> Show that the loop invariant is
@@ -240,16 +271,16 @@ Let's try these four steps on the binary search algorithm.
   <li><b>Preservation.</b>
   <p>Since the loop doesn't change the array, clearly the first clause of the invariant
    is preserved. Arguing the remaining clauses is a bit trickier.</p>
-  <p>We use l', r' to represent the values of l, r at the end of the loop.
+  <p>We use <code>l'</code> and <code>r'</code> to represent the values of <code>l</code> and <code>r</code> at the end of the loop.
   We want to show that if the invariant is true at the beginning of the loop body,
   that is, if <code>0 ≤ l ≤ r ≤ a.length-1</code> and <code>k ∈ a[l..r]</code>,
   then clauses 2 and 3 are true at the end of the loop body, that is,
   <code>0 ≤ l' ≤ r' ≤ a.length-1</code> and <code>k ∈ a[l'..r']</code>.</p>
 
   <p>
-  Note that m is the average of l and r, rounded down. So we
+  Note that <code>m</code> is the average of <code>l</code> and <code>r</code>, rounded down. So we
   know that <code>l ≤ m ≤ r</code>. In fact, because  the loop guard <code>l &lt; r</code> is true
-  and the value of m is rounded down, we know something stronger: <code>l ≤ m &lt; r</code>.
+  and the value of <code>m</code> is rounded down, we know something stronger: <code>l ≤ m &lt; r</code>.
   </p>
   <p>
   How the loop body executes depends on the outcome of the test <code>k &lt;= a[m]</code>. There
@@ -265,7 +296,7 @@ Let's try these four steps on the binary search algorithm.
         </p>
 
         <p>
-          How about clause 3? By the loop invariant, we know that k occurs at
+          How about clause 3? By the loop invariant, we know that <code>k</code> occurs at
           least once in <code>a[l..r]</code>. Since <code>k &lt;= a[m]</code>,
           it must occur at or before index <code>m</code>. Therefore we have
           <code>k∈a[l..m] = a[l'..r']</code>, as required.
@@ -297,7 +328,7 @@ Let's try these four steps on the binary search algorithm.
 </ol>
 
 <p>
-In this case, the loop invariant has three clauses, but it is easy to leave things out of the
+In this case, the loop invariant has three clauses, but it is tempting to leave things out of the
 loop invariant. If clauses are omitted, the invariant may be too weak:
 Establishment is easier to argue, but it becomes impossible to show
 Preservation or Postcondition. On the other hand, if the loop invariant is too
@@ -311,7 +342,7 @@ the binary search loop invariant:
 
 <ol>
 <li>
-If we didn't know the array was sorted, our reasoning about where the element k was
+If we didn't know the array was sorted, our reasoning about where the element <code>k</code> was
 would fail.
 </li>
 <li><p><code>l ≤ r</code><br>
@@ -328,15 +359,15 @@ so Postcondition fails.
 
 <h2>Example: Exponentiation by squaring and multiplication</h2>
 <p>
-Here is an implementation of exponentiation that is efficient but
-whose correctness is not immediately apparent.
+Here is a second example of using a loop invariant to show that an inobvious algorithm works correctly.
+It is a fairly efficient implementation of exponentiation.
 </p>
 <pre class="load">
 <a href="Pow.java">Pow.java</a>
 </pre>
 
-<p>Intuitively, this algorithm converts the exponent e into
-a binary representation, which we can think of as a sum of powers of 2. So
+<p>Intuitively, this algorithm converts the exponent <code>e</code> into
+a binary (base-2) representation. We can think of a number in base 2 as a sum of powers of 2. So
 e = 2<sup>k<sub>1</sub></sup> + 2<sup>k<sub>2</sub></sup> + ··· and x<sup>e</sup>
 = x<sup>2<sup>k<sub>1</sub></sup>+2<sup>k<sub>2</sub></sup>+···</sup>
 = x<sup>2<sup>k<sub>1</sub></sup></sup>·x<sup>2<sup>k<sub>2</sub></sup></sup>···.
@@ -377,12 +408,12 @@ Therefore, r'·b'<sup>y'</sup> = r·b·(b<sup>2</sup>)<sup>(y-1)/2</sup>
 <li><b>Termination.</b>
 <p>Dividing by two makes the quantity y strictly smaller on every loop iteration,
 because it is always nonnegative (this is a part of
-the loop invariant). It can never become negative, so eventually it will become
-zero and the loop will terminate.</p></li>
+the loop invariant). It can never become negative, so
+the loop must eventually terminate.</p></li>
 </ol>
 
 <p>
-Therefore, the loop terminates and returns the correct value of x<sup>e</sup>.
+Therefore, the loop terminates <em>and</em> returns the correct value of x<sup>e</sup>.
 </p>
 <h2>Example: Insertion sort</h2>
 
