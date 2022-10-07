@@ -1,14 +1,57 @@
 <h1>Loop invariants</h1>
 
 <p>
-When we want to convince ourselves that our code is correct, we need to be able to argue
-that certain things are true at various points in the program. Loops pose a special challenge
-for such arguments, because the same code can be executed multiple times. How do we know
-what is true about the program as loops execute?
+Given a piece of code that executes during a program, such as a method
+definition, how do we know that the code is correct? When writing the code
+for a method, we are allowed to assume that the method's precondition is
+true, and it is our job as implementers to write code that makes the method's
+postcondition true. In addition, we are allowed to assume that initially
+the class invariant holds, but there is an obligation to ensure that at the
+end, the class invariant is still true. We can visualize this
+reasoning process in the following diagram:
+</p>
+<div class=figure>
+<canvas id=method_reasoning style="width:400px; height: 200px"></canvas>
+</div>
+<script class=graphics>
+with (new CFigure("method_reasoning")) {
+    let code = rectangle().setH(40).setW(80).addText("method\nbody")
+    let pre = label("precondition"), post = label("postcondition")
+    let c = margin(2)
+    let t1 = point(), t2 = point(), b1 = point(), b2 = point()
+    equal(t1, average(code.ul(), code.uc()))
+    equal(t2, average(code.ur(), code.uc()))
+    equal(b1, average(code.ll(), code.lc()))
+    equal(b2, average(code.lr(), code.lc()))
+    align("center", "distribute", pre, average(t1, b1), post)
+    align("none", "top", pre, c)
+    align("none", "bottom", post, c)
+    arrow(pre, t1)
+    arrow(b1, post)
+    let v  = 70, w = 100
+    connector(b2, b2.toBottom(v), code.toRight(w).toBottom(v), code.toRight(w).toTop(v), t2.toTop(v), t2)
+      .setEndArrow("arrow")
+    align("left", "top", label("class invariant"), b2.toRight(8).toBottom(5))
+    align("left", "bottom", label("class invariant"), t2.toRight(8).toTop(5))
+}
+</script>
+<p>
+What this diagram suggests is that code transforms facts about the state of the running
+program. Method code is correct if, starting from a state in which both the precondition and
+the class invariant are true, it ends in a state where the postcondition and the class
+invariant are both true.
+</p>
+<p>
+Therefore, when we want to convince ourselves that our code is correct, we need
+to be able to argue that certain things are true at various points in the
+program, and that the code we are writing transforms those facts in the right
+way.  Loops pose a special challenge for such arguments, because the same code
+can be executed multiple times. How do we know what is true about the program
+as loops execute?
 </p>
 <p>
 A <b>loop invariant</b> is a condition that is true at the beginning and end of
-every iteration of a loop. The concept is similar to a <b>class invariant</b>,
+every iteration of a loop, somewhat like a class invariant,
 which must be true at the beginning and end of every public method. When you
 write a loop that works correctly, you are at least implicitly relying on a
 loop invariant.  Knowing what a loop invariant is and thinking explicitly about
@@ -17,9 +60,11 @@ tricky algorithms.
 </p>
 <h2>Binary search via iteration</h2>
 <p>
-Suppose we want to find an element in a sorted array. We can do much better
-than scanning from left to right: we can use <em>binary search</em>. Here is
-the binary search algorithm, written as a loop.
+Some loops are hard to write correctly without thinking about loop invariants. 
+For example, suppose we want to find an element in a sorted
+array. We can do much better than scanning from left to right, which would take linear
+time: we can use <em>binary search</em> to find it in logarithmic time.
+Here is the binary search algorithm, written as a loop.
 </p>
 <pre class="load">
 <a href="binary_search.java">binary_search.java</a>
@@ -41,13 +86,14 @@ desired states when the loop stops. In this case, the precondition consists
 of the precondition of <code>search()</code> itself, plus the facts that
 <code>l = 0</code> and <code>r = a.length - 1</code>. The desired
 postcondition is that <code>k = a[l]</code>. To show that the loop
-is correct, we use a loop invariant to transform the state of
+is correct, we use a loop invariant to convince ourselves that we have
+transformed the state of
 the program from one satisfying the precondition to one satisfying
 the postcondition.
 </p>
 <h2>Binary search loop invariant</h2>
 <p>
-To convince ourselves that we wrote the correct code, we need a <b>loop invariant</b>
+We need a <b>loop invariant</b>
 that describes the conditions that we want the loop body to preserve. For this
 example, we can write a useful loop invariant using three clauses:
 </p>
