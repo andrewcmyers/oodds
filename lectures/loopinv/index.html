@@ -63,7 +63,7 @@ tricky algorithms.
 Some loops are hard to write correctly without thinking about loop invariants. 
 For example, suppose we want to find an element in a sorted
 array. We can do much better than scanning from left to right, which would take linear
-time: we can use <em>binary search</em> to find it in logarithmic time.
+time: we can use <b>binary search</b> to find it in logarithmic time.
 Here is the binary search algorithm, written as a loop.
 </p>
 <pre class="load">
@@ -124,35 +124,6 @@ If we have a loop and we know what the loop invariant is for that loop, it is
 often a good idea to document it. In fact, we can document it in a checkable
 way by using an <code>assert</code> statement that is executed on every loop
 iteration.
-</p>
-
-<h2>Loop invariants and tail-recursive functions</h2>
-<p>
-We observed earlier that tail-recursive functions can be converted into
-loops. Conversely, loops can be converted into tail-recursive functions.
-What is the relationship of this tail-recursive function to the loop
-invariant?
-</p>
-<p>
-For example, binary search can be converted into a tail-recursive
-function as follows:
-</p>
-<pre class="load">
-<a href="binary_search_recursive.java">binary_search.java</a>
-</pre>
-<p>
-Notice that the precondition of the tail-recursive function
-<code>search_rec</code> is exactly the loop invariant, and the postcondition of
-the loop is just the postcondition of the function. This is no accident: a loop
-invariant is simply the precondition of the corresponding tail-recursive
-function.  The loop preserves the loop invariant exactly when the precondition
-is satisfied for all recursive calls made in the recursive version. In this
-example there are two recursive calls.
-</p>
-<p>
-If we think of a loop as a function whose precondition must be satisfied and
-whose postcondition must ensure the loop's postcondition is satisfied, that can
-help us identify the loop invariant.
 </p>
 
 <h2>Using loop invariants to show code is correct</h2>
@@ -369,6 +340,7 @@ so Postcondition fails.
 </li>
 </ol>
 
+
 <h2>Example: Exponentiation by squaring and multiplication</h2>
 <p>
 Here is a second example of using a loop invariant to show that an inobvious algorithm works correctly.
@@ -480,6 +452,34 @@ at the beginning.  The statement <code>k ∈ a[l..r]</code>
 generalizes both of these assertions.
 </p>
 
+<h2>Loop invariants and tail-recursive functions</h2>
+<p>
+We observed earlier that tail-recursive functions can be converted into
+loops. Conversely, loops can be converted into tail-recursive functions.
+What is the relationship of this tail-recursive function to the loop
+invariant?
+</p>
+<p>
+For example, binary search can be converted to use a tail-recursive
+function rather than a loop:
+</p>
+<pre class="load">
+<a href="binary_search_recursive.java">binary_search.java</a>
+</pre>
+<p>
+Notice that the precondition of the tail-recursive function
+<code>search_rec</code> is exactly the loop invariant, and the postcondition of
+the loop is just the postcondition of the function. This is no accident: a loop
+invariant is simply the precondition of the corresponding tail-recursive
+function.  The loop preserves the loop invariant exactly when the precondition
+is satisfied for all recursive calls made in the recursive version. In this
+example there are two recursive calls.
+</p>
+<p>
+If we think of a loop as a function whose precondition must be satisfied and
+whose postcondition must ensure the loop's postcondition is satisfied, that can
+help us identify the loop invariant.
+</p>
 <h2>Loop invariants in software engineering</h2>
 <p>
 Loop invariants capture key facts that explain why code works.
