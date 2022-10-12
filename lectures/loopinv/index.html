@@ -63,7 +63,7 @@ tricky algorithms.
 Some loops are hard to write correctly without thinking about loop invariants. 
 For example, suppose we want to find an element in a sorted
 array. We can do much better than scanning from left to right, which would take linear
-time: we can use <em>binary search</em> to find it in logarithmic time.
+time: we can use <b>binary search</b> to find it in logarithmic time.
 Here is the binary search algorithm, written as a loop.
 </p>
 <pre class="load">
@@ -126,35 +126,6 @@ way by using an <code>assert</code> statement that is executed on every loop
 iteration.
 </p>
 
-<h2>Loop invariants and tail-recursive functions</h2>
-<p>
-We observed earlier that tail-recursive functions can be converted into
-loops. Conversely, loops can be converted into tail-recursive functions.
-What is the relationship of this tail-recursive function to the loop
-invariant?
-</p>
-<p>
-For example, binary search can be converted into a tail-recursive
-function as follows:
-</p>
-<pre class="load">
-<a href="binary_search_recursive.java">binary_search.java</a>
-</pre>
-<p>
-Notice that the precondition of the tail-recursive function
-<code>search_rec</code> is exactly the loop invariant, and the postcondition of
-the loop is just the postcondition of the function. This is no accident: a loop
-invariant is simply the precondition of the corresponding tail-recursive
-function.  The loop preserves the loop invariant exactly when the precondition
-is satisfied for all recursive calls made in the recursive version. In this
-example there are two recursive calls.
-</p>
-<p>
-If we think of a loop as a function whose precondition must be satisfied and
-whose postcondition must ensure the loop's postcondition is satisfied, that can
-help us identify the loop invariant.
-</p>
-
 <h2>Using loop invariants to show code is correct</h2>
 <p>
 Loop invariants can help us convince ourselves that our code,
@@ -162,34 +133,47 @@ especially tricky code, is correct. They also help us develop code
 that is correct in the first place, and they help us write efficient code.
 </p>
 <div class=floatfigure>
-<canvas id=loopinv_reasoning style="width:400px; height: 300px"></canvas>
+<canvas id=loopinv_reasoning style="width:370px; height: 300px"></canvas>
 </div>
 <script class=graphics>
 with (new CFigure("loopinv_reasoning")) {
     let [p1, p2, p3, p4, p5, p6] = arrObjects(6, () => point())
     let c = margin()
-    align("center", "distribute", p1, p2, p3, p4, p5, p6)
+    align("center", "distribute", p1, p2, p3, p4, p5)
+    align("none", "distribute", p1, p2, p3, p4, p5, p6)
     align("center", "top", p1, c)
     align("none", "bottom", p6, c)
-    circle().setW(5).at(p2).setFillStyle('black')
-    circle().setW(5).at(p5).setFillStyle('black')
+    let invcol = "#0050ff"
+    let code = square().addText("loop\nbody").setStrokeStyle(invcol).setLineWidth(2)
+    let guard = rectangle().addText("guard").at(p3).setW(50).setH(25)
     arrow(p1, p2)
-    arrow(p2, p3)
-    arrow(p4, p5)
-    arrow(p5, p6)
-    let code = rectangle().addText("loop\nbody").setW(100)
-    equal(p3, code.uc())
-    equal(p4, code.lc())
+    arrow(p2, guard).setLineWidth(2)
+    equal(p4, code.uc())
+    equal(p5, code.lc())
     let p7 = code.toRight(40)
-    arrow(p5, p5.toRight(80), p7, p2.toRight(80), p2)
+    let p8 = circle().setW(7).setFillStyle(invcol).setStrokeStyle(null)
+    circle().setW(7).at(p2).setFillStyle(invcol).setStrokeStyle(null)
+    arrow(guard, guard.toRight(40), point(p6.x(), guard.y()), p8).setLineWidth(2)
+    arrow(p8, p6)
+    let li3
+    align("none", "center", average(guard.lc(), p4), hspace(5), li3 = label("loop invariant"))
+    align("center", "none", li3, average(p6, guard))
+    arrow(guard, p4).setLineWidth(2)
     align("left", "top", p1.toRight(8), label("precondition"))
-    align("left", "bottom", p6.toRight(8), label("postcondition"))
-    align("right", "center", average(p2, p3).toLeft(8), label("loop invariant"))
-    align("right", "center", average(p4, p5).toLeft(8), label("loop invariant"))
-    align("left", "center", code.toRight(50), label("loop invariant"))
-    align("right", "center", label("1. Establishment").setFontStyle("bold"), p2.toLeft(20))
-    align("right", "center", label("2. Postcondition").setFontStyle("bold"), p5.toLeft(20))
-    align("right", "center", label("3. Preservation").setFontStyle("bold"), code.toLeft(20))
+    let post = label("postcondition")
+    align("left", "bottom", p6.toRight(8), post)
+    align("right", "bottom", post, c)
+    align("right", "center", average(p2, guard.uc()).toLeft(5), label("loop invariant"))
+    align("left", "top", code.lc().toBottom(5).toRight(5), label("loop invariant"))
+    // align("left", "center", code.toRight(50), label("loop invariant"))
+    let step2
+    align("right", "center", label("1. Establishment").setFontStyle("bold").setTextStyle(invcol), p2.toLeft(20))
+    align("left", "center", step2 = label("2. Postcondition").setFontStyle("bold").setTextStyle(invcol), guard.toRight(20).toTop(15))
+    align("right", "center", label("3. Preservation").setFontStyle("bold").setTextStyle(invcol), code.toLeft(10))
+    arrow(p5, p5.toBottom(30), point(c.x0(), p5.toBottom(30).y()),  point(c.x0(), guard.y()), guard)
+        .setLineWidth(2)
+    align("none", "bottom", p8, li3)
+    align("center", "none", p8, p6)
 }
 </script>
 <p>
@@ -266,7 +250,7 @@ Let's try these four steps on the binary search algorithm.
   r</code>. But the invariant (2) guarantees <code>l ≤ r</code>, so we must
   have <code>l = r</code>. We know from the invariant (3) that <code>k ∈
   a[l..r]</code>, which has been reduced to a single element, so that must be
-  where k is.</p></li>
+  where <code>k</code> is.</p></li>
 
   <li><b>Preservation.</b>
   <p>Since the loop doesn't change the array, clearly the first clause of the invariant
@@ -275,7 +259,7 @@ Let's try these four steps on the binary search algorithm.
   We want to show that if the invariant is true at the beginning of the loop body,
   that is, if <code>0 ≤ l ≤ r ≤ a.length-1</code> and <code>k ∈ a[l..r]</code>,
   then clauses 2 and 3 are true at the end of the loop body, that is,
-  <code>0 ≤ l' ≤ r' ≤ a.length-1</code> and <code>k ∈ a[l'..r']</code>.</p>
+  <code>0 ≤ l' ≤ r' ≤ a.length-1</code> and <code>k ∈ a[l'..r']</code>.</p>
 
   <p>
   Note that <code>m</code> is the average of <code>l</code> and <code>r</code>, rounded down. So we
@@ -304,14 +288,14 @@ Let's try these four steps on the binary search algorithm.
 	</li>
 	<li><p><b>Case</b> <code>k &gt; a[m]</code>:</p>
 	<p>
-          Clause 2. In this case, the loop body sets <code>r' = r</code> and <code>l' =
-          m+1</code>. We know <code>m &lt; r</code>, so <code>l' = m + 1 ≤ r = r'</code>.
-          Therefore, we have <code>0 ≤ l' ≤ r' ≤ a.length-1</code>
+          Clause 2. In this case, the loop body sets <code>r' = r</code> and <code>l' = m+1</code>. We know <code>m &lt; r</code>, so <code>l' = m + 1 ≤ r = r'</code>.
+          Therefore, we have <code>0 ≤ l' ≤ r' ≤ a.length-1</code>.
           </p>
           <p>
           Clause 3.  Since the array is sorted, <code>k</code> cannot be
           located in <code>a[l..m]</code>. But according to the invariant, it
-          is in <code>a[l..r]</code>. Therefore, <code>k</code> is in <code>a[m+1..r]</code> = <code>a[l'..r']</code>,
+          is in <code>a[l..r]</code>. Therefore, <code>k</code> is in
+          <code>a[m+1..r]</code> = <code>a[l'..r']</code>,
           as required.
 	  </p>
 	</li>
@@ -320,10 +304,10 @@ Let's try these four steps on the binary search algorithm.
   <li><b>Termination.</b>
   <p>The value DF = <code>r &minus; l</code> is guaranteed by the invariant
   (1) to be nonnegative: we can choose DF<sub>0</sub> = 0.
-  In the case where <code>k ∈ a[l..m]</code>, we know <code>m &lt; r</code>, so
-  <code>r' &minus; l' &lt; r &minus; l</code>. In the other case, we know <code>l &lt; m+1</code>, so again,
-  <code>r' &minus; l' &lt; r &minus; l</code>. Thus the quantity <code>r &minus; l</code> gets strictly
-  smaller on every loop iteration as long as <code>l &lt; r</code>. Therefore,
+  In the case where <code>k ∈ a[l..m]</code>, we know <code>m &lt; r</code>, so
+  <code>r' &minus; l' &lt; r &minus; l</code>. In the other case, we know <code>l &lt; m+1</code>, so again,
+  <code>r' &minus; l' &lt; r &minus; l</code>. Thus the quantity <code>r &minus; l</code> gets strictly
+  smaller on every loop iteration as long as <code>l &lt; r</code>. Therefore,
   the loop eventually terminates.
 </ol>
 
@@ -357,6 +341,7 @@ so Postcondition fails.
 </li>
 </ol>
 
+
 <h2>Example: Exponentiation by squaring and multiplication</h2>
 <p>
 Here is a second example of using a loop invariant to show that an inobvious algorithm works correctly.
@@ -366,80 +351,76 @@ It is a fairly efficient implementation of exponentiation.
 <a href="Pow.java">Pow.java</a>
 </pre>
 
-<p>Intuitively, this algorithm converts the exponent <code>e</code> into
+<p>Intuitively, this algorithm converts the exponent \(e\) into
 a binary (base-2) representation. We can think of a number in base 2 as a sum of powers of 2. So
-e = 2<sup>k<sub>1</sub></sup> + 2<sup>k<sub>2</sub></sup> + ··· and x<sup>e</sup>
-= x<sup>2<sup>k<sub>1</sub></sup>+2<sup>k<sub>2</sub></sup>+···</sup>
-= x<sup>2<sup>k<sub>1</sub></sup></sup>·x<sup>2<sup>k<sub>2</sub></sup></sup>···.
-(Note that x<sup>2<sup>k</sup></sup> always means x<sup>(2<sup>k</sup>)</sup>, never (x<sup>2</sup>)<sup>k</sup>.)</p>
+\( e = 2^{k_1} + 2^{k_2} + ... \) and \(x^e = x^{2^{k_1}+2^{k_2}+···} \)
+(Note that \(x^{2^k}\) always means \(x^{(2^k)}\), never \((x^2)^k\).)</p>
 
 <p>
-For example, if e = 11010 in binary, then x<sup>e</sup> = x<sup>11010</sup> = x<sup>10000+1000+10</sup> = x<sup>10000</sup>·x<sup>1000</sup>·x<sup>10</sup>.
+For example, if \(e = 11010\) in binary, then \(x^e = x^{11010} = x^{10000+1000+10} = x^{10000}·x^{1000}·x^{10}\).
 </p>
 
 <p>
-By repeatedly halving y and inspecting the resulting parity,
+By repeatedly halving \(y\) and inspecting the resulting parity,
 the algorithm finds each of the &ldquo;1 digits&rdquo; in the binary
-representation of e, corresponding to the terms 2<sup>k<sub>i</sub></sup>, and for such a digit
-at position k, multiplies into r the appropriate factor
-x<sup>2<sup>k</sup></sup>. That is the intuition, but the loop invariant will help convince us
+representation of \(e\), corresponding to the terms \(2^{k_i} \),
+and for such a digit at position \(k\), multiplies into \(r\) the appropriate factor,
+\(x^{2^k}\). That is the intuition, but the loop invariant will help convince us
 that it really does work. The loop invariant captures that part of the final
-result has been transferred into r and what remains to be multiplied into the result is b<sup>y</sup>.
+result has been transferred into \(r\) and that what remains to be multiplied into the result
+is \(b^y\). As we can see in the code, the loop invariant is:
+<ol><li> \( x^e = r·b^y \)
+    <li> \( y ≥ 0 \)
+</ol>
+
 </p>
 
 <p>Let's consider the four steps outlined above.</p>
 
 <ol>
-<li><b>Establishment.</b> <p>Initially, r=1, b=x and y=e, so trivially we have r·b<sup>y</sup> = x<sup>e</sup>. Also y &ge; 0 since initially y = e and e &ge; 0 as a precondition.</p></li>
-<li><b>Preservation.</b> <p>Let us use y', b', and r' to refer to the values of these variables
-at the end of the loop. We need to show that if y &gt; 0 and r·b<sup>y</sup> = x<sup>e</sup> at the beginning of the loop body, then y' &ge; 0 and r'·b'<sup>y'</sup> = x<sup>e</sup> at the end of the loop body. It suffices to show that if y &gt; 0, then r'·b'<sup>y'</sup> = r·b<sup>y</sup> and y' &ge; 0. There are two cases to consider:</p>
+<li><b>Establishment.</b> <p>Initially, \(r=1\), \(b=x\) and \(y=e\),
+so trivially we have \(r·b^y = x^e\). Also, we know \(y &ge; 0\) since initially \(y = e\), and
+\(e &ge; 0\) is a precondition of the loop.</p></li>
+
+<li><b>Postcondition.</b>
+<p>If the loop guard is false, then \(y = 0\), since \(y &ge; 0\) and not \(y &gt; 0\).
+But if \(y = 0\), then \(r = r·b^y = x^e\), and that is the desired return value.</p></li>
+
+<li><b>Preservation.</b> <p>Let us use \(y'\), \(b'\), and \(r'\) to refer to the values of these variables
+at the end of the loop body.
+We need to show that if \(y &gt; 0\) and \(x^e = r·b^y\) at the beginning of
+the loop body, then \(y'≥0\) and \(x^e = r'·b'^{y'}\) at the end
+of the loop body. It suffices to show that if the loop guard \(y &gt; 0\) holds, then
+\(r'·b'^{y'} = r·b^y\) and \(y'≥0\). There are two cases to consider:</p>
+
 <ul>
-<li><p><b>Case: y is even</b>. In this case, r' = r, y' = y/2, and b'= b<sup>2</sup>.
-Therefore, r'·b'<sup>y'</sup> = r·(b<sup>2</sup>)<sup>y/2</sup> = r·b<sup>y</sup>, as desired.</p></li>
-<li><p><b>Case: y is odd</b>. Here we have r'=r·b, y' = (y-1)/2, and b' = b<sup>2</sup>.
-Therefore, r'·b'<sup>y'</sup> = r·b·(b<sup>2</sup>)<sup>(y-1)/2</sup>
-          = r·b·b<sup>y-1</sup>
-          = r·b<sup>y</sup>, again.</p></li>
-<p>In either case, y' &ge; 0, since halving a positive number cannot make it negative.</p>
+<li><p><b>Case: y is even</b>. In this case, \(r' = r\), \(y' = y/2\), and \(b'= b^2\).
+Therefore, \(r'·b'^{y'} = r·(b^2)^{(y/2)} = r·b^y\), as desired.</p></li>
+
+<li><p><b>Case: y is odd</b>. Here we have \(r'=r·b\), \(y' = (y-1)/2\), and \(b' = b^2\).
+Therefore, \(r'·b'^{y'} = r·b·(b^2)^{(y-1)/2} 
+          = r·b·b^{(y-1)}
+          = r·b^y\), again.</p></li>
+<p>In either case, the other part of the invariant, \(y' &ge; 0\), holds
+since halving a positive number cannot make it negative.</p>
 </ul>
 </li>
-<li><b>Postcondition.</b>
-<p>If the loop guard is false, then y = 0, since y &ge; 0 and not y &gt; 0. But if y = 0, then r = r·b<sup>y</sup> = x<sup>e</sup>, and that is the return value.</p></li>
 <li><b>Termination.</b>
-<p>Dividing by two makes the quantity y strictly smaller on every loop iteration,
-because it is always nonnegative (this is a part of
-the loop invariant). It can never become negative, so
+<p>Dividing by two makes the quantity \(y\) strictly smaller on every loop iteration,
+because it is always positive when the guard is true.
+When the value of \(y\) is 0, the loop guard is false, so
 the loop must eventually terminate.</p></li>
 </ol>
 
 <p>
-Therefore, the loop terminates <em>and</em> returns the correct value of x<sup>e</sup>.
+Therefore, the loop terminates <em>and</em> returns the correct value of \(x^e\).
 </p>
-<h2>Example: Insertion sort</h2>
-
-<pre class="load">
-<a href="insertion_sort.java">insertion_sort.java</a>
-</pre>
-
-<p>
-There are two loops, hence two loop invariants. These loop invariants can be
-visualized with the following diagram:
-</p>
-<div class="figure">
-<img src="insertion-sort.png" alt="insertion sort loop invariants" />
-</div>
-<p>
-Notice that the loop invariant holds in <code>for</code> loops at the point
-when the loop guard (i.e., <tt>i &lt; a.length</tt>) is evaluated, and
-not necessarily at the point when the <code>for</code> statement starts
-executing. That is, the initialization expression in the <code>for</code>
-statement can help establish the loop invariant.
 
 <h2>Debugging and choosing loop invariants</h2>
 <p>
-There are two things that typically go wrong when choosing a loop invariant.
+Two things typically go wrong when choosing a loop invariant.
 The most common error is to define a loop invariant that is too weak. This
-error usually shows up when trying to take the Postcondition step. If the loop
+error is usually detected when trying to take the Postcondition step. If the loop
 invariant is too weak, we can't argue that the loop achieves whatever it is
 supposed to. Alternatively, sometimes a too-weak invariant will show up in the
 Preservation step, because the weak loop invariant does not restrict the
@@ -467,11 +448,39 @@ together, and then to try to come up with a logical statement that captures
 both of them. It should generalize both the precondition and the postcondition,
 but be close to the precondition as the loop starts and close to the
 postcondition when it ends. For example, in the binary search algorithm, that
-we want <code>k = a[l]</code> at the end and we have <code>k ∈
-a[0..a.length-1]</code> at the beginning.  The statement k ∈ a[l..r]
+we want <code>k = a[l]</code> at the end and we have <code>k ∈ a[0..a.length-1]</code>
+at the beginning.  The statement <code>k ∈ a[l..r]</code>
 generalizes both of these assertions.
 </p>
 
+<h2>Loop invariants and tail-recursive functions</h2>
+<p>
+We observed earlier that tail-recursive functions can be converted into
+loops. Conversely, loops can be converted into tail-recursive functions.
+What is the relationship of this tail-recursive function to the loop
+invariant?
+</p>
+<p>
+For example, binary search can be converted to use a tail-recursive
+function rather than a loop:
+</p>
+<pre class="load">
+<a href="binary_search_recursive.java">binary_search.java</a>
+</pre>
+<p>
+Notice that the precondition of the tail-recursive function
+<code>search_rec</code> is exactly the loop invariant, and the postcondition of
+the loop is just the postcondition of the function. This is no accident: a loop
+invariant is simply the precondition of the corresponding tail-recursive
+function.  The loop preserves the loop invariant exactly when the precondition
+is satisfied for all recursive calls made in the recursive version. In this
+example there are two recursive calls.
+</p>
+<p>
+If we think of a loop as a function whose precondition must be satisfied and
+whose postcondition must ensure the loop's postcondition is satisfied, that can
+help us identify the loop invariant.
+</p>
 <h2>Loop invariants in software engineering</h2>
 <p>
 Loop invariants capture key facts that explain why code works.
