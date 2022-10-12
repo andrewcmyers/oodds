@@ -141,7 +141,7 @@ with (new CFigure("loopinv_reasoning")) {
     let c = margin()
     align("center", "distribute", p1, p2, p3, p4, p5)
     align("none", "distribute", p1, p2, p3, p4, p5, p6)
-    align("center", "top", p1, c)
+    // align("center", "top", p1, c)
     align("none", "bottom", p6, c)
     let invcol = "#0050ff"
     let code = square().addText("loop\nbody").setStrokeStyle(invcol).setLineWidth(2)
@@ -169,11 +169,13 @@ with (new CFigure("loopinv_reasoning")) {
     let step2
     align("right", "center", label("1. Establishment").setFontStyle("bold").setTextStyle(invcol), p2.toLeft(20))
     align("left", "center", step2 = label("2. Postcondition").setFontStyle("bold").setTextStyle(invcol), guard.toRight(20).toTop(15))
-    align("right", "center", label("3. Preservation").setFontStyle("bold").setTextStyle(invcol), code.toLeft(10))
+    let preserv = label("3. Preservation").setFontStyle("bold").setTextStyle(invcol)
+    align("right", "center", preserv, code.toLeft(10))
     arrow(p5, p5.toBottom(30), point(c.x0(), p5.toBottom(30).y()),  point(c.x0(), guard.y()), guard)
         .setLineWidth(2)
     align("none", "bottom", p8, li3)
     align("center", "none", p8, p6)
+    align("left", "none", c.toLeft(-10), preserv)
 }
 </script>
 <p>
