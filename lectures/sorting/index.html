@@ -590,7 +590,7 @@ no larger than \(p\).
 <div class="figure">
 <img src="qs-final.png" alt="quicksort after partition" />
 <p class="caption">
-Final partitioned state of the array
+State of the array after partitioning
 </p>
 </div>
 -->     
@@ -753,7 +753,9 @@ Despite (or because of!) the complexity of the invariant, the partitioning code 
 then look very simple and be very efficient:
 </p>
 <pre>
-/** Partition array {@code a} into {@code a[l..k)} and {@code a[k..r)}, where {@code l&lt;k&lt;r}, and all elements
+/**
+ * Returns: k where {@code l&lt;k&lt;r}
+ * Effect: Partition array {@code a} into {@code a[l..k)} and {@code a[k..r)}, where all elements
  * in {@code a[l..k)} are less than or equal to all elements in {@code a[k..r)}.
  * Requires: {@code 0≤l}, {@code r≤a.length}, and {@code r-l≥2}.
  */
@@ -772,11 +774,16 @@ int partition(int[] a, int l, int r) {
 <p class="cont">
 The inner loops are written as <code>do...while</code> loops because we want to
 do the body of each loop once even if the loop guard is initially false.
+A <code>do...while</code> loop only evaluates its guard at the end of the loop body
+rather than at the beginning.
+</p>
+<p>
 Interestingly, these inner loops do not need to do any bounds checking on
 <code>i</code> and <code>j</code>. The reason bounds checks are not needed
 is after swapping <code>a[i]</code> and <code>a[j]</code>, there must be at
 least one value “ahead” of both <code>i</code> and <code>j</code> that will
-stop their inner loops.
+stop their inner loops. A value that you can check for instead of checking
+explicitly against array bounds is called a <b>sentinel value</b>.
 </p>
 <p>
 An example of partitioning will probably help understand what is going
@@ -814,11 +821,12 @@ Since <code>i &gt; j</code>,
 the loop halts and the result is <code>j+1</code> = 3. The two subarrays
 to be recursively sorted are (3,2,1) and (7,6,9,5,8).
 </p>
-<p>The loop can either stop with <code>i</code> = <code>j</code>+1 or with
-<code>i</code> = <code>j</code> in the case where <code>a[i]</code> =
+<p>The loop can either stop with <code>i</code> = <code>j</code>+1 or
+with <code>i</code> = <code>j</code> where <code>a[i]</code> =
 <code>a[j]</code> = <code>p</code>. Since j must be decremented at least twice,
 either by the initial loop or by the first iteration of the main loop,
-the value j+1 will always be a valid array index.
+the value <code>j+1</code> is a valid array index at the point of return,
+satisfying <code>l &lt; j+1 &lt; r</code>.
 </p>
 <p>
 Quicksort is an excellent sorting algorithm for many applications.
@@ -836,11 +844,13 @@ algorithm.  But what if we want to find the <em>median</em> element? Or the
 10th largest element? The problem of finding the nth largest element in an
 array is called the <b>order statistics</b> problem.  Clearly, we can solve
 this problem by sorting the array and then indexing to the appropriate
-position, but that does a lot of sorting work that is not necessary.
+position, but that does a lot of unnecessary sorting work.
 </p>
 <p>
 Fortunately, the quicksort algorithm can be tweaked a little to solve
-the order statistics problem efficiently.
+the order statistics problem efficiently, giving us the <b>quickselect</b>
+algorithm. It looks like quicksort except that it only recurses on one side
+of the partitioned array:
 </p>
 <pre class=load>
 <a href="qselect.java">qselect.java</a>
