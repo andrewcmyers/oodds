@@ -1,7 +1,6 @@
 <h1>Sorting</h1>
 <p>
 Sorting a collection of values is a fundamental operation with many uses.
-Let's look at the most common algorithms.
 You might ask why we need to talk about sorting algorithms at all, given that
 sorting algorithms are built into Java (see <code>Arrays.sort</code>) and many
 other languages these days. One reason is that it is useful to
@@ -9,8 +8,35 @@ understand the tradeoffs between different sorting algorithms.
 Another is that at some point you may have to build software
 in an environment in which the ideal sorting algorithm is not available. Finally,
 sorting is a great opportunity to explore the interplay between algorithm design,
-loop invariants, and performance analysis.
+loop invariants, and performance analysis. Let's look at the most common algorithms.
 </p>
+<h2>The sorting problem</h2>
+<p>
+To keep things simple, let's just consider sorting an array of integers.
+However, everything we say will generalize to sorting arrays of other kinds of
+values.  To make sure that the sorting algorithm works on types other than
+<code>int</code>, we only use the ability to compare two integers. The simple
+version of the problem we are trying to solve is then to implement the
+following specification:
+</p>
+<pre>
+/** Effect: Put a into ascending sorted order. */
+int sort(int[] a)
+</pre>
+<p>Because we will not use element operations other than comparison, the algorithms
+we discuss will work as an implementation of the following more generic specification:
+</p>
+<pre class=load>
+<a href="genericSort.java">genericSort.java</a>
+</pre>
+<p>
+What does it mean to put the array into sorted order? To be more precise, we
+want the method to rearrange (that is, permute) the values that were initially
+in a, so that the initially permuted ordering of the elements is replaced with
+a fully sorted ordering. The job of a sorting algorithm is figure out how
+the desired sorted ordering has been permuted and to undo that permutation.
+</p>
+
 <h2>Insertion sort</h2>
 <p>
 Insertion sort is a simple algorithm that is the fastest way to sort small arrays.
@@ -39,19 +65,26 @@ order. The code can be written as a loop with a loop invariant depicted as follo
   </script>
 </div>
 <p>
-The loop invariant is maintained by shifting each newly encountered element (at
-index i) leftward into the place it belongs in the sorted part of the array.
-This insertion causes the sorted part of the array to grow by one element.
-Eventually all elements have been inserted into the sorted part and there is
-nothing left to sort.
+To be more precise, the loop invariant says that the variable \(i\) is in the
+range \([1, a.\texttt{length})\), and that the elements in the range
+\(a[0..i)\) are sorted. Further, the sequence of elements in the whole array is
+a permutation of the sequence of elements originally in the array.
 </p>
-<pre class="load">
+<p>
+The loop invariant is maintained by shifting each newly encountered element
+\(k\) (at index \(i\) leftward into the place it belongs in the sorted part of
+the array.  This insertion causes the sorted part of the array to grow by one
+element, because all elements that are greater than \(k\) must be shifted right
+by one position to make room for it. Eventually all elements have been inserted
+into the sorted part and there is nothing left to sort.
+</p>
+<pre class=load>
 <a href="InsertionSort.java">InsertionSort.java</a>
 </pre>
 
 <p>
 The loop invariant for the outer loop is as depicted above. The invariant is satisfied
-when \( i=1 \) and each loop iteration ensures that the value that
+when \( i=1 \), and each loop iteration ensures that the value that
 index \(i\) initially pointed to (\(k\)) is
 inserted into the right place.
 </p>
@@ -97,40 +130,45 @@ is less than everything to the right (region B). Further, everything
 in region B is greater than the value to be inserted, \(k\). When the
 loop terminates, the top element in \(A\) is less than or equal to
 the value 
-\(k\), so \(k\) can be placed in the element marked &ldquo;?&rdquo;. Figuring out
+\(k\), so \(k\) can be placed in the element marked &ldquo;?&rdquo;.
+And finally, the sequence of elements previously in the sorted region,
+is the same as the concatenation of the elements in A and B. Figuring out
 loop invariants helps us write code like this that is efficient and
 correct.
 </p><p>
 The running time of insertion sort is best when the array is already
-sorted. In this case the inner loop stops immediately on each outer
-iteration, so the total work done per outer iteration is constant.
-Therefore the total work done by the algorithm in the best case is linear in
-the array size: \(O(n)\).</p>
+sorted. In this case the guard of the inner loop, \( a[j-1] &gt; k \)
+is always false, so the inner loop stops immediately for each outer
+iteration , and the total work done per outer iteration is therefore constant.
+Adding up all these \(O(1)\)-time outer iterations, the total work done by the algorithm in the
+best case is linear in the array size: \(O(n)\).</p>
 <p>
 The worst case for the algorithm is when the array is sorted in the
-reverse order. In that case the loop on \(j\) goes all the way down to 0 on
+reverse order. In that case, the loop on \(j\) goes all the way down to 0 on
 each outer iteration. The first iteration does two copies, the second
 three copies, and so on, so the total work is \(2 + 3 + \dots + n = n(n+1)/2 &minus; 1\).
-This function is \(O(n^2)\), since \(O(n^2+n) = O(n^2)\).</p>
+This function is \(O(n^2)\): insertion sort takes quadratic time.
+</p>
 <p>
-Recall that in general, we can drop lower-order terms from polynomials
-when determining asymptotic complexity. For example, in this case
-\((n^2+n)/n^2\) limits to a constant (1)
-as \(n\) becomes large. Therefore the two functions in the
-ratio have the same asymptotic complexity.
+To see this asymptotic complexity another way, recall that in general, we can
+drop lower-order terms from polynomials when determining asymptotic complexity.
+For example, in this case \((n^2+n)/n^2\) limits to a constant (1) as \(n\)
+becomes large. Therefore the two functions in the ratio have the same
+asymptotic complexity.
 </p>
 <h2>Stability</h2>
 <p>
 Insertion sort has one other nice property: implemented properly, it is a
-<b>stable</b> sort, meaning that if given an array containing elements that are
-equal to each other, it keeps those elements in the same relative order as in
-the original array.
+<b>stable</b> sort, meaning that if given an array containing elements that compare
+as equal to each other, it keeps those elements in the same relative order as in
+the original array. A stable sort does not unnecessarily reorder any elements.
 </p>
 <p>
-Stability is important for the following reason. Say you want to sort some items
-according to one field, then again according to another field. For example, you might
-have a list of pairs (zip code, street name) that you would like to have sorted by zip code,
-and within each zip code, sorted by street name. Thus
+Stability can be helpful. For example, spreadsheets always provide stable
+sorting. Say that you want to sort some items according to one field, then again
+according to another field. For example, you might have a list of pairs (zip
+code, street name) that you would like to have sorted by zip code, and within
+each zip code, sorted by street name. Thus
 <pre>
 (14850, Buffalo St)
 (14853, East Av)
@@ -150,7 +188,13 @@ after sorting should be
 (14853, East Av)
 (14853, Hoy Rd)
 </pre>
-To do this, sort first by the lower-order field (in this example, the street name), ignoring the higher-order field (in this example, the zip code). Then sort again by the higher-order field using a stable sort, ignoring the lower-order field. Since the second sort is done with a stable sort, it does not undo the effects of the first sort. This is because the elements with the same zip code are considered "equal" by the second sort, so the second sort keeps them in the same order.
+To do this, we sort first by the lower-order field (in this example, the street
+name), ignoring the higher-order field (in this example, the zip code). Then
+we sort again by the higher-order field using a stable sort, ignoring the
+lower-order field. Since the second sort is done with a stable sort, it does
+not undo the effects of the first sort: the elements with the
+same zip code are considered "equal" by the second sort, so the second sort
+keeps them in the same order.
 </p>
 <p>
 In the example above, after the first sort we would have
@@ -163,20 +207,22 @@ In the example above, after the first sort we would have
 (14853, Hoy Rd)
 (14850, Seneca St)
 </pre>
-The second sort, being stable, would simply move the 14850 items up and the 14853 items down, but within each zip code keep them in the same order.
+The second sort, being stable, would simply move the 14850 items up and the 14853 items down, but keep them in the same order within each zip code.
 </p>
 <h2>Selection sort</h2>
 <p>
 Selection sort is another sorting algorithm, used more commonly by humans than
 by computers. Intuitively, it tries to find the right element to put in each
 location of the final array. Once an array location is set to contain the right
-element, it is never changed.
+element, it is never changed. As with insertion sort, there is an invariant that
+the part of the array to the left of index \(i\) is sorted, but in this case 
+that sorted region of the array also contains the \(i\) smallest elements in
+the array. Because of that second condition, when \(i\) reaches \(n-1\), we
+know that \(a[n-1]\) already contains the largest element of the array, so
+the outer loop can stop one element earlier than in insertion sort.
 </p>
-<pre>
-for (int i = 0; i &lt; n; i++) {
-    // find smallest element in subarray a[i..n&minus;1]
-    // swap it with a[i]
-}
+<pre class=load>
+<a href="SelectionSort.java">SelectionSort.java</a>
 </pre>
 
 <p>
@@ -184,14 +230,44 @@ Because each loop iteration must in turn iterate over the rest of the
 array to find the smallest element, the <b>best</b>-case performance of this algorithm
 is the same as the worst-case performance: \(O(n^2)\).
 </p>
+<p>
+Although selection sort has the same <em>asymptotic</em> complexity as insertion sort,
+in practice insertion sort is about twice as fast. To see why, consider how long the
+inner loop in each algorithm takes. If we give each algorithm randomly shuffled data,
+on average the inner loop of insertion sort will scan halfway through the sorted region
+before finding a place for the element \(k\). But with selection sort, the inner loop
+<em>always</em> scans the entire unsorted region looking for a minimum value, which is
+twice as much work on average.
+</p>
+<p>
+The most efficient way to do selection sort is to swap elements, avoiding
+unnecessary updates to array elements. One nice property about selection sort
+is that it only does a linear number of updates to the array. This property makes
+selection sort still a useful algorithms in settings where updates to array elements
+are especially expensive. For example, writing to solid-state memory is much more expensive
+than reading from it.
+</p>
+<p>
+On the other hand, swapping elements means that this implementation of
+selection sort is not stable. When the elements at \(a[i]\) and \(a[p]\) are
+swapped, it the element at \(a[i]\) changes its relative ordering with any
+equal element that happens to be located between indices \(i\) and \(p\). We
+could make selection sort stable by not swapping, but instead shifting all
+elements in \(a[i..p)\) upward by one position. This change would not hurt the
+asymptotic complexity of selection sort, but in doing so we would lose
+the minimal update property that is the reason why we might prefer selection sort
+in the first place.
+</p>
+
 <h2>Lower bounds on sorting</h2>
 <p>
 The above sorting algorithms are all quadratic in the worst case. As we will see
 shortly, there are better algorithms for sorting large collections,
-but there is also a limit on how good a sorting algorithm of this kind can be. Here we are concerned with algorithms that work no matter what kind of data they are sorting,
-so the only observation these algorithms can make about the sorted elements is to
-compare them. Generically, the interface to such an algorithm looks like the
-following:
+but there is also a limit on how good a sorting algorithm of this kind can be.
+Recall that we are concerned with algorithms that work no matter what kind of data
+they are sorting. The only observation these algorithms can make about the
+sorted elements is to= compare them. Generically, the interface to such an
+algorithm looks like the following:
 <p>
 <pre>
 &lt;T&gt; sort(T[] a, Comparator&lt;T&gt; cmp) {
@@ -287,11 +363,16 @@ Now, a ternary tree of height \(h\) can have at <em>most</em>
 From
 <a href="https://en.wikipedia.org/wiki/Stirling%27s_approximation">Stirling's formula</a>, we learn that
 \(\ln n!\) is \(O(n \ln n)\).
-Ignoring the constant factor of \(1/\ln(3)\), this result means
+Ignoring the constant factor of \(1/\ln(3)\), as we do with asympotic complexity, this result means
 that \(Ω(h) = Ω(n \lg n)\), as claimed. Hence, generic sorting
 algorithms cannot be faster in the worst case, even if they can be faster
 for particular inputs, such as the linear-time performance of
 insertion sort on an already-sorted array.
+</p>
+<p>
+Now we know that any sorting algorithm must take at least \(Ω(n \lg n)\) time. But that doesn't mean
+there is actually any algorithm with that running time. In fact, there <em>are</em> such asymptotically efficient
+sorting algorithms, such as merge sort and quicksort.
 </p>
 
 <h2>Merge sort</h2>

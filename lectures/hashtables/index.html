@@ -757,29 +757,37 @@ function.
 </p>
 <p>
 In particular, if bucket \(i\) contains \(x_i\) elements, clustering can be
-measured using the following formula:
-</p>
-<div class=figure>
+measured by computing the sum of the squares of size of the buckets, and
+comparing it to the expected value. If the hash function satisfies the uniform
+hashing assumption and \(N\) buckets are summed over, this expected value is:
 \[
-C = {m \over (n - 1)}\left(&sum;_{i}{x_i^{2} \over n} - 1\right)
+    {N α (1 - 1/m + α)}
 \]
-</div>
+</p>
+<p>
+Therefore, a reasonable way to measure clustering \(C\) is as the ratio of the sum and this quantity:
+\[
+C = {
+        \sum {x_i}^2
+        \over
+        {N α (1 - 1/m + α)}
+    }
+\]
+
 <p>
 A uniform hash function produces clustering \(C\) near 1.0
 with high probability. A clustering measure \(C\) that is
 greater than one means that clustering will slow down the performance of the hash table by
 approximately a factor of \(C\).
 For example, if \(m = n\) and all elements are hashed into one bucket, the
-clustering measure evaluates to \(n\). If the hash function is
+clustering measure is approximately \(n/2\). If the hash function is
 perfect and every element lands in its own bucket, the clustering measure
 will be 0. If the clustering measure is less than 1.0, the hash
 function is spreading elements out more evenly than a random hash function
 would.
 </p>
 <p>
-<p>
-Note that it's
-not necessary to compute the sum of squares of <i>all</i>
-bucket lengths; picking enough buckets so that enough keys are counted (say,
-at least 100) is good enough.
+Note that it's not necessary to compute the sum of squares of <i>all</i> bucket
+lengths; picking enough buckets so that enough keys are counted (say, at least
+\(N = 100\)) is probably good enough.
 </p>
