@@ -253,8 +253,9 @@ selection sort is not stable. When the elements at \(a[i]\) and \(a[p]\) are
 swapped, it the element at \(a[i]\) changes its relative ordering with any
 equal element that happens to be located between indices \(i\) and \(p\). We
 could make selection sort stable by not swapping, but instead shifting all
-elements in \(a[i..p)\) upward by one position. However, in doing so we would lose
-the minimal update property that is the reason why we might pick selection sort
+elements in \(a[i..p)\) upward by one position. This change would not hurt the
+asymptotic complexity of selection sort, but in doing so we would lose
+the minimal update property that is the reason why we might prefer selection sort
 in the first place.
 </p>
 
@@ -362,11 +363,16 @@ Now, a ternary tree of height \(h\) can have at <em>most</em>
 From
 <a href="https://en.wikipedia.org/wiki/Stirling%27s_approximation">Stirling's formula</a>, we learn that
 \(\ln n!\) is \(O(n \ln n)\).
-Ignoring the constant factor of \(1/\ln(3)\), this result means
+Ignoring the constant factor of \(1/\ln(3)\), as we do with asympotic complexity, this result means
 that \(Ω(h) = Ω(n \lg n)\), as claimed. Hence, generic sorting
 algorithms cannot be faster in the worst case, even if they can be faster
 for particular inputs, such as the linear-time performance of
 insertion sort on an already-sorted array.
+</p>
+<p>
+Now we know that any sorting algorithm must take at least \(Ω(n \lg n)\) time. But that doesn't mean
+there is actually any algorithm with that running time. In fact, there <em>are</em> such asymptotically efficient
+sorting algorithms, such as merge sort and quicksort.
 </p>
 
 <h2>Merge sort</h2>
