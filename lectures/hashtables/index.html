@@ -715,7 +715,7 @@ in which we speed up computation at the cost of using
 extra memory.
 </p>
 
-<h3>Measuring clustering</h3>
+<h3>Detecting clustering</h3>
 <p>
 When the distribution of keys into buckets is not random, we say that the hash
 table exhibits <strong>clustering</strong>. If you care about performance,
@@ -723,12 +723,12 @@ it's a good idea to test your hash
 function to make sure it does not exhibit clustering. With any
 hash function, it is possible to generate data that cause it to behave poorly,
 but a good hash function will make this unlikely.
-A good way to determine whether a hash function is working well is to measure
+A good way to determine whether a hash function is working well is to check for
 clustering. 
 </p>
 <p>
 Unfortunately, most hash table implementations, including those in the Java
-Collections Framework, do not give the client a way to measure clustering.
+Collections Framework, do not give the client a way to check for clustering.
 Clients can't easily tell whether the hash function is performing well.
 We can hope that it will be standard practice for future hash table designers
 to provide clustering estimation as part of the interface.
@@ -749,19 +749,18 @@ In general, you should not count on this happening!
 <h4>Measuring bucket size variance</h4>
 <p>
 A more informative way to measure clustering looks at the sizes of the buckets.
-It estimates the <strong>variance</strong> of the
-distribution of bucket sizes. If clustering is occurring, some buckets will
-have more elements than they should, and some will have fewer. So there will be
-a wider range of bucket sizes than one would expect from a random hash
-function.
+It is based on the <strong>variance</strong> of the distribution of bucket
+sizes. If clustering is occurring, some buckets will have more elements than
+they should, and some will have fewer. So there will be a wider range of bucket
+sizes than one would expect from a random hash function.
 </p>
 <p>
 In particular, if bucket \(i\) contains \(x_i\) elements, clustering can be
 measured by computing the sum of the squares of size of the buckets, and
 comparing it to the expected value. If the hash function satisfies the uniform
-hashing assumption and \(N\) buckets are summed over, this expected value is:
+hashing assumption and \(M\) buckets are summed over, this expected value is:
 \[
-    {N α (1 - 1/m + α)}
+    M α (1 - 1/m + α)
 \]
 </p>
 <p>
@@ -770,7 +769,7 @@ Therefore, a reasonable way to measure clustering \(C\) is as the ratio of the s
 C = {
         \sum {x_i}^2
         \over
-        {N α (1 - 1/m + α)}
+        {M α (1 - 1/m + α)}
     }
 \]
 
@@ -788,6 +787,6 @@ would.
 </p>
 <p>
 Note that it's not necessary to compute the sum of squares of <i>all</i> bucket
-lengths; picking enough buckets so that enough keys are counted (say, at least
-\(N = 100\)) is probably good enough.
+lengths; picking enough buckets—at random—so that enough keys are counted (say,
+at least \(M = 100\)) is probably good enough.
 </p>
