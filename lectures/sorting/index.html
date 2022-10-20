@@ -670,37 +670,13 @@ first element and the rest of the array in an unknown state:
         align("abut", "top bottom",
             left = iRect(f).setW(30).addText("p"),
             right = iRect(f).addText("?"))
-        align("left", "top", left, canvasRect().inset(2))
+        align("none", "top", left, canvasRect().inset(2))
+        let i = label("i ").setFontSize(12)
         let j = label(" j").setFontSize(12)
+        align("right", "abut", left.ll(), vspace(5), i)
         align("left", "abut", right.lr(), vspace(5), j)
         align("right", "none", j, canvasRect().inset(2))
-    }
-  </script>
-</div>
-<p>
-The initial loop advances <code>j</code> so that it points to an element on the
-wrong side of the array, with <code>l</code> ≤ <code>i</code> ≤ <code>j</code> &lt; <code>r</code>:
-</p>
-<div class=figure>
-  <canvas id="qs-start-loop" style="height:60px; width:400px">
-  </canvas>
-  <p class="caption">
-    Quicksort: State of the array at the start of the main loop
-  </p>
-  <script type="application/javascript" class=graphics>
-    var f = new CFigure("qs-start-loop")
-    with (f) {
-        setFontSize(11)
-        let g = group(iRect(f).setW(30).addText("p"),
-                      iRect(f).addText("?"),
-                      iRect(f).addText("≤p"),
-                      iRect(f).addText(">p")).align("abut", "top bottom")
-        let rects = g.children()
-        align("right", "none", rects[3], canvasRect().inset(2))
-        equal(rects[2].w(), rects[0].w())
-        align("left", "top", g, canvasRect().inset(2))
-        align("center", "abut", rects[0], vspace(5), label("i"))
-        align("center", "abut", rects[2], vspace(5), label("j"))
+        align("left", "none", i, canvasRect().inset(2))
     }
   </script>
 </div>
@@ -709,15 +685,15 @@ The loop must have an invariant that starts out describing this state but that
 ends up describing the desired final state.
 As the following diagram suggests, the invariant
 says that all elements strictly to the left of <code>i</code> are at
-most \(p\), and all elements strictly to the right of
-<code>j</code> are at least \(p\). Further, the element at
-<code>i</code> itself is at least \(p\) (and therefore belongs on the
-right-hand side of the array) and the element at <code>j</code> 
-is at most \(p\) (and belongs on the left-hand side).
-Finally, the inequalities <tt>l</tt> ≤ <code>i</code> ≤ <code>j</code>+1 ≤ <code>r</code> hold,
-so both i and j are in bounds and can go past each other by at most a single index.  Therefore, if <code>i</code> and <code>j</code> do past each other,
+most <code>p</code>, and all elements strictly to the right of
+<code>j</code> are at least <code>p</code>.
+In addition, the inequalities <tt>l</tt> ≤ <code>i</code> ≤ <code>j</code>+1 ≤ <code>r</code> hold,
+so both <code>i</code> and <code>j</code> are in bounds and can go past each other by at most a single index.  Therefore, if <code>i</code> and <code>j</code> do go past each other,
 the values they index will be on the correct side of the array and the 
-array can be partitioned between them.
+array can be partitioned between them. Finally, there is at least one
+value v to the right of i such that <code>v ≥ p</code> and at least one value to the left
+of <code>j</code> such that <code>v≤p</code>. These values serve as <b>sentinel values</b> that
+stop iteration from walking off either end of the array.
 </p>
 <div class=figure>
   <canvas id="qs-inv" style="height:80px; width:400px">
@@ -729,22 +705,18 @@ array can be partitioned between them.
     var f = new CFigure("qs-inv")
     with (f) {
         var left, right
-        var rects = [ iRect(f), iRect(f), iRect(f), iRect(f), iRect(f) ]
-        align("abut", "top bottom", rects[0], rects[1], rects[2], rects[3], rects[4])
+        var rects = [ iRect(f), iRect(f), iRect(f) ]
+        align("abut", "top bottom", rects[0], rects[1], rects[2])
         setFontSize(11)
         rects[0].addText("≤p")
-        rects[1].addText("≥p").setFontSize(10)
-        rects[2].addText("?")
-        rects[3].addText("≤p").setFontSize(10)
-        rects[4].addText("≥p")
+        rects[1].addText("?")
+        rects[2].addText("≥p")
         align("left", "top", rects[0], canvasRect().inset(2))
-        align("right", "top", rects[4], canvasRect().inset(2))
-        rects[1].setW(30)
-        rects[3].setW(30)
-        equal(rects[0].w(), rects[2].w())
-        equal(rects[2].w(), rects[4].w())
-        align("center", "abut", rects[1], vspace(5), label("i"))
-        align("center", "abut", rects[3], vspace(5), label("j"))
+        align("right", "top", rects[2], canvasRect().inset(2))
+        equal(rects[0].w(), rects[1].w())
+        equal(rects[1].w(), rects[2].w())
+        align("left", "abut", rects[0].lr(), vspace(5), label(" i"))
+        align("right", "abut", rects[2].ll(), vspace(5), label("j "))
     }
   </script>
 </div>
@@ -752,87 +724,71 @@ array can be partitioned between them.
 Despite (or because of!) the complexity of the invariant, the partitioning code can
 then look very simple and be very efficient:
 </p>
-<pre>
-/**
- * Returns: k where {@code l&lt;k&lt;r}
- * Effect: Partition array {@code a} into {@code a[l..k)} and {@code a[k..r)}, where all elements
- * in {@code a[l..k)} are less than or equal to all elements in {@code a[k..r)}.
- * Requires: {@code 0≤l}, {@code r≤a.length}, and {@code r-l≥2}.
- */
-int partition(int[] a, int l, int r) {
-    int p = a[l]; // better: swap a[l] with random element first
-    int i = l, j = r - 1;
-    while (a[j] &gt; p) j--;
-    while (i &lt; j) {
-        swap a[i] ⇔ a[j]
-        do i++; while (a[i] &lt; p);
-        do j--; while (a[j] &gt; p);
-    }
-    return j+1;
-}
+<pre class=load>
+<a href="partition.java">partition.java</a>
+</a>
 </pre>
 <p class="cont">
-The inner loops are written as <code>do...while</code> loops because we want to
-do the body of each loop once even if the loop guard is initially false.
+The two inner loops are written as <code>do...while</code> loops because we want to
+do the body of each inner loop once even if the loop guard is initially false.
 A <code>do...while</code> loop only evaluates its guard at the end of the loop body
 rather than at the beginning.
 </p>
 <p>
 Interestingly, these inner loops do not need to do any bounds checking on
-<code>i</code> and <code>j</code>. The reason bounds checks are not needed
-is after swapping <code>a[i]</code> and <code>a[j]</code>, there must be at
-least one value “ahead” of both <code>i</code> and <code>j</code> that will
-stop their inner loops. A value that you can check for instead of checking
-explicitly against array bounds is called a <b>sentinel value</b>.
+<code>i</code> and <code>j</code>, which makes them significantly more efficient.
+The reason bounds checks are not needed is that the sentinel values in the array
+will stop the inner loops before they walk off the ends of the array.
 </p>
 <p>
 An example of partitioning will probably help understand what is going
 on.  We start out with the following array, with <code>p=5</code>:
 </p>
 <pre>
-5 2 6 7 1 9 3 8
-i               j
-</pre>
-<p>Before the main loop starts, we move <code>j</code> down to a value that can be swapped
-with the pivot at index <code>i</code>:
-</p>
-<pre>
-5 2 6 7 1 9 3 8
-i           j  
+  5 2 6 7 1 9 3 8
+i                 j
 </pre>
 <p>
-In the first iteration, we swap and then move i and j 
-inward to the next swappable values:
+In the first iteration, i and j move inward
+to the next swappable values, and they are swapped:
 </p>
 <pre>
-3 2 6 7 1 9 5 8
-    i   j     
+  3 2 6 7 1 9 5 8
+  i           j
 </pre>
 <p>
-In the second iteration, we swap and then move i and j 
-inward again:
+In the second iteration, i and j move inward again  for a second swap.
+Notice that everything to the right of j is at least the pivot value 5,
+and everything to the left of i is no more than 5.
 </p>
 <pre>
 3 2 1 7 6 9 5 8
-    j i       
+    i   j     
 </pre>
 <p>
-Since <code>i &gt; j</code>,
-the loop halts and the result is <code>j+1</code> = 3. The two subarrays
-to be recursively sorted are (3,2,1) and (7,6,9,5,8).
+On the third iteration, i and j cross over each other, so no swap occurs:
+<pre>
+3 2 1 7 6 9 5 8
+    j i
+</pre>
+
+<p>
+Since <code>i &gt; j</code>, the loop halts and the result is <code>j+1</code>
+= 3. The two subarrays to be recursively sorted are (3,2,1) and (7,6,9,5,8).
 </p>
-<p>The loop can either stop with <code>i</code> = <code>j</code>+1 or
-with <code>i</code> = <code>j</code> where <code>a[i]</code> =
-<code>a[j]</code> = <code>p</code>. Since j must be decremented at least twice,
-either by the initial loop or by the first iteration of the main loop,
-the value <code>j+1</code> is a valid array index at the point of return,
-satisfying <code>l &lt; j+1 &lt; r</code>.
+<p>Because of the loop invariant, the loop can either stop with <code>i</code>
+= <code>j</code>+1 or with <code>i</code> = <code>j</code> where
+<code>a[i]</code> = <code>a[j]</code> = <code>p</code>. Since j must be
+decremented at least twice, either by the initial loop or by the first
+iteration of the main loop, the value <code>j+1</code> is a valid array index
+at the point of return, satisfying <code>l &lt; j+1 &lt; r</code>.
 </p>
 <p>
-Quicksort is an excellent sorting algorithm for many applications.
-It tends to be a bit faster than merge sort—perhaps 25% faster for
-large arrays.  However, one downside is that it is not a stable sort. As with
-merge sort, a noticeable speedup can be obtained by switching to insertion sort for
+Quicksort is an excellent sorting algorithm for many applications.  It tends to
+be a bit faster than merge sort—around 25% faster for large arrays, primarily
+because it does less movement of data in memory.  However, one downside is that
+it is not a stable sort, because it works by swapping elements.  As with merge
+sort, a noticeable speedup can be obtained by switching to insertion sort for
 sufficiently small subarrays.
 </p>
 
