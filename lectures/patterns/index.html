@@ -67,6 +67,69 @@ For <code>Maybe</code>, on the other hand, a <em>checked</em> exception
 checked at compile time, the Java compiler reminds us to handle the exception, which
 is helpful for avoiding bugs.
 </p>
+<p>
+For example, a traditional linked list node would be implemented using <code>null</code>
+to indicate that the node is the last in the list:
+<pre class=load>
+<a href="../generics/Node.java">Node.java</a>
+</pre>
+<p>
+Instead, we can show clearly that the next node in the list might be absent by using a Maybe:
+<pre class=load>
+<a href="NodeMaybe.java">Node.java</a>
+</pre>
+<p>
+Two basic operations on both <code>Maybe&lt;T&gt;</code> and
+<code>Optional&lt;T&gt;</code> are the following:
+<ul><li>
+<p> <code>boolean isPresent()</code></p>
+<p>Returns whether this <code>Maybe</code> contains a value.</p>
+</li>
+<li><p><code>T get() throws NoMaybeValue</code></p>
+<p>Returns the value contained in this <code>Maybe</code>, or throws an exception if
+there is no contained value. The exception <code>NoMaybeValue</code> is a checked
+exception, so using <code>get()</code> forces the programmer to handle the exception,
+unlike with <code>Optional</code>, where an unchecked exception would be thrown.
+The <code>NoMaybeValue</code> exception is also special in that it can be thrown
+and caught faster than ordinary exceptions, though at the price of less debugging
+information.
+</p>
+</li>
+</ul>
+<p>
+For example, suppose we possibly have a string and we want to print it if so. We
+can use a <code>try...catch</code> statement as a conditional:
+<pre class=load>
+<a href="maybe_ex1.java">maybe_ex1.java</a>
+</pre>
+<p>
+Maybes and Optionals also support another mode of programming in which exceptions are not
+used, typically relying on lambda expressions. The methods <code>then</code>, <code>orElse</code>, and
+<code>orElseGet</code> can be used to express condition evaluation. For example, suppose that we may
+have a string, and we want to put parentheses around it if we do; if we don't have a string, we want 
+the empty string. The <code>then</code> method expresses the computation that should be done on a
+maybe that holds a value, and the <code>orElse</code> method expresses computation on an empty Maybe.
+</p>
+<pre class=load>
+<a href="maybe_ex2.java">maybe_ex2.java</a>
+</pre>
+<p>
+This code looks like an if-then-else statement but we need to be a little careful. The argument to the
+method <code>orElse</code> is evaluated even if that path is not taken. If we want to avoid evaluating
+that expression, we can use <code>orElseGet()</code> to delay the computation. For example, if we wanted
+to have a side effect when there is no string, we can put the side effect inside a lambda expression and use
+<code>orElseGet()</code>:
+</p>
+<pre class=load>
+<a href="maybe_ex3.java">maybe_ex3.java</a>
+</pre>
+<p>Notice that this <code>return</code> statement only returns from the lambda expression.
+</p>
+<p><code>Optional</code> supports the same style of programming, but the
+methods have somewhat less intuitive names; for example, <code>then</code> is
+named <code>map</code>.  These names are chosen to make <code>Optional</code>
+compatible with Java Streams.
+</code>
 
 <h2>Iterator pattern</h2>
 <p>
