@@ -50,18 +50,26 @@ function basename(url) {
 var base_url = basename(window.location.origin + window.location.pathname)
 
 function relativize(url, lecture_base, base) {
-    console.log("relativizing " + url + " : "  + lecture_base + " : " + base)
+    // console.log("relativizing " + url + " : "  + lecture_base + " : " + base)
+    if (url == "") return url
     for (;;) {
         if (url.match('^' + base)) {
             url = url.replace(base, lecture_base)
             // console.log("result = " + url)
             return url
         }
-        let last = base.match('[^/]*$')
-        let base_match = base.match('^(.*)/')
-        if (!base_match) return url
+        const base_match = base.match('^(.*)/')
+        if (!base_match) { 
+            // console.log("base didn't match -> " + url)
+            return url
+        }
         base = base_match[1] 
-        lecture_base = lecture_base.match('^(.*)/')[1]
+        const lec_base_match = lecture_base.match('^(.*)/')
+        if (!lec_base_match) {
+            // console.log("lecture_base didn't match -> " + url)
+            return url
+        }
+        lecture_base = lec_base_match[1]
         // console.log("  base = " + base)
         // console.log("  lecture_base = " + lecture_base)
     }
