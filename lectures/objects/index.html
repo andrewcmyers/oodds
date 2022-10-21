@@ -11,7 +11,10 @@ which are created by programs as they run.
 The Java language supports a variety of different primitive values. Each value
 has a corresponding <b>run-time type</b>. Here are some examples of primitive values:
 </p>
-<table>
+<style>
+ #primitive_types td { border-bottom: 1px solid #ccc }
+</style>
+<table id=primitive_types>
 <tr>
     <th>Type</th>
     <th>Examples</th>
@@ -25,7 +28,9 @@ has a corresponding <b>run-time type</b>. Here are some examples of primitive va
 <tr>
     <td><code>char</code></td>
     <td><code>'x', 'a', '\n', '\u0000' </code></td>
-    <td>There are about 65,000 Unicode characters from '\u0000' to '\uFFFF'.
+    <td>There are about 65,000 Unicode characters from '\u0000' to '\uFFFF', representing characters
+    from the Unicode standard's Basic Multilingual Plane. Unicode characters outside this range cannot
+    be directly represented as a <code>char</code>
     Ordinary ASCII characters have character codes between 0 and 127 ('\u0000'
     to '\u007F').
     </td>
@@ -34,6 +39,16 @@ has a corresponding <b>run-time type</b>. Here are some examples of primitive va
     <td><code>long</code></td>
     <td><code>1L, 5L, -10L</code></td>
     <td>integers between <code>&minus;2<sup>63</sup></code> and <code>2<sup>63</sup>&minus;1</code></td>
+</tr>
+<tr>
+    <td><code>byte</code></td>
+    <td><code>-128, 0, 127</code></td>
+    <td>8-bit signed integers, which range between <code>&minus;128</code> and <code>127</code>.
+</tr>
+<tr>
+    <td><code>short</code></td>
+    <td><code>-32768, 0</code></td>
+    <td>16-bit signed integers, which range between <code>&minus;32768</code> and <code>32767</code>.
 </tr>
 <tr>
     <td><code>boolean</code></td>
