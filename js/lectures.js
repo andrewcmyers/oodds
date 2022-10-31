@@ -19,6 +19,7 @@ var lectures = [
     'parsing',
     'patterns',
     'gui',
+    'guievents',
     'uidesign',
     'concurrency',
     'synchronization',
