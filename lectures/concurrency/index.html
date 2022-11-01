@@ -126,11 +126,18 @@ For example, consider a program in which we want to start a long-running
 computation when the user clicks a button. We don't want the Application thread
 to do this computation, because this will freeze the user interface while the computation completes.
 Instead, we can start a new thread when the button is clicked.
-This can be done conveniently using two inner classes:
+A thread can be started conveniently using two inner classes:
 </p>
 
 <pre class=load>
 <a href="button_example.java">button example</a>
+</pre>
+
+<p>
+Passing an anonymous function to the <code>Thread</code> constructor is more concise:
+</p>
+<pre class=load>
+<a href="button_example2.java">button example 2</a>
 </pre>
 
 <h3>Priorities and preemption</h3>
@@ -200,7 +207,7 @@ is not a problem. Read-read sharing is safe. But if both threads are
 simultaneously trying to update the same object, or if one thread
 is updating the object while the other is reading it, it is possible that
 inconsistencies can arise. This is called a <b>race condition</b>.
-Both read-write and write-write races are a problem.
+Both read-write and write-write races are problems.
 </p>
 <p>
 For example, consider the following bank account simulation:
@@ -265,20 +272,22 @@ void deposit(int n) {
 <br>
 
 <p>
-There is a problem here even though the updates to <code>balance</code> are done
+There is still a problem here, even though the updates to <code>balance</code> are done
 all in one statement rather than in two as above.
 Execution of one thread may pause in the middle of that statement, so
 it doesn't help to write it as one statement. Two threads that are
 simultaneously executing <code>withdraw</code> and <code>deposit</code>, or even two threads
 both simultaneously executing <code>withdraw</code>, may cause the balance to be
 updated incorrectly.
-</p><p>
-This example shows that sometimes a piece of code needs to be executed
-as though nothing else in the system is making updates. Such code
-segments are called <b>critical sections</b>. They need to be executed
-<b>atomically</b> and in <b>isolation</b>; that is, without interruption from
-or interaction with other threads.
-</p><p>
+</p>
+<p>
+This example shows that sometimes a piece of code needs to be executed as
+though nothing else in the system is making updates. Such code segments are
+called <b>critical sections</b>. They need to be executed <b>atomically</b> and
+in <b>isolation</b>; that is, without interruption from or interaction with
+other threads.
+</p>
+<p>
 However, we don't want to stop all threads just because one thread has
 entered a critical section. So we need a mechanism that only stops the
 interactions of other threads with this one. This is usually achieved
@@ -288,16 +297,69 @@ research topic, but locks remain for now the standard way to isolate
 threads.)
 </p>
 
+<h2>The single-owner principle</h2>
+<p>
+The key to safe concurrency is that mutable state needs to be accessible to
+at most one thread at a given time. This thread is the current <b>owner</b> of
+the state. Given any collection of mutable state over
+which some invariant needs to hold, the invariant cannot be relied upon if two
+threads can race on accessing the state in a way that is not purely read-only.
+Therefore, a collection of mutable state governed by an invariant may be
+accessible to only one thread at a time.
+</p>
+<p>
+The bank account example goes wrong because races between threads break a
+simple invariant: that at the point where <code>deposit()</code> and
+<code>withdraw()</code> update the balance, the balance is equal to its value
+at the beginning of the method.
+</p>
+<p>
+The simplest way to enforce the single-owner principle is to associate mutable
+state with a single owning thread: that is, to not share it between threads
+at all. This approach simplifies concurrency reasoning a great deal. Of course,
+in general, we do need to let some mutable state be accessed by multiple threads.
+To allow mutable state to be safely accessed by multiple threads without
+threatening invariants over that state, a way is needed to ensure that just one
+thread owns it at a given time. Locks can enforce this property.
+</p>
+
 <h2>Mutexes and <code>synchronized</code></h2>
 
 <p>
-Mutual exclusion locks are sometimes called <b>mutexes</b>.
-Threads can <em>acquire</em> them and <em>release</em> them.
+A <b>lock</b> is a special object that can be <b>held</b> by threads, with some
+restriction on which threads can hold it. The simplest form of lock is a
+<b>mutual exclusion locks</b>, or <b>mutex</b>, which can be held by at
+most one thread at a time.
+</p>
+<p>
+Threads can <em>acquire</em> them and <em>release</em> mutexes.
+</p>
+<p>
+<b>acquire</b>: When a thread tries to acquire a mutex, it first checks whether
+the mutex is already held by another thread. If so, the thread <b>blocks</b>
+and makes no further progress, until some future time when the mutex is no
+longer held by any thread. At that point, the thread then becomes the unique
+holder of the mutex. Note that in general, multiple threads can be blocked,
+waiting to acquire the mutex; there is no guarantee that the order in which they
+actually acquire the mutex corresponds to the order in which they tried. Mutex
+implementations usually try to provide some <b>fairness</b>, so that threads
+do eventually acquire the mutex.
+</p>
+<p>
+<b>release</b>:
 At most one thread can hold a mutex at a time.
 While a mutex is being held by a thread, all other threads that try to acquire
 it will be blocked until it is released, at which point
-just one waiting thread will manage to acquire it.
-</p><p>
+a waiting thread, if any, will manage to acquire it.
+</p>
+<p>
+Considering the single-owner principle, we can think of a mutex as guarding some
+mutable state. When no thread holds the mutex, no thread can access the state:
+the mutex is the owner of the state. When a thread acquires the mutex, it becomes
+the owner; when it releases the mutex, ownership passes back to the mutex.
+</p>
+<h3>Mutexes in Java</h3>
+<p>
 Java supports mutual exclusion locks directly. Any object can be used as a mutex.
 The mutex is acquired and released using the <code>synchronized</code> statement:
 </p><pre>
