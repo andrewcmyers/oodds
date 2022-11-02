@@ -1,0 +1,204 @@
+<h1>Graphical User Interfaces: Display and Layout</h1>
+<p>
+One of the driving forces behind the development of object-oriented programming
+was the need to create <strong>graphical user interfaces</strong> (GUIs). It is not surprising,
+then, that the OO programming model really shines when building GUIs.
+</p>
+<p>
+In fact, the standard WIMP model of graphical user interfaces (Windows, Icons,
+Menus, Pointer) was developed at Xerox PARC during the 1970's in and along with
+one of the first object-oriented programming languages, Smalltalk. GUIs
+influenced the language design and vice versa. The WIMP model first saw
+widespread deployment by Apple with the first Macintosh computer and was
+soon adopted by Microsoft Windows as well.
+</p>
+<p>
+In this approach to graphical user interface design, the user interface is
+represented internally as a tree structure, in which the various user interface
+components (sometimes called <b>widgets</b> or <b>views</b>) are nodes in the tree, and the parent–child
+relationship corresponds to containment. In fact, the HTML markup language
+follows this same approach to defining a user interface.
+</p>
+<p>
+We will be using Swing, the standard object-oriented GUI library for Java. In such a library,
+there are <em>two</em> interacting hierarchies: first, the containment hierarchy
+corresponding to the tree of UI components, and second, the class hierarchy
+of the components themselves. Unlike in HTML, the class hierarchy is extensible,
+allowing developers to use inheritance to design new components or to customize
+the behavior of existing components.
+</p>
+<h2>Component Tree</h2>
+<p>
+Swing manages the user interface as a tree of user interface components. At the
+root of the tree is an object of the class <code>JFrame</code>, representing a
+top-level window.
+</p>
+<h2>Component class hierarchy</h2>
+<p>
+Swing provides a rich class hierarchy of node types.
+Some of them provide rendering capability, others are useful for layout, and
+some are useful user interface devices such as buttons or text editors.
+</p>
+<p>
+Swing extends an earlier toolkit, the Abstract Window Toolkit (AWT), so all Swing components are
+also AWT components. And some Swing components still use AWT components, for example to specify colors.
+The root of the AWT class hierarchy is the class <code>Component</code>, with a subclass <code>Container</code>
+that represents components that can have children. All Swing component classes are subclasses of <code>JComponent</code>,
+which is a subclass of <code>Container</code>.
+</p>
+<tt>
+<ul>
+<li>JComponent
+  <ul>
+  <li>AbstractButton
+    <ul>
+      <li>JButton
+      <li>JMenuItem
+      <li>JToggleButton
+    </ul>
+  <li>Box
+  <li>JColorChooser
+  <li>JComboBox
+  <li>JFileChooser
+  <li>JLabel
+  <li>JLayeredPane
+  <li>JList
+  <li>JMenuBar
+  <li>JOptionPane
+  <li>JPanel
+  <li>JPopupMenu
+  <li>JProgressBar
+  <li>JScrollBar
+  <li>JScrollPane
+  <li>JSeparator
+  <li>JSlider
+  <li>JSpinner
+  <li>JSplitPane
+  <li>JTabbedPane
+  <li>JTable
+  <li>JTableHeader
+  <li>JTextComponent
+  <ul>
+    <li>JEditorPane
+    <li>JTextArea
+    <li>JTextField
+  </ul>
+  <li>JToolBar
+  <li>JToolTip
+  <li>JTree
+  </ul>
+</ul>
+</tt>
+<h2>Building a GUI</h2>
+<p>
+A tree of components must be constructed. One way to do this is to 
+write code to build the tree one node at a time.
+
+<p>
+To add a child using code:
+</p>
+<pre>
+JComponent parent = ...;
+JComponent child = ...;
+p.add(child);
+</pre>
+<p>
+The method <code>getComponents()</code> returns an array of the child components
+of a given component.
+</p>
+<h2>GUI Designers</h2>
+<p>
+Support for GUI design is built into various IDEs, such as NetBeans or IntelliJ
+IDEA. For example, IntelliJ has a GUI Designer for this purposes.  These design
+applications give you a user interface to design GUIs and save them into an
+external file in XML format that can be read in later by an application to set
+up its component tree and to connect it to application code.
+</p>
+<h2>Layout</h2>
+<p>
+Generally, the children of a given component are laid out on the screen within
+the bounds of their parent.  How layout occurs is determined in Swing by a
+LayoutManager attached to the parent. There are several different
+<a href="https://docs.oracle.com/javase/tutorial/uiswing/layout/visual.html">layout managers</a>,
+including the following:
+</p>
+<ul>
+    <li>BorderLayout: children are laid into 5 locations: a center position with four positions on each side
+                        of the center.
+    <li>BoxLayout: children are laid out either horizontally or vertically.
+    <li>FlowLayout: children are laid out like text on a page: in a horizontal row but adding a new row each time a row
+                    does not have enough room.
+    <li>GridLayout: children are arranged within a simple grid of cells
+    <li>GridBagLayout: children are arranged relative to a grid of cells, but children can span multiple cells.
+    <li>SpringLayout: children are laid out while satisfying a set of placement constraints
+</ul>
+<p>
+    Often more handy is to use a component that comes with a standard layout
+    manager.  For example, the class <code>Box</code> lays out its children in a
+    horizontal row or vertical column. And <code>JTabbedPane</code> has a set of
+    tabs that control which children are displayed.
+</p>
+
+<h2>Appearance</h2>
+
+<p>There are several ways to control the appearance of the scene. Some components have handles that
+allow them to be minimized, maximized, or resized. There are also various controls such as
+sliders or knobs to control shape, size, color, or other aspect of the appearance. Components can also be
+added, removed, moved, or transformed.
+</p>
+
+<h2>Event-driven programs</h2>
+
+<p>
+Swing applications are <strong>event-driven</strong>. This is a different
+programming paradigm from the usual imperative style. Its motto is: "Don't call us, we'll call you."
+When some hardware event takes place, such as a mouse click or key press, an
+event object is generated. An event object is simply a regular Java object, but
+it contains information about the source and type of the event: button click,
+mouse movement, keystroke, etc. The event handler of any listener that has registered to
+receive the event is called, and the event object is passed to the handler.
+In that way an application can receive and respond to events such as
+mouse clicks and button pushes.</p>
+
+<h2>Threads</h2>
+<p>
+Unlike simple Java programs, a Swing application typically has multiple
+concurrent threads: a <strong>main thread</strong>, an <strong>event dispatch
+thread</strong>, and optionally more threads that do computation n the
+background. The job of the event dispatch thread is to loop continuously,
+listening for the occurrence of hardware-generated events such as mouse clicks.
+For each such occurrence, it constructs an event object describing the event
+and the GUI component in which it occurred, then calls the event handler of
+each registered listener with that event object.
+</p>
+<p>
+Event handlers should not contain long-running computations, because they will
+tie up the event dispatch thread, preventing events from being handled. While
+the event dispatch thread is carrying out a long-running computation, the user
+interface will freeze and not respond to events.  Fortunately, there is a
+mechanism for scheduling an update of the GUI on the event dispatch thread
+later using the method <code>SwingUtilities.invokeLater(Runnable r)</code>. The
+<code>run()</code> method of the <code>Runnable</code> object <code>r</code> is
+called at the earliest available opportunity by the event dispatch thread. It
+is convenient to construct a <code>Runnable</code> object using lambda
+expression (anonymous function) syntax.
+</p>
+<p>
+Programming with threads is challenging because they share access to the same
+objects. If two threads access the same object, it is challenging to prevent
+them from <strong>interfering</strong>.  If one thread is in the middle of
+modifying an object while another thread accesses the object, it is easy for
+the observing thread to see the object in a state in which its class invariant
+does not hold. A good programming pattern for preventing interference is to
+have most objects <strong>owned</strong> by a single thread. Accesses (either
+reading or writing) to an object by a thread that does own the object are
+unsafe and are not permitted by the pattern.
+</p>
+<p>
+The Swing component tree follows this pattern. The component tree is owned by the
+Swing event dispatch thread.  If you create a background thread to do more
+time-consuming computations, it may be tempting to have the background thread
+access the nodes in the scene graph.  Such accesses are not allowed. Swing provides
+other mechanisms for background threads to communicate with the application thread,
+notably the method <code>SwingUtilities.invokeLater()</code>.
+</p>
