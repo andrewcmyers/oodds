@@ -170,16 +170,66 @@ atomically releases the lock and blocks the current thread on the condition vari
 The thread will only wake up and start executing when <code>notifyAll()</code>
 or <code>notify()</code> are called on that lock.
 Java also has a version of <code>wait()</code> that includes a timeout
-period, after which it will automatically wake itself up.</p>
-<p>
+period, after which it will automatically wake itself up.
 In addition to these methods, there is also a <code>notify()</code> method, but it should
 usually be avoided: <code>notifyAll()</code> is more useful and less error-prone.
+The <code>notify()</code> method wakes up just one waiting thread.
 </p>
 <p>
-Note that a Thread waiting on a condition variable via <code>wait()</code>
-will not wake up simply because the lock has been released by some other thread. The other
-thread must call <code>notifyAll()</code> or <code>notify()</code>.
-</p><p>
+We can visualize the relationship of a thread to a particular mutex and
+condition variable in terms of the following <b>state diagram</b>. A thread can
+be in one of four possible states: running while either holding the mutex or
+not holding the mutex, or blocked either on the mutex or the condition variable.
+The arrows represent the possible ways for a thread to transition between these
+states. In general, there can be many threads in each of the states of the diagram,
+except for the upper right one: the mutex guarantees that only one thread can
+be holding it at a given time.
+</p>
+<div class=figure>
+<canvas id=cv_state_diagram style="width: 400px; height: 200px"></canvas>
+<script class=graphics>
+  let fig
+  with (fig = new CFigure("cv_state_diagram")) {
+    function state(text) {
+        const result = rectangle().setW(120).setH(60).addText(text)
+        result.setCornerRadius(10)
+        // result.setVerticalAlign("top")
+        return result
+    }
+    const s1 = state("Thread running,\nnot holding mutex"), 
+          s2 = state("Thread blocked,\nwaiting for mutex"),
+          s3 = state("Thread running,\nholding mutex"),
+          s4 = state("Thread blocked,\waiting for CV")
+    const m = margin()
+    
+    align("left", "top", m, s1)
+    align("center", "none", s1, s2)
+    align("none", "center", s1, s3)
+    align("right", "bottom", m, s4)
+    align("center", "none", s3, s4)
+    align("none", "center", s2, s4)
+    arrow(s1, s2).addLabel(lineLabel("acquire", 0.5, -25))
+    arrow(s2, s3).addLabel(lineLabel("mutex available", 0.5, -30))
+    arrow(s3, s1).addLabel(lineLabel("release", 0.5, -10))
+    arrow(s3, s4).addLabel(lineLabel("wait", 0.5, 15))
+    arrow(s4, s2)
+    let lb = label("unblocked thread")
+    let lb24 = group(lb, label("calls notifyAll")).align("center", "abut")
+    align("center", "top", lb, average(s2, s4).toBottom(3))
+  }
+</script>
+</div>
+<p>
+The only way that a thread acquires the mutex is by transitioning through the 
+bottom left state in which it is blocked waiting for the mutex to become available.
+Threads can also get into that state by being woken up by a <em>different</em> thread's
+call to <code>notifyAll</code>.
+Note that a Thread waiting on a condition variable via <code>wait()</code> will
+not start running simply because the lock has been released by some other
+thread. The other thread must call <code>notifyAll()</code> or
+<code>notify()</code>.
+</p>
+<p>
 Another thread should call the <code>notifyAll()</code> method when the condition
 of the condition variable might have become true. Its effect is to wake up all
 threads waiting on that condition variable. When a thread wakes up
