@@ -1,0 +1,100 @@
+<h1>Graphical User Interfaces: Events and Animation</h1>
+
+<h2>Handling events</h2>
+<p>
+Programs can define <strong>event handlers</strong> to handle different types
+of input events. Handlers must be registered to receive events with a GUI
+component on which the event can occur. There are several ways to specify a
+handler: classes, inner classes, or lambda expressions. All are basically
+syntactic sugar for the same thing, but convenient. Here is an example with a
+lambda expression:
+<pre>
+JButton b = ...;
+b.addActionListener(e -&gt; print("button clicked"));
+</pre>
+<p>
+This code uses the Observer pattern.
+Lambda expressions are really just syntactic sugar
+for <b>inner classes</b>, which are anonymous classes implementing a specified
+interface. In this case, the method <code>addActionListener</code> expects to
+receive an object implementing the interface <code>ActionListener</code>:
+</p>
+<pre class="load">
+<a href="ActionListener.java">ActionListener.java</a>
+</pre>
+<p>
+It is not necessary to use a lambda expression to implement an event handler. The
+lambda expression is syntactic sugar for the following code defining an inner class:
+<pre class="load">
+<a href="desugared_lambda.java">desugared_lambda.java</a>
+</pre>
+It is not even necessary to use an inner class; an ordinary class can be used to
+implement the desired interface, as in the following code:
+<pre class="load">
+<a href="desugared_top_level_class.java">desugared_lambda.java</a>
+</pre>
+</p>
+<p>
+In fact, even inner classes are syntactic sugar for top-level classes. Because
+they are just syntactic sugar, they come with some limitations. In particular,
+inner classes and lambda expressions can only refer to variables defined
+outside their scope if those variables are final. The reason for this
+limitation is that their objects may outlive the external variables they refer
+to. For that reason, the implementation of inner classes and lambdas actually
+makes a copy of any such external variable. Since the variable is final, there
+is no way for the programmer to tell that such a copy has been made!
+</p>
+<h3>Using background threads with Swing</h3>
+<p>
+In Swing, any background work should be done not by the event dispatch thread,
+but rather in a separate thread. If the event dispatch thread is busy doing work
+instead of handling user interface events, the UI becomes unresponsive.
+However, UI components are not thread-safe, so only the event dispatch thread may
+access the component hierarchy.
+</p>
+<p>
+The <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.desktop/javax/swing/SwingWorker.html">
+<code>SwingWorker</code></a> class provides useful functionality for
+starting up background threads and for obtaining results from them.
+This is easier than coding up your own mechanism using locks and
+condition variables. The key methods are these:
+</p>
+<pre class=load>
+<a href="SwingWorker.java">SwingWorker.java</a>
+</pre>
+<p>
+Some of the methods are designed to be used within the implementation of
+the task, and others are designed to be used by client code in other threads,
+to control the task and to interact with it.
+</p>
+<p>
+To compute something of type <code>T</code> in the background, a subclass of
+<code>SwingWorker&lt;T, V&gt;</code> is defined that overrides the method
+<code>doInBackground()</code>.
+The work done by the task is defined by the <code>doInBackground()</code> method;
+it should simply return the desired result at the end of the method in the
+usual way. Notice that the <code>doInBackground()</code> method is not supposed to be
+called by clients or by any subclass code; instead, it is automatically
+called by the task thread.
+</p>
+<p>
+To report progress back to other threads;
+the worker thread may call <code>setProgress()</code>; they can observe the
+progress report by calling <code>getProgress()</code>.
+When the task completes by returning
+a value of type <code>T</code> from the <code>doInBackground()</code> method,
+the <code>done()</code> method is invoked by the event dispatch thread.
+</p>
+<p>
+It is possible for a task to be canceled by calling the <code>cancel()</code> method;
+however, it is incumbent on the implementation of the task to periodically check
+whether the task has been canceled by using the <code>isCancelled()</code> method.
+</p>
+<p>
+By calling <code>getProgress()</code>, client code in
+the event dispatch thread can keep track of the progress of the task and update
+the GUI to reflect how far along the task is. The SwingWorker can also communicate
+back to the event dispatch thread by using method
+<code>SwingUtilities.invokeLater()</code>, but this approach may couple the task
+implementation with the GUI more than is desirable.
+</p>

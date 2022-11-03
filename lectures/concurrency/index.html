@@ -98,6 +98,12 @@ class Thread {
    * the current thread even if {@code yield} is not called. */
   public void yield();
 
+  /** Wait until this thread completes. Requires: called from a different
+   *  thread than the receiver thread. Throws InterruptedException if the
+   *  current thread is interrupted.
+   */
+  public void join() throws InterruptedException;
+
   /** Pass {@code true} to make this thread a daemon thread. */
   void setDaemon(boolean b);
 }
@@ -139,6 +145,18 @@ Passing an anonymous function to the <code>Thread</code> constructor is more con
 <pre class=load>
 <a href="button_example2.java">button example 2</a>
 </pre>
+
+<h3>Blocked threads</h3>
+<p>
+An active thread is not necessarily making forward progress at any given
+moment.  It may be waiting for input from some device, or waiting for some
+message or resource to become available. For example, in a Swing application,
+the event dispatch thread is usually blocked most of the time, waiting for the
+user to generate some input for it to handle. The method <code>Thread.join</code>
+is another way to block a thread. It causes the current thread to block until
+another thread finishes. This method is useful when you want a main thread to split
+work among multiple other threads, and wait for them to complete their work.
+</p>
 
 <h3>Priorities and preemption</h3>
 <p>
@@ -336,7 +354,7 @@ Threads can <em>acquire</em> them and <em>release</em> mutexes.
 </p>
 <p>
 <b>acquire</b>: When a thread tries to acquire a mutex, it first checks whether
-the mutex is already held by another thread. If so, the thread <b>blocks</b>
+the mutex is already held by another thread. If so, the thread blocks
 and makes no further progress, until some future time when the mutex is no
 longer held by any thread. At that point, the thread then becomes the unique
 holder of the mutex. Note that in general, multiple threads can be blocked,
@@ -353,10 +371,11 @@ it will be blocked until it is released, at which point
 a waiting thread, if any, will manage to acquire it.
 </p>
 <p>
-Considering the single-owner principle, we can think of a mutex as guarding some
-mutable state. When no thread holds the mutex, no thread can access the state:
-the mutex is the owner of the state. When a thread acquires the mutex, it becomes
-the owner; when it releases the mutex, ownership passes back to the mutex.
+Considering the single-owner principle, we can think of a mutex as guarding
+some mutable state. When no thread holds the mutex, no thread can access the
+state: the mutex is effectively the owner of the state. When a thread acquires
+the mutex, it becomes the owner; when it releases the mutex, ownership passes
+back to the mutex.
 </p>
 <h3>Mutexes in Java</h3>
 <p>
