@@ -367,10 +367,13 @@ an <em>ordering</em> on locks. If lock \(L_1\) is acquired before \(L_2\),
 then \(L_1\) must be earlier (lower) in the ordering, which is written as \(L_1 &lt; L_2\).
 In general, when at the same time a thread holds multiple locks acquired in the order
 \(L_1, L_2, L_3, ..., L_n \), the order in which they are acquired must
-respect the ordering: \(L_1 &lt; L_2 &lt; ... &lt;L_n\).
+respect the ordering: \(L_1 &lt; L_2 &lt; ... &lt;L_n\). There is no built-in
+ordering on locks; it is up to the application designer to choose an ordering that
+works for the computations being performed. What is crucial is that the ordering
+is transitive and irreflexive, so that there are no cycles.
 </p>
 <p>
-In the example above, we might have a lock ordering in which <tt>a &lt; b</tt>.
+In the example above, we might choose a lock ordering in which <tt>a &lt; b</tt>.
 In this scenario, <tt>b</tt> could not be waiting on the lock for <tt>a</tt>,
 because a method of <tt>b</tt> already holds a lock that is higher in the ordering,
 so it must already have acquired the lock for <tt>a</tt>.
@@ -378,7 +381,9 @@ so it must already have acquired the lock for <tt>a</tt>.
 <p>
 In general, a thread may acquire a lock on (synchronize on) an object only
 if that object comes later in the lock ordering than all locks that the thread
-already holds.
+already holds. Note that many systems, including Java support <b>reentrant locks</b>,
+in which it is safe to acquire the same lock multiple times. In this case, acquiring
+an already held lock is not a problem.
 </p>
 <h3>Locking level</h3>
 <p>
@@ -390,14 +395,17 @@ ordering that might be held when the method is called.
 </p>
 <p>
 Since a monitor acquires its lock when public methods are called, the locking level on 
-entry to a monitor method must be less than or equal to the monitor itself. Otherwise
-the lock ordering could be violated. Thus, public methods have a precondition \(LL ≤ \texttt{this}\).
+entry to a monitor method must be less than the monitor itself
+(or equal to, in the case of reentrant locks). Otherwise
+the lock ordering could be violated. Thus, the public methods of a monitor have
+an (often implicit) precondition \(LL ≤ \texttt{this}\).
 </a>
 <p>
-If we apply this approach to the example above, we might specify that <tt>a &lt; b</tt> in the lock ordering.
-The methods <tt>f()</tt> then requires \(LL &lt; a\) and <tt>g()</tt> requires \(LL &lt; b\). The
-call to <tt>a.f()</tt> in <tt>B.g()</tt> is then illegal, because it violates the lock ordering,
-and as we saw it leads to possible deadlock.
+If we apply this approach to the example above, we might specify that <tt>a
+&lt; b</tt> in the lock ordering.  The methods <tt>f()</tt> then requires \(LL
+&lt; a\) and <tt>g()</tt> requires \(LL &lt; b\). The call to <tt>a.f()</tt> in
+<tt>B.g()</tt> is then illegal, because it violates the lock ordering, and as
+we saw it leads to possible deadlock.
 </p>
 <pre class=code>
 class A {
