@@ -53,6 +53,7 @@ var base_url = basename(window.location.origin + window.location.pathname)
 function relativize(url, lecture_base, base) {
     // console.log("relativizing " + url + " : "  + lecture_base + " : " + base)
     if (url == "") return url
+    if (url.match('^https?:)) return url
     for (;;) {
         if (url.match('^' + base)) {
             url = url.replace(base, lecture_base)
