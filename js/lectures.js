@@ -1,37 +1,3 @@
-var lectures = [
-    'intro',
-    'objects',
-    'pitfalls',
-    'java_rep',
-    'encapsulation',
-    'subtyping',
-    'intf_design',
-    'inheritance',
-    'exceptions',
-    'mod_design',
-    'recursion_lists',
-    'generics',
-    'complexity',
-    'trees',
-    'hashtables',
-    'loopinv',
-    'sorting',
-    'parsing',
-    'patterns',
-    'gui',
-    'guievents',
-    'uidesign',
-    'concurrency',
-    'synchronization',
-    'graphs',
-    'traversals',
-    'ssp',
-    'heaps',
-    'avl',
-    'jvm',
-    'undecidability'
-]
-
 var base_url = basename(window.location.origin + window.location.pathname)
 
 function load_lecture() {
@@ -48,12 +14,12 @@ function load_lecture() {
 function basename(url) {
     return url.replace(/\/[^\/]*$/, "")
 }
+
 var base_url = basename(window.location.origin + window.location.pathname)
 
 function relativize(url, lecture_base, base) {
     // console.log("relativizing " + url + " : "  + lecture_base + " : " + base)
     if (url == "") return url
-    if (url.match('^https?:)) return url
     for (;;) {
         if (url.match('^' + base)) {
             url = url.replace(base, lecture_base)
