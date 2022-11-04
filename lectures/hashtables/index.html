@@ -344,16 +344,17 @@ sizes from a predefined table of appropriately sized primes.
 <h4>Multiplicative hashing</h4>
 <p>
 An alternative to modular hashing is <strong>multiplicative hashing</strong>, which is defined as
-\(h(k) = \lfloor m * frac(k·A)\rfloor\), where \(A\) is a constant between 0 and 1
-(e.g., Knuth recommends \(φ&minus;1 = 0.618033...\)), and the function frac
-gives the fractional part of a number (that is, \(frac(x) = x - &lfloor;x&rfloor;)\).
+\(\newcommand\ffrac{\mathit{frac}}\)
+\(h(k) = \lfloor m * \ffrac(k·A)\rfloor\), where \(A\) is a constant between 0 and 1
+(e.g., Knuth recommends \(φ&minus;1 = 0.618033...\)), and the function \(\ffrac\)
+gives the fractional part of a number (that is, \(\ffrac(x) = x - &lfloor;x&rfloor;)\).
 This formula uses the fractional part of the product \(k·A\)
 to choose the bucket.
 </p>
 <p>
-However, the formula above is not the best way to evaluate the hash function.
+However, the formula above is not the best way to evaluate this hash function.
 If \(m\) is some power of two (\(m = 2^{j}\)), we can scale up the
-multiplier \(A\) by \(2^{32}\) to obtain a 32-bit integer,
+multiplier \(A\) by \(2^{32}\) to obtain a 32-bit integer.
 For example, Knuth's multiplier becomes \(A = 2^{32}·(φ-1) &equiv; &minus;1640531527 \mod 2^{32}\).
 We can then evaluate the hash function cheaply as follows,
 obtaining a \(j\)-bit result in \([0,m)\):
@@ -363,11 +364,11 @@ h(k) = (k*A) &gt;&gt;&gt; (32&minus;j)
 </pre>
 <p>The reason this works is that the multiplication deliberately overflows, but
 when integers are multiplied, only the low 32 bits of the result are retained. We
-only want bits from the low 32 bits anyway.
+only want bits from the low 32 bits of the product anyway.
 </p>
 <p>
-Implemented properly, multiplicative hashing is faster and offers diffusion
-better than that of modular hashing. Intuitively, multiplying together two
+Implemented properly, multiplicative hashing is faster and offers better diffusion
+than modular hashing. Intuitively, multiplying together two
 large numbers diffuses information from each of them into the product,
 especially around the middle bits of the product. The formula above picks out
 <code>j</code> bits from the middle of the product \(k·A\).
@@ -423,7 +424,7 @@ A common mistake is to implement it as
 \((k·A) \mod m\). By the properties of modular arithmetic,
 \((k·A) \mod m = ((k \mod m) × (A \mod m) \mod m)\). Therefore, this mistaken implementation
 acts just like modular hashing in combination with
-shuffling the order of the buckets, rather than providing real diffusion.
+shuffling the order of the buckets; it adds no diffusion.
 </p>
 <p>
 With multiplicative hashing, diffusion into the lower-order bits is not as good as
@@ -668,10 +669,41 @@ the initialization vector \(IV\) is chosen at the start
 of the application.
 </p>
 <p>
-If writing a loop to implement the diagram above seems like too much work, a useful trick for constructing a good <code>hashCode()</code> method is to leverage the
-fact that Java <code>String</code> objects implement <code>hashCode()</code> in this way, using
-the characters of the string as the data values. If your class defines a <code>toString()</code>
-method in such a way that it returns the same strings when two objects are equal, then
+A related way to generate hash codes is to think of them as involving
+the evaluation of a polynomial whose coefficients are the data going into
+the hash code. It is a property of polynomials that there is a vanishing
+likelihood that two unequal polynomials take on the same value when evaluated
+at a randomly chosen real number. For hashing we are not realing with real numbers,
+but we can evaluate polynomials at a “random” large integer \(x\) to much the same
+effect, as long as the integer is relatively prime to the number of buckets.
+This evaluation looks like the diagram above, except that the function \(h\)
+is implemented as multiplication by \(x\), and addition is substituted for
+exclusive or. (In fact, the polynomial can be evaluated using exclusive or
+as well.) For example, if we wanted to hash all the values in an array of integers,
+code like the following efficiently performs the necessary polynomial
+evaluation (mod \(2^{32}\)), assuming an appropriate constant \(x\):
+</p>
+<pre>
+int[] data;
+int result = 0;
+for (int i = 0; i < data.length; i++) {
+    result = result * x + data[i];
+}
+return result;
+</pre>
+<p>For added variability, the initial value of <code>result</code> can be
+set to a random initialization vector.
+</p>
+
+
+<h3>Java tips</h3>
+<p>
+If writing a loop to implement the diagram above seems like too much work, a
+useful trick for constructing a good <code>hashCode()</code> method is to
+leverage the fact that Java <code>String</code> objects implement
+<code>hashCode()</code> in this way, using the characters of the string as the
+data values. If your class defines a <code>toString()</code> method in such a
+way that it returns the same strings when two objects are equal, then
 <code>hashCode()</code> can simply return the hash of that string!
 </p>
 <pre>
@@ -680,11 +712,48 @@ method in such a way that it returns the same strings when two objects are equal
     return toString().hashCode();
   }
 </pre>
-<p>However, note that if two unequal objects have the same <code>toString()</code> output, they will
-<em>always</em> collide in the hash table if this <code>hashCode()</code> function is used. For
-the best performance, we would want <code>toString()</code> to treturn the same string
+<p>However, note that if two unequal objects have the same
+<code>toString()</code> output, they will <em>always</em> collide in the hash
+table if this <code>hashCode()</code> function is used. For the best
+performance, we would want <code>toString()</code> to return the same string
 <em>exactly</em> when the two objects are equal.
 </p>
+<p>
+Converting to a string is probably unnecessary overhead; Java also offers
+two standard methods for constructing high-quality hash codes from a sequence
+of data:
+
+<ul>
+<li><code>Arrays.hashCode(Object[])</code>: Given an array containing a
+sequence of objects, this method combines their hash codes into a
+single high-quality hash code. For example, suppose we have a class
+<code>Point3D</code> representing an immutable three-dimensional point with
+fields <code>x</code>, <code>y</code>, and <code>z</code> for its coordinates.
+We might implement the <code>hashCode</code> method of the class as follows:
+<pre>
+import java.util.Arrays;
+class Point3D {
+    private int x, y, z;
+    public int hashCode() {
+        return Arrays.hashCode(new int[]{x, y, z});
+    }
+}
+</pre>
+<li><code>Objects.hashCode(Object... values)</code>: This method takes
+a variable-length argument list and computes a hash code from its
+elements in the same way that <code>Arrays.hashCode</code> does on an
+array containing those elements. Our <code>Point3D</code> hash code could
+be implemented as follows:
+<pre>
+import java.util.Objects;
+class Point3D {
+    private int x, y, z;
+    public int hashCode() {
+        return Objects.hashCode(x, y, z);
+    }
+}
+</pre>
+</ul>
 
 <p>One Java pitfall to watch out for arises because Java's collection classes
 also override <code>hashCode()</code> to compute the hash from the current
