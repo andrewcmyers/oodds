@@ -75,7 +75,8 @@ tree and readded with its new priority.
 </p>
 <p>
 This implementation has reasonable asymptotic performance: all of the
-operations can be done in logarithmic time, asymptotically.  However, a
+operations can be done in logarithmic time, asymptotically.  But while
+a binary search tree is asymptotically optimal, the data structure of a
 balanced search tree is unnecessarily complex for the priority queue job, and
 consequently a bit slow.
 </p>
@@ -86,11 +87,12 @@ consequently a bit slow.
 to be done in \(O(\log n)\) time with good constant factors.
 </p>
 <p>
-In computer science, the term <em>heap</em> is unfortunately a bit overloaded.
-Binary heaps should not be confused with <em>memory heaps</em>. A <em>memory
+In computer science, the term <b>heap</b> is unfortunately a bit overloaded.
+Binary heaps should not be confused with <b>memory heaps</b>. A <em>memory
 heap</em> is a low-level data structure used to keep track of the computer's
-memory so that the programming language implementation knows where to place
-objects in memory. This is not how we are using the term here.
+memory so that the programming language implementation (the <b>language runtime</b>)
+knows where to place objects in memory. Here we use the term heap to
+refer to another, ingenious data structure.
 </p>
 <p>
 A <b>binary</b> heap is a binary tree satisfying the <b>heap invariant</b>:
@@ -113,11 +115,11 @@ priority element at the root, and the left and right subtrees are also both heap
   speedup can be achieved if the binary heap satisfies a second invariant:
 </p>
 <p>
-  <b>(Shape Invariant)</b> For every h, if there exists a node n at depth h,
-  then all 2<sup>h-1</sup> possible node of depth h–1 exist in the tree, along
-  with every possible node to the left of n of depth h. It follows that if h is
+  <b>(Shape Invariant)</b> For every h, if there exists a node \(n\) at depth \(h\),
+  then all \(2^{h-1}\) possible nodes of depth \(h–1\) exist in the tree, along
+  with every possible node to the left of \(n\) of depth \(h\). It follows that if \(h\) is
   the maximum depth of a node in the tree, the leaves of the tree occur only at
-  depths h and h–1.
+  depths \(h\) and \(h–1\).
 </p>
    <div class=figure>
     <img src="heap_shape.png">
@@ -125,7 +127,7 @@ priority element at the root, and the left and right subtrees are also both heap
 <p class=cont>In fact, the example tree above also satisfies this shape invariant.</p>
 <p>
 The shape invariant makes it possible to represent
-the binary heap as a <em>resizable array</em>. The elements of the tree are placed in the 
+the binary heap as a resizable array. The elements of the tree are placed in the 
 array row by row from top to bottom, reading each row from left to right and placing the
 nodes in the array from left to right. The heap structure illustrated above would be represented by
 the following array of length 9, with array indices shown on the bottom.
@@ -314,7 +316,7 @@ Because they only affect three nodes of the tree, tree rotations are efficient:
 </p>
 <pre>
 <b>Left rotation</b>                          <b>Right rotation</b>
-p.right = x.left;                      x.left = p.right;
+p.right = x.left; // B                 x.left = p.right; // B
 x.left = p;                            p.right = x;
 newChild = x;                          newChild = p;
 </pre>

@@ -833,7 +833,8 @@ hashing assumption and \(M\) buckets are summed over, this expected value is:
 \]
 </p>
 <p>
-Therefore, a reasonable way to measure clustering \(C\) is as the ratio of the sum and this quantity:
+Therefore, a reasonable way to measure clustering \(C\) is as the ratio of the
+sum of squares and this quantity:
 \[
 C = {
         \sum {x_i}^2
@@ -843,9 +844,10 @@ C = {
 \]
 
 <p>
-A uniform hash function produces clustering \(C\) near 1.0
-with high probability. A clustering measure \(C\) that is
-greater than one means that clustering will slow down the performance of the hash table by
+Appealingly, this measure is not affected by the load factor of the hash table.
+A uniform hash function produces clustering \(C\) near 1.0 with high probability.
+A clustering measure \(C\) that is
+greater than one means that clustering slows down the performance of the hash table by
 approximately a factor of \(C\).
 For example, if \(m = n\) and all elements are hashed into one bucket, the
 clustering measure is approximately \(n/2\). If the hash function is
