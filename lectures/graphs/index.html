@@ -14,8 +14,8 @@
 
 <p>
 A <b>graph</b> is a highly useful mathematical abstraction. A graph consists of
-a set of <b>vertices</b> (also called <b>nodes</b>) and a set of <b>edges</b>
-(also called <b>arcs</b>) connecting those vertices. There are two main kinds
+a set of <b>nodes</b> (also called <b>vertices</b>) and a set of <b>edges</b>
+connecting those vertices. There are two main kinds
 of graphs: <b>undirected graphs</b> and <b>directed graphs</b>. In a directed graph
 (sometimes abbreviated as <b>digraph</b>), the edges are
 directed: that is, they have a direction, proceeding from a
@@ -57,8 +57,8 @@ represent events that cannot be scheduled together, or, depending on the problem
 edges that <em>must</em> be scheduled together,
 </li>
 <li>
-and in fact, any binary relation ρ can be viewed as a directed graph in which
-the relationship x ρ y corresponds to an edge from vertex x to vertex y.
+and in fact, any binary relation \(ρ\) can be viewed as a directed graph in which
+the relationship \((x~ρ~y)\) corresponds to an edge from vertex \(x\) to vertex \(y\).
 </li>
 </ul>
 <p>
@@ -382,19 +382,19 @@ that allow close-to-optimal solutions to TSP even for large problem instances.
 
 <h3>Graph coloring</h3>
 <p>
-Imagine that we want to schedule exams in k time slots such that no student
+Imagine that we want to schedule exams in \(k\) time slots such that no student
 has two exams at the same time. We can represent this problem using an
-undirected graph in which the exams are vertices, with the exams v<sub>1</sub> and
-v<sub>2</sub> connected by an edge if there exists at least one student who
-needs to take both exams. We can schedule the exams in the k slots if there
-is a <b>k-coloring</b> of the graph with k colors: a way to assign a color to
-each vertex with one of k colors such that no two
+undirected graph in which the exams are vertices, with the exams \(v_1\) and
+\(v_2\) connected by an edge if there exists at least one student who
+needs to take both exams. We can schedule the exams in the \(k\) slots if there
+is a <b>k-coloring</b> of the graph: a way to assign a color to
+each vertex with one of \(k\) colors such that no two
 adjacent vertices are assigned the same color. The <b>chromatic number</b> of a graph
 is the smallest number of colors needed to color it.
 </p>
 <p>
-There is no known efficient algorithm for k coloring in general. There are some
+There is no known efficient algorithm for \(k\)-coloring in general. There are some
 special classes of graphs for which coloring is efficient, and in practice,
-graph colorings close to optimal can be found, but in general the best known
+graph colorings close to optimal can be found, but in general, the best known
 algorithms to solve the problem optimally take exponential time.
 </p>
