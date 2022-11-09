@@ -14,7 +14,7 @@
 
 <p>
 A <b>graph</b> is a highly useful mathematical abstraction. A graph consists of
-a set of <b>nodes</b> (also called <b>vertices</b>) and a set of <b>edges</b>
+a set of <b>nodes</b> (also called <b>nodes</b>) and a set of <b>edges</b>
 connecting those vertices. There are two main kinds
 of graphs: <b>undirected graphs</b> and <b>directed graphs</b>. In a directed graph
 (sometimes abbreviated as <b>digraph</b>), the edges are
@@ -78,36 +78,38 @@ any one of them, then we would have efficient algorithms for all of them.
 
 <h2>Vertices and edges</h2>
 <p>
-A graph consists of a set of vertices V and a set of edges E.
-If the graph is directed, the edges E are a set of ordered
-pairs (u,v) representing an edge with source
-vertex u and sink vertex v. When drawing graphs, this is usually
-represented as an arrow from u to v.
+A graph consists of a set of vertices \(V\) and a set of edges \(E\).
+If the graph is directed, the edges \(E\) are a set of ordered
+pairs \((u,v)\) representing an edge with source
+vertex \(u\) and sink vertex \(v\). When drawing graphs, this is usually
+represented as an arrow from \(u\) to \(v\), and we might write \(u→v\)
+to signify that \((u,v) ∈ E\).
 </p>
 
 <p>If the graph is undirected, then the edges are a set of sets of <em>unordered</em>
-pairs {u,v}. Alternatively, we can model an undirected graph as a directed graph
-with edges in both directions; i.e., if (u,v) &isin; E,
-then (v,u) &isin; E also. When drawing graphs, this is usually
+pairs \(\{u,v\}\).  When drawing graphs, this is usually
 represented as a line between u and v without an arrowhead.
+Alternatively, we can model an undirected graph as a directed graph
+with edges in both directions; i.e., if \((u,v) &isin; E\),
+then \((v,u) &isin; E\) also.
 </p>
 <p>
-In some cases, edges from a vertex to itself or multiple edges between the same
+In some settings, edges from a vertex to itself (self-edges) or multiple edges between the same
 pair of vertices may be permitted. But usually the default is <em>not</em> to allow
-these things unless explicly stated otherwise.
+these things unless explicitly stated otherwise.
 </p>
 
 <h2>Adjacency and degree</h2>
 <p>
-Two vertices v and w are <b>adjacent</b> if they are connected
+Vertices \(v\) and \(w\) are <b>adjacent</b> if they are connected
 by an edge. The <b>degree</b> of a vertex is the total number of adjacent 
 vertices. In a directed graph, we can distinguish between outgoing and incoming
 edges. The <b>out-degree</b> of a vertex is the number of outgoing edges and
-the <b>in-degree</b> is the number of incoming edgs.
+the <b>in-degree</b> is the number of incoming edges.
 </p>
 
 <h2>Labels</h2>
-<p>The real value of graphs is obtained when we can use them to organize
+<p>The real value of graphs is obtained when we use them to organize
 information.  Both edges and vertices of graphs can have <b>labels</b> that
 carry meaning about an entity represented by a vertex or about the relationship
 between two entities represented by an edge. For example, we might encode
@@ -115,8 +117,34 @@ information about the population of cities and distances between them
 as an undirected labeled graph:
 </p>
 <div class=figure>
-<img src="cities.png" />
+<br>
+<canvas id=cities_graph style="width: 400px; height: 150px"></canvas>
+<script class=graphics>
+with (new CFigure("cities_graph")) {
+    const syracuse_l = label('("Syracuse", 145,000)'),
+          ithaca_l = label('("Ithaca", 100,000)'),
+          binghamton_l = label('("Binghamton", 50,000)')
+    const m = margin()
+    align("left", "top", syracuse_l, m)
+    align("none", "bottom", binghamton_l, m)
+    function c(lb) {
+        const result = circle().setW(7).setFillStyle("black")
+        return result
+    }
+    let ithaca = c(), syracuse = c(), binghamton = c();
+    align("abut", "bottom", syracuse_l, hspace(3), syracuse)
+    align("center", "abut", binghamton, vspace(3), binghamton_l)
+    align("abut", "center", ithaca, hspace(3), ithaca_l)
+    align("right", "center", ithaca_l, m)
+
+    connector(ithaca, binghamton).addLabel(lineLabel("48", .5, 0))
+    connector(ithaca, syracuse).addLabel(lineLabel("57", .5, 0))
+    connector(binghamton, syracuse).addLabel(lineLabel("73", .5, 0))
+
+}
+</script>
 </div>
+
 <p>
 Here, the vertices are labeled with a pair containing the name of the city and
 its population, and the edges are labeled with the distance between the cities.
@@ -254,7 +282,7 @@ Testing whether there is an edge from vertex i to vertex j requires scanning
 all the outgoing edges, taking O(V) time in the worse case. If this operation
 needs to be fast, the linked list can be replaced with a hash table. For example,
 we might implement the graph using this Java representation, which preserves
-the asympotic space efficiency of adjacency lists while also supporting
+the asymptotic space efficiency of adjacency lists while also supporting
 queries for particular edges:
 </p>
 <div class=equation>
@@ -265,14 +293,18 @@ HashMap&lt;Vertex, HashMap&lt;Vertex, Edge&gt;&gt;
 <h2>Paths and cycles</h2>
 <p>
 Following a series of edges from a starting vertex creates a <b>path</b>
-through the graph, a sequence of alternating vertices and edges beginning and ending with a vertex (v<sub>0</sub>,e<sub>0</sub>,v<sub>1</sub>,e<sub>1</sub>,...,v<sub>n</sub>)
-where e<sub>i</sub> = (v<sub>i</sub>,v<sub>i+1</sub>) for all 0&le;i&le;n-1.
-The <b>length</b> of the path is the number of edges (that is, n). Note that
-n=0 is possible; this would be a path of length 0 consisting of just a single vertex
+through the graph, visiting a sequence of vertices \((v_0, v_1, ..., v_n)\)
+where the edges followed are exactly the edges \(v_0, v_1\), ..., \(v_{n-1}, v_n\).
+The <b>length</b> of the path is the number of edges (that is, \(n\)). Note that
+\(n=0\) is possible; a path can have length 0 and consist of just a single vertex
 and no edges.
 If no vertex appears twice in the path, except that possibly v<sub>0</sub> =
 v<sub>n</sub>, the path is called <b>simple</b>.
-If the first and last vertices are the same, the path is a <b>cycle</b>.
+(Some authors use the term “path” to refer only to simple paths, and may also
+require that all vertices in the path are distinct; in this case, the term
+“walk” is used to refer to the concept we are calling a path.)
+If the first and last vertices of a path are the same, the path is a
+<b>cycle</b>.
 </p>
 <p>
 Some graphs have no cycles. For example, linked lists and trees are both examples
@@ -365,7 +397,7 @@ is, in general, intractable. It is related to some other important problems.
 A <b>Hamiltonian path</b> is one that visits every vertex in a graph exactly once.
 A <b>Hamiltonian cycle</b> is a cycle that visits every vertex exactly once.
 The ability to determine whether a graph contains a Hamiltonian path or a Hamiltonian
-cycle would be useful, but in general the best known algorithms for this problem
+cycle would be useful, but in general the best known algorithms for these problems
 require exponential time.
 </p>
 <p>
