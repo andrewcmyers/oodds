@@ -135,7 +135,7 @@ for (v != root) v.color = white;
 
 while (frontier not empty) {
     Node g = frontier.pop(); // g is a gray node
-    for (v successor of g) {
+    foreach (g → v) {
         if (v.color == white) {
             frontier.push(v);
             v.color = gray;
@@ -160,7 +160,7 @@ for (v != root) v.distance = ∞;
 
 while (frontier not empty) {
     g = frontier.pop();
-    for (v successor of g) {
+    foreach (g → v) {
         if (v.distance == ∞) {
             frontier.push(v);
             v.distance = g.distance + 1;
@@ -249,13 +249,13 @@ the root:
  *  Requires: g is gray
  */
 DFS(Node g) {
-    for (v successor of g) {
+    foreach (g → v) {
         if (v.color == white) {
             v.color = gray;
             DFS(v);
         }
     }
-    v.color = black;
+    g.color = black;
 }
 </pre>
 
@@ -305,7 +305,7 @@ while (frontier not empty) {
    g = frontier.pop();
    if (g.dfs < ∞) continue; // dup on stack popped
    g.dfs = nextDfs++;
-   for (v successor of g)
+   foreach (g → v)
      if (v.dfs == ∞) frontier.push(v);
 }
 </pre>
@@ -319,7 +319,7 @@ DFS(root);
 
 DFS(Node g) {
     g.dfs = nextDfs++;
-    for (v successor of g)
+    foreach (g → v)
         if (v.dfs == ∞) DFS(v);
 }
 </pre>
