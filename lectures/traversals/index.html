@@ -20,8 +20,8 @@ We often want to solve problems that are expressible in terms of a traversal or 
 <li>Finding the best reachable node (e.g., single-player game search) or
 the minmax best reachable node (e.g., two-player game search)</li>
 <li>Finding the best path through a graph (e.g., routing and map directions)</li>
-<li>Determining whether a graph is a dag (directed acyclic graph).</li>
-<li>Topologically sorting a dag.</li>
+<li>Determining whether a graph is a DAG (directed acyclic graph).</li>
+<li>Topologically sorting a DAG.</li>
 </ul>
 
 <p>
@@ -381,7 +381,7 @@ tree that is a subgraph of the original graph, we get a <b>DFS forest</b> consis
 <img src="graph2-forest.png">
 </center>
 
-<h2>Topological sort</h3>
+<h2>Topological sort</h2>
 
 <p>
 One of the most useful algorithms on graphs is <em>topological sort</em>, in
@@ -410,10 +410,10 @@ need to make the sauce before we assemble the lasagna.  A topological sort will
 find some ordering that obeys this and the other ordering constraints.</p>
 
 <p>Of course, it is impossible to topologically sort a graph with a cycle in it.
-So to topologically sort a graph, it must be a dag.
-But the interesting thing is that the condition of being a dag is not
+So to topologically sort a graph, it must be a DAG.
+But the interesting thing is that the condition of being a DAG is not
 only necessary for the existence of a topological sort, it is also sufficient.
-That is, all dags have at least one topological sort.
+That is, all DAGs have at least one topological sort.
 </p>
 
 <p>We can obtain a linear-time algorithm for topological sort from DFS.
@@ -487,7 +487,6 @@ A tree edge always goes to a successor in the DFS forest.
 edge</b>, shown in red. Because there is only a single path of gray
 nodes, a back edge loops back to an earlier gray node that is still on the stack,
 creating a cycle. Back edges always go to an ancestor in the DFS forest.
-A graph has a cycle if and only if it contains a back edge.
 </p>
 
 <p> When the sink node of the edge is black, it is either a
@@ -502,15 +501,21 @@ is still linear time.</p>
 
 <h2>Cycle detection</h2>
 
-<p>It is often useful to know whether a graph is acyclic. To detect
-whether a graph has a cycle, we can perform DFS with edge classification on
-the entire graph and ask whether there exists a back edge anywhere in the graph.
-By a fairly intricate argument, it can be shown that the node with the smallest
-DFS number in any directed cycle lies at the root of a subtree of the DFS tree
-containing all nodes of the cycle. Then the cycle must contain a back edge,
-since that is the only way a node can go to an ancestor in the DFS tree. Conversely, if there
-is a back edge, then there is a cycle consisting of that back edge and tree edges.
-Thus the existence of cycles can be detected in linear time.
+<p>
+It is often useful to know whether a graph is acyclic. To detect whether a
+graph has a cycle, we can perform DFS with edge classification on the entire
+graph and ask whether there exists a back edge anywhere in the graph.  A graph
+has a cycle if and only if it contains a back edge. As argued above, a back
+edge implies there is a cycle. How do we know that if there is a cycle, a back
+edge will be found? Consider the first node in the cycle that is reached during
+(repeated) depth-first traversal. Since there is a cycle, there must be some other node in
+the cycle with an edge to this first node. By the specification of visit(),
+this first node must remain gray until all the white nodes reachable from it
+have been colored black, including all the other cycle nodes. In other words,
+the cycle must be entirely within the DFS tree rooted at the first node. Therefore,
+any (back) edge from another cycle node back to the first node must be
+encountered during this part of the traversal. Thus, the existence of cycles
+can be detected in linear time.
 </p>
 
 <h2>Connected components</h2>
@@ -564,13 +569,13 @@ directed graph has four strong components consisting of vertices
 <div class=figure>
 <img src="scc-example2.png">
 <p>
-A graph and its dag of strong components
+A graph and its DAG of strong components
 </p>
 </div>
 
 <p>Note that all nodes in a cycle are always part of the
 same strong component, so every graph can be
-viewed as a dag composed of strong components, as illustrated on the right
+viewed as a DAG composed of strong components, as illustrated on the right
 in the above figure.
 
 <h4>Kosaraju's algorithm</h4>
@@ -593,7 +598,7 @@ previously unmarked nodes reachable from <i>v</i> as being in the same strong co
 For example, consider the graph in the above figure.
 Running a DFS and choosing children top to bottom, we will obtain tree
 edges (A,B), (B,C), (C,G), (A,D), (D,E), and (E,F), back edges (C,B), (F,E) and (F,D), and cross edges (D,C) and (F,G).
-Ignoring back edges and topologically sorting, we might get the sequence A,D,E,B,C,F,G. The first DFS in step 3 starting at A would give the strong component {A}. The second starting at D would give {D,E,F}. The third starting at B would give {B,C}. The last starting at G would give {G}. Collapsing strong components into single nodes gives the dag shown on the right in the figure. Note that the dag of strong components will also be topologically sorted by the algorithm.</p>
+Ignoring back edges and topologically sorting, we might get the sequence A,D,E,B,C,F,G. The first DFS in step 3 starting at A would give the strong component {A}. The second starting at D would give {D,E,F}. The third starting at B would give {B,C}. The last starting at G would give {G}. Collapsing strong components into single nodes gives the DAG shown on the right in the figure. Note that the DAG of strong components will also be topologically sorted by the algorithm.</p>
 
 <!-- center>
 <img src="example-dag.png">
