@@ -187,10 +187,11 @@ We have shown how to calculate the minimum distance from the root to all
 reachable nodes, but how do we recover the actual shortest paths? A slight
 modification of the algorithm does the trick. Whenever the <code>v.dist</code>
 value decreases in line 8 or 11, we save a back pointer from <code>v</code> to
-<code>g</code>, as the shortest known path from the root to <code>v</code> at
-that point goes through <code>g</code>. When the algorithm is finished, we can
-follow these back pointers from any node along a shortest path back to the
-root.
+<code>g</code> (or, equivalently, to the <code>g→v</code> edge), as the
+shortest known path from the root to <code>v</code> at that point goes through
+that edge to <code>g</code>. When the algorithm is finished, we can start from
+any target node and follow these back pointers along a shortest path back to
+the root.
 </p>
 
 <p>
@@ -206,9 +207,10 @@ predecessor satisfying this equation.
 </p>
 
 <p>
-The thick edges in the previous figure show the shortest paths from the root <code>v<sub>0</sub></code>
-to every other node. They form a <b>spanning tree</b> that includes every vertex in the graph and shows
-the minimum distance to each of them.
+The thick edges in the previous figure show the shortest paths from the root
+<code>v<sub>0</sub></code> to every other node. They form a <b>spanning
+tree</b> that includes every vertex in the graph and also includes a shortest path to
+every such vertex.
 </p>
 
 <h3>Performance of Dijkstra's algorithm</h3>
