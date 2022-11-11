@@ -14,22 +14,24 @@
 <div class=floatfigure>
 <img class="whitebg" src="example-graph.png" />
 </div>
-<p>Suppose we have a weighted directed graph,
+<p>
+Finding shortest paths in graphs is very useful.
+Suppose we have a weighted directed graph,
 and we want to find the path between two vertices with the minimum
 total weight.
 Interpreting edge weights as distances, this is a <b>shortest-path
-problem</b>. In the example illustrated, there is a path with total weight 50, but may
+problem</b>. In the example illustrated, there is a path from \(v_0\) to \(v_1\)
+with distance 50, but it may
 not be easy to find it. We could find the shortest path by enumerating all possible
-permutations of the vertices and checking which one, but there are
-O(V!) such permutations.
+permutations of the vertices and checking which one, but there are \(O(V!)\)
+such permutations: often far too many to check.
 </p>
 <p>
-Finding shortest paths in graphs is very useful. We have already seen an
-algorithm for finding shortest paths when all weights are 1, namely
-breadth-first search. BFS finds shortest paths from a root node or nodes to
-all other nodes when the distance along a path is simply the number of
-edges. In general it is useful to have edges with
-different &ldquo;distances&rdquo;, so shortest-path problems are
+We have already seen an algorithm for finding shortest paths when all weights
+are 1, namely breadth-first search. BFS finds shortest-distance paths from a
+root node or nodes to all other nodes when the distance along a path is simply
+the length of the path: the number of edges. 
+More general shortest-path problems are
 expressed in terms of weighted graphs, where the weights represent
 distances. (Weighted <em>undirected</em> graphs can be regarded as weighted
 directed graphs with directed edges of equal weight in each direction.)
@@ -38,12 +40,12 @@ directed graphs with directed edges of equal weight in each direction.)
 Both breadth- and depth-first search are instances of the
 abstract tricolor algorithm. The tricolor algorithm is <em>nondeterministic</em>: it
 allows a range of possibilities for each next step. BFS and DFS resolve the nondeterminism
-in different ways and visit nodes in different orders. In
-this lecture we will see another instance of the tricolor algorithm due to
+in different ways and visit nodes in different orders. 
+We now explore another instance of the tricolor algorithm due to
 Edsger Dijkstra, which solves the <b>single-source shortest path</b> problem.
 The algorithm is known as <b>Dijkstra's algorithm</b>.
 </p>
-<p>For simplicity, we will assume that all edge weights are nonnegative.
+<p>For simplicity, we assume that all edge weights are nonnegative.
 The <b><a href="http://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm">
 Bellman-Ford algorithm</a></b> is a generalization of Dijkstra's algorithm that can be
 used in the presence of negative weights, provided there are no negative-weight cycles.
@@ -52,12 +54,12 @@ traverse a negative-weight cycle an arbitrary number of times, and there would b
 no lower bound on the weight.
 </p>
 <p>
-We will solve the problem of finding the shortest path from a given root
-node to all other nodes. To find a path from multiple root nodes, the single-source shortest path algorithm
-can be used repeatedly, once for each starting node; but if the graph is
-dense, it is more efficient to use a different algorithm for solving the
-<b>all-pairs shortest-path problem</b>. The <b>Floyd-Warshall algorithm</b>
-is the standard algorithm for this task and is covered in CS 3110 or CS 4820.
+The problem is to find the shortest path from a given root
+node to all other nodes. To find a path from <em>multiple</em> root nodes, the single-source shortest path algorithm
+can be used repeatedly, once for each starting node; but if many root nodes are
+to be considered, it is more efficient to use a different algorithm that solves the
+<b>all-pairs shortest-path problem</b>. The <b>Floyd–Warshall algorithm</b>
+is the standard algorithm for this task and is covered in later courses.
 </p>
 
 <h2>Dijkstra's algorithm</h2>
@@ -241,7 +243,7 @@ They only make sense for large, dense graphs where \(|E|\) is not \(O(V)\).
 <h3>Correctness of Dijkstra's algorithm</h3>
 
 <p>
-To show this algorithm works as advertised, we will need a loop invariant.
+To show that this algorithm works, we need a loop invariant.
 </p>
 <p>
 At any stage of the algorithm, define an <b>interior path</b> to a node <code>v</code>
@@ -299,7 +301,7 @@ at least as long as the already known interior path with distance <code>b.dist</
 However, we still need to think about the interior paths to gray nodes. If another gray node
 <code>v</code> is not a successor to <code>g</code>, any new interior path to it that
 goes via <code>g</code> must have as its second-to-last node a black node whose distance
-is no more than than of <code>g</code>. Hence, the new interior path via <code>g</code> cannot
+is no more than that of <code>g</code>. Hence, the new interior path via <code>g</code> cannot
 be better than the existing interior path.
 </p>
 <p>
@@ -319,9 +321,7 @@ is the <em>only</em> interior path.</p>
 const SQUIGGLE_WIDTH = 15, SQUIGGLE_HEIGHT = 10
 class SquigglyArrow extends Constrain.Line {
     constructor(figure, a, b) {
-        super(figure)
-        figure.pin(a, figure.point(this.x0(), this.y0()))
-        figure.pin(b, figure.point(this.x1(), this.y1()))
+        super(figure, a, b)
         this.lineDash = []
         this.setEndArrow("arrow")
     }
@@ -357,34 +357,38 @@ class SquigglyArrow extends Constrain.Line {
     }
 }
 
-CFigure.prototype.wavyConnector = function(fig, a, b) {
-    return new SquigglyArrow(fig, a, b)
+CFigure.prototype.wavyConnector = function(a, b) {
+    return new SquigglyArrow(this, a, b)
 }
 
 let fig
 with (fig = new CFigure("graycase")) {
-    let cr = canvasRect()
-    let explored = circle().setFillStyle("#aaa").setLineWidth(20).setStrokeStyle("#ccc").at(cr).setW(minus(cr.w(),30))
+    let cr = margin()
+    let explored = circle().at(cr).setW(minus(cr.w(),30))
+                .setFillStyle("#aaa")
+                .setLineWidth(30)
+                .setStrokeStyle("#ccc")
     function node() {
       return circle().setFillStyle("#000").setW(8)
     }
     let root = node().at(cr)
     align("center", "abut", root, vspace(10), label("root"))
-    let g = node(), v = node(), b = node()
-    align("none", "center", root, g)
-    equal(distance(g, root), times(0.5, explored.w()), distance(v, root))
-    equal(distance(g, v), times(0.45, explored.w()))
+    let g = node()
     align("center", "abut", g, vspace(5), label("g"))
-    align("center", "abut", v, vspace(5), label("v"))
-    pin(b, average(average(g, v), root))
     align("none", "center", root, g)
-    geq(v.y(), root.y())
+    g.at(explored.cr())
+    wavyConnector(root, g)
+    let v = node(), b = node()
+    align("center", "abut", v, vspace(5), label("v"))
     align("center", "abut", b, vspace(5), label("b"))
-    wavyConnector(fig, root, v)
-    wavyConnector(fig, root, g)
-    wavyConnector(fig, root, b).setLineDash([5,3])
-    wavyConnector(fig, b, v).setLineDash([5,3])
-    wavyConnector(fig, g, b).setLineDash([5,3])
+    equal(times(0.5, explored.w()), distance(v, root))
+    equal(distance(g, v), times(0.45, explored.w()))
+    equal(b, plus(times(0.333, g), times(0.333, v), times(0.333, root)))
+    geq(v.y(), root.y())
+    wavyConnector(root, v)
+    wavyConnector(root, b).setLineDash([5,3])
+    wavyConnector(b, v).setLineDash([5,3])
+    arrow(g, b).setLineDash([5,3])
     connector(g, v).setEndArrow("arrow").addLabel(lineLabel("d", 0.5, 10)).setLineWidth(2)
 }
 </script>
@@ -440,8 +444,12 @@ explore the streets of Miami, but that is what Dijkstra's algorithm will do.
 <div class=figure>
 <img src="map.png" width="500px">
 </div>
-<p> The A* search algorithm generalizes Dijkstra's algorithm to to take advantage of
-knowledge about the node we are trying to find. The idea is that for any given
+<p>
+The A* search algorithm is a generalization of Dijkstra's algorithm that takes
+advantage of knowledge about the node that the algorithm is trying to find. 
+A* is used for many different optimization problems, including single-player game search.
+</p>
+<p>The insight behind the A* algorithm is that for any given
 vertex, we may be able to estimate the remaining distance to the destination.
 We define a <b>heuristic function</b> <code>h(v)</code> that constructs this estimate. Then,
 the priority queue uses <code>v.dist + h(v)</code> as the priority instead of just <code>v.dist</code>.
@@ -469,15 +477,12 @@ immediately when the goal node is reached.
 </p>
 <p>
 If using an inadmissible heuristic, negative-weight edges might cause us to
-find a new path to an already “finished” node, pushing it back on to the
-frontier queue. Even after finding the goal node at some distance D, It is
-necessary to keep searching <em>above</em> priority level D to account for
-these negative-weight edges. Despite this issue, the reason we might want to
-use an inadmissible heuristic is that it can be more <em>accurate</em> than an
-admissible heuristic, and thus guide the search more effectively to the goal.
-In some cases inadmissible heuristics can pay off.
-</p>
-<p>
-The A* search algorithm is often used for single-player game search and various
-other optimization problems.
+find a new path to an already “finished” node, which means that it should be
+pushed back onto the frontier queue. Even after finding the goal node at some
+distance \(D\), it is necessary to keep searching <em>above</em> priority level
+\(D\) to account for these negative-weight edges, which could lead to a path
+at distance less than \(D\). Despite this issue, the
+reason we might want to use an inadmissible heuristic is that it can be more
+<em>accurate</em> than an admissible heuristic, and thus guide the search more
+effectively to the goal.  In some cases, inadmissible heuristics pay off.
 </p>
