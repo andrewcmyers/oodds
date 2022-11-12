@@ -327,24 +327,24 @@ DFS(Node g) {
 <h2>Time and space complexity</h2>
 
 <p>
-For both BFS and DFS, there are at most |V| executions of the while loop, as a
+For both BFS and DFS, there are at most \(|V|\) executions of the while loop, as a
 node can go on the stack or queue at most once, and the body of the loop
 on successors can be executed at most |E| times over all executions, since
 each edge is looked at only once. So the asymptotic time complexity of
-BFS and DFS is linear, i.e. O(|V| + |E|).
+BFS and DFS is linear, i.e. \(O(|V| + |E|)\).
 </p>
 
 <p>During execution, the BFS and DFS algorithms maintain an amount of state 
 proportional to the size of the queue or stack. For DFS, this
 is proportional to the length of the path from the root to the node currently
 being visited. For BFS, this is proportional to the
-size of the perimeter of nodes at distance <i>k</i> or <i>k+1</i>
-from the root. In both algorithms, the amount of state can be O(|V|). For DFS this
+size of the perimeter of nodes at distance \(k\) or \(k+1\)
+from the root. In both algorithms, the amount of state can be \(O(|V|)\). For DFS this
 happens when searching a linked list. For BFS this happens when
 searching a graph with a lot of branching, such as a binary tree,
-because there can be as many as 2<i><sup>k</sup></i> nodes at distance <i>k</i> from
+because there can be as many as \(2^k\) nodes at distance \(k\) from
 the root. For balanced binary trees, DFS maintains state proportional to
-the height of the tree, or O(log |V|). On such graphs, DFS requires less space.
+the height of the tree, or \(O(\log |V|)\). On such graphs, DFS requires less space.
 </p>
 
 <h2>The DFS forest</h2>
@@ -433,13 +433,13 @@ As each node is finished (colored black), put it on the head of an
 initially empty list.
 </p>
 </blockquote>
-<p> This takes time linear in the size of the graph: O(|V| + |E|).</p>
+<p> This takes time linear in the size of the graph: \(O(|V| + |E|)\).</p>
 
 <p>
 For example, in the traversal example above, nodes are marked black in the
 order C, E, D, B, A. Reversing this, we get the ordering A, B, D, E, C. This is
 a topological sort of the graph. Similarly, in the lasagna example, assuming
-that we choose successors top-down, nodes are marked black in the order bake,
+that we choose successors top-down, nodes are marked black in this order: bake,
 assemble lasagna, make sauce, fry sausage, boil pasta, grate cheese. So the
 reverse of this ordering gives us a recipe for successfully making lasagna,
 even though successful cooks are likely to do things more in parallel!

@@ -249,45 +249,50 @@ and that for any node <code>n</code>, the parents of its children (if any) are e
 <p>
 Removing elements from a tree is generally more complicated than adding them, because the
 elements to be removed are not necessarily leaves. The algorithm starts by first finding the
-node containing the value x to be removed and its parent node p.
+node containing the value \(x\) to be removed and its parent node \(p\).
 There are three cases to consider:
 </p>
 <ol>
-<li><em>Node x is a leaf.</em>
-<p>In this case, we <b>prune</b> the node x from the tree by setting the pointer to it from p to <code>null</code>. The other subtree of p (shown as a white triangle, but it may be empty) is unchanged.</p>
+<li><em>Node \(x\) is a leaf.</em>
+<p>In this case, we <b>prune</b> the node x from the tree by setting the pointer to it from p to <code>null</code>. The other subtree of p (shown as a white triangle, though it may be empty) is unchanged.</p>
 <div class="figure">
 <img src="delete-leaf.png" alt="BST deletion from leaf" />
 </div>
 </li>
-<li><em>Node x has one child.</em>
-<p>We <b>splice out</b> node x from the tree by redirecting the pointer from p
-to x to now point to the single child of x. Since the BST invariant guarantees
-that A &lt; x &lt; p &lt; B, this operation preserves the invariant.
+<li><em>Node \(x\) has one child.</em>
+<p>We <b>splice out</b> node \(x\) from the tree by redirecting the pointer from \(p\)
+to \(x\) to now point to the single child of \(x\). Since the BST invariant guarantees
+that \(A &lt; x &lt; p &lt; B\), this operation preserves the invariant.
 </p>
 <div class="figure">
 <img src="delete-one-child.png" alt="BST deletion with one child" />
 </div>
 </li>
-<li><em>Node x has two children.</em>
-<p>In this case it's not as easy to remove node x. Instead, we <b>replace</b> the
-data in the node with the data from either the immediate next or the immediate
-previous element in the tree. Let's take the immediate next; call it x'.
-Since x' is the immediately next element, it must occur in the right subtree, and
-its node cannot possibly have a left child.
-Therefore, we either <em>prune</em> x' (if it is a leaf) or
-<em>splice it out</em> (if it is not), and then overwrite the data in node x with
-the data from node x'.
+<li><em>Node \(x\) has two children.</em>
+<p>In this case it is not as easy to remove node \(x\). Instead, we
+<b>replace</b> the data in the node with the data from either the immediate
+next or the immediate previous element in the tree. Without loss of generality,
+let's take the immediate next element; call it \(x'\).  Since \(x'\) is the
+immediate next element, it must occur in the right subtree of node \(x\).
+To find the immediate next element
+\(x'\) from \(x\), we walk one step down the tree to the right, then walk down
+to the left as far as possible. The last node we
+encounter holds \(x'\), a node that
+cannot possibly have a left child.  
+</p>
+<p>
+Having found \(x'\), we remove its node from the tree, either by <em>pruning</em>
+it (if it is a leaf) or by
+<em>splicing it out</em> (if it is not). Then, we overwrite the data in node \(x\) with
+the data from node \(x'\).
 </p>
 <div class="figure">
 <img src="delete-two-children.png" alt="BST deletion with two children" />
 </div>
 <p>
-To find x' from x, we walk one step down the tree to the
-right, then walk down to the left as far as possible. The last node we
-encounter is x'. If x' is a leaf, we can simply remove it. If x' has a right child y,
-we splice x' out by making y a new child of the parent p of x'. The node y becomes the
-new left child of p unless p is x, in which case y becomes the new right child of x.
-The BST invariant is maintained!
+An alternative to overwriting the data in node \(x\) is
+to replace the entire \(x\) node with the \(x'\) node, which requires updating three
+pointers: one child pointer in node \(p\) and both child pointers in the \(x'\) node.
 </p>
 </li>
 </ol>
