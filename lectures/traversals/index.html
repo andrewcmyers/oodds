@@ -502,19 +502,25 @@ is still linear time.</p>
 <h2>Cycle detection</h2>
 
 <p>
-It is often useful to know whether a graph is acyclic. To detect whether a
-graph has a cycle, we can perform DFS with edge classification on the entire
-graph and ask whether there exists a back edge anywhere in the graph.  A graph
-has a cycle if and only if it contains a back edge. As argued above, a back
-edge implies there is a cycle. How do we know that if there is a cycle, a back
-edge will be found? Consider the first node in the cycle that is reached during
-(repeated) depth-first traversal. Since there is a cycle, there must be some other node in
-the cycle with an edge to this first node. By the specification of visit(),
-this first node must remain gray until all the white nodes reachable from it
-have been colored black, including all the other cycle nodes. In other words,
-the cycle must be entirely within the DFS tree rooted at the first node. Therefore,
-any (back) edge from another cycle node back to the first node must be
-encountered during this part of the traversal. Thus, the existence of cycles
+It is often useful to know whether a graph is acyclic. To detect whether
+a graph has a cycle, we can perform DFS with edge classification on the
+entire graph and ask whether there exists a back edge anywhere in the
+graph.  A graph has a cycle if and only if it contains a back edge. As
+argued above, a back edge implies there is a cycle. How do we know that
+if there is a cycle, a back edge will be found?
+</p>
+<p>
+A cycle consists of a set of nodes that are all reachable from each other. Some
+node in this cycle must be the first one that is encountered during the
+(repeated) traversal.  This node will be the first node in the cycle that is
+colored gray, and the rest of the cycle is colored white at that point, forming
+an all-white path from the first node.  By the specification of visit(), all of
+the cycle nodes will be colored gray (and then black) before this first node is
+colored black.  In other words, the entire cycle must be within the DFS tree
+rooted at the first cycle node.  But since the first node is part of the cycle,
+there must be some other node in the cycle with an edge to this first node.
+Therefore, all (back) edges from other cycle nodes back to the first node must
+be encountered during this part of the traversal. Thus, the existence of cycles
 can be detected in linear time.
 </p>
 
