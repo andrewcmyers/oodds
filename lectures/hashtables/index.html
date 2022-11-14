@@ -152,15 +152,21 @@ entry, wrapping modulo the length of the array if necessary. This strategy
 is called <strong>linear probing</strong>. It tends to produce a lot of
 clustering of elements, leading to poor performance. A better
 strategy is to use a second hash function to compute the probing interval;
-this strategy is called <strong>double hashing</strong>.</p>
+this strategy is called <strong>double hashing</strong>. Removing an element
+from a hash table is not as straightforward because simply removing the array
+element could mislead a probe for a different element. Instead, the element
+must remain but be marked as deleted, perhaps by changing the array entry to
+point to a distinguished <b>tombstone</b> object.
+</p>
 
-<p>Regardless of how collisions are resolved, the time required for the hash
+<p>Regardless of how collisions are resolved, the time required for hash
 table operations grows as the hash table fills up. By contrast, the performance of
 chaining degrades more gracefully, and chaining is usually faster than probing
-even when the hash table is not nearly full. Therefore chaining is often
+even when the hash table is not nearly full. For these reasons, chaining is often
 preferred over probing.</p>
 
-<p>A recently popular variant of closed hashing is <strong>cuckoo hashing</strong>, in which two
+<p>A recently popular variant of closed hashing is <strong>cuckoo
+hashing</strong>, in which two
 hash functions are used. Each element is stored at one of the two locations
 computed by these hash functions, so at most two table locations must be
 consulted in order to determine whether the element is present. If both
