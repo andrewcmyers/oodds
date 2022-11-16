@@ -1,4 +1,4 @@
-class ButtonClicker extends EventHandler<ActionEvent> {
+class ButtonClicker implements EventHandler<ActionEvent> {
     void handle(ActionEvent e) {
         print("button clicked");
     }
