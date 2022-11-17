@@ -229,9 +229,10 @@ faster than the known lower bound of \(\Omega(n \log n)\) for comparison sorting
 We also do work proportional to the number of edges \(|E|\); in the worst case, every
 edge will cause the distance to its sink vertex to be adjusted. The priority
 queue needs to be informed of the new distance. This will take \(O(\log V)\) time per
-edge if we use a balanced binary tree. So the total time taken by the algorithm
+edge if we use a balanced binary tree. So the total time taken by the loop
 is \( O(V \log V) + O(E \log V)\). Since the number of reachable vertices
-is \(O(E)\), this is \(O(E \log V)\).
+is \(O(E)\), this is \(O(E \log V)\). Taking into account the time needed to set
+all vertex distances to zero, this becomes \(O(V + E \log V)\).
 </p>
 <p>
 It turns out there is a way to implement a priority queue as
