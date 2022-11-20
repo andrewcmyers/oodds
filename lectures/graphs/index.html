@@ -260,13 +260,13 @@ be represented with the following data structure:
 <p>
 Adjacency lists are asymptotically space-efficient because they only use space
 proportional to the number of vertices and the number of edges. We say that they
-require O(V+E) space.
+require \( O(V+E) \) space.
 </p>
 <p>
 Finding the outgoing edges from a vertex is very efficient in the adjacency
 list representation too; it requires time proportional to the number of outgoing
 edges.  However, finding the incoming edges to a vertex is not efficient: it
-requires scanning the entire data structure, requiring O(V+E) time.
+requires scanning the entire data structure, requiring \( O(V+E) \) time.
 </p>
 <p>
 When it is necessary to be able to walk forward on outgoing edges and backward
@@ -290,6 +290,18 @@ queries for particular edges:
 HashMap&lt;Vertex, HashMap&lt;Vertex, Edge&gt;&gt;
 </code>
 </div>
+<h2>Asymptotic complexity with multiple variables</h2>
+<p>
+You might or might not find an expression like \(O(V+E)\) intuitive. Such
+expressions give us a way of breaking out the asymptotic behavior of a function
+with respect to multiple variables. We can think of a function that is
+\(O(V+E)\) as the sum of a function \(f\) that is \(O(V)\) with a function \(g\) that is
+\(O(E)\). We know from the definition of asymptotic complexity that there must exist
+factors \(k_1\) and \(k_2\) such that \(f(V) ≤ k_1 V\) and \(g(E) ≤ k_2 E\) for
+sufficiently large \(V\) and \(E\). But then we have \(f(V) + g(E) ≤ \max(k_1, k_2)·(V+E)\)
+for large values of \(V\) and \(E\). So this sum is \(O(V+E)\).
+</p>
+
 <h2>Paths and cycles</h2>
 <p>
 Following a series of edges from a starting vertex creates a <b>path</b>

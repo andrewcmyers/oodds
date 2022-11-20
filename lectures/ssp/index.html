@@ -106,6 +106,14 @@ the <em>smallest</em> <code>v.dist</code> value among all those on
 the queue is popped. When the algorithm completes,
 all reachable nodes are black and hold their true minimum distance.
 </p>
+<p>
+Another key difference from BFS is that when an edge from a frontier
+node to some node v is considered, it may lie on a shorter path to
+v than was previously known.  In this case, the distance estimate to
+v is lowered, and the priority queue must also be informed about
+the change so that it can produce v perhaps earlier than it would
+otherwise have.
+</p>
 <p>Here is the pseudo-code:</code>
 <pre>
 1    frontier = new PriorityQueue();
@@ -116,23 +124,26 @@ all reachable nodes are black and hold their true minimum distance.
 5       g = frontier.pop();  // extract gray node with least <code>g.dist</code> in queue
 6       foreach (edge (g →<sub>d</sub> v) in E) {
 7          if (v.dist == ∞) {
-8             <code>v.dist</code> = <code>g.dist</code> + d;
+8             v.dist = g.dist + d;
 9             frontier.push(v);      // color v gray
 10         } else {
-11            <code>v.dist</code> = min(v.dist, <code>g.dist</code> + d);
-12              // v was already gray, but update to possibly shorter distance
-13            frontier.adjust_priority(v);
-14         }
-15      }
-16      // color g black
-17   }
+11            if (g.dist + d &lt; v.dist) {
+12               v.dist = g.dist + d;
+13               frontier.increasePriority(v);
+14               // v must be gray; update to a shorter distance
+15            }
+16         }
+17      }
+18      // color g black
+19   }
 </pre>
 <p>
 Dijkstra's algorithm is an example of a <b>greedy algorithm</b>: an algorithm
-in which simple local choices (like choosing the gray vertex with the
-smallest <code>g.dist</code>) lead to global optimal results (minimal distances computed
-to all vertices). Many other problems, such as finding a minimum spanning
-tree, can be solved by greedy algorithms. Other problems, such as Traveling Salesperson,
+in which simple local choices (like choosing the gray vertex with the smallest
+<code>g.dist</code>) lead to globally optimal results (minimal distances
+computed to all vertices). Many other problems, such as finding a minimum
+spanning tree, can be solved by greedy algorithms. Other problems, such as
+Traveling Salesperson,
 cannot.
 </p>
 
@@ -231,8 +242,7 @@ edge will cause the distance to its sink vertex to be adjusted. The priority
 queue needs to be informed of the new distance. This will take \(O(\log V)\) time per
 edge if we use a balanced binary tree. So the total time taken by the loop
 is \( O(V \log V) + O(E \log V)\). Since the number of reachable vertices
-is \(O(E)\), this is \(O(E \log V)\). Taking into account the time needed to set
-all vertex distances to zero, this becomes \(O(V + E \log V)\).
+is \(O(E)\), this is \(O(E \log V)\).
 </p>
 <p>
 It turns out there is a way to implement a priority queue as
