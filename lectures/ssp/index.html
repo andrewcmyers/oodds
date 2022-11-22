@@ -242,15 +242,22 @@ edge will cause the distance to its sink vertex to be adjusted. The priority
 queue needs to be informed of the new distance. This will take \(O(\log V)\) time per
 edge if we use a balanced binary tree. So the total time taken by the loop
 is \( O(V \log V) + O(E \log V)\). Since the number of reachable vertices
-is \(O(E)\), this is \(O(E \log V)\).
+is \(O(E)\), this time is \(O(E \log V)\). (For a very sparse graph where \( E \ll V \),
+the time can be asymptotically less than the \(O(V+E)\) time required to
+construct the graph itself, but in this case, the graph is not fully
+connected and so not all vertices are reachable. We can fold the \(O(V)\) work
+of initializing all vertex distances to ∞ into this initial graph construction.)
 </p>
 <p>
-It turns out there is a way to implement a priority queue as
-a data structure called a <b>Fibonacci heap</b>, which makes the
-operation of updating the distance \(O(1)\). The total time is
-then \(O(V \log V + E)\). Fibonacci heaps have worse
-constant factors and they are complicated to implement, so they are rarely used in practice.
-They only make sense for large, dense graphs where \(|E|\) is not \(O(V)\).
+It turns out there are more complex data structures that implement a priority
+queue while making the increase-priority operation only \(O(1)\). Two such data
+structures are <b>Fibonacci heaps</b> and <b>relaxed heaps</b>. If adjusting
+the distance is \( O(1)\), the algorithm takes just just \(O(V \log V + E)\)
+time. However, these asymptotically efficient data structures do not use the
+elegant encoding of the tree structure as an array—they use real pointers—which
+makes the constant factors worse than for binary heaps.  They make sense for
+large, dense graphs where \(|E|\) is not \(O(V)\), but are not often used in
+practice.  
 </p>
 
 <h3>Correctness of Dijkstra's algorithm</h3>
