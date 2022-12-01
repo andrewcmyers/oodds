@@ -43,9 +43,12 @@ requiring just one machine cycle.
 <h2>Interpreter designs</h2>
 <p>
 There are multiple kinds of software interpreters. The simplest
-interpreters are AST interpreters of the sort you built in your project. These are
-implemented as recursive traversals of the AST. However, traversing
-the AST makes them typically hundreds of times slower than the
+interpreters are abstract syntax tree (AST) interpreters, which
+take as input the program represented as a tree. To get the program
+into a tree representation, <a href="../../lecture.html?id=parsing">parsing</a> is required. AST
+interpretation is implemented essentially 
+as a recursive traversal of the AST. However, traversing
+the AST makes AST interpreters typically hundreds of times slower than the
 equivalent machine code.
 </p><p>
 A faster and very common interpreter design is a <b>bytecode
