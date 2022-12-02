@@ -286,12 +286,12 @@ thread later using the method <tt>Platform.runLater(Runnable r)</tt>. The <code>
 method of the <code>Runnable</code> object <code>r</code> is called at the earliest available opportunity by the application thread.
 </p>
 <p>
-Programming with threads is challenging because they share access to the same objects. If two
+Programming with threads is hard because they share access to the same objects. If two
 threads access the same object, it is challenging to prevent them from <strong>interfering</strong>.
 If one thread is in the middle of modifying an object while another thread accesses the object,
 it is easy for the observing thread to see the object in a state in which its class invariant does
 not hold. A good programming pattern for preventing interference is to have most objects <strong>owned</strong>
-by a single thread. Accesses (either reading or writing) to an object by a thread that does own 
+by a single thread. Accesses (either reading or writing) to an object by a thread that does not own 
 the object are unsafe and are not permitted by the pattern.
 </p>
 <p>

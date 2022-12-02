@@ -151,7 +151,6 @@ else x = z;
 23: goto    30
 26: iload   6
 28: istore  4
-30: return
 </pre>
 <span class="caption">Figure 4: Some bytecode</span>
 </div>
@@ -301,9 +300,8 @@ private methods.
 
 <li><p><code>invokedynamic</code> invokes object methods without requiring that
 static type of the receiver object supports the method. Run-time
-checking is used to ensure that the method can be called. This is a
-recent addition to the JVM, intended to support dynamically typed
-languages. It should not ordinarily be needed for Java code.
+checking is used to ensure that the method can be called. This relatively
+recent feature is used to implement lambda expressions.
 </p>
 
 </li>
