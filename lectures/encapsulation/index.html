@@ -317,17 +317,18 @@ modifiers is as follows:
 <table>
 <tr><th>Modifier</th><th>Significance</th><th>Comments</th></tr>
 <tr><td><code>public</code></td>
-<td>Accessible everywhere</td>
-<td>Instance variables should almost never be public</td></tr>
+<td>Accessible everywhere.</td>
+<td>Instance variables should almost never be public. Public static class variables
+can be useful if they are made <code>final</code>.</td></tr>
 <tr><td><code>private</code></td>
-<td>Accessible only within the class</td>
-<td>May limit future extensibility</td></tr>
+<td>Accessible only within the class.</td>
+<td>The safest choice, but may limit future extensibility via inheritance.</td></tr>
 <tr><td>(no modifier)</td>
-<td>Accessible from classes in the same package</td>
-<td>Does not apply to nested packages</td></tr>
+<td>Accessible from classes in the same package.</td>
+<td>Does not apply to nested packages.</td></tr>
 <tr><td><code>protected</code></td>
 <td>Accessible from subclasses and other classes in the same package</td>
-<td></td></tr>
+<td>Only relevant in programs that use inheritance.</td></tr>
 </table>
 
 
