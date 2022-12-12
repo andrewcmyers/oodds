@@ -272,12 +272,13 @@ except possibly for <code>v</code> itself.
 </p>
 <p>
 The loop invariant for the outer loop is then the usual
-tricolor black&ndash;white invariant, plus the following:
+tricolor black&ndash;white invariant, plus the following two-part invariant:
 </p>
 <ol type="1">
 <li><p>For every black vertex <code>b</code> and gray vertex <code>g</code>, <code>b.dist ≤ g.dist</code>.</p></li>
 <li><p>For every gray or black vertex <code>v</code>, <code>v.dist</code> is the distance of the shortest <em>interior</em> path to <code>v</code>.</p></li>
 </ul>
+</ol>
 <br>
 <p>
 <b>Initialization.</b>
@@ -306,9 +307,11 @@ that vertices are moved from gray to black in order of nondecreasing
 distance.</p>
 </li>
 <li>
-<p>We need to show that we also have the correct interior path distance
-to every gray or black vertex. Coloring <code>g</code> black doesn't create new
-interior paths to it, but it might create new interior paths to other nodes, since
+<p>We need to show that we also have the correct interior path distance to
+every vertex. Because of the tricolor invariant, there cannot be any interior paths
+to white vertices, so we are only concerned with vertices that are gray or black
+at the end of the loop body. Coloring <code>g</code> black doesn't create new
+interior paths to it, but that might create new interior paths to other nodes, since
 <code>g</code> can now appear in the middle of an interior path.
 </p>
 <p>
@@ -318,21 +321,17 @@ invariant part 1 means <code>b</code> is already at a distance no greater than
 at least as long as the already known interior path with distance <code>b.dist</code>.
 </p>
 <p>
-However, we still need to think about the interior paths to gray nodes. If another gray node
-<code>v</code> is not a successor to <code>g</code>, any new interior path to it that
-goes via <code>g</code> must have as its second-to-last node a black node whose distance
-is no more than that of <code>g</code>. Hence, the new interior path via <code>g</code> cannot
-be better than the existing interior path.
-</p>
-<p>
-What about gray successor nodes? All such nodes are considered in the inner loop.
-A successor node <code>v</code> can have one of three colors:
+However, we still need to think about interior paths to gray nodes, which may
+be either successors to \(g\) considered in the inner loop, or existing gray
+nodes. A node that is gray after an execution loop body could have been either
+white or gray:
 <ul>
-<li><p><b>Black.</b> As argued above, by part 1 of the invariant, any black successor <code>v</code> must
-have <code>v.dist ≤ g.dist</code>, so there can be no shorter interior path via <code>g</code>.</p></li>
-<li><p><b>White.</b> These nodes will be colored gray. By the tricolor invariant, there is no preexisting
-interior path to <code>v</code>. Therefore the new path via <code>g</code> with distance <code>g.dist + d</code>
-is the <em>only</em> interior path.</p>
+
+<li><p><b>White.</b> Nodes newly discovered via \(g\) become gray. By the tricolor
+invariant, there is no preexisting interior path to \(v\). Therefore
+the new path via <code>g</code> with distance <code>g.dist + d</code> is the
+<em>only</em> interior path.</p>
+
 <li>
 <div class=floatfigure>
 <canvas style="width: 300pt; height: 300pt" id=graycase>
@@ -413,16 +412,22 @@ with (fig = new CFigure("graycase")) {
 }
 </script>
 </div>
-<p><b>Gray.</b> If the node <code>v</code> is already on the frontier, there is an existing
-interior path whose length is recorded in <code>v.dist</code>. In addition, there is a
-new interior path to <code>v</code> via <code>g</code>, with total distance <code>g.dist + d</code>. The code compares
-these two paths and picks the shorter one. Coloring <code>g</code> black can also create
-other new interior paths that don't go directly to <code>v</code> via the new edge,
-but instead go via some other black node <code>b</code>. By invariant part 1, <code>b.dist
-≤ g.dist</code>, so any such interior path must be at least as long as the
+<p><b>Gray.</b> In this case, the node \(v\) is already on the frontier,
+so there is an already known best
+interior path whose length is recorded in \(v\)<code>.dist</code>. If \(v\)
+happens to be a successor of \(g\), a
+new interior path is created to \(v\) via \(g\), with total distance \(g\).<code>dist +
+d</code>. The loop body updates the distance of successor nodes \(v\) to the shorter
+of these two paths, or leaves the distance the same in case of non-successors.
+However, coloring \(g\) black can also create a third category of new
+interior paths, which don't go directly to \(v\) via the new edge,
+but instead go via some other black node \(b\). By invariant part 1, we know \(b\)<code>.dist</code>\( ≤ g\)<code>.dist</code>, so any such interior path must be at least as long as the
 preexisting interior path that goes from the roots directly to <code>b</code> and then
 to <code>v</code>, and we know by invariant part 2 that <em>that</em> path is no
-shorter than <code>v.dist</code>.</p>
+shorter than <code>v.dist</code>. Therefore, the third category of interior paths
+cannot yield paths that are shorter than the existing paths to \(v\) that are summarized
+by \(v\)<code>.dist</code>.
+</p>
 </ul>
 </ol>
 
