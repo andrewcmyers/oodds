@@ -603,11 +603,13 @@ we can avoid the clunky explicit cast operation:
     }
 </pre>
 <p>
-A problem with this approach is that it can violate the symmetry property required
-by the specification of <code>equals()</code>. Suppose there is some subtype of <code>Polynomial</code>
-that has more observers and more state than <code>Polynomial</code> does. Then, a <code>Polynomial</code>
-might consider itself equal to an object of that subtype, whereas that object's own <code>equals</code>
-would conclude through an <code>instanceof</code> test that the objects are not equal.
+A problem with this approach is that it can violate the symmetry
+property required by the specification of <code>equals()</code>. Suppose
+there is some subtype of <code>Polynomial</code> that has more
+observers and more state than <code>Polynomial</code> does. Then, a
+<code>Polynomial</code> might consider itself equal to an object of that
+subtype, whereas that object's own <code>equals</code> would conclude
+through an <code>instanceof</code> test that the objects are not equal.
 </p>
 <p>
 Symmetry can be restored by using the Java feature of <b>reflection</b>:
@@ -630,14 +632,43 @@ which we access properties of types at run time. Two  objects can only be consid
 equal if they are implemented by the same class.
 </p>
 <p>
-Even this approach is not
-entirely satisfactory, however. If we have two classes that provide alternate
-implementations of the same immutable interface, we might want to consider objects
-equal even when their classes are different, because they cannot be distinguished using
-their interfaces.
-On the other hand, If we know that there can be no subclasses of
-<code>Polynomial</code> whose implementation might make equality asymmetric—for example,
-if the class <code>Polynomial</code> is declared to be <code>final</code>—we
-can get away without using reflection and instead just use
-<code>instanceof</code> as sketched above.
+This reflection-based approach is generally considered a best practice for
+implementing <code>equals()</code>, but even it is not entirely satisfactory.
+If we have two classes that provide alternate implementations of the same
+immutable interface, we might want to consider objects equal even when their
+classes are different, because they cannot be distinguished using their
+interfaces.  On the other hand, If we know that there can be no subclasses of
+<code>Polynomial</code> whose implementation might make equality asymmetric—for
+example, if the class <code>Polynomial</code> is declared to be
+<code>final</code>—we can get away without using reflection and instead just
+use <code>instanceof</code> as sketched above.
+</p>
+<p>
+These implementation challenges reflect a problem in the specification of
+<code>Object.equals()</code>. The expected mathematical properties of equality
+are in tension with the approach of asking each object to be able to decide
+whether it is equal to all other objects. There are approaches to equality that
+are more philosophically consistent, but since the Java libraries rely on the
+<code>equals()</code> method in many places, we sometimes need to strike
+compromises.
+</p>
+<p>
+An alternate, more consistent and more flexible way to handle equality
+is to think of equality as being evaluated <em>at a particular
+type</em>. For example, we might evaluate equality of two polynomials
+using a <em>static</em> method of the class <code>Polynomial</code>:
+<pre>
+class Polynomial {
+    /** Returns whether p and q are equal polynomials. */
+    static boolean equal(Polynomial p, Polynomial q) {
+        return Arrays.equals(p.coefficients, q.coefficients);
+    }
+}
+</pre>
+<p>
+This method does not try to answer whether two objects are truly
+equal; it only answers whether they are “polynomial-equal”. It
+is obviously reflexive, transitive, and symmetric, and simpler to
+implement. Unfortunately, existing Java libraries are not designed to
+work with such a method.
 </p>
