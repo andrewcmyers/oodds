@@ -321,91 +321,21 @@ that it is worth thinking about whether you will want them for
 <em>every</em> data abstraction you define:
 <ul>
 <li><p><b>equals</b>. Testing whether two values are equal is fundamental
-to mathematics and to programming.
-Implementing the <b>equals()</b> method is surprisingly tricky, because the notion
-of equality itself is more complex than it might appear at first glance. There are
-two natural ways to define equality on two values:
-<ol>
-<li><p><b>Leibniz equality.</b> The mathematician
-<a href="https://en.wikipedia.org/wiki/Gottfried_Wilhelm_Leibniz">Leibniz</a>
-said that two things should be equal if and only if they are indistinguishable.
-</p>
-
-<li><b>State equality.</b> Some Java classes implement equality by comparing the
-current state of two objects, as reported by all of their observers.  For
-example, two Java collections will report themselves equal if they contain the
-same objects. However, one of the collections might change later on, since
-collections are mutable. Thus, they would stop being “equal”. A notion of
-equality that can change is dangerous, because it can lead to invariants being
-broken. For example, objects used as keys in Java collections need to satisfy
-invariants with the data structure that implements the collection. Mutating
-these objects breaks the invariants of the data structure.
-</ol>
-
-<p>
-Therefore, although the Java specification for the <code>equals()</code> method
-does not require Leibniz equality, as a rule of thumb, it is best to implement
-Leibniz equality when feasible to avoid the above problems. Since mutable
-objects are only really indistinguishable when they are the same object, this
-rule implies that mutable objects should not define their own
-<code>equals()</code>, but instead simply inherit <code>Object.equals()</code>.
-</p>
-
-<p>Two immutable objects, such as
-<code>String</code>s, can be indistinguishable through all of their observer
-operations and should in that case be considered equal. Immutable abstractions
-<em>should</em> override <code>equals()</code> and implement state equality, 
-since state equality and Leibniz equality are essentially the same for
-immutable objects.
-</p>
-
-<p>
-There is one important way that immutable objects can be distinguished even
-though they look the same through all of their observer methods, and that is to
-compare them using the operator <code>==</code>, which observes whether they
-have the same object identity. This operator unfortunately breaks the
-abstraction barrier for immutable abstractions, so good code will avoid using
-it on immutable abstractions except in very special situations.
-</p>
-
-<p>
-The Java specification for <code>Object.equals()</code> does not require
-Leibniz equality, but it does require that it satisfy some basic properties
-of an equivalence relation: it should be reflexive, symmetric, and transitive.
-Further, it should return <code>false</code> when a comparison is made to
-the special value <code>null</code>.
-</p>
-<p>
-Since our <code>Polynomial</code> class is immutable, we should override the
-<code>equals()</code> method to implement state equality. For example, the
-code might look like the following:
-</p>
-<pre>
-    boolean equals(Object o) {
-        if (o == null) return false;
-        if (getClass() != o.getClass()) return false;
-        Polynomial p = (Polynomial) o; // this cast is guaranteed to succeed
-        return Arrays.equal(coefficients, p.coefficients);
-    }
-</pre>
-<p>
-This code uses the method <code>getClass()</code> to access the run-time class
-of the objects being compared. This is an example of <b>reflection</b>, in
-which we access type properties of objects at run time. If we know that there
-will be no subclasses of <code>Polynomial</code> whose implementation might
-make equality assymetric, we can get away without using reflection and instead
-just use <code>instanceof</code>:
-</p>
-<pre>
-    boolean equals(Object o) {
-        if (o == null) return false;
-        if (o instanceof Polynomial p) {
-            return Arrays.equal(coefficients, p.coefficients);
-        } else {
-            return false;
-        }
-    }
-</pre>
+to mathematics and to programming, and many standard Java classes, such as
+in the Java Collections Framework, rely on the ability to compare whether two
+objects are equal. However, implementing the <b>equals()</b> method is
+surprisingly tricky, because the notion of equality itself is more complex than
+it might appear at first glance. Java objects inherit a built-in implementation
+of the <code>equals</code> based on <b>reference equality</b>: two objects are
+equal if and only if they have the same reference. Reference equality is what the
+built-in operator <code>==</code> implements.
+For mutable abstractions, reference equality is usually the right
+implementation already, so no additional code needs to be written.
+For immutable abstractions, however, we frequently want to
+redefine equality so that distinct objects with the same state are treated
+as equal. For example, the method <code>String.equals()</code> compares the
+characters of two strings rather than the object references.
+How to go about implementing equality is discussed in more detail below.
 
 <li><p><b>toString</b>. It is very useful for debugging to be able to
 print a string representation of an object. Ideally, two objects should have
@@ -426,79 +356,6 @@ the original by mutating the copy, or vice versa. Among other uses, copies are
 handy for building test cases. The copying method should override <code>Object.clone()</code>.
 </ul>
 
-<h4>Antipatterns in interface design</h4>
-<p>
-<b>Getters and setters.</b>
-Getters are observer methods that report the contents of fields, and setters
-are mutators that change the values of instance variables to a given value. You
-may see advice that the programmer should implement getters and setters to
-allow access to private instance variables.  However, it is not a good idea to
-reflexively add getters and setters to classes you write. This pattern is
-actually an antipattern to be avoided. Getters and setters weaken the
-abstraction barrier by advertising the existence of instance
-variables—something that should be hidden by the abstraction barrier. Further,
-the instance variables do not necessarily correspond directly to the
-observations and mutations that make sense for the object.
-</p>
-
-<p>
-Pragmatically, if an instance variable has a getter and a setter, it becomes
-hard to enforce any kind of abstraction barrier, since clients can modify it
-arbitrarily. It is not much better than making the instance variable public.
-Of course, we can define setters with preconditions, but it is
-better to think of these setters as mutators.
-</p>
-
-<p>
-<b>Rep exposure.</b>
-
-Even getters can be dangerous. A common pitfall is to inadvertently allow
-modification of the data by exposing mutable state from inside the abstraction.
-Making mutable parts of the representation directly accessible to clients is
-an error known as <b>rep exposure</b>.  For example, suppose we store the
-coefficients of a polynomial as an array in the instance variable
-<tt>coefficients</tt> and provide a getter:
-</p>
-
-<pre>
- private double[] coefficients;
- public double[] getCoefficients() {
-    return coefficients;
- }
-</pre>
-<p>
-Now a client can get access to the internal array of coefficients and
-change the polynomial in an unconstrained way, possibly breaking its class invariant.
-Even worse, the client may have no idea that it is causing damage by changing the 
-array. To avoid this damage, a new copy of the array should be returned to the client.
-</p>
-<p>
-Rep exposure can also be caused by creators and mutators.  If a creator or a mutator
-takes an argument that is a mutable object, and then makes that object directly
-part of the object representation, the client may retain the ability to modify the
-mutable object through a reference it is holding. For example,
-a setter <code>setCoefficients()</code> that allowed a client to override the polynomial's
-coefficients with a new array would be just as bad as <code>getCoefficients()</code>.
-A well-defended abstraction barrier.
-requires that clients not hold any references to mutable state inside the implementation,
-because they could use those references to break the implementation, whether accidentally
-or maliciously.
-</p>
-<p>The moral is that some observers and some mutators may look like getters and setters,
-but you should choose observers and mutators that are appropriate to the abstraction
-being designed rather than reflexively exporting access to instance variables.
-</p>
-
-<p>
-<b>Default constructors.</b>
-Another overrated operation is the default constructor. It is the
-job of constructors to create a properly initialized object. Unfortunately,
-one often sees code that uses a default constructor to create the object,
-then initializes the fields using setters. Until the fields are initialized,
-the object will not satisfy the class invariant, and the setters are prone to
-being misused by confused clients. A better approach is to use a constructor
-for initialization, or to use the Builder pattern, which we will discuss later.
-</p>
 
 <h3>Step 3: write specifications</h3>
 <p>We have a rough idea of the operations we want to support. But before we
@@ -559,4 +416,228 @@ should know for each thing you write in the comment which clause it belongs to.
 <h3>Step 4: implement operations</h3>
 <p>Now we are ready to implement our specifications! And we will want to write
 some documentation of that implementation. This is a topic for later.
+</p>
+
+<h2>Antipatterns in interface design</h2>
+<p>
+<b>Getters and setters.</b>
+Getters are observer methods that report the contents of fields, and setters
+are mutators that change the values of instance variables to a given value. You
+may see advice that the programmer should implement getters and setters to
+allow access to private instance variables.  However, it is not a good idea to
+reflexively add getters and setters to classes you write. This pattern is
+actually an <b>antipattern</b> to be avoided. Getters and setters weaken the
+abstraction barrier by advertising the existence of instance
+variables—something that should be hidden by the abstraction barrier. Further,
+the instance variables do not necessarily correspond directly to the
+observations and mutations that make sense for the object.
+</p>
+
+<p>
+Pragmatically, if an instance variable has both a getter and a setter, it becomes
+hard to enforce any kind of abstraction barrier, since clients can modify it
+arbitrarily. It is not much better than making the instance variable public.
+Of course, we can define setters with preconditions, but it is
+better to think of these setters as mutators.
+</p>
+
+<p>
+<b>Rep exposure.</b>
+
+Even getters can be dangerous. A common pitfall is to inadvertently allow
+modification of the data by exposing mutable state from inside the abstraction.
+Making mutable parts of the representation directly accessible to clients is
+an error known as <b>rep exposure</b>.  For example, suppose we store the
+coefficients of a polynomial as an array in the instance variable
+<tt>coefficients</tt> and provide a getter:
+</p>
+
+<pre>
+ private double[] coefficients;
+ public double[] getCoefficients() {
+    return coefficients;
+ }
+</pre>
+<p>
+Now a client can get access to the internal array of coefficients and
+change the polynomial in an unconstrained way, possibly breaking its class invariant.
+Even worse, the client may have no idea that it is causing damage by changing the 
+array. To avoid this damage, a information in the array should be returned to the client
+in a way that does not expose the internal state, perhaps by returning a copy the array or
+an iterator over the array elements.
+</p>
+<p>
+Rep exposure can also be caused by creators and mutators.  If a creator or a mutator
+takes an argument that is a mutable object, and then makes that object directly
+part of the object representation, the client may retain the ability to modify the
+mutable object through a reference it is holding. For example,
+a setter <code>setCoefficients()</code> that allowed a client to override the polynomial's
+coefficients with a new array would be just as bad as <code>getCoefficients()</code>.
+A well-defended abstraction barrier.
+requires that clients not hold any references to mutable state inside the implementation,
+because they could use those references to break the implementation, whether accidentally
+or maliciously.
+</p>
+<p>The moral is that some observers and some mutators may look like getters and
+setters, but you should not reflexively implement instance variables accessors.
+Instead, choose observers and mutators that are appropriate to the abstraction
+being designed.
+</p>
+
+<p>
+<b>Default constructors.</b>
+Another overrated operation is the default constructor. It is the
+job of constructors to create a properly initialized object. Unfortunately,
+one often sees code that uses a default constructor to create the object,
+then initializes the fields using setters. Until the fields are initialized,
+the object will not satisfy the class invariant, and the setters are prone to
+being misused by confused clients. A better approach is to use a constructor
+for initialization, or to use the Builder pattern, which we will discuss later.
+</p>
+
+<h2>Equality</h2>
+
+<p>
+To implement an <code>equals()</code> method, it is necessary to think about
+what equality means for the objects you are implementing.  Equality is a deep
+subject that mathematicians and computer scientists are still arguing about! As
+software developers aiming for effective abstractions, we need to think about it
+too.  There are two natural ways to define equality on two values:
+<ul>
+<li><p><b>Leibniz equality.</b> The mathematician
+<a href="https://en.wikipedia.org/wiki/Gottfried_Wilhelm_Leibniz">Leibniz</a>
+said that two things should be equal if and only if they are indistinguishable.
+</p>
+
+<li><b>State equality.</b> Some Java classes implement equality by comparing the
+current state of two objects, as reported by all of their observers.  For
+example, two Java collections report themselves equal if they contain the
+same objects.
+</ul>
+
+
+<p>
+True Leibniz equality means that equal objects should be indistinguishable now
+and forever, whereas state equality only guarantees that objects remain
+indistinguishable until one of them is mutated. For example, two Java
+collections that that are considered equal might stop being “equal” later on
+when elements are added to or removed from one of them. A notion of equality
+that can change is error-prone, because it can lead to invariants being broken.
+For example, objects used as keys in Java collections need to satisfy
+invariants with the data structure that implements the collection. Mutating
+these objects breaks the invariants of the data structure.
+</p>
+
+<p>
+Therefore, although the Java specification for the <code>equals()</code> method
+does not require Leibniz equality, as a rule of thumb, it is best when feasible to implement
+Leibniz equality to avoid the above problems. Since mutable
+objects are only really indistinguishable when they are the same object, this
+rule implies that mutable objects should <em>not</em> define their own
+<code>equals()</code>, but instead simply inherit <code>Object.equals()</code>.
+</p>
+
+<p>Two immutable objects, such as
+<code>String</code>s, can be indistinguishable through all of their observer
+operations and should in that case be considered equal. Immutable abstractions
+<em>should</em> override <code>equals()</code> and implement state equality, 
+since state equality and Leibniz equality are essentially the same for
+immutable objects.
+</p>
+
+<p>
+There is one important way that immutable objects can be distinguished even
+though they look the same through all of their observer methods, and that is to
+compare them using the operator <code>==</code>, which tests equality of object
+references. This operator unfortunately breaks the
+abstraction barrier for immutable abstractions, so good code will avoid using
+it on immutable abstractions except in special situations.
+</p>
+
+<p>
+The Java specification for <code>Object.equals()</code> does not require
+Leibniz equality, but it does require that it satisfy some basic properties
+of an equivalence relation: it should be reflexive, symmetric, and transitive.
+Further, it should return <code>false</code> when a comparison is made to
+the special value <code>null</code>. Meeting this specification is
+surprisingly difficult in the presence of subtyping.
+</p>
+<p>
+One challenge of implementing <code>equals()</code> is that its signature
+requires the ability to compare against values of any object type:
+<pre>
+   boolean equals(Object o);
+</pre>
+<p>
+Before the method can test equality of the object <code>this</code> and the object
+<code>o</code>,  it must first determine if object <code>o</code> is the right kind
+of object, and in that case obtain a reference to the object with a static type
+that permits checking it.
+<p>
+Since our <code>Polynomial</code> class is immutable, we should override the
+<code>equals()</code> method to implement state equality. For example, the
+code might look like the following:
+</p>
+<pre>
+    boolean equals(Object o) {
+        if (o == null) return false;
+        if (o instanceof Polynomial) {
+            Polynomial p = (Polynomial) o;
+            return Arrays.equal(coefficients, p.coefficients);
+        } else {
+            return false;
+        }
+    }
+</pre>
+<p>
+Using the new Java 17 syntax for <code>instanceof</code> with <b>pattern matching</b>,
+we can avoid the clunky explicit cast operation:
+<pre>
+    boolean equals(Object o) {
+        if (o == null) return false;
+        if (o instanceof Polynomial p) {
+            return Arrays.equal(coefficients, p.coefficients);
+        } else {
+            return false;
+        }
+    }
+</pre>
+<p>
+A problem with this approach is that it can violate the symmetry property required
+by the specification of <code>equals()</code>. Suppose there is some subtype of <code>Polynomial</code>
+that has more observers and more state than <code>Polynomial</code> does. Then, a <code>Polynomial</code>
+might consider itself equal to an object of that subtype, whereas that object's own <code>equals</code>
+would conclude through an <code>instanceof</code> test that the objects are not equal.
+</p>
+<p>
+Symmetry can be restored by using the Java feature of <b>reflection</b>:
+</p>
+<pre>
+    boolean equals(Object o) {
+        if (o == null) return false;
+        if (getClass() != o.getClass()) return false;
+        if (o instanceof Polynomial p) {
+            return Arrays.equal(coefficients, p.coefficients);
+        } else {
+            return false;
+        }
+    }
+</pre>
+<p>
+This code uses the method <code>getClass()</code> to access the run-time class
+of the objects being compared. This is an example of <b>reflection</b>, in
+which we access properties of types at run time. Two  objects can only be considered
+equal if they are implemented by the same class.
+</p>
+<p>
+Even this approach is not
+entirely satisfactory, however. If we have two classes that provide alternate
+implementations of the same immutable interface, we might want to consider objects
+equal even when their classes are different, because they cannot be distinguished using
+their interfaces.
+On the other hand, If we know that there can be no subclasses of
+<code>Polynomial</code> whose implementation might make equality asymmetric—for example,
+if the class <code>Polynomial</code> is declared to be <code>final</code>—we
+can get away without using reflection and instead just use
+<code>instanceof</code> as sketched above.
 </p>
