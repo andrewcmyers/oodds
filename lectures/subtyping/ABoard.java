@@ -17,12 +17,12 @@ class ABoard implements Board {
 
    public boolean move(char d) {
       switch (d) {
-      case 'N': // code to move north
-      case 'S': // code to move south
-      case 'E': // code to move east
-      case 'W': // code to move west
-      default:
-         assert false;
+        case 'N': // code to move north
+        case 'S': // code to move south
+        case 'E': // code to move east
+        case 'W': // code to move west
+        default:
+            assert false;
       }
       return true;
    }

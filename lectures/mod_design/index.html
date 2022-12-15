@@ -133,7 +133,7 @@ Writing classes that can be inherited and reused effectively requires
 keeping these two different kinds of specification separate.
 </p>
 
-<h3>Behavioral subtyping</h3>
+<h3>Behavioral subtyping and implementations</h3>
 <p>
     We want our implementations to be usable in a modular way, even and especially
     as implementations evolve. To achieve modularity, everyone—both clients
@@ -146,11 +146,8 @@ keeping these two different kinds of specification separate.
     specifications. In other words, it should be possible to substitute an object
     of a subclass for an object of a type that it is subtype of, not only without
     violating type safety, but also without violating the specifications of the supertype.
-    In other words, subtyping used correctly is <b>behavioral subtyping</b>;
-    it ensures not only that types are compatible but also that <em>behavior</em> is.
-    The principle that subclass objects can always be safely substituted for
-    supertypes without surprising clients of those supertypes is called the
-    <b>Liskov substitution principle</b>, after Barbara Liskov.
+    In other words, inheritance needs to be used in a way that preserves
+    behavioral subtyping.
 </p>
 <p>
     Behavioral subtyping is another reason why it is useful to distinguish

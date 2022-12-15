@@ -199,7 +199,8 @@ The subtyping relationships among the various types form a <b>type hierarchy</b>
 <p>
 In addition to the subtype relationships we've discussed so far, this diagram shows a few
 more, such as <code>Board</code> &lt;: <code>Object</code>. 
-The subtyping relation is reflexive (T&lt;:T for all types T) and is also transitive (if T&lt;:U and U&lt;:V, then T&lt;:V).)
+The subtyping relation is reflexive (\(T&lt;:T\) for all types T) and is also transitive
+(if \(T&lt;:U\) and \(U&lt;:V\), then \(T&lt;:V\)).)
 Thus by transitivity, we also have <code>ABoard</code> &lt;: <code>Object</code>.
 We can also notice that array types like <code>int[]</code> are subtypes of <code>Object</code>.
 Standing alone in the diagram are the primitive types (<code>int</code>, <code>boolean</code>, <code>char</code>, ...). These types are not subtypes of any other type.
@@ -218,12 +219,19 @@ so in general the subtype diagram is a graph in which some nodes have
 more than one ancestor.
 </p>
 
-<p>An invariant that always holds throughout execution is:</p>
+<p>If static type checking is doing its job, then the following invariant should always hold
+throughout execution is:</p>
 <blockquote>
 The dynamic type of the value of an expression is always a subtype of the static type of the expression.
 </blockquote>
 <p>
-In particular, whenever a variable references an object, the dynamic type of the object is a subtype of the declared type of the variable.</p>
+In particular, whenever a variable references an object, the dynamic type of
+the object is a subtype of the declared type of the variable.
+</p>
+<p>
+However, Java has some unsafe features that can break this invariant. These features should be avoided
+when possible!
+</p>
 
 <h2>Subtyping vs. coercion</h2>
 <p>
@@ -234,7 +242,7 @@ incorrectly that <code>int</code> &lt;: <code>Object</code>:
 Object x = 2;
 </pre>
 <p>
-Although this looks like subtyping, actually Java is automatically inserting a coercion (conversion)
+Although this looks like subtyping, actually Java is automatically inserting a <b>coercion</b> (a conversion)
 to make the types work.  The variable <code>x</code> is not being
 assigned the value appearing on the right-hand side, but rather an object of
 type <code>Integer</code> that is created automatically. The declaration is syntactic sugar for this one:
@@ -316,35 +324,6 @@ Often this means accessing objects only through the interfaces they implement
 rather than through their classes.
 </p>
 
-<h2>Conformance</h2>
-<p>
-For one type to be a subtype of another, the methods of the first type must have signatures
-that <b>conform</b> to the signatures of those in the supertype. The conformance requirement
-has implications for the types and visibility of methods.
-</p>
-<p>
-For conformance, Java requires that the types of method formal parameters in
-the subtype be exactly the same as the types of the corresponding formal
-parameters in the supertype. However, the return type of a method in the subtype
-may be a subtype of the corresponding return type in the supertype.
-</p>
-<p>
-In addition, the visibility of instance methods in the subclass is not allowed to be
-any less than the visibility in the superclass. Visibility modifiers can
-be ordered as follows:
-</p>
-<div class="figure">
-<code>private</code> &lt; (package) &lt; <code>protected</code> &lt; <code>public</code>
-</div>
-<p>
-To see why, suppose that a method were declared public in the supertype but was private
-in the subtype. If we had a reference to an object of the subtype, the method would
-be inaccessible, but would become accessible after an upcast to the supertype.
-That private visibility modifier would be misleading and useless, so it is disallowed
-in Java. On the other hand, it makes sense and is legal to have a method that
-becomes more accessible in the subtype.
-</p>
-
 <h2>Interface subtyping</h2>
 <p>
 An interface can <code>extend</code> another interface, creating a subtyping relationship.
@@ -381,6 +360,63 @@ subtyping, in which subtypes are explicitly declared. There are two reasons for 
 first, structural subtyping is hard to implement efficiently, and second, just
 because two methods have the same name and signature does not mean that they
 actually mean the same thing.
+</p>
+<h2>Conformance</h2>
+<p>
+For one type to be a subtype of another, the methods of the first type must have signatures
+that <b>conform</b> to the signatures of those in the supertype. The conformance requirement
+has implications for the types and visibility of methods.
+</p>
+<p>
+For conformance, Java requires that the types of method formal parameters in
+the subtype be exactly the same as the types of the corresponding formal
+parameters in the supertype. However, the return type of a method in the subtype
+may be a subtype of the corresponding return type in the supertype.
+</p>
+<p>
+In addition, the visibility of instance methods in the subclass is not allowed to be
+any less than the visibility in the superclass. Visibility modifiers can
+be ordered as follows:
+</p>
+<div class="figure">
+<code>private</code> &lt; (package) &lt; <code>protected</code> &lt; <code>public</code>
+</div>
+<p>
+To see why, suppose that a method were declared public in the supertype but was private
+in the subtype. If we had a reference to an object of the subtype, the method would
+be inaccessible, but would become accessible after an upcast to the supertype.
+That private visibility modifier would be misleading and useless, so it is disallowed
+in Java. On the other hand, it makes sense and is legal to have a method that
+becomes more accessible in the subtype.
+</p>
+
+
+<h3>Behavioral subtyping</h3>
+<p>
+    Conformance between subtypes and supertypes extends beyond merely
+    the signatures of methods. Subtyping should govern the behavior of 
+    the subtype as well. If it is safe to use a subtype \(S\) of type \(T\)
+    wherever \(T\) is expected, then the specification of the subtype operations
+    must also conform to the specification of the \(T\) operations; otherwise,
+    client code expecting the behavior specified by \(T\) will be unpleasantly
+    surprised by the behavior of \(S\).
+</p>
+<p>
+    In other words, subtyping used correctly is <b>behavioral subtyping</b>;
+    it ensures not only that types are compatible but also that <em>behavior</em> is.
+    The principle that objects of a subtype can always be safely substituted for
+    supertypes without surprising clients of those supertypes is called the
+    <b>Liskov substitution principle</b>, after Barbara Liskov.
+</p>
+<p>
+    With respect to the components of the specification,
+    the implication of this conformance is that the postcondition of an \(S\) operations
+    must be at least as strong as (that is, imply) the postcondition of the
+    corresponding \(T\) operation. Conversely, the caller using the
+    \(S\) object as if it is a \(T\) would call the operations of the object
+    while only satisfying the preconditions specified by \(T\). Therefore,
+    the preconditions of \(S\) must be <em>implied by</em> the preconditions of
+    \(T\).
 </p>
 
 <h2>Factory methods</h2>

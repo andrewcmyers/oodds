@@ -325,14 +325,12 @@ However, we still need to think about interior paths to gray nodes, which may
 be either successors to \(g\) considered in the inner loop, or existing gray
 nodes. A node that is gray after an execution loop body could have been either
 white or gray:
-<ul>
 
-<li><p><b>White.</b> Nodes newly discovered via \(g\) become gray. By the tricolor
+<p><b>White.</b> Nodes newly discovered via \(g\) become gray. By the tricolor
 invariant, there is no preexisting interior path to \(v\). Therefore
 the new path via <code>g</code> with distance <code>g.dist + d</code> is the
 <em>only</em> interior path.</p>
 
-<li>
 <div class=floatfigure>
 <canvas style="width: 300pt; height: 300pt" id=graycase>
 </canvas>
