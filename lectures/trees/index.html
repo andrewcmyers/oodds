@@ -178,19 +178,20 @@ creates additional maintenance requirements.
 in trees makes sense. Examples of such information include parse trees of expressions,
 inheritance and subtyping hierarchies, game search trees, and decision trees.</p></li>
 <li><p>Trees make
-it possible to find information within the data structure relatively quickly.
-If a significant fraction of the nodes have more than one child, it can be
-arranged that all nodes are fairly close to the root. For simplicity, let's
-think about a <b>complete binary tree of height \(h\)</b> in which all leaves are at equal depth <code>h</code> and all non-leaves have exactly two children. In a complete binary tree of depth \(h ≥ 0\), there are \(1 + 2
+it possible to find information within the data structure relatively quickly,
+when they can be arranged that all nodes are fairly close to the root. For simplicity, let's
+think about a <b>complete binary tree of height \(h\)</b> in which all leaves are at equal depth \(h\) and all non-leaves have exactly two children. In a complete binary tree of depth \(h ≥ 0\), there are \(1 + 2
 + 4 + ･･･ + 2^h = 2^{h+1} &minus; 1\) nodes. Calling this number
-of nodes \(n\), we have \(h = \lg(n+1)-1\), so \(h\) is \(O(\lg n)\). (Recall that \(\lg x\) is the
-base-2 logarithm of \(x\).) Thus, if we are looking for information in a complete binary
+of nodes \(n\), we have \(h = \lg(n+1)-1\), so \(h\) is \(O(\log n)\). (Recall that \(\lg x\) is the
+base-2 logarithm of \(x\), and that \(O(\log_a n) = O(\log_b n)\) for any constant
+bases \(a\) and \(b\).) Thus, if we are looking for information in a complete binary
 tree, it can be reached along a path whose length is logarithmic in the total
 information stored in the tree.
 </p>
 <p>For large \(n\), logarithmic time is a big speedup over the linear-time
 performance offered by data structures like linked lists and arrays. For example,
-\(\lg 1,\!000,\!000\) is approximately 20, a speedup of around 50,000, and
+\(\lg 1,\!000,\!000\) is approximately 20, a speedup of around 50,000 (ignoring constant
+factors), and
 \(\lg 1,\!000,\!000,\!000\) is about
 30, a speedup of more than 30,000,000.
 </p>
