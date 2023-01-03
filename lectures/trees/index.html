@@ -18,8 +18,61 @@ All nodes except the root have exactly one predecessor node, called its
 
 <p>In computer science, it is customary to draw trees growing downward:
 </p>
-<div class="figure">
-<img src="tree-pics.png" alt="trees" />
+<div class=figure>
+<canvas id=tree_pics style="width: 400px; height: 350px"></canvas>
+<script class=graphics>
+  class ArrowTree extends Constrain.Trees.TreeStyle {
+      drawNode(s) {
+        if (s === undefined) {
+            return this.figure.point()
+        } else {
+            return this.figure.square().addText("" + s)
+                .setFontSize(10).setW(20).setCornerRadius(5).setFillStyle('white')
+        }
+      }
+      drawEdge(g1, g2) { return this.figure.connector(g1, g2).setEndArrow("arrow")}
+      decorateRoot(g) {
+        return this.figure.arrow(g.toTop(20), g)
+      }
+  }
+  window.ArrowTree = ArrowTree
+  let fig1 = new CFigure("tree_pics")
+  with (fig1) {
+    let m = margin()
+    setConnectionStyle("intersection")
+    setArrowSize(8)
+    let t1 = tree(new ArrowTree(fig1), 4, [3, [6, 2], [5, 4, 7, 0]], 1)
+    t1.connect = function(g1, g2) { return this.figure.connector(g1, g2).setEndArrow("arrow")}
+    t1.bbox.setW(140)
+    t1.bbox.setH(150)
+    align("center", "abut", t1.bbox, vspace(5), label("a tree"))
+    align("left", "top", t1.bbox.ul().toTop(20), m)
+
+    let t2 = tree(new ArrowTree(fig1), 4, [3, [3, undefined, 1], [5, 4, 7]], 1)
+    let root2 = new Constrain.Trees.TreeView(t2).rootGraphicalObject()
+    arrow(root2.toTop(20), root2)
+    t1.bbox.setW(140)
+    t2.bbox.setW(140)
+    align("center", "abut", t2.bbox, vspace(5), label("a binary tree"))
+    align("abut", "TB", t1.bbox, hspace(20), t2.bbox)
+
+    let t3 = tree(new ArrowTree(fig1), 4, [3, 2, 5], 1)
+    align("LR", "abut", t1.bbox, vspace(50),  t3.bbox)
+    t3.bbox.setH(100)
+    arrow(t3.findNode(1).gobj, t3.findNode(5).gobj)
+
+    let t4 = tree(new ArrowTree(fig1), 4, [3, 2, 5], 1)
+    align("none", "TB", t3.bbox, t4.bbox)
+    align("LR", "none", t2.bbox, t4.bbox)
+    connector(t4.findNode(5).gobj,
+        t4.findNode(5).gobj.toRight(50),
+        t4.findNode(1).gobj.toRight(35),
+        t4.findNode(4).gobj.toRight(50),
+        t4.findNode(4).gobj)
+        .setEndArrow("arrow")
+    align("center", "abut", group(t3.bbox, t4.bbox), vspace(10), label("non-trees"))
+  }
+</script>
 </div>
 <p>
 Because a tree is a recursive data structure, each node in the tree is
@@ -31,8 +84,59 @@ ordered from left to right, so B is the left child of G and root of the left
 subtree of G, and H is the right child of G and root of the right subtree of G.
 A node with no children is called a <b>leaf</b>.
 </p>
-<div class="figure">
-<img src="tree_anatomy.png" alt="tree anatomy" />
+<div class=figure>
+<canvas id=tree_anatomy style="width:600px; height:200px"></canvas>
+<script class=graphics>
+  const fig2 = new CFigure("tree_anatomy")
+  with (fig2) {
+    setArrowSize(8)
+    setTextStyle('#00c')
+    setFontStyle('italic')
+    setConnectionStyle("intersection")
+    const hl = [ label("height = 3, depth = 0"), label("height = 1 (B) or 2 (H) depth = 1"),
+        label("height = 0 (except E), depth = 2"),
+        label("height = 0, depth = 3")
+        ]
+    const leaves = label("leaves"), tree_height = label("tree height = 3")
+    const m = margin()
+    setFontStyle('normal')
+    const p1 = point(), p2 = point(), p3 = point(), p4 = point()
+    setStrokeStyle('#bbf')
+    const l1 = line(hl[0].cr(), p1).setLineDash([3,3]),
+          l2 = line(hl[1].cr(), p2).setLineDash([3,3]),
+          l3 = line(hl[2].cr(), p3).setLineDash([3,3]),
+          l4 = line(hl[3].cr(), p4).setLineDash([3,3])
+    setStrokeStyle('#000')
+      
+    let t = tree(new ArrowTree(fig2), 'G', ['B', 'A', 'C'], ['H', 'D', ['E', 'F']])
+    align("center", "TB", t.bbox.expand(20), m)
+    t.bbox.setW(140)
+    let tv = new Constrain.Trees.TreeView(t)
+    align("abut", "top", tv.rootGraphicalObject(), hspace(5), label('root'))
+
+    align("right", "distribute", ...hl)
+    align("none", "center", hl[0], tv.rootGraphicalObject(), p1)
+    align("abut", "center", hl[2], hspace(10), tv.findNodeObj('A'))
+    align("none", "center", hl[1], p2)
+    align("none", "center", hl[2], p3)
+    align("none", "center", hl[3], p4)
+    align("left", "none", m, hl[1])
+    align("center", "none", p1, p2, p3, p4, tv.findNodeObj('E').toRight(20))
+    align("center", "bottom", leaves, m)
+    setStrokeStyle('#44e')
+    console.log(tv.findNodeObj('A'));
+    ['A', 'C', 'D', 'F'].forEach(n => 
+        connector(leaves, tv.findNodeObj(n)).setEndArrow('bullet')
+    )
+    align("abut", "none", p1, hspace(10), tree_height)
+    const p5 = point(), p6 = point()
+    align("center", "none", p5, tree_height, p6)
+    align("none", "top", p1, p5)
+    align("none", "bottom", p4, p6)
+    arrow(tree_height.toTop(10), p5)
+    arrow(tree_height.toBottom(10), p6)
+  }
+</script>
 </div>
 <p>
 Each node in a tree has a <b>height</b> and a <b>depth</b>. The <b>depth</b> of
@@ -43,7 +147,10 @@ from that node to a leaf below it, so leaf nodes have height 0. The height of
 the tree is the height of its root, which is the same as the depth of its
 deepest leaf. Therefore, a tree consisting of a single (root) node has height
 0. It is also possible to have an empty tree, with no nodes or edges; we will
-consider such a tree to have height &minus;1.
+consider such a tree to have height &minus;1. (It is possible, though less
+standard, to define the height of a tree as the number of <em>nodes</em> along
+the longest path to a leaf, so that an empty tree has height 0; for reasoning
+about asymptotic complexity, it almost never matters which definition is used.)
 </p>
 <p>
 We can represent a binary tree using a class with instance variables for
@@ -74,17 +181,17 @@ inheritance and subtyping hierarchies, game search trees, and decision trees.</p
 it possible to find information within the data structure relatively quickly.
 If a significant fraction of the nodes have more than one child, it can be
 arranged that all nodes are fairly close to the root. For simplicity, let's
-think about a <b>complete binary tree of height \(h\)</b> in which all leaves are at equal depth <code>h</code> and all non-leaves have exactly two children. In a complete binary tree of depth \(h\), there are \(1 + 2
+think about a <b>complete binary tree of height \(h\)</b> in which all leaves are at equal depth <code>h</code> and all non-leaves have exactly two children. In a complete binary tree of depth \(h ≥ 0\), there are \(1 + 2
 + 4 + ･･･ + 2^h = 2^{h+1} &minus; 1\) nodes. Calling this number
-of nodes \(n\), we have \(h = \log(n+1)-1\), so \(h\) is \(O(\log n)\). (Here \(\log x\) is the
-base 2 logarithm of x). Thus, if we are looking for information in a complete binary
+of nodes \(n\), we have \(h = \lg(n+1)-1\), so \(h\) is \(O(\lg n)\). (Recall that \(\lg x\) is the
+base-2 logarithm of \(x\).) Thus, if we are looking for information in a complete binary
 tree, it can be reached along a path whose length is logarithmic in the total
 information stored in the tree.
 </p>
 <p>For large \(n\), logarithmic time is a big speedup over the linear-time
 performance offered by data structures like linked lists and arrays. For example,
-\(\log 1,\!000,\!000\) is approximately 20, a speedup of around 50,000, and
-\(\log 1,\!000,\!000,\!000\) is about
+\(\lg 1,\!000,\!000\) is approximately 20, a speedup of around 50,000, and
+\(\lg 1,\!000,\!000,\!000\) is about
 30, a speedup of more than 30,000,000.
 </p>
 </li>
