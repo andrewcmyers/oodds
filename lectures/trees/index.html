@@ -33,9 +33,9 @@ All nodes except the root have exactly one predecessor node, called its
                 .setFontSize(10).setW(20).setCornerRadius(5).setFillStyle('white')
         }
       }
-      drawEdge(g1, g2) { return this.figure.connector(g1, g2).setEndArrow("arrow")}
-      decorateRoot(g) {
-        return this.figure.arrow(g.toTop(20), g)
+      drawEdge(n1, n2) { return this.figure.connector(n1.gobj, n2.gobj).setEndArrow("arrow")}
+      decorateRoot(n) {
+        return this.figure.arrow(n.gobj.toTop(20), n.gobj)
       }
   }
   window.ArrowTree = ArrowTree
@@ -45,7 +45,6 @@ All nodes except the root have exactly one predecessor node, called its
     setConnectionStyle("intersection")
     setArrowSize(8)
     let t1 = tree(new ArrowTree(fig1), 4, [3, [6, 2], [5, 4, 7, 0]], 1)
-    t1.connect = function(g1, g2) { return this.figure.connector(g1, g2).setEndArrow("arrow")}
     t1.bbox.setW(140)
     t1.bbox.setH(150)
     align("center", "abut", t1.bbox, vspace(5), label("a tree"))
@@ -120,17 +119,17 @@ A node with no children is called a <b>leaf</b>.
 
     align("right", "distribute", ...hl)
     align("none", "center", hl[0], tv.rootGraphicalObject(), p1)
-    align("abut", "center", hl[2], hspace(10), tv.findNodeObj('A'))
+    align("abut", "center", hl[2], hspace(10), tv.findObj('A'))
     align("none", "center", hl[1], p2)
     align("none", "center", hl[2], p3)
     align("none", "center", hl[3], p4)
     align("left", "none", m, hl[1])
-    align("center", "none", p1, p2, p3, p4, tv.findNodeObj('E').toRight(20))
+    align("center", "none", p1, p2, p3, p4, tv.findObj('E').toRight(20))
     align("center", "bottom", leaves, m)
     setStrokeStyle('#44e')
-    console.log(tv.findNodeObj('A'));
+    console.log(tv.findObj('A'));
     ['A', 'C', 'D', 'F'].forEach(n => 
-        connector(leaves, tv.findNodeObj(n)).setEndArrow('bullet')
+        connector(leaves, tv.findObj(n)).setEndArrow('bullet')
     )
     align("abut", "none", p1, hspace(10), tree_height)
     const p5 = point(), p6 = point()
@@ -220,17 +219,18 @@ are less than the element stored at \(n\), and all elements stored in \(n\)'s ri
 subtree are greater than the element stored at \(n\).
 </p>
 
-<p>We can visualize the tree relative to a given node as in this picture:
+<p>We can visualize the tree relative to a given node as in this picture. Note that we've stopped
+drawing arrowheads on the tree edges, relying instead on the convention that edges go downward:
 </p>
 <div class=figure>
-<canvas id=bst_invariant style="width: 160px; height: 130px"></canvas>
+<canvas id=bst_invariant style="width: 160px; height: 110px"></canvas>
 <script class=graphics>
 const fig3 = new CFigure("bst_invariant")
 with (fig3) {
     class BSTTree extends Constrain.Trees.TreeStyle {
         constructor(figure) {super(figure)}
-      decorateRoot(g) {
-        return this.figure.arrow(g.toTop(20), g)
+      decorateRoot(n) {
+        return this.figure.line(margin().uc(), n.gobj.toTop(5))
       }
       drawNode(v) {
         if (v.match("^[<>]")) {
@@ -243,11 +243,12 @@ with (fig3) {
             return label(v).expand(3)
         }
       }
-      drawEdge(g1, g2) { return this.figure.connector(g1, g2).setEndArrow("arrow")}
+      drawEdge(n1, n2) { return this.figure.connector(n1.gobj, n2.gobj) }
     }
     setConnectionStyle("intersection")
     const t = tree(new BSTTree(fig3), "data", "<data", ">data")
     align("LR", "none", t.bbox, margin().inset(30))
+    equal(plus(margin().y0(), 20), t.bbox.y0())
     equal(plus(45, t.bbox.y1()), margin().y1())
 }
 </script>
@@ -340,71 +341,62 @@ Again, this can be written easily as a tail-recursive method:
 </pre>
 <p>
 To see how this algorithm works, consider adding the element 3 to the tree
-shown with the black arrows in the following diagram. We start at the root (2)
+shown with the black edges in the following diagram. We start at the root (2)
 and go to the right (5) because 3 &gt; 2. In the recursive call we then go to
 the left (3 &lt; 5) to node 4. Since 3 &lt; 4, we try to go to the left but
 observe <code>left == null</code>, and therefore create a left child containing 3,
-shown by the gray arrow.
+shown by the gray edge.
+</p>
+<div class=figure>
+<canvas id=add_diagram style="width:200px; height:150px"></canvas>
+<script class=graphics>
+class LightStyle extends Constrain.Trees.TreeStyle {
+    constructor(figure) {
+        super(figure)
+    }
+    drawNode(s) {
+        if (s === undefined) {
+            return this.figure.point()
+        } else {
+            return this.figure.label("" + s).expand(5)
+        }
+    }
+    drawEdge(n1, n2) {
+        const result = this.figure.connector(n1.gobj, n2.gobj).setLineWidth(1.5)
+        if (n2.value == 3) result.setStrokeStyle('#bbb').setLineWidth(2)
+        return result
+    }
+}
+const fig4 = new CFigure("add_diagram")
+with (fig4) {
+    setConnectionStyle("intersection")
+    const t = tree(new LightStyle(fig4), 2, 1, [5, [4, 3, undefined], 6])
+    align("LR", "TB", t.bbox, margin())
+    const tv = t.view(currentFrame)
+    connector(tv.findObj(2).toBottom(0), tv.findObj(5), tv.findObj(4).toLeft(10))
+        .setLineWidth(2).setLineDash([2, 4]).setStrokeStyle('#06c').setEndArrow("arrow").setFillStyle('#06c')
+}
+</script>
+</div>
+<h3>Asymptotic performance of binary search trees</h3>
+<p>
+The time required to search for elements in a search tree is in the worst case
+proportional to the longest path from the root of the tree to a leaf, or the
+height of the tree, \(h\). Therefore, tree operations take \(O(h)\) time.
+</p>
+<p>
+With the simple binary search tree implementation we've seen so far,
+the worst performance is seen when elements are inserted in order, e.g.:
+<code>add(1)</code>, <code>add(2)</code>, <code>add(3)</code>, ..., <code>add(n)</code>. The resulting binary tree
+has only right children and behaves just like a linked list!
 </p>
 <div class="figure">
-<img src="add-diagram.png" alt="insertion into binary search tree" />
-</div>
-
-<h3>Using trees to implement maps</h3>
-
-<p>
-A map abstraction lets us associate values with keys and look up the value
-corresponding to a given key. This can be implemented storing both the keys
-and their associated values in the nodes and ordering the nodes in the tree
-by the keys. When the key is found, so is the associated value.
-</p>
-<h3>Supporting duplicate elements</h3>
-<p>
-For some applications, it may be useful to allow duplicate elements.
-To allow equal elements to be stored in the same tree, we need to relax the
-BST invariant slightly. Given a node containing value x, we must know whether
-to go left or right to find the other occurrences of x. To build a tree
-where we go left, we relax the BST invariant so that the left subtree contains
-elements less than <em>or equal</em> to x, whereas the right subtree contains
-elements strictly greater than x.
-</p>
-<h3>N-ary search trees</h3>
-<p>
-It is possible to define search trees with more than two children per node. The
-higher branching factor means paths through the tree are shorter, but considerably
-complicates all of the algorithms involved. B-trees are an example of an N-ary
-search tree structure. In an N-ary search tree, each node contains up to \(N-1\) elements
-\(e_1,...,e_{N-1}\)
-and has up to \(N\) children \(c_0,...,c_{N-1}\) arranged so that the subtrees of the children contain only
-elements between successive elements at the node. If a node has \(n\) children, the node
-contains \(n-1\) elements obeying the following ordering invariant:
-</p>
-<div class="figure">
-\[
-c_0 &lt; e_1 &lt; c_1 &lt; e_2 &lt; c_2 &lt; e_3 &lt; ･･･ &lt; e_{n-1} &lt; c_{n-1}
-\]
+<img src="list-tree.png" alt="unbalanced tree" />
 </div>
 <p>
-Note that by formulas such as \(c_0 &lt; e_1 &lt;c_1\), we mean that <em>all</em> elements in subtree \(c_0\) are
-less than \(e_1\) and all elements in \(c_1\) are greater than \(e_1\).
-</p>
-<p>
-To search for a given element, we do a binary search on the elements \(e_i\)
-(which are stored in ascending order). If the element is not found, the result of the
-comparisons to these elements, in conjunction with the invariant, indicates
-which child subtree to search.
-</p>
-<h3>Parent pointers</h3>
-<p>
-So far we have only had pointers going downward in the tree. It is sometimes
-handy to have pointers going from nodes to their parents, much as nodes in a
-doubly linked list contain pointers to their predecessor nodes. Parent pointers
-can simplify some algorithms, but they do take up space and require enforcing
-additional invariants: in particular, that the parent of the root node is null
-and that for any node \(n\), the parents of its children (if any) are equal to \(n\):
-\[\texttt{n} ∈ \{\texttt{n.parent.left}, \texttt{n.parent.right}\} \]
-\[\texttt{n.right.parent} = \texttt{n}\]
-\[\texttt{n.left.parent} = \texttt{n}\]
+For this tree, \(h\) is \(O(n)\), and tree operations are \(O(n)\). Our goal is logarithmic performance,
+which requires \(h\) to be \(O(\log n)\). A tree in which \(h\) is \(O(\log n)\) is said to be <b>balanced</b>.
+Fortunately, there are many ways to obtain balanced trees, and we will see some of them.
 </p>
 <h3>Removing elements from a binary search tree</h3>
 <p>
@@ -457,36 +449,70 @@ pointers: one child pointer in node \(p\) and both child pointers in the \(x'\) 
 </p>
 </li>
 </ol>
-
-<h3>Asymptotic performance of binary search trees</h3>
 <p>
-The time required to search for elements in a search tree is in the worst case
-proportional to the longest path from the root of the tree to a leaf, or the
-height of the tree, h. Therefore, tree operations take O(h) time.
+Removing an element from the tree requires walking along a path from the root to a leaf
+in the worst case, plus some constant number of updates to the tree, so the time
+required is \(O(h)\), as with searching and adding.
 </p>
+
+<h3>Using binary search trees to implement maps</h3>
 <p>
-With the simple binary search tree implementation we've seen so far,
-the worst performance is seen when elements are inserted in order, e.g.:
-<code>add(1)</code>, <code>add(2)</code>, <code>add(3)</code>, ..., <code>add(n)</code>. The resulting binary tree
-will only have right children and will be functionally identical to a linked list!
+A map abstraction lets us associate values with keys and look up the value
+corresponding to a given key. This functionality can be implemented by storing
+both the keys and their associated values in tree nodes and ordering the nodes
+in the tree by the keys. When the key is found, so is the associated value.
+</p>
+<h3>Supporting duplicate elements</h3>
+<p>
+For some applications, it may be useful to allow duplicate elements or keys.
+To allow equal keys to be stored in the same tree, we need to relax the
+BST invariant slightly. Given a node containing value \(x\), we must know whether
+to go left or right to find the other occurrences of \(x\). To build a tree
+where we go left, we relax the BST invariant so that the left subtree contains
+keys less than <em>or equal</em> to \(x\), whereas the right subtree contains
+keys strictly greater than x. Given a key \(k\), all of the nodes with the same
+key can be found in time \(O(h)\) by walking down from the root.
+</p>
+<h3>N-ary search trees</h3>
+<p>
+It is possible to define search trees with more than two children per node. A
+higher branching factor means paths through the tree are shorter, but considerably
+complicates all of the algorithms involved. B-trees are an example of an N-ary
+search tree structure. In an N-ary search tree, each node contains up to \(N-1\) elements
+\(e_1,...,e_{N-1}\)
+and has up to \(N\) children \(c_0,...,c_{N-1}\) arranged so that the subtrees of the children contain only
+elements between successive elements at the node. If a node has \(n\) children, the node
+contains \(n-1\) elements obeying the following ordering invariant:
 </p>
 <div class="figure">
-<img src="list-tree.png" alt="unbalanced tree" />
+\[
+c_0 &lt; e_1 &lt; c_1 &lt; e_2 &lt; c_2 &lt; e_3 &lt; ･･･ &lt; e_{n-1} &lt; c_{n-1}
+\]
 </div>
 <p>
-For this tree, h is O(n), and tree operations are O(n). Our goal is logarithmic performance,
-which requires h to be O(log n). A tree in which h is O(log n) is said to be <b>balanced</b>.
-Many techniques exist for obtaining balanced trees. 
+Note that by formulas such as \(c_0 &lt; e_1 &lt;c_1\), we mean that <em>all</em> elements in subtree \(c_0\) are
+less than \(e_1\) and all elements in \(c_1\) are greater than \(e_1\).
 </p>
 <p>
-One simple-minded way to balance trees is to insert elements into the tree in a
-random order. This turns out to result in a tree whose expected height is O(log
-n) (Proving this is outside the scope of this course,
-but see [<a href="#references">1, Chapter 12.4</a>] or [<a href="#references">2, Lecture 13</a>] for a proof).
-However, we need to know how to shuffle a collection of elements into a
-random order, which involves a small digression:
+To search for a given element, we do a binary search on the elements \(e_i\)
+(which are stored in ascending order). If the element is not found, the result of the
+comparisons to these elements, in conjunction with the invariant, indicates
+which child subtree to search.
 </p>
-<div class="digression">
+
+<h3>Random balancing</h3>
+<p>
+As observed above, binary search tree operations take \(O(h)\) time, which
+could be as bad as \(O(n)\) time.  One simple-minded way to obtain search trees
+that are usually balanced is to insert elements into the tree in a random
+order. This turns out to result in a tree whose expected height is \(O(log n)\)
+(Proving this is outside the scope of this course, but see [<a
+href="#references">1, Chapter 12.4</a>] or [<a href="#references">2, Lecture
+13</a>] for a proof).  However, if elements are not arriving in a random order already,
+we need to know how to shuffle a collection of elements into a random order,
+which involves a small digression to learn a useful algorithm.
+</p>
+<div class=digression>
 <h3>How to place a sequence of elements in random order</h3>
 <p>
 The <a href="http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">
@@ -494,21 +520,23 @@ Fisher–Yates algorithm</a> (developed in 1938) places \(N\) elements into rand
 order. Recall that there are \(N! = 1×2×3×...×N\) possible permutations of \(N\) elements; a
 perfectly random shuffle should have equal probability \(1/N!\) of producing any
 given permutation. The algorithm works as follows. Assume we have the \(N\) elements
-in an array. We iterate from \(N-1\) down to \(0\) deciding which element to place into
-a given array index. In each array index we randomly choose one of the elements
-in the array indices up to that point and swap it with the current array index.
+in an array \(a\). We iterate the array index \(i\) from \(N-1\) down to \(0\), deciding for each array index
+which element to place into the array at that index. We randomly choose an index \(j\) between 0 and \(i\),
+and swap the chosen element \(a[j]\) with the element at the current index:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="fisher-yates.java">fisher-yates.java</a>
 </pre>
 <p>
-The first iteration generates one of \(N\) possible values, the second iteration one of \(N-1\) possible
-values, and so on until the final iteration generates one of two possible values. Therefore, the
-total number of possible ways for the algorithm to execute is \( N × (N-1) × (N-2) × ･･･ × 2 = N!\).
-Furthermore, given a
-particular permutation, there is exactly one way for the algorithm to produce it. Therefore,
-all permutations are produced with equal probability, assuming the random number generator is
-truly random.
+The first iteration generates one of \(N\) possible values, the second
+iteration one of \(N-1\) possible values, and so on until the final iteration
+generates one of two possible values. Therefore, the total number of possible
+ways for the algorithm to execute is \( N × (N-1) × (N-2) × ･･･ × 2 = N!\),
+which is equal to the total number of possible permutations of the array
+elements.  Furthermore, given a particular permutation, there is exactly one
+way for the algorithm to produce it, and all distinct executions of the algorithm
+are equally likely. Therefore, all permutations are produced with equal
+probability, assuming the random number generator is truly random.
 </p>
 </div>
 
@@ -579,6 +607,25 @@ Postorder traversals have the useful property that a node is visited only after
 all of its descendants; conversely, a preorder traversal visits a node before
 all of its descendants.
 </p>
+<h3>Parent pointers</h3>
+<p>
+So far we have only had pointers going downward in the tree. It is sometimes
+handy to have pointers going from nodes to their parents, much as nodes in a
+doubly linked list contain pointers to their predecessor nodes. Parent pointers
+can simplify some algorithms, but they do take up space and require enforcing
+additional invariants: in particular, that the parent of the root node is null
+and that for any node \(n\), the parents of its children (if any) are equal to \(n\):
+\[\texttt{n} ∈ \{\texttt{n.parent.left}, \texttt{n.parent.right}\} \]
+\[\texttt{n.right.parent} = \texttt{n}\]
+\[\texttt{n.left.parent} = \texttt{n}\]
+</p>
+<p>
+Using parent pointers, it is possible to implement tree traversals in an
+iterative way, without relying on a stack. When the last child of a node has
+been visited, the algorithm follows the parent pointer from the node to its
+parent and continues with the next child of the parent.
+</p>
+
 <a name="references"></a>
 <h3>References</h3>
 [1] Cormen, Leiserson, Rivest, Stein. <a href="http://www.amazon.com/Introduction-algorithms-Edition-Thomas-Cormen/dp/0262033844"><cite>Introduction to Algorithms.</cite></a><br>
