@@ -666,9 +666,9 @@ class Polynomial {
 }
 </pre>
 <p>
-This method does not try to answer whether two objects are truly
-equal; it only answers whether they are “polynomial-equal”. It
-is obviously reflexive, transitive, and symmetric, and simpler to
-implement. Unfortunately, existing Java libraries are not designed to
-work with such a method.
+This method does not try to answer whether two objects are truly equal; it only
+answers whether they are “polynomial-equal”. It is obviously reflexive,
+transitive, and symmetric, and simpler to implement. Unfortunately, the
+standard Java libraries are not designed to work with this approach, though
+it is compatible with the way we will soon suggest writing generic code.
 </p>
