@@ -18,21 +18,129 @@ All nodes except the root have exactly one predecessor node, called its
 
 <p>In computer science, it is customary to draw trees growing downward:
 </p>
-<div class="figure">
-<img src="tree-pics.png" alt="trees" />
+<div class=figure>
+<canvas id=tree_pics style="width: 400px; height: 350px"></canvas>
+<script class=graphics>
+  class ArrowTree extends Constrain.Trees.TreeStyle {
+      constructor(figure) {
+        super(figure)
+      }
+      drawNode(s) {
+        if (s === undefined) {
+            return this.figure.point()
+        } else {
+            return this.figure.square().addText("" + s)
+                .setFontSize(10).setW(20).setCornerRadius(5).setFillStyle('white')
+        }
+      }
+      drawEdge(g1, g2) { return this.figure.connector(g1, g2).setEndArrow("arrow")}
+      decorateRoot(g) {
+        return this.figure.arrow(g.toTop(20), g)
+      }
+  }
+  window.ArrowTree = ArrowTree
+  let fig1 = new CFigure("tree_pics")
+  with (fig1) {
+    let m = margin()
+    setConnectionStyle("intersection")
+    setArrowSize(8)
+    let t1 = tree(new ArrowTree(fig1), 4, [3, [6, 2], [5, 4, 7, 0]], 1)
+    t1.connect = function(g1, g2) { return this.figure.connector(g1, g2).setEndArrow("arrow")}
+    t1.bbox.setW(140)
+    t1.bbox.setH(150)
+    align("center", "abut", t1.bbox, vspace(5), label("a tree"))
+    align("left", "top", t1.bbox.ul().toTop(20), m)
+
+    let t2 = tree(new ArrowTree(fig1), 4, [3, [3, undefined, 1], [5, 4, 7]], 1)
+    let root2 = new Constrain.Trees.TreeView(t2).rootGraphicalObject()
+    arrow(root2.toTop(20), root2)
+    t1.bbox.setW(140)
+    t2.bbox.setW(140)
+    align("center", "abut", t2.bbox, vspace(5), label("a binary tree"))
+    align("abut", "TB", t1.bbox, hspace(20), t2.bbox)
+
+    let t3 = tree(new ArrowTree(fig1), 4, [3, 2, 5], 1)
+    align("LR", "abut", t1.bbox, vspace(50),  t3.bbox)
+    t3.bbox.setH(100)
+    arrow(t3.findNode(1).gobj, t3.findNode(5).gobj)
+
+    let t4 = tree(new ArrowTree(fig1), 4, [3, 2, 5], 1)
+    align("none", "TB", t3.bbox, t4.bbox)
+    align("LR", "none", t2.bbox, t4.bbox)
+    connector(t4.findNode(5).gobj,
+        t4.findNode(5).gobj.toRight(50),
+        t4.findNode(1).gobj.toRight(35),
+        t4.findNode(4).gobj.toRight(50),
+        t4.findNode(4).gobj)
+        .setEndArrow("arrow")
+    align("center", "abut", group(t3.bbox, t4.bbox), vspace(10), label("non-trees"))
+  }
+</script>
 </div>
 <p>
 Because a tree is a recursive data structure, each node in the tree is
 the root of a <b>subtree</b>. For example, in the following tree, the node G has
 two children B and H, each of which is the root of a subtree. This tree is
-a <b>binary</b> tree in which each node has up to two children. We say that
+a <b>binary tree</b> in which each node has up to two children, which are
+implicitly distinguished as its left and right children. We say that
 a binary tree has a <b>branching factor</b> of 2. The children of a node are usually
 ordered from left to right, so B is the left child of G and root of the left
 subtree of G, and H is the right child of G and root of the right subtree of G.
 A node with no children is called a <b>leaf</b>.
 </p>
-<div class="figure">
-<img src="tree_anatomy.png" alt="tree anatomy" />
+<div class=figure>
+<canvas id=tree_anatomy style="width:600px; height:200px"></canvas>
+<script class=graphics>
+  const fig2 = new CFigure("tree_anatomy")
+  with (fig2) {
+    setArrowSize(8)
+    setTextStyle('#00c')
+    setFontStyle('italic')
+    setConnectionStyle("intersection")
+    const hl = [ label("height = 3, depth = 0"), label("height = 1 (B) or 2 (H) depth = 1"),
+        label("height = 0 (except E), depth = 2"),
+        label("height = 0, depth = 3")
+        ]
+    const leaves = label("leaves"), tree_height = label("tree height = 3")
+    const m = margin()
+    setFontStyle('normal')
+    const p1 = point(), p2 = point(), p3 = point(), p4 = point()
+    setStrokeStyle('#bbf')
+    const l1 = line(hl[0].cr(), p1).setLineDash([3,3]),
+          l2 = line(hl[1].cr(), p2).setLineDash([3,3]),
+          l3 = line(hl[2].cr(), p3).setLineDash([3,3]),
+          l4 = line(hl[3].cr(), p4).setLineDash([3,3])
+    setStrokeStyle('#000')
+      
+    let t = tree(new ArrowTree(fig2), 'G', ['B', 'A', 'C'], ['H', 'D', ['E', 'F']])
+    align("center", "TB", t.bbox.expand(20), m)
+    t.bbox.setW(140)
+    let tv = new Constrain.Trees.TreeView(t)
+    align("abut", "top", tv.rootGraphicalObject(), hspace(5), label('root'))
+
+    align("right", "distribute", ...hl)
+    align("none", "center", hl[0], tv.rootGraphicalObject(), p1)
+    align("abut", "center", hl[2], hspace(10), tv.findNodeObj('A'))
+    align("none", "center", hl[1], p2)
+    align("none", "center", hl[2], p3)
+    align("none", "center", hl[3], p4)
+    align("left", "none", m, hl[1])
+    align("center", "none", p1, p2, p3, p4, tv.findNodeObj('E').toRight(20))
+    align("center", "bottom", leaves, m)
+    setStrokeStyle('#44e')
+    console.log(tv.findNodeObj('A'));
+    ['A', 'C', 'D', 'F'].forEach(n => 
+        connector(leaves, tv.findNodeObj(n)).setEndArrow('bullet')
+    )
+    align("abut", "none", p1, hspace(10), tree_height)
+    const p5 = point(), p6 = point()
+    align("center", "none", p5, tree_height, p6)
+    align("none", "top", p1, p5)
+    align("none", "bottom", p4, p6)
+    arrow(tree_height.toTop(10), p5)
+    arrow(tree_height.toBottom(10), p6)
+  }
+</script>
 </div>
 <p>
 Each node in a tree has a <b>height</b> and a <b>depth</b>. The <b>depth</b> of
@@ -43,7 +151,10 @@ from that node to a leaf below it, so leaf nodes have height 0. The height of
 the tree is the height of its root, which is the same as the depth of its
 deepest leaf. Therefore, a tree consisting of a single (root) node has height
 0. It is also possible to have an empty tree, with no nodes or edges; we will
-consider such a tree to have height &minus;1.
+consider such a tree to have height &minus;1. (It is possible, though less
+standard, to define the height of a tree as the number of <em>nodes</em> along
+the longest path to a leaf, so that an empty tree has height 0; for reasoning
+about asymptotic complexity, it almost never matters which definition is used.)
 </p>
 <p>
 We can represent a binary tree using a class with instance variables for
@@ -71,41 +182,76 @@ creates additional maintenance requirements.
 in trees makes sense. Examples of such information include parse trees of expressions,
 inheritance and subtyping hierarchies, game search trees, and decision trees.</p></li>
 <li><p>Trees make
-it possible to find information within the data structure relatively quickly.
-If a significant fraction of the nodes have more than one child, it can be
-arranged that all nodes are fairly close to the root. For simplicity, let's
-think about a <b>complete binary tree of height \(h\)</b> in which all leaves are at equal depth <code>h</code> and all non-leaves have exactly two children. In a complete binary tree of depth \(h\), there are \(1 + 2
+it possible to find information within the data structure relatively quickly,
+when they can be arranged that all nodes are fairly close to the root. For simplicity, let's
+think about a <b>complete binary tree of height \(h\)</b> in which all leaves are at equal depth \(h\) and all non-leaves have exactly two children. In a complete binary tree of depth \(h ≥ 0\), there are \(1 + 2
 + 4 + ･･･ + 2^h = 2^{h+1} &minus; 1\) nodes. Calling this number
-of nodes \(n\), we have \(h = \log(n+1)-1\), so \(h\) is \(O(\log n)\). (Here \(\log x\) is the
-base 2 logarithm of x). Thus, if we are looking for information in a complete binary
+of nodes \(n\), we have \(h = \lg(n+1)-1\), so \(h\) is \(O(\log n)\). (Recall that \(\lg x\) is the
+base-2 logarithm of \(x\), and that \(O(\log_a n) = O(\log_b n)\) for any constant
+bases \(a\) and \(b\).) Thus, if we are looking for information in a complete binary
 tree, it can be reached along a path whose length is logarithmic in the total
 information stored in the tree.
 </p>
 <p>For large \(n\), logarithmic time is a big speedup over the linear-time
 performance offered by data structures like linked lists and arrays. For example,
-\(\log 1,\!000,\!000\) is approximately 20, a speedup of around 50,000, and
-\(\log 1,\!000,\!000,\!000\) is about
+\(\lg 1,\!000,\!000\) is approximately 20, a speedup of around 50,000 (ignoring constant
+factors), and
+\(\lg 1,\!000,\!000,\!000\) is about
 30, a speedup of more than 30,000,000.
 </p>
 </li>
 </ol>
 <h2>Binary search trees</h2>
 <p>
-Of course, the preceding analysis relies on us knowing which path to take through the
-tree to find information. This can be arranged by organizing the tree as a
-<b>binary search tree</b>. Assume that the data stored in the nodes can be ordered
-according to some ordering relation. A binary search tree is a binary tree that
-satisfies the following data structure invariant:</p>
-<table>
-<th>For each node \(n\) in the tree, all data elements stored in \(n\)'s left subtree
-are less than the element stored at \(n\), and all elements stored in \(n\)'s right
-subtree are greater than the element stored at \(n\).</th>
-</table>
-<p>Pictorially, we can visualize the tree relative to a given node as follows:
+Efficiently searching for information in trees relies on knowing which path to take through the
+tree. This property can be obtained if  the data stored in tree nodes can be ordered
+according to some ordering relation. For example, we might search for information by using
+a string value as the key, and order the strings by dictionary order.
 </p>
-<center>
-<img src="bst-invariant.png" alt="binary search tree invariant" />
-</center>
+<p>
+Given ordered data, the tree as a <b>search tree</b>. A particularly important form
+of search tree is a <b>binary search tree</b>, which is a binary tree that
+satisfies the following data structure invariant:</p>
+
+<p class=definition>
+Binary Tree Order Invariant:
+For each node \(n\) in the tree, all data elements stored in \(n\)'s left subtree
+are less than the element stored at \(n\), and all elements stored in \(n\)'s right
+subtree are greater than the element stored at \(n\).
+</p>
+
+<p>We can visualize the tree relative to a given node as in this picture:
+</p>
+<div class=figure>
+<canvas id=bst_invariant style="width: 160px; height: 130px"></canvas>
+<script class=graphics>
+const fig3 = new CFigure("bst_invariant")
+with (fig3) {
+    class BSTTree extends Constrain.Trees.TreeStyle {
+        constructor(figure) {super(figure)}
+      decorateRoot(g) {
+        return this.figure.arrow(g.toTop(20), g)
+      }
+      drawNode(v) {
+        if (v.match("^[<>]")) {
+            const result = point()
+            polygon(result, point(plus(result.x(), 30), plus(result.y(), 45)),
+                            point(minus(result.x(), 30), plus(result.y(), 45)))
+              .addText(v).setVerticalAlign("bottom")
+            return result
+        } else {
+            return label(v).expand(3)
+        }
+      }
+      drawEdge(g1, g2) { return this.figure.connector(g1, g2).setEndArrow("arrow")}
+    }
+    setConnectionStyle("intersection")
+    const t = tree(new BSTTree(fig3), "data", "<data", ">data")
+    align("LR", "none", t.bbox, margin().inset(30))
+    equal(plus(45, t.bbox.y1()), margin().y1())
+}
+</script>
+</div>
 <p>
 We can express this data structure invariant as a class invariant:
 </p>
@@ -227,18 +373,26 @@ elements strictly greater than x.
 It is possible to define search trees with more than two children per node. The
 higher branching factor means paths through the tree are shorter, but considerably
 complicates all of the algorithms involved. B-trees are an example of an N-ary
-search tree structure. In an N-ary search tree, each node contains up to N-1 elements
-e<sub>1</sub>,...,e<sub>N-1</sub>
-and has up to N children c<sub>0</sub>,...,c<sub>N-1</sub> arranged so that the subtrees of the children contain only
-elements between successive elements at the node. If a node has n children, the node
-contains n-1 elements obeying the following invariant:
+search tree structure. In an N-ary search tree, each node contains up to \(N-1\) elements
+\(e_1,...,e_{N-1}\)
+and has up to \(N\) children \(c_0,...,c_{N-1}\) arranged so that the subtrees of the children contain only
+elements between successive elements at the node. If a node has \(n\) children, the node
+contains \(n-1\) elements obeying the following ordering invariant:
 </p>
 <div class="figure">
-c<sub>0</sub> &lt; e<sub>1</sub> &lt; c<sub>1</sub> &lt; e<sub>2</sub> &lt; c<sub>2</sub> &lt; e<sub>3</sub> &lt; ･･･ &lt; e<sub>n-1</sub> &lt; c<sub>n-1</sub>
+\[
+c_0 &lt; e_1 &lt; c_1 &lt; e_2 &lt; c_2 &lt; e_3 &lt; ･･･ &lt; e_{n-1} &lt; c_{n-1}
+\]
 </div>
 <p>
-To search for a given element, we do a binary search on the elements e<sub>i</sub>. If it is not
-found, the invariant indicates the appropriate child subtree to search.
+Note that by formulas such as \(c_0 &lt; e_1 &lt;c_1\), we mean that <em>all</em> elements in subtree \(c_0\) are
+less than \(e_1\) and all elements in \(c_1\) are greater than \(e_1\).
+</p>
+<p>
+To search for a given element, we do a binary search on the elements \(e_i\)
+(which are stored in ascending order). If the element is not found, the result of the
+comparisons to these elements, in conjunction with the invariant, indicates
+which child subtree to search.
 </p>
 <h3>Parent pointers</h3>
 <p>
@@ -247,7 +401,10 @@ handy to have pointers going from nodes to their parents, much as nodes in a
 doubly linked list contain pointers to their predecessor nodes. Parent pointers
 can simplify some algorithms, but they do take up space and require enforcing
 additional invariants: in particular, that the parent of the root node is null
-and that for any node <code>n</code>, the parents of its children (if any) are equal to <code>n</code>.
+and that for any node \(n\), the parents of its children (if any) are equal to \(n\):
+\[\texttt{n} ∈ \{\texttt{n.parent.left}, \texttt{n.parent.right}\} \]
+\[\texttt{n.right.parent} = \texttt{n}\]
+\[\texttt{n.left.parent} = \texttt{n}\]
 </p>
 <h3>Removing elements from a binary search tree</h3>
 <p>

@@ -40,13 +40,19 @@ assigned one of three colors that can change over time:
 <ul>
 <li><b>White</b> nodes are undiscovered nodes that have not been seen yet in the current traversal and may even be unreachable.
 <li><b>Black</b> nodes are reachable nodes that the algorithm has already visited and is finished processing.
-<li><b>Gray</b> nodes are nodes that have been discovered but that the algorithm is still processing. These nodes are on the <em>frontier</em> between white and black.
+<li><b>Gray</b> nodes are nodes that have been discovered but that have not yet been visited yet.
+These nodes form a <em>frontier</em> between white and black. (Extending the frontier analogy, the black nodes
+are sometimes called the <em>settled</em> nodes.)
+</li>
 </ul>
 
 <p>
-The progress of the algorithm is depicted by the following figure. Initially there are no black nodes and the root is gray.
-As the algorithm progresses, white nodes turn into gray nodes and gray nodes turn into black nodes.
-Eventually there are no gray nodes left and the algorithm is done.
+The progress of the algorithm is depicted by the following figure. Initially
+there are no black nodes and the root is gray.  As the algorithm progresses,
+white nodes turn into gray nodes and gray nodes turn into black nodes.
+Eventually there are no gray nodes left and the algorithm is done. All remaining
+nodes are either white or black, with the black nodes consisting of exactly the
+nodes reachable from the roots.
 </p>
 
 <div class=figure>
@@ -81,15 +87,15 @@ with (new CFigure("tricolor")) {
 </div>
 
 <p>
-The algorithm maintains a key <em>black–white invariant</em> at all times:</p>
-<blockquote>
-<p>1. <i>The root is not white.</i><br>
-2. <i>There is no edge from a black node to a white node.</i></p>
-</blockquote>
+The algorithm maintains a key invariant, which we will call the <b>black–white invariant</b> or
+<b>tricolor invariant</b>:
+<ol>
+<li><em>The root is not white.</em></li>
+<li><em>There is no edge from a black node to a white node.</em></li>
+</ol>
 <p>
-This is clearly true initially, and because it is
-true at the end, we know that any remaining white nodes cannot be reached from
-the black nodes.
+This invariant clearly holds initially, and because it is true at the end, we
+know that any remaining white nodes cannot be reached from the black nodes.
 </p>
 
 <p>
@@ -98,15 +104,15 @@ The algorithm pseudo-code is as follows:
 
 <ul>
 <li>Color the root node gray and all other nodes white;
-<li>while some gray node <span class=m>g</span> exists:
+<li>while some gray node \(g\) exists:
 <ul>
-<li>color some white successors of <span class=m>g</span> gray;
-<li>if <span class=m>g</span> has no white successors, optionally color <span class=m>g</span> black.
+<li>color some white successors of \(g\) gray;
+<li>if \(g\) has no white successors, optionally color \(g\) black.
 </ul>
 </ul>
 
 <p>This algorithm is abstract enough to describe many different graph
-traversals. It allows the particular implementation to choose the node <span class=m>n</span> from
+traversals. It allows the particular implementation to choose the node \(n\) from
 among the gray nodes; it allows choosing which and how many white successors to
 color gray; and it allows delaying the coloring of gray nodes black. We say
 that such an algorithm is <i>nondeterministic</i> because its next step is not uniquely
@@ -119,12 +125,15 @@ because the black–white invariant is maintained, it must reach all reachable n
 that the tricolor algorithm works even when gray nodes are processed
 concurrently, as long as the black–white invariant is maintained. The invariant
 ensures that whatever graph traversal we choose, the algorithm will work even when
-parallelized.
+different gray nodes are handled concurrently.
 </p>
 
 <h2>Breadth-first search</h2>
 <p>
-The two most common graph traversal algorithms are <em>breadth-first search</em> (BFS) and <em>depth-first search</em> (DFS). The BFS pseudocode looks like this:
+The two most common graph traversal algorithms are <b>breadth-first search</b> (BFS)
+and <b>depth-first search</b> (DFS). Both of these traversal algorithms can be viewed
+as refinements of the tricolor algorithm, ones in which choices are made in a way that
+leads to their differing behavior. Pseudo-code for BFS follows:
 </p>
 
 <pre>
@@ -147,9 +156,9 @@ while (frontier not empty) {
 
 <p>
 Breadth-first search is so called because it explores nodes in the order of
-their distance from the root, where <em>distance</em> is defined as the minimum
-path length from a root to the node. We can compute distances explicitly by
-replacing the colors with a <code>distance</code> field:
+their distance from the root, where <b>distance</b> is defined as the minimum
+path length from a root to the node. We can compute distances explicitly during
+the traversal by replacing the colors with a <code>distance</code> field:
 </p>
 
 <pre>
@@ -188,7 +197,8 @@ are gone, and <i>k</i> then increases by one.
 </p>
 
 <p>Suppose that we run this algorithm on the following graph, starting with the
-root <code>A</code> and assuming that the successors of any node are pushed onto the queue in alphabetic order:</p>
+root <code>A</code> and assuming that the newly discovered successors of given node
+are pushed onto the queue in alphabetic order:</p>
 
 <div align="center"><img src="graph1.png"></div>
 
@@ -203,7 +213,7 @@ A0  B1  D1  E1  C2
 </pre>
 
 <p>
-Clearly, nodes are pushed and popped in distance order: A, B, D, E, C. This is very useful
+Clearly, nodes are pushed and popped in distance order: A, B, D, E, C. This ordering is very useful
 when we are trying to find the shortest path through the graph from a root to a node.
 When a queue is used in this way, it is known as a <b>worklist</b>; it keeps
 track of work left to be done.</p>
@@ -233,7 +243,7 @@ E
 <p>With a stack, the search will proceed from a given node as far as it can
 before backtracking and considering other nodes on the stack. For example,
 the node E had to wait until all nodes reachable from B and D were considered.
-This is <b>depth-first search</b>.
+With this stack-based frontier, we get <b>depth-first search</b>.
 </p>
 
 <p>
@@ -261,8 +271,8 @@ DFS(Node g) {
 
 <p>
 You can think of this as a person walking through the graph following arrows
-and never visiting a node twice except when backtracking, when a dead end is
-reached. Running this code on the graph above yields the following graph
+and never visiting a node twice except when backtracking at dead ends.
+Running this code on the graph above yields the following graph
 colorings in sequence, which are reminiscent of but a bit different from what
 we saw with the stack-based version:
 </p>

@@ -495,7 +495,7 @@ being misused by confused clients. A better approach is to use a constructor
 for initialization, or to use the Builder pattern, which we will discuss later.
 </p>
 
-<h2>Equality</h2>
+<h2>Implementing equality</h2>
 
 <p>
 To implement an <code>equals()</code> method, it is necessary to think about
@@ -636,24 +636,32 @@ This reflection-based approach is generally considered a best practice for
 implementing <code>equals()</code>, but even it is not entirely satisfactory.
 If we have two classes that provide alternate implementations of the same
 immutable interface, we might want to consider objects equal even when their
-classes are different, because they cannot be distinguished using their
-interfaces.  On the other hand, If we know that there can be no subclasses of
-<code>Polynomial</code> whose implementation might make equality asymmetric—for
-example, if the class <code>Polynomial</code> is declared to be
-<code>final</code>—we can get away without using reflection and instead just
-use <code>instanceof</code> as sketched above.
-</p>
+classes are different, in the case where they cannot be distinguished using their
+interfaces. For example, suppose we had classes <code>CartesianPoint</code>
+and <code>PolarPoint</code> that provided different implementations of an
+interface <code>Point</code> representing a mathematical point. It should be
+possible for two points to be equal even if their underlying representations are
+different, and an implementation of <code>Cartesian.equals()</code> like the following
+would allow that equality:
+<pre>
+    boolean equals(Object o) {
+        if (o instanceof Point p) {
+            return (x == p.x() && y == p.y());
+        }
+    }
+</pre>
 <p>
 These implementation challenges reflect a problem in the specification of
 <code>Object.equals()</code>. The expected mathematical properties of equality
 are in tension with the approach of asking each object to be able to decide
 whether it is equal to all other objects. There are approaches to equality that
 are more philosophically consistent, but since the Java libraries rely on the
-<code>equals()</code> method in many places, we sometimes need to strike
-compromises.
+<code>equals()</code> method in many places, we have to learn to live with
+<code>equals()</code> and sometimes strike compromises.
 </p>
+<h3>Equality at a type</h3>
 <p>
-An alternate, more consistent and more flexible way to handle equality
+An alternative way to handle equality that is consistent and flexible 
 is to think of equality as being evaluated <em>at a particular
 type</em>. For example, we might evaluate equality of two polynomials
 using a <em>static</em> method of the class <code>Polynomial</code>:
@@ -672,3 +680,53 @@ transitive, and symmetric, and simpler to implement. Unfortunately, the
 standard Java libraries are not designed to work with this approach, though
 it is compatible with the way we will soon suggest writing generic code.
 </p>
+<h3>canEqual</h3>
+<p>
+Another approach to restoring the symmetry of equality is suggested in the
+programming language Scala. A second method <code>canEqual()</code> is
+introduced whose job is to determine whether equality is possible <em>from
+the perspective of the other object</em>.
+</p>
+<p>
+In the example above of the interface <code>Point</code> with its
+two implementing classes, we would implement <code>equals()</code> as follows
+for <code>CartesianPoint</code>, by adding a test of <code>canEqual()</code>:
+<pre>
+    boolean equals(Object o) {
+        if (o instanceof Point p) {
+            return (o.canEqual(this) && x == p.x() && y == p.y());
+        }
+    }
+</pre>
+<p>
+Different implementations of <code>Point</code> can then provide a
+<code>canEqual()</code> method that only tests whether this object is a point:
+</p>
+<pre>
+    boolean canEqual(Object o) {
+        return (o instanceof Point);
+    }
+</pre>
+<p>
+On the other hand, if class <code>Point</code> has a subtype
+<code>ColoredPoint</code> whose observer <code>color()</code> that naturally
+distinguishes two colored points, it can override <code>canEqual()</code>
+to prevent non-colored points from being equal to colored points regardless
+of in which order the comparison is made:
+<pre>
+    // In ColoredPoint.equals()
+    boolean canEqual(Object o) {
+        return (o instanceof ColoredPoint);
+    }
+    boolean equals(Object o) {
+        if (o instanceof ColoredPoint) {
+            return (o.canEqual(this) &&
+                    x == o.x() && y == o.y() && color() == o.color())
+        }
+    }
+</pre>
+<p>
+A ColoredPoint is not equal to a CartesianPoint because the point does not pass the <ocde>instanceof</code>
+test in <code>ColoredPoint.equals()</code>; a CartesianPoint will not be equal to a
+<code>ColoredPoint</code> because the CartesianPoint does not pass the <code>instanceof</code> test in
+<code>ColoredPoint.canEqual()</code>.
