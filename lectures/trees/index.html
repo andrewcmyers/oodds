@@ -398,6 +398,17 @@ For this tree, \(h\) is \(O(n)\), and tree operations are \(O(n)\). Our goal is 
 which requires \(h\) to be \(O(\log n)\). A tree in which \(h\) is \(O(\log n)\) is said to be <b>balanced</b>.
 Fortunately, there are many ways to obtain balanced trees, and we will see some of them.
 </p>
+<h3>Using binary search trees to implement maps</h3>
+<p>
+A map abstraction lets us associate values with keys and look up the value
+corresponding to a given key. This functionality can be implemented by storing
+both the keys and their associated values in tree nodes and ordering the nodes
+in the tree by the keys. When the key is found, so is the associated value.
+Alternatively, we can view the element being stored in the tree as containing a
+key and a value, where elements are compared only by looking at their keys.
+This alternative view can be supported by using a <code>Comparator</code> that
+only compares keys.
+</p>
 <h3>Removing elements from a binary search tree</h3>
 <p>
 Removing elements from a tree is generally more complicated than adding them, because the
@@ -455,13 +466,6 @@ in the worst case, plus some constant number of updates to the tree, so the time
 required is \(O(h)\), as with searching and adding.
 </p>
 
-<h3>Using binary search trees to implement maps</h3>
-<p>
-A map abstraction lets us associate values with keys and look up the value
-corresponding to a given key. This functionality can be implemented by storing
-both the keys and their associated values in tree nodes and ordering the nodes
-in the tree by the keys. When the key is found, so is the associated value.
-</p>
 <h3>Supporting duplicate elements</h3>
 <p>
 For some applications, it may be useful to allow duplicate elements or keys.
