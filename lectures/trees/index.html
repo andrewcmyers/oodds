@@ -22,6 +22,9 @@ All nodes except the root have exactly one predecessor node, called its
 <canvas id=tree_pics style="width: 400px; height: 350px"></canvas>
 <script class=graphics>
   class ArrowTree extends Constrain.Trees.TreeStyle {
+      constructor(figure) {
+        super(figure)
+      }
       drawNode(s) {
         if (s === undefined) {
             return this.figure.point()
@@ -199,21 +202,55 @@ factors), and
 </ol>
 <h2>Binary search trees</h2>
 <p>
-Of course, the preceding analysis relies on us knowing which path to take through the
-tree to find information. This can be arranged by organizing the tree as a
-<b>binary search tree</b>. Assume that the data stored in the nodes can be ordered
-according to some ordering relation. A binary search tree is a binary tree that
-satisfies the following data structure invariant:</p>
-<table>
-<th>For each node \(n\) in the tree, all data elements stored in \(n\)'s left subtree
-are less than the element stored at \(n\), and all elements stored in \(n\)'s right
-subtree are greater than the element stored at \(n\).</th>
-</table>
-<p>Pictorially, we can visualize the tree relative to a given node as follows:
+Efficiently searching for information in trees relies on knowing which path to take through the
+tree. This property can be obtained if  the data stored in tree nodes can be ordered
+according to some ordering relation. For example, we might search for information by using
+a string value as the key, and order the strings by dictionary order.
 </p>
-<center>
-<img src="bst-invariant.png" alt="binary search tree invariant" />
-</center>
+<p>
+Given ordered data, the tree as a <b>search tree</b>. A particularly important form
+of search tree is a <b>binary search tree</b>, which is a binary tree that
+satisfies the following data structure invariant:</p>
+
+<p class=definition>
+Binary Tree Order Invariant:
+For each node \(n\) in the tree, all data elements stored in \(n\)'s left subtree
+are less than the element stored at \(n\), and all elements stored in \(n\)'s right
+subtree are greater than the element stored at \(n\).
+</p>
+
+<p>We can visualize the tree relative to a given node as in this picture:
+</p>
+<div class=figure>
+<canvas id=bst_invariant style="width: 160px; height: 130px"></canvas>
+<script class=graphics>
+const fig3 = new CFigure("bst_invariant")
+with (fig3) {
+    class BSTTree extends Constrain.Trees.TreeStyle {
+        constructor(figure) {super(figure)}
+      decorateRoot(g) {
+        return this.figure.arrow(g.toTop(20), g)
+      }
+      drawNode(v) {
+        if (v.match("^[<>]")) {
+            const result = point()
+            polygon(result, point(plus(result.x(), 30), plus(result.y(), 45)),
+                            point(minus(result.x(), 30), plus(result.y(), 45)))
+              .addText(v).setVerticalAlign("bottom")
+            return result
+        } else {
+            return label(v).expand(3)
+        }
+      }
+      drawEdge(g1, g2) { return this.figure.connector(g1, g2).setEndArrow("arrow")}
+    }
+    setConnectionStyle("intersection")
+    const t = tree(new BSTTree(fig3), "data", "<data", ">data")
+    align("LR", "none", t.bbox, margin().inset(30))
+    equal(plus(45, t.bbox.y1()), margin().y1())
+}
+</script>
+</div>
 <p>
 We can express this data structure invariant as a class invariant:
 </p>
@@ -335,18 +372,26 @@ elements strictly greater than x.
 It is possible to define search trees with more than two children per node. The
 higher branching factor means paths through the tree are shorter, but considerably
 complicates all of the algorithms involved. B-trees are an example of an N-ary
-search tree structure. In an N-ary search tree, each node contains up to N-1 elements
-e<sub>1</sub>,...,e<sub>N-1</sub>
-and has up to N children c<sub>0</sub>,...,c<sub>N-1</sub> arranged so that the subtrees of the children contain only
-elements between successive elements at the node. If a node has n children, the node
-contains n-1 elements obeying the following invariant:
+search tree structure. In an N-ary search tree, each node contains up to \(N-1\) elements
+\(e_1,...,e_{N-1}\)
+and has up to \(N\) children \(c_0,...,c_{N-1}\) arranged so that the subtrees of the children contain only
+elements between successive elements at the node. If a node has \(n\) children, the node
+contains \(n-1\) elements obeying the following ordering invariant:
 </p>
 <div class="figure">
-c<sub>0</sub> &lt; e<sub>1</sub> &lt; c<sub>1</sub> &lt; e<sub>2</sub> &lt; c<sub>2</sub> &lt; e<sub>3</sub> &lt; ･･･ &lt; e<sub>n-1</sub> &lt; c<sub>n-1</sub>
+\[
+c_0 &lt; e_1 &lt; c_1 &lt; e_2 &lt; c_2 &lt; e_3 &lt; ･･･ &lt; e_{n-1} &lt; c_{n-1}
+\]
 </div>
 <p>
-To search for a given element, we do a binary search on the elements e<sub>i</sub>. If it is not
-found, the invariant indicates the appropriate child subtree to search.
+Note that by formulas such as \(c_0 &lt; e_1 &lt;c_1\), we mean that <em>all</em> elements in subtree \(c_0\) are
+less than \(e_1\) and all elements in \(c_1\) are greater than \(e_1\).
+</p>
+<p>
+To search for a given element, we do a binary search on the elements \(e_i\)
+(which are stored in ascending order). If the element is not found, the result of the
+comparisons to these elements, in conjunction with the invariant, indicates
+which child subtree to search.
 </p>
 <h3>Parent pointers</h3>
 <p>
@@ -355,7 +400,10 @@ handy to have pointers going from nodes to their parents, much as nodes in a
 doubly linked list contain pointers to their predecessor nodes. Parent pointers
 can simplify some algorithms, but they do take up space and require enforcing
 additional invariants: in particular, that the parent of the root node is null
-and that for any node <code>n</code>, the parents of its children (if any) are equal to <code>n</code>.
+and that for any node \(n\), the parents of its children (if any) are equal to \(n\):
+\[\texttt{n} ∈ \{\texttt{n.parent.left}, \texttt{n.parent.right}\} \]
+\[\texttt{n.right.parent} = \texttt{n}\]
+\[\texttt{n.left.parent} = \texttt{n}\]
 </p>
 <h3>Removing elements from a binary search tree</h3>
 <p>

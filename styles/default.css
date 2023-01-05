@@ -145,6 +145,8 @@ div#unit-signature-links a { color: white }
     width: 40%;
 }
 
+p.definition { font-weight: bold; padding: 1em; background-color: #ddd; border: 1px solid black }
+
 @media print {
 	body {
 		font-family: "Times New Roman", times;
