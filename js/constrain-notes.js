@@ -19,7 +19,7 @@ class CFigure extends Constrain.Figure {
 
         if (advance) {
             this.setRepeat(true)
-            this.align("right", "bottom", this.advanceButton(), this.canvasRect())
+            this.align("right", "bottom", this.advanceButton(), this.margin())
         }
         setTimeout(() => this.start())
     }
