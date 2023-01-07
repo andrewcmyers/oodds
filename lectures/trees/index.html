@@ -159,13 +159,13 @@ about asymptotic complexity, it almost never matters which definition is used.)
 We can represent a binary tree using a class with instance variables for
 the left and right children:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="BinaryNode.java">BinaryNode</a>
 </pre>
 <p>For trees with a larger branching factor, the children can be stored in another
 data structure such as an array or linked list:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="NAry.java">NAry</a>
 </pre>
 <p>
@@ -256,7 +256,7 @@ with (fig3) {
 <p>
 We can express this data structure invariant as a class invariant:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="BST.java">BST</a>
 </pre>
 <p class="cont">
@@ -267,7 +267,7 @@ For the invariant to make sense, we must be able to
 compare two elements to see which is greater (in some ordering).
 One way to provide such an ordering is to require the parameter
 type <code>T</code> to extend the interface <code>Comparable<T></code>:
-<pre class="load">
+<pre class=load>
 <a href="comparable.java">BST</a>
 </pre>
 Here, the ordering is specified by the operation <code>compareTo()</code>. To
@@ -285,7 +285,7 @@ has the <code>compareTo()</code> method.
 <p>
 A more flexible way to define the ordering is to provide it through a
 <b>comparator object</b> that implements the Comparator interface:
-<pre class="load">
+<pre class=load>
 <a href="Comparator.java">BST</a>
 </pre>
 <p>
@@ -310,7 +310,7 @@ must by in the right subtree, so we should look for it there. In either case,
 if the subtree where x must be is empty (null), the element must not be in the tree. This
 algorithm can be expressed compactly as a (tail-)recursive method on <code>BinaryNode</code>:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="contains.java">BST</a>
 </pre>
 <p>
@@ -325,7 +325,7 @@ Since the method is tail-recursive, we can also write it as a loop. Here is a
 version where the root of the tree is passed in explicitly as a parameter
 <code>n</code>:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="contains-loop.java">contains-loop</a>
 </pre>
 <h3>Adding an element to a binary search tree</h3>
@@ -336,7 +336,7 @@ If found, it need not be added; if not found,
 it is added as a child of the leaf node reached along the search path.
 Again, this can be written easily as a tail-recursive method:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="add.java">add</a>
 </pre>
 <p>
@@ -464,18 +464,79 @@ There are three cases to consider:
 </p>
 <ol>
 <li><em>Node \(x\) is a leaf.</em>
-<p>In this case, we <b>prune</b> the node x from the tree by setting the pointer to it from p to <code>null</code>. The other subtree of p (shown as a white triangle, though it may be empty) is unchanged.</p>
-<div class="figure">
-<img src="delete-leaf.png" alt="BST deletion from leaf" />
+<p>In this case, we <b>prune</b> node \(x\) from the tree by setting the
+pointer to it from \(p\) to <code>null</code>. The other subtree of \(p\) (shown as
+a white triangle, though it may be empty) is unchanged.</p>
+<div class=figure>
+<canvas id=delete_leaf style="width: 200px; height: 100px"></canvas>
+<script class=graphics>
+const delete_leaf_fig = new CFigure("delete_leaf")
+CFigure.prototype.subtree = function(name) {
+    const top = this.point()
+    const result = this.polygon(top,
+                            this.point(this.plus(top.x(), 25), this.plus(top.y(), 35)),
+                            this.point(this.minus(top.x(), 25), this.plus(top.y(), 35)))
+    result.addText(name)
+    result.connectionPts = function() { return [top] }
+    result.intersectionPt = function() { return [result.x(), result.y()] }
+    result.target = function() { return top }
+    return result
+}
+class SimpleTree extends Constrain.Trees.TreeStyle {
+    decorateRoot(n) {
+    return this.figure.line(n.gobj.toTop(25), n.gobj.toTop(5))
+    }
+}
+window.SimpleTree = SimpleTree  
+with (delete_leaf_fig) {
+    // setConnectionStyle("intersection")
+    const t1 = tree(new SimpleTree(delete_leaf_fig),
+                    label("p"), label("x"), subtree("A"))
+    align("none", "T", t1.bbox.toTop(25), margin())
+    align("none", "B", t1.bbox, margin())
+
+    const t2 = tree(new SimpleTree(delete_leaf_fig),
+                    label("p"), undefined, subtree("A"))
+    align("abut", "TB", t1.bbox, hspace(50), t2.bbox)
+    function transform(t1, t2) {
+        return arrow(t1.bbox, t2.bbox)
+            .setLineWidth(10).setArrowSize(25).setStrokeStyle("#f88").setFillStyle("#f88")
+    }
+    transform(t1, t2)
+}
+</script>
 </div>
+
 </li>
 <li><em>Node \(x\) has one child.</em>
 <p>We <b>splice out</b> node \(x\) from the tree by redirecting the pointer from \(p\)
 to \(x\) to now point to the single child of \(x\). Since the BST invariant guarantees
 that \(A &lt; x &lt; p &lt; B\), this operation preserves the invariant.
 </p>
-<div class="figure">
-<img src="delete-one-child.png" alt="BST deletion with one child" />
+<div class=figure>
+<canvas id=delete_one_child style="width: 300px; height: 120px"></canvas>
+<script class=graphics>
+const delete_one_child = new CFigure("delete_one_child")
+with (delete_one_child) {
+    // setConnectionStyle("intersection")
+    const t1 = tree(new SimpleTree(delete_one_child),
+                    label("p"), [label("x"), subtree("A"), undefined], subtree("B"))
+    align("none", "T", t1.bbox.toTop(25), margin())
+    align("none", "B", t1.bbox, margin())
+
+    const t2 = tree(new SimpleTree(delete_one_child),
+                    label("p"), [subtree("A"), undefined, undefined], subtree("B"))
+    align("abut", "TB", t1.bbox, hspace(50), t2.bbox)
+    align("L", "none", t1.bbox, margin())
+    align("R", "none", t2.bbox, margin())
+    function transform(t1, t2) {
+        return arrow(t1.bbox, t2.bbox)
+            .setLineWidth(10).setArrowSize(25).setStrokeStyle("#f88").setFillStyle("#f88")
+    }
+    equal(t1.bbox.w(), t2.bbox.w())
+    transform(t1, t2)
+}
+</script>
 </div>
 </li>
 <li><em>Node \(x\) has two children.</em>
@@ -600,7 +661,7 @@ such as printing it out or adding it to another collection.
 each element is visited between the elements of the subtrees. In-order traverse
 can be expressed easily using recursion:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="inorder-traverse.java">inorder</a>
 </pre>
 <p>(Here the <code>visit</code> method is just some function that does something with the data.)
@@ -643,10 +704,10 @@ By visiting a node <i>before</i> visiting either of its children,
 we obtain <b>preorder</b> traversal. By visiting a node <i>after</i> visiting both of its children,
 we obtain <b>postorder</b> traversal.
 </p>
-<pre class="load">
+<pre class=load>
 <a href="pre-order-traverse.java">pre</a>
 </pre>
-<pre class="load">
+<pre class=load>
 <a href="postorder-traverse.java">post</a>
 </pre>
 <p>
