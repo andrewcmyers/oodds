@@ -478,7 +478,7 @@ CFigure.prototype.subtree = function(name) {
                             this.point(this.minus(top.x(), 25), this.plus(top.y(), 35)))
     result.addText(name)
     result.connectionPts = function() { return [top] }
-    result.intersectionPt = function() { return [result.x(), result.y()] }
+    result.intersectionPt = function(x, y, valuation) { return Constrain.evaluate([top.x(), top.y()], valuation) }
     result.target = function() { return top }
     return result
 }
@@ -489,9 +489,10 @@ class SimpleTree extends Constrain.Trees.TreeStyle {
 }
 window.SimpleTree = SimpleTree  
 with (delete_leaf_fig) {
-    // setConnectionStyle("intersection")
+    setConnectionStyle("intersection")
+    console.error("her")
     const t1 = tree(new SimpleTree(delete_leaf_fig),
-                    label("p"), label("x"), subtree("A"))
+                    label("p").expand(2), label("x").expand(2), subtree("A"))
     align("none", "T", t1.bbox.toTop(25), margin())
     align("none", "B", t1.bbox, margin())
 
@@ -518,17 +519,19 @@ that \(A &lt; x &lt; p &lt; B\), this operation preserves the invariant.
 <script class=graphics>
 const delete_one_child = new CFigure("delete_one_child")
 with (delete_one_child) {
-    // setConnectionStyle("intersection")
+    setConnectionStyle("intersection")
+    let b1, b2
     const t1 = tree(new SimpleTree(delete_one_child),
-                    label("p"), [label("x"), subtree("A"), undefined], subtree("B"))
+                    label("p").expand(2), [label("x").expand(2), subtree("A"), undefined], b1 = subtree("B"))
     align("none", "T", t1.bbox.toTop(25), margin())
     align("none", "B", t1.bbox, margin())
 
     const t2 = tree(new SimpleTree(delete_one_child),
-                    label("p"), [subtree("A"), undefined, undefined], subtree("B"))
-    align("abut", "TB", t1.bbox, hspace(50), t2.bbox)
+                    label("p").expand(2), subtree("A"), b2 = subtree("B"))
+    align("abut", "T", t1.bbox, hspace(50), t2.bbox)
     align("L", "none", t1.bbox, margin())
     align("R", "none", t2.bbox, margin())
+    align("none", "top", b1, b2)
     function transform(t1, t2) {
         return arrow(t1.bbox, t2.bbox)
             .setLineWidth(10).setArrowSize(25).setStrokeStyle("#f88").setFillStyle("#f88")
