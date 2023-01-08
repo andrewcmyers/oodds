@@ -21,6 +21,10 @@ All nodes except the root have exactly one predecessor node, called its
 <div class=figure>
 <canvas id=tree_pics style="width: 400px; height: 350px"></canvas>
 <script class=graphics>
+  function node(fig, t) {
+    return fig.square().addText("" + t)
+                .setFontSize(10).setW(20).setCornerRadius(5).setFillStyle('white')
+  }
   class ArrowTree extends Constrain.Trees.TreeStyle {
       constructor(figure) {
         super(figure)
@@ -29,8 +33,7 @@ All nodes except the root have exactly one predecessor node, called its
         if (s === undefined) {
             return this.figure.point()
         } else {
-            return this.figure.square().addText("" + s)
-                .setFontSize(10).setW(20).setCornerRadius(5).setFillStyle('white')
+            return node(this.figure, s)
         }
       }
       drawEdge(n1, n2) { return this.figure.connector(n1.gobj, n2.gobj).setEndArrow("arrow")}
@@ -483,14 +486,14 @@ CFigure.prototype.subtree = function(name) {
     return result
 }
 class SimpleTree extends Constrain.Trees.TreeStyle {
+    constructor(figure) { super(figure) }
     decorateRoot(n) {
-    return this.figure.line(n.gobj.toTop(25), n.gobj.toTop(5))
+        return this.figure.line(n.gobj.toTop(25), n.gobj.toTop(5))
     }
 }
 window.SimpleTree = SimpleTree  
 with (delete_leaf_fig) {
     setConnectionStyle("intersection")
-    console.error("her")
     const t1 = tree(new SimpleTree(delete_leaf_fig),
                     label("p").expand(2), label("x").expand(2), subtree("A"))
     align("none", "T", t1.bbox.toTop(25), margin())
@@ -501,7 +504,7 @@ with (delete_leaf_fig) {
     align("abut", "TB", t1.bbox, hspace(50), t2.bbox)
     function transform(t1, t2) {
         return arrow(t1.bbox, t2.bbox)
-            .setLineWidth(10).setArrowSize(25).setStrokeStyle("#f88").setFillStyle("#f88")
+            .setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66").setFillStyle("#d66")
     }
     transform(t1, t2)
 }
@@ -534,7 +537,7 @@ with (delete_one_child) {
     align("none", "top", b1, b2)
     function transform(t1, t2) {
         return arrow(t1.bbox, t2.bbox)
-            .setLineWidth(10).setArrowSize(25).setStrokeStyle("#f88").setFillStyle("#f88")
+            .setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66").setFillStyle("#d66")
     }
     equal(t1.bbox.w(), t2.bbox.w())
     transform(t1, t2)
@@ -546,27 +549,51 @@ with (delete_one_child) {
 <p>In this case it is not as easy to remove node \(x\). Instead, we
 <b>replace</b> the data in the node with the data from either the immediate
 next or the immediate previous element in the tree. Without loss of generality,
-let's take the immediate next element; call it \(x'\).  Since \(x'\) is the
+let's take the immediate next element; call it \(y\).  Since \(y\) is the
 immediate next element, it must occur in the right subtree of node \(x\).
 To find the immediate next element
-\(x'\) from \(x\), we walk one step down the tree to the right, then walk down
+\(y\) from \(x\), we walk one step down the tree to the right, then walk down
 to the left as far as possible. The last node we
-encounter holds \(x'\), a node that
+encounter holds \(y\), a node that
 cannot possibly have a left child.  
 </p>
 <p>
-Having found \(x'\), we remove its node from the tree, either by <em>pruning</em>
+Having found \(y\), we remove its node from the tree, either by <em>pruning</em>
 it (if it is a leaf) or by
 <em>splicing it out</em> (if it is not). Then, we overwrite the data in node \(x\) with
-the data from node \(x'\).
+the data from node \(y\).
 </p>
 <div class=figure>
-<img src="delete-two-children.png" alt="BST deletion with two children" />
+<canvas id=delete_two_children style="width: 300px; height: 150px"></canvas>
+<script class=graphics>
+const delete_two_children = new CFigure("delete_two_children")
+with (delete_two_children) {
+    setConnectionStyle("intersection")
+    let b1, b2, x
+    const t1 = tree(new SimpleTree(delete_two_children),
+                    label("p").expand(2), [x = label("x").expand(2), subtree("A"), b1 = subtree("B")])
+
+    align("L", "none", t1.bbox, margin())
+    function transform(t1, t2) {
+        return arrow(t1.bbox, t2.bbox)
+            .setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66").setFillStyle("#d66")
+    }
+    const y = node(delete_two_children, "y").at(b1.ll()).setFillStyle("#eee")
+
+
+    arrow(y, y.toTop(25).toLeft(25), x).setLineDash([2,5]).setEndArrow("curved").setArrowSize(10)
+        .setStrokeStyle("#d66").setLineWidth(2).setFillStyle("#d66")
+    align("none", "T", t1.bbox.toTop(25), margin())
+    align("none", "B", y, margin())
+}
+</script>
 </div>
 <p>
 An alternative to overwriting the data in node \(x\) is
-to replace the entire \(x\) node with the \(x'\) node, which requires updating three
-pointers: one child pointer in node \(p\) and both child pointers in the \(x'\) node.
+to replace the entire \(x\) node with the \(y\) node, which requires updating three
+pointers: one child pointer in node \(p\) and both child pointers in the \(y\) node.
+This alternative is preferable if the data to be overwritten is large or if some
+external client has a reference to the original \(x\) node.
 </p>
 </li>
 </ol>
