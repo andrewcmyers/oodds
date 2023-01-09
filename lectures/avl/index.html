@@ -17,13 +17,19 @@ invariant with an additional shape invariant regarding the heights of subtrees. 
 and right subtrees differ by at most one.
 </p>
 <p>
-Letting \(h(t)\) be the height of the subtree rooted at node \(t\) (where an empty tree
+Let \(h(t)\) be the height of the subtree rooted at node \(t\) (where an empty tree
 is considered to have height \(&minus;1\) and a tree consisting of a single node is
-considered to have height \(0\)), the AVL invariant states that for all nodes \(t\) in
-the tree,
+considered to have height \(0\)). The <b>balance factor</b> or <b>imbalance</b> of
+a node \(t\) is defined to be the difference between the heights of its two subtrees:
+<div class=equation>
+\[ BF(t) = h(t.\texttt{left}) &minus; h(t.\texttt{right}) \]
+</div>
+
+The AVL invariant states that for all nodes \(t\) in the tree, the absolute value
+of the balance factor is at most 1:
 </p>
 <div class=equation>
-\(|h(t.\texttt{left}) &minus; h(t.\texttt{right})| ≤ 1\)
+\[|BF(t)| ≤ 1\]
 </div>
 
 <h2>AVL trees are balanced</h2>
@@ -74,8 +80,10 @@ F_1 &= 1
 </div>
 <p>
 In fact, if we add 1 to each term in the sequence of values for \(N(h)\), the
-familiar Fibonacci sequence emerges: 1, 2, 3, 5, 8, 13, ... . In general, \(N(h) = F(h+3) - 1\).
-We now show that N(h) grows asymptotically at the same rate as the Fibonacci sequence and that the Fibonacci sequence grows exponentially.</p>
+familiar Fibonacci sequence emerges: 1, 2, 3, 5, 8, 13, ... . In general,
+\(N(h) = F(h+3) - 1\).  We now show that N(h) grows asymptotically at the same
+rate as the Fibonacci sequence and that the Fibonacci sequence grows
+exponentially.</p>
 
 <p>
 It turns out that there is an exact formula for the Fibonacci numbers:</p>

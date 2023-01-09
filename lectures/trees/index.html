@@ -695,9 +695,17 @@ can be expressed easily using recursion:
 <a href="inorder-traverse.java">inorder</a>
 </pre>
 <p>(Here the <code>visit</code> method is just some function that does something with the data.)
-For example, consider using this algorithm on the following search tree:</p>
-<div class="figure">
-<img src="traverse-tree.png" alt="traversal example" />
+For example, consider using this algorithm on the following binary search tree:</p>
+<div class=figure>
+<canvas id=traverse_tree style="width: 150px; height: 100px"> </canvas>
+<script class=graphics>
+  const traverse_fig = new CFigure("traverse_tree")
+  with (traverse_fig) {
+    setConnectionStyle("intersection")
+    const t = tree(lightStyle(), 5, [3, 1, undefined], [11, 10, 17])
+    align("LR", "TB", t.bbox, margin())
+  }
+</script>
 </div>
 <p>
 The elements will be visited in the order 1, 3, 5, 10, 11, 17.
