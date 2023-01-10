@@ -36,7 +36,8 @@ of the balance factor is at most 1:
 All but one of the following trees satisfies the AVL invariant. Which one violates the invariant?
 <div class=figure>
 <canvas id=avl_exercise1 style="width:600px; height: 100px"></canvas>
-<script class=graphics>
+<!-- <script class=graphics> -->
+<script>
 class DotTree extends Constrain.Trees.TreeStyle {
     drawNode(n) {
         return n ? this.figure.circle().setW(8).setFillStyle('black') : this.figure.point()
@@ -230,7 +231,54 @@ Note that A, B, and C here represent entire subtrees that are not affected by th
 rotation except that their parent nodes may change.
 </p>
 <div class=figure>
-<img src="tree_rot.png">
+<canvas id=tree_rot style="width: 450px; height: 120px"></canvas>
+<script class=graphics>
+  class RotTree extends Constrain.Trees.TreeStyle {
+    constructor(figure) {super(figure)}
+    decorateRoot(n) {
+      return this.figure.connector(n.gobj.toTop(15), n.gobj)
+    }
+    drawNode(v) {
+        const f = this.figure
+        if (v === undefined) return f.point()
+        if (v.match("^[A-Z]")) {
+            const top = f.point()
+            const result = f.polygon(top, f.point(f.plus(top.x(), 20), f.plus(top.y(), 35)),
+                              f.point(f.minus(top.x(), 20), f.plus(top.y(), 35)))
+                .addText(v).setVerticalAlign("bottom")
+            result.target = function() { return top }
+            return result
+        } else {
+            return f.label(v).expand(3)
+        }
+    }
+    drawEdge(n1, n2) { return this.figure.connector(n1.gobj, n2.gobj) }
+  }
+  window.RotTree = RotTree  
+  with (new CFigure("tree_rot", true)) {
+    setFontSize(16)
+    setConnectionStyle("intersection")
+    function node(s) {
+        return new label(s).expand(3)
+    }
+    function mapper(s) {
+        if (s.match("^[a-z]*")) return node(s)
+        if (s === undefined) return point()
+        return 
+    }
+    const left = tree(new RotTree(thisFigure()), "p", "A", ["x", "B", "C"]),
+          right = tree(new RotTree(thisFigure()), "x", ["p", "A", "B"], "C")
+    sameSize(left.bbox, right.bbox)
+    align("LR", "B", group(left.bbox, hspace(80), right.bbox, hspace(50)).align("abut", "TB"), margin())
+    equal(left.bbox.y0(), 15)
+    arrow(left.bbox, right.bbox).setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66").setFillStyle("#d66").setStartArrow("arrow")
+    const f1 = addFrame().setLength(1500),
+          left1 = left.view(f1)
+    left1.rotateNodeWithParent("x")
+    const f2 = addFrame().setLength(1500)
+    left.view(f2).rotateNodeWithParent("p")
+  }
+</script>
 </div>
 <p>
 Rotations preserve the BST invariant. Because the BST invariant held before the rotation,
@@ -428,13 +476,13 @@ A <b>treap</b> is both a binary search tree and a heap.
 Each node contains both a key and a priority. The treap satisfies
 the BST invariant with respect to all of its keys, so elements can be found in
 the treap in (expected) logarithmic time.  However, the treap is also a <a
-href="../../../lecture.html?id=heaps">heap</a>: it satisfies the heap order invariant with respect to
+href="../../lecture.html?id=heaps">heap</a>: it satisfies the heap order invariant with respect to
 all its priorities. (It does not, however, satisfy the heap shape invariant, in
 general.) Enforcement of the heap order invariant ensures that the tree
 structure is exactly what you would get if the elements had been inserted in
 priority order into a regular binary search tree.
 </p>
-<p>For example, the following is a treap where the keys are the letters and the priorities
+<p>For example, the following tree is a treap in which the keys are the letters and the priorities
 are the numbers.</p>
 <div class=figure>
 <img src="treap_example.png">
@@ -448,7 +496,7 @@ to ensure that bubbling does not break the BST invariant.
 </p>
 <p>
 For example, adding a node D with priority 2 to the treap above results in the following
-rotations being done to restore the heap invariant:
+rotations being done to restore the heap invariant.
 </p>
 <div class=figure>
 <img src="treap_add.png">
