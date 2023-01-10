@@ -536,11 +536,12 @@ with (delete_one_child) {
     align("R", "none", t2.bbox, margin())
     align("none", "top", b1, b2)
     function transform(t1, t2) {
-        return arrow(t1.bbox, t2.bbox)
+        return arrow(t1, t2)
             .setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66").setFillStyle("#d66")
     }
+    const p = point(t1.bbox.x1(), t2.bbox.y())
     equal(t1.bbox.w(), t2.bbox.w())
-    transform(t1, t2)
+    transform(p, t2.bbox)
 }
 </script>
 </div>
