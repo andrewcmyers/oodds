@@ -43,6 +43,19 @@ function relativize(url, lecture_base, base) {
     }
 }
 
+function hide_answers() {
+    const answers = document.getElementsByClassName("answer")
+    for (const a of answers) {
+        a.style.display = 'none'
+        const show = EZDom.p({className: 'showAnswer'}, "(Show answer)")
+        a.parentNode.insertBefore(show, a)
+        show.onclick = (e) => {
+            a.style.display = 'block'
+            show.style.display = 'none'
+        }
+    }
+}
+
 function localizeContent(node, lecture_url) {
     const lecture_base = basename(lecture_url),
           lec_name = lecture_base.replace(/^.*\//, '')
@@ -68,6 +81,7 @@ function localizeContent(node, lecture_url) {
     }
     colorize_all(node)
     italicize_document_math()
+    hide_answers()
     for (const script of node.getElementsByClassName('graphics')) {
       try {
         eval(script.textContent)

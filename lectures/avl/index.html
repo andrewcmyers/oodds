@@ -32,6 +32,49 @@ of the balance factor is at most 1:
 \[|BF(t)| ≤ 1\]
 </div>
 
+<div class=exercise>
+All but one of the following trees satisfies the AVL invariant. Which one violates the invariant?
+<div class=figure>
+<canvas id=avl_exercise1 style="width:600px; height: 100px"></canvas>
+<script class=graphics>
+class DotTree extends Constrain.Trees.TreeStyle {
+    drawNode(n) {
+        return n ? this.figure.circle().setW(8).setFillStyle('black') : this.figure.point()
+    }
+}
+let fig1 = new CFigure("avl_exercise1")
+with (fig1) {
+    const x = 'x', u = undefined
+    const dots = new DotTree(fig1)
+    const t1 = tree(dots, x, [x, [x,x,u], [x,u,x]], [x,x,u]),
+        t2 = tree(dots, x, x, [x,x,x]),
+        t3 = tree(dots, x, [x,x,x], u),
+        t4 = tree(dots, x, [x,x,x], [x,x,x] ),
+        t5 = tree(dots, x, [x,x,u], [x, x, [x,u,x]] )
+
+    const b = [t4, t2, t3, t1, t5].map(t => t.bbox)
+    b.forEach(bbox => bbox.setW(70))
+    let trees = group(b[0], hspace(10), b[1], hspace(10), b[2], hspace(10), b[3], hspace(10), b[4])
+        .align("abut", "TB")
+    align("LR", "T", trees, margin())
+
+    align("center", "abut", b[0], vspace(5), label("(a)"))
+    align("center", "abut", b[1], vspace(5), label("(b)"))
+    align("center", "abut", b[2], vspace(5), label("(c)"))
+    align("center", "abut", b[3], vspace(5), label("(d)"))
+    align("center", "abut", b[4], vspace(5), label("(e)"))
+    align("none", "abut", trees, vspace(15), margin().lc())
+}
+</script>
+</div>
+<p class=answer>
+The tree that violates the AVL invariant is (c), because the balance factor of its root node
+is \(1 - (&minus;1) = 2\).
+</p>
+</div>
+
+
+
 <h2>AVL trees are balanced</h2>
 <p>
 A balanced tree has the property that the height \(h\) is \(O(\log n)\); that is, that \(h

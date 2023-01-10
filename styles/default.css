@@ -112,6 +112,9 @@ span.staff_position {
 	padding: 0
 }
 
+.showAnswer { font-style: italic; background-color: #ccc }
+.showAnswer:hover { color: #008 }
+
 .varname {
     font-style: normal;
     color: black;
@@ -146,6 +149,7 @@ div#unit-signature-links a { color: white }
 }
 
 p.definition { font-weight: bold; padding: 1em; background-color: #ddd; border: 1px solid black }
+
 
 @media print {
 	body {
