@@ -111,7 +111,7 @@ N(5)  &= 20 \\
      \dots \\
 \end{align}
 
-<p>It is not obvious that the function N grows exponentially, but it does. You
+<p>It is not obvious that the function \(N\)\) grows exponentially, but it does. You
 may already have noticed that the recurrence closely resembles the <em>Fibonacci recurrence</em>:
 \begin{align}
 F_n &= F_{n-1} + F_{n-2} \\
@@ -123,18 +123,19 @@ F_1 &= 1
 </div>
 <p>
 In fact, if we add 1 to each term in the sequence of values for \(N(h)\), the
-familiar Fibonacci sequence emerges: 1, 2, 3, 5, 8, 13, ... . In general,
-\(N(h) = F(h+3) - 1\).  We now show that N(h) grows asymptotically at the same
+familiar Fibonacci sequence emerges: \(1, 2, 3, 5, 8, 13, ...\) . In general,
+\(N(h) = F(h+3) - 1\).  We now show that \(N(h)\) grows asymptotically at the same
 rate as the Fibonacci sequence and that the Fibonacci sequence grows
 exponentially.</p>
 
+<div class=digression>
+<h3>Exact formula for the Fibonacci numbers</h3>
 <p>
-It turns out that there is an exact formula for the Fibonacci numbers:</p>
+It turns out that the Fibonacci number can be computed with an exact, nonrecursive formula:</p>
 \begin{align}
 \newcommand\phib{\overline{φ}}
  F_n & = (φ^n &minus; \phib^n)/\sqrt{5} & \text{(1)}
 \end{align}
-</div>
 <p>
 where \(φ\) is the <b>golden ratio</b> \((1+\sqrt{5})/2 ~~(≈ 1.618)\) and 
 \(\phib\) is its negative reciprocal \((1-\sqrt{5})/2 ~~(≈ -0.618)\).
@@ -149,7 +150,6 @@ that for <em>any</em> exponent n,
 φ^n & = φ^{n-1} + φ^{n–2} \hspace{6em} & \text{(2)} \\
 \phib^n &= \phib^{n–1} + \phib^{n–2}
 \end{align}
-</div>
 <p>
 Now we can show that the formula (1) for the Fibonacci numbers is correct by induction.
 First observe that the formula is correct for n=0 and n=1:</p>
@@ -181,13 +181,7 @@ vanishingly small for large \(n\). Asymptotically, the Fibonacci numbers grow as
 \(φ^n\). Technically, they are \(Θ(φ^n)\), meaning that
 \(φ^n\) is both an asymptotic upper <em>and lower</em> bound on \(F_n\).
 </p>
-<p>
-In fact, for all \(h≥0\), we have \(N(h) ≥ φ^h\). Given an arbitrary AVL
-tree of height \(h\) containing \(n\) nodes, since \(n ≥ N(h) ≥ φ^h\),
-we have \(h ≤ \log_{φ} n\). All logarithms
-are related by constant factors, so \(h\) is \(O(\log n)\).
-Therefore AVL trees are balanced.
-</p>
+</div>
 <h3>Another inductive argument</h3>
 <p>
 Without showing an exact formula for \(N(h)\) or \(F_n\), we can even more easily
@@ -212,14 +206,23 @@ The inequality \(N(h) ≥ φ^h\) holds for \(h=0\) and \(h=1\), and we know that
 holds for \(h-1\) and \(h-2\) then it holds for \(h\), so we can conclude by
 induction that it holds for all \(h≥0\).
 </p>
+<p>
+Since, for all \(h≥0\), we have \(N(h) ≥ φ^h\), we can see that the height of an AVL 
+tree is limited. Given an arbitrary AVL
+tree of height \(h\) containing \(n\) nodes, we have \(φ^h ≤ N(h) ≤ n\), we
+can take the logarithm (base \(φ\)) of this inequality to obtain
+\(h ≤ \log_{φ} n\). All logarithms
+are related by constant factors, so \(h\) is \(O(\log n)\).
+Therefore, AVL trees are balanced.
+</p>
 
 <h2>Inserting into an AVL tree</h2>
 <p>
-To insert a new element (key/value pair) into an AVL tree, we start by
+To insert a new element (a key–value pair) into an AVL tree, we start by
 using the key in the usual way to find where the key can be inserted as
 a leaf while preserving the BST invariant. Adding a new leaf makes the path
 to that leaf one longer than previously, so the AVL invariant may now be broken.
-Only the heights of ancestors of that leaf changes, so the invariant can only
+The only heights that change are the heights of ancestors of that new leaf, so the AVL invariant can only
 broken at nodes along the path from the root to the leaf.
 To fix the invariant, we find the lowest node along that path,
 and apply one or two <b>tree rotations</b>. Assuming that
@@ -387,7 +390,7 @@ most important are:
 <li>There are no red–red edges.
 <li>The shortest path length is \(h/2\), so the tree contains at least \(n ≥ 2^{h/2}\) nodes. Therefore, \(h ≤ 2 \lg n = O(\log n) \) : the tree is balanced.
 </ul>
-<li>2-3-4 trees
+<li>2–3–4 trees
 <ul>
 <li>Every leaf has the same depth.
 <li>Every node has 2, 3, or 4 children, except the leaves.
@@ -395,7 +398,7 @@ most important are:
 </ul>
 <li>B-trees
 <ul>
-<li>An n-ary generalization of 2-3-4 trees.
+<li>An n-ary generalization of 2–3–4 trees.
 <li>Every leaf at same depth.
 <li>Every node except root has at least \(\lceil n/2\rceil\) children ⇒ balanced
 <li>Large \(n\) ⇒ few edges followed to reach any leaf
@@ -415,7 +418,7 @@ most important are:
 <li>Binary tree with <em>no</em> invariant.
 <li>Searched-for nodes are rotated to top of tree, so repeatedly
     searching for the same elements is especially fast.
-<li>O(log n) amortized performance.
+<li>\(O(\log n)\) amortized performance.
 <li>Used in network routers to figure out where to send packets.
 </ul>
 </ul>
