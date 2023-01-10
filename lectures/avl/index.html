@@ -185,8 +185,9 @@ vanishingly small for large \(n\). Asymptotically, the Fibonacci numbers grow as
 <h3>Another inductive argument</h3>
 <p>
 Without showing an exact formula for \(N(h)\) or \(F_n\), we can even more easily
-prove an exponential lower bound on \(N(h)\) by induction. We actually show that \(N(h) ≥ φ^h\) for all \(h\).
-Experimentally, we have \(N(0) = 1 = φ^0\) and \(N(1) = 2 ≥ φ^1\). Now assume as induction hypothesis
+prove an exponential lower bound on \(N(h)\) by induction. We show that for all
+\(h≥0\), the inequality \(N(h) ≥ φ^h\) holds.
+Experimentally, we have \(N(0) = 1 = φ^0\) and \(N(1) = 2 ≥ φ^1\). Now assume as an induction hypothesis
 that the condition \(N(h) ≥ φ^h\) holds for all values up to but not necessarily including some \(h≥2\).
 We can show that the formula must also hold for \(h\),
 using the induction hypothesis and property (2).</p>
@@ -297,7 +298,7 @@ appropriate child variable in that parent node.
 </p>
 <pre>
 <b>Left rotation</b>                          <b>Right rotation</b>
-x.right = y.left; // B                 y.left = x.right; // B
+x.right = y.left; /* B */              y.left = x.right; /* B */
 y.left = p;                            x.right = y;
 newChild = y;                          newChild = x;
 </pre>
