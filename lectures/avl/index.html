@@ -209,12 +209,48 @@ induction that it holds for all \(h≥0\).
 <p>
 Since, for all \(h≥0\), we have \(N(h) ≥ φ^h\), we can see that the height of an AVL 
 tree is limited. Given an arbitrary AVL
-tree of height \(h\) containing \(n\) nodes, we have \(φ^h ≤ N(h) ≤ n\), we
-can take the logarithm (base \(φ\)) of this inequality to obtain
+tree of height \(h\) containing \(n\) nodes, we have \(φ^h ≤ N(h) ≤ n\). If
+we take the logarithm (base \(φ\)) of this inequality, we obtain
 \(h ≤ \log_{φ} n\). All logarithms
 are related by constant factors, so \(h\) is \(O(\log n)\).
 Therefore, AVL trees are balanced.
 </p>
+
+<h2>Tree Rotations</h2>
+<p>
+The key to balancing search trees is to reorganize them incrementally as
+operations are performed, so that they never become unbalanced. However, any
+reorganization of the data structure must maintain the BST invariant. The most
+important tree transformation is a <b>tree rotation</b>, which swaps a node
+with its parent while preserving the BST invariant. If a node \(x\) is the
+right child of a parent node \(p\), a <b>left rotation</b> is performed by changing
+pointers so the data structure on the left turns into the data structure on the
+right.
+Note that A, B, and C here represent entire subtrees that are not affected by the
+rotation except that their parent nodes may change.
+</p>
+<div class=figure>
+<img src="tree_rot.png">
+</div>
+<p>
+Rotations preserve the BST invariant. Because the BST invariant held before the rotation,
+we know that \(A < x < B < y < C\) (where \(A, B, C\) stand for all nodes in the
+respective subtrees). This ordering of the keys is preserved in the rotated tree.
+</p>
+<p>
+Symmetrically, a <b>right rotation</b> changes the tree on the right side into
+the tree on the left, lifting a node \(p\) above its former parent \(x\). And
+this transformation keeps the various tree nodes in exactly the same relative order.
+</p>
+<p>
+Because they only affect three nodes of the tree, tree rotations are efficient:
+</p>
+<pre>
+<b>Left rotation</b>                          <b>Right rotation</b>
+p.right = x.left; // B                 x.left = p.right; // B
+x.left = p;                            p.right = x;
+newChild = x;                          newChild = p;
+</pre>
 
 <h2>Inserting into an AVL tree</h2>
 <p>
@@ -225,7 +261,7 @@ to that leaf one longer than previously, so the AVL invariant may now be broken.
 The only heights that change are the heights of ancestors of that new leaf, so the AVL invariant can only
 broken at nodes along the path from the root to the leaf.
 To fix the invariant, we find the lowest node along that path,
-and apply one or two <b>tree rotations</b>. Assuming that
+and apply one or two tree rotations. Assuming that
 the insertion is done recursively, it is easy to identify where along the path
 the invariant is broken as the recursive calls return, assuming that each node
 keeps track of its height in the tree. Of course, that also means that nodes'
@@ -234,17 +270,17 @@ to implement insertion iteratively, in this case keeping track of the last
 node on the path where the invariant breaks.
 </p>
 <p>
-If inserting a new leaf breaks the AVL invariant at some node t, the invariant
+If inserting a new leaf breaks the AVL invariant at some node \(t\), the invariant
 can only be broken by 1; that is, the difference between the heights of the left and right
-subtrees of t is either 2 or &minus;2, depending on
+subtrees of \(t\) is either \(2\) or \(&minus;2\), depending on
 whether the insertion happened in the left or right subtree, respectively.
 Without loss of generality, let us consider the left-child case, where
-the difference is 2.
-Suppose the height of the right subtree is some h and the left subtree
-has height h+2.
+the difference is \(2\).
+Suppose the right subtree has some height \(h\) and the left subtree
+has height \(h+2\).
 Since insertion only affected one path, one of the two subtrees
-of the left subtree must have height h+1 and the other, h.
-Depending on which subtree has height h+1, there are
+of the left subtree must have height \(h+1\) and the other, \(h\).
+Depending on which subtree has height \(h+1\), there are
 two cases to consider:
 </p>
 
@@ -259,42 +295,44 @@ two cases to consider:
 </table>
 </div>
 <p>
-In this figure, <tt>z</tt> is the lowest node that is unbalanced. Therefore, the
-shorter subtree (<tt>c</tt> on the left side and <tt>a</tt> on the right side) must have height
+In this figure, \(z\) is the lowest node that is unbalanced. Therefore, the
+shorter subtree (\(c\) on the left side and \(a\) on the right side) must have height
 h; if their heights were lower, z would not be the lowest unbalanced node.
 </p>
 <p>
 Now, how do we fix the AVL invariant? If we are in the LL case shown on the
-left, we perform a single tree rotation to make y the parent of z, and
-update z so that its left child is now the former right child of y (that is, c).
-The resulting tree looks like this:
+left, we perform a single right rotation to make \(y\) the parent of \(z\), which
+updates \(z\) so that its left child is now the former right child of \(y\) (that is, \(c\)).
+The resulting tree looks as follows:
 </p>
 
 <div class=figure>
 <img src="rotation_result.png">
-<br>
-After tree rotation(s)
+<p class=caption>
+Resulting tree after tree rotation(s)
+</p>
 </div>
 <p>
-Rotations preserve the BST invariant.
+As observed earlier, rotations preserve the BST invariant.
 Because the BST invariant held before the rotation, we know
-that a &lt; x &lt; b &lt; y &lt; c &lt; z &lt; d (where a, b, c, d stand
-for all nodes in subtrees a, b, c, d).
+that \(a &lt; x &lt; b &lt; y &lt; c &lt; z &lt; d\) (where \(a, b, c, d\) stand
+for all nodes in subtrees \(a, b, c, d\)).
 This ordering of the keys is preserved in the rotated tree.</p>
 
 <p>
-Now we argue that the rotation reestablishes the AVL invariant.
-Since subtrees a, b, c, and d all have at most height h, the nodes x and z
-are now at height h+1, and node y is at height h+2. The longest path within this
-part of the tree is now one shorter than before–it's back to h+2—so
-this change also fixes
-the AVL invariant for all nodes above y.
+The rotation reestablishes the AVL invariant.
+Since subtrees \(a\), \(b\), \(c\), and \(d\) all have at most height \(h\), the nodes \(x\) and \(z\)
+are now at height \(h+1\), and node \(y\) is at height \(h+2\). The longest path within this
+part of the tree is now one shorter than before–it's back to \(h+2\)—so
+this change also fixes the AVL invariant for all nodes above node \(y\).
 </p>
 <p>
 To fix the AVL invariant in the LR case, we convert the tree into exactly
-the same structure as for the LL case. However, this requires more work:
-all three nodes x, y, and z must be changed. We perform two rotations,
-first with x and y, then y and z.
+the same structure as for the LL case. However, this reorganization requires more work:
+all three nodes \(x\), \(y\), and \(z\) must be changed. This can be described as performing
+two rotations, first a left rotation on \(y\) to make it the parent of \(x\), and then a
+right rotation on \(y\) to make it the parent of \(z\). An efficient implementation can
+take some shortcuts and do the work of both rotations at the same time.
 </p>
 <p>
 Symmetrically to the LL and LR cases, there are RR and RL cases. They are
@@ -311,6 +349,9 @@ above.
 <img src="case_RL.png"><br>RL case
 </tr>
 </table>
+<p class=caption>
+The symmetrical RR and LL cases
+</p>
 </div>
 
 <h2>An optimization</h2>
@@ -376,6 +417,53 @@ is only necessary to check whether nodes above are still balanced if the height
 of the y node becomes h+2.
 </p>
 
+<h2>Random Treaps</h2>
+<p>
+An alternative to AVL trees is <b>random treaps</b>, which are balanced with high probability.
+achieved by ensuring the tree has exactly the same structure that it would have had if
+the elements had been inserted into a binary search tree in a random order.
+</p>
+<p>
+A <b>treap</b> is both a binary search tree and a heap.
+Each node contains both a key and a priority. The treap satisfies
+the BST invariant with respect to all of its keys, so elements can be found in
+the treap in (expected) logarithmic time.  However, the treap is also a <a
+href="../../../lecture.html?id=heaps">heap</a>: it satisfies the heap order invariant with respect to
+all its priorities. (It does not, however, satisfy the heap shape invariant, in
+general.) Enforcement of the heap order invariant ensures that the tree
+structure is exactly what you would get if the elements had been inserted in
+priority order into a regular binary search tree.
+</p>
+<p>For example, the following is a treap where the keys are the letters and the priorities
+are the numbers.</p>
+<div class=figure>
+<img src="treap_example.png">
+</div>
+<p>
+Elements are added to the treap in the usual way for binary search trees. However,
+this may break the heap invariant on priorities. To fix the heap invariant, the element
+is bubbled up through the treap. However, to bubble up an element, tree rotations are used
+instead of simply swapping the element with its parent. Tree rotations are needed in order
+to ensure that bubbling does not break the BST invariant.
+</p>
+<p>
+For example, adding a node D with priority 2 to the treap above results in the following
+rotations being done to restore the heap invariant:
+</p>
+<div class=figure>
+<img src="treap_add.png">
+</div>
+<p>
+This is exactly the tree structure we would have gotten if we had inserted all the nodes
+into a simple BST in the order specified by their priorities.
+</p>
+<p>
+Finally, to obtain a tree that is balanced with high probability, we simply assign random
+priorities to elements as they are inserted. The resulting tree will then have the same
+structure as a binary search tree whose elements were inserted in random order, which
+we know has a height that is \(O(\log(n)\) with high probability.
+</p>
+
 <h2>Other balanced binary trees</h2>
 <p>
 Other balanced binary search trees (and more generally, n-ary search trees)
@@ -404,14 +492,6 @@ most important are:
 <li>Large \(n\) ⇒ few edges followed to reach any leaf
 <li>Complex logic with a lot of corner cases that are tricky to get right.
 <li>Used in databases and file systems where following “pointers” is expensive.
-</ul>
-<li>Random treaps
-<ul>
-<li>Binary tree in which nodes have priorities in addition to keys.
-<li>Satisfies BST invariant with respect to keys.
-<li>Satisfies heap order invariant with respect to priorities, which are assigned randomly.
-<li>Tree structure matches structure of BST with randomized insertion order.
-<li>Not guaranteed to be balanced, but expected height is \(O(\log n)\).
 </ul>
 <li>Splay trees
 <ul>
