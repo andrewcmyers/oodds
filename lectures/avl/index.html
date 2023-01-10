@@ -258,23 +258,17 @@ rotation except that their parent nodes may change.)
   with (new CFigure("tree_rot", true)) {
     setFontSize(16)
     setConnectionStyle("intersection")
-    function node(s) {
-        return new label(s).expand(3)
-    }
-    function mapper(s) {
-        if (s.match("^[a-z]*")) return node(s)
-        if (s === undefined) return point()
-        return 
-    }
     const left = tree(new RotTree(thisFigure()), "x", "A", ["y", "B", "C"]),
           right = tree(new RotTree(thisFigure()), "y", ["x", "A", "B"], "C")
     sameSize(left.bbox, right.bbox)
-    align("LR", "B", group(left.bbox, hspace(80), right.bbox, hspace(50)).align("abut", "TB"), margin())
+    align("LR", "B", group(left.bbox, hspace(80), right.bbox, hspace(50)).align("abut", "TB"),
+          margin())
     equal(left.bbox.y0(), 15)
-    arrow(left.bbox, right.bbox).setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66").setFillStyle("#d66").setStartArrow("arrow")
-    const f1 = addFrame().setLength(1500),
-          left1 = left.view(f1)
-    left1.rotateNodeWithParent("y")
+    arrow(left.bbox, right.bbox)
+        .setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66")
+        .setFillStyle("#d66").setStartArrow("arrow")
+    const f1 = addFrame().setLength(1500)
+    left.view(f1).rotateNodeWithParent("y")
     const f2 = addFrame().setLength(1500)
     left.view(f2).rotateNodeWithParent("x")
   }
