@@ -222,12 +222,12 @@ The key to balancing search trees is to reorganize them incrementally as
 operations are performed, so that they never become unbalanced. However, any
 reorganization of the data structure must maintain the BST invariant. The most
 important tree transformation is a <b>tree rotation</b>, which swaps a node
-with its parent while preserving the BST invariant. If a node \(x\) is the
-right child of a parent node \(p\), a <b>left rotation</b> is performed by changing
-pointers so the data structure on the left turns into the data structure on the
+with its parent while preserving the BST invariant. If a node \(y\) is the
+right child of its parent node \(x\), a <b>left rotation</b> is performed by changing
+pointers so that \(y\) becomes the parent of \(x\), turning the data structure on the left into the data structure on the
 right.
-Note that A, B, and C here represent entire subtrees that are not affected by the
-rotation except that their parent nodes may change.
+(Note that A, B, and C here represent entire subtrees that are not affected by the
+rotation except that their parent nodes may change.)
 </p>
 <div class=figure>
 <canvas id=tree_rot style="width: 450px; height: 120px"></canvas>
@@ -265,17 +265,17 @@ rotation except that their parent nodes may change.
         if (s === undefined) return point()
         return 
     }
-    const left = tree(new RotTree(thisFigure()), "p", "A", ["x", "B", "C"]),
-          right = tree(new RotTree(thisFigure()), "x", ["p", "A", "B"], "C")
+    const left = tree(new RotTree(thisFigure()), "x", "A", ["y", "B", "C"]),
+          right = tree(new RotTree(thisFigure()), "y", ["x", "A", "B"], "C")
     sameSize(left.bbox, right.bbox)
     align("LR", "B", group(left.bbox, hspace(80), right.bbox, hspace(50)).align("abut", "TB"), margin())
     equal(left.bbox.y0(), 15)
     arrow(left.bbox, right.bbox).setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66").setFillStyle("#d66").setStartArrow("arrow")
     const f1 = addFrame().setLength(1500),
           left1 = left.view(f1)
-    left1.rotateNodeWithParent("x")
+    left1.rotateNodeWithParent("y")
     const f2 = addFrame().setLength(1500)
-    left.view(f2).rotateNodeWithParent("p")
+    left.view(f2).rotateNodeWithParent("x")
   }
 </script>
 </div>
@@ -286,17 +286,20 @@ respective subtrees). This ordering of the keys is preserved in the rotated tree
 </p>
 <p>
 Symmetrically, a <b>right rotation</b> changes the tree on the right side into
-the tree on the left, lifting a node \(p\) above its former parent \(x\). And
+the tree on the left, lifting a node \(x\) above its former parent \(y\). And
 this transformation keeps the various tree nodes in exactly the same relative order.
 </p>
 <p>
-Because they only affect three nodes of the tree, tree rotations are efficient:
+Tree rotations are efficient because they only affect three nodes of the tree:
+the nodes \(x\) and \(y\), and a parent node that is not shown in the diagram above.
+In the following code, the variable <code>newChild</code> represents the
+appropriate child variable in that parent node.
 </p>
 <pre>
 <b>Left rotation</b>                          <b>Right rotation</b>
-p.right = x.left; // B                 x.left = p.right; // B
-x.left = p;                            p.right = x;
-newChild = x;                          newChild = p;
+x.right = y.left; // B                 y.left = x.right; // B
+y.left = p;                            x.right = y;
+newChild = y;                          newChild = x;
 </pre>
 
 <h2>Inserting into an AVL tree</h2>
