@@ -380,22 +380,20 @@ also strengthen the search tree invariant to ensure that the tree remains
 balanced. There are many balanced search tree data structures; some of the
 most important are:
 <ul>
-<li>Red–black trees<li>
-<p>
+<li>Red–black trees
 <ul>
 <li>Nodes are colored red or black.
 <li>The number of black nodes on every path from the root to a leaf is the same for every leaf: the <b>black height</b> of the tree.
 <li>There are no red–red edges.
 <li>The shortest path length is \(h/2\), so the tree contains at least \(n ≥ 2^{h/2}\) nodes. Therefore, \(h ≤ 2 \lg n = O(\log n) \) : the tree is balanced.
 </ul>
-</p>
-<li>2-3-4 trees<li>
+<li>2-3-4 trees
 <ul>
 <li>Every leaf has the same depth.
 <li>Every node has 2, 3, or 4 children, except the leaves.
 <li>Isomorphic to red–black trees.
 </ul>
-<li>B-trees<li>
+<li>B-trees
 <ul>
 <li>An n-ary generalization of 2-3-4 trees.
 <li>Every leaf at same depth.
