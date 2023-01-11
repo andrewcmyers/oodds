@@ -185,8 +185,9 @@ vanishingly small for large \(n\). Asymptotically, the Fibonacci numbers grow as
 <h3>Another inductive argument</h3>
 <p>
 Without showing an exact formula for \(N(h)\) or \(F_n\), we can even more easily
-prove an exponential lower bound on \(N(h)\) by induction. We actually show that \(N(h) ≥ φ^h\) for all \(h\).
-Experimentally, we have \(N(0) = 1 = φ^0\) and \(N(1) = 2 ≥ φ^1\). Now assume as induction hypothesis
+prove an exponential lower bound on \(N(h)\) by induction. We show that for all
+\(h≥0\), the inequality \(N(h) ≥ φ^h\) holds.
+Experimentally, we have \(N(0) = 1 = φ^0\) and \(N(1) = 2 ≥ φ^1\). Now assume as an induction hypothesis
 that the condition \(N(h) ≥ φ^h\) holds for all values up to but not necessarily including some \(h≥2\).
 We can show that the formula must also hold for \(h\),
 using the induction hypothesis and property (2).</p>
@@ -216,21 +217,62 @@ are related by constant factors, so \(h\) is \(O(\log n)\).
 Therefore, AVL trees are balanced.
 </p>
 
-<h2>Tree Rotations</h2>
+<h2 id=tree_rotations>Tree Rotations</h2>
 <p>
 The key to balancing search trees is to reorganize them incrementally as
 operations are performed, so that they never become unbalanced. However, any
 reorganization of the data structure must maintain the BST invariant. The most
 important tree transformation is a <b>tree rotation</b>, which swaps a node
-with its parent while preserving the BST invariant. If a node \(x\) is the
-right child of a parent node \(p\), a <b>left rotation</b> is performed by changing
-pointers so the data structure on the left turns into the data structure on the
+with its parent while preserving the BST invariant. If a node \(y\) is the
+right child of its parent node \(x\), a <b>left rotation</b> is performed by changing
+pointers so that \(y\) becomes the parent of \(x\), turning the data structure on the left into the data structure on the
 right.
-Note that A, B, and C here represent entire subtrees that are not affected by the
-rotation except that their parent nodes may change.
+(Note that A, B, and C here represent entire subtrees that are not affected by the
+rotation except that their parent nodes may change.)
 </p>
 <div class=figure>
-<img src="tree_rot.png">
+<canvas id=tree_rot style="width: 450px; height: 120px"></canvas>
+<script class=graphics>
+  class RotTree extends Constrain.Trees.TreeStyle {
+    constructor(figure) {super(figure)}
+    decorateRoot(n) {
+      return this.figure.connector(n.gobj.toTop(15), n.gobj)
+    }
+    drawNode(v) {
+        const f = this.figure
+        if (v === undefined) return f.point()
+        if (v.match("^[A-Z]")) {
+            const top = f.point()
+            const result = f.polygon(top, f.point(f.plus(top.x(), 20), f.plus(top.y(), 35)),
+                              f.point(f.minus(top.x(), 20), f.plus(top.y(), 35)))
+                .addText(v).setVerticalAlign("bottom")
+            result.target = function() { return top }
+            return result
+        } else {
+            return f.label(v).expand(3)
+        }
+    }
+    drawEdge(n1, n2) { return this.figure.connector(n1.gobj, n2.gobj) }
+  }
+  window.RotTree = RotTree  
+  with (new CFigure("tree_rot", true)) {
+    setFontSize(16)
+    setConnectionStyle("intersection")
+    const left = tree(new RotTree(thisFigure()), "x", "A", ["y", "B", "C"]),
+          right = tree(new RotTree(thisFigure()), "y", ["x", "A", "B"], "C")
+    sameSize(left.bbox, right.bbox)
+    align("LR", "B", group(left.bbox, hspace(80), right.bbox, hspace(50)).align("abut", "TB"),
+          margin())
+    equal(left.bbox.y0(), 15)
+    arrow(left.bbox, right.bbox)
+        .setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66")
+        .setFillStyle("#d66").setStartArrow("arrow")
+    const f1 = addFrame().setLength(1500)
+    left.view(f1).rotateNodeWithParent("y")
+    const f2 = addFrame().setLength(1500)
+    left.view(f2).rotateNodeWithParent("x")
+  }
+</script>
 </div>
 <p>
 Rotations preserve the BST invariant. Because the BST invariant held before the rotation,
@@ -239,17 +281,20 @@ respective subtrees). This ordering of the keys is preserved in the rotated tree
 </p>
 <p>
 Symmetrically, a <b>right rotation</b> changes the tree on the right side into
-the tree on the left, lifting a node \(p\) above its former parent \(x\). And
+the tree on the left, lifting a node \(x\) above its former parent \(y\). And
 this transformation keeps the various tree nodes in exactly the same relative order.
 </p>
 <p>
-Because they only affect three nodes of the tree, tree rotations are efficient:
+Tree rotations are efficient because they only affect three nodes of the tree:
+the nodes \(x\) and \(y\), and a parent node that is not shown in the diagram above.
+In the following code, the variable <code>newChild</code> represents the
+appropriate child variable in that parent node.
 </p>
 <pre>
 <b>Left rotation</b>                          <b>Right rotation</b>
-p.right = x.left; // B                 x.left = p.right; // B
-x.left = p;                            p.right = x;
-newChild = x;                          newChild = p;
+x.right = y.left; /* B */              y.left = x.right; /* B */
+y.left = p;                            x.right = y;
+newChild = y;                          newChild = x;
 </pre>
 
 <h2>Inserting into an AVL tree</h2>
@@ -428,13 +473,13 @@ A <b>treap</b> is both a binary search tree and a heap.
 Each node contains both a key and a priority. The treap satisfies
 the BST invariant with respect to all of its keys, so elements can be found in
 the treap in (expected) logarithmic time.  However, the treap is also a <a
-href="../../../lecture.html?id=heaps">heap</a>: it satisfies the heap order invariant with respect to
+href="../../lecture.html?id=heaps">heap</a>: it satisfies the heap order invariant with respect to
 all its priorities. (It does not, however, satisfy the heap shape invariant, in
 general.) Enforcement of the heap order invariant ensures that the tree
 structure is exactly what you would get if the elements had been inserted in
 priority order into a regular binary search tree.
 </p>
-<p>For example, the following is a treap where the keys are the letters and the priorities
+<p>For example, the following tree is a treap in which the keys are the letters and the priorities
 are the numbers.</p>
 <div class=figure>
 <img src="treap_example.png">
@@ -448,7 +493,7 @@ to ensure that bubbling does not break the BST invariant.
 </p>
 <p>
 For example, adding a node D with priority 2 to the treap above results in the following
-rotations being done to restore the heap invariant:
+rotations being done to restore the heap invariant.
 </p>
 <div class=figure>
 <img src="treap_add.png">
