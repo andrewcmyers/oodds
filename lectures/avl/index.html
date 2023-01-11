@@ -481,38 +481,41 @@ most important are:
 <li>2–3–4 trees
 <ul>
 <li>Every leaf has the same depth.
-<li>Every node has 2, 3, or 4 children, except the leaves.
-<li>Isomorphic to red–black trees.
+<li>Every node has 2, 3, or 4 children, except the leaves, so the tree height
+ is \(O(\log n)\) in the number of elements \(n\).
+<li>2–3–4 trees are isomorphic to red–black trees, with each node in a 2–3–4 tree corresponding
+to 1, 2, or 3 nodes in the corresponding red–black tree.
 </ul>
 <li>B-trees
 <ul>
-<li>An n-ary generalization of 2–3–4 trees.
-<li>Every leaf at same depth.
-<li>Every node except root has at least \(\lceil n/2\rceil\) children ⇒ balanced
-<li>Large \(n\) ⇒ few edges followed to reach any leaf
-<li>Complex logic with a lot of corner cases that are tricky to get right.
-<li>Used in databases and file systems where following “pointers” is expensive.
+<li>An \(N\)-ary generalization of 2–3–4 trees.
+<li>Every leaf has the same depth.
+<li>Every node except the root has at least \(\lceil N/2\rceil\) children, which ensures the tree height
+ is \(O(\log n)\) in the number of elements \(n\).
+<li>If \(N\) is large, it means that relatively few edges are followed to reach any given leaf
+<li>However, B-trees are characterized by complex logic with tricky corner cases.
+<li>They are used frequently in databases and file systems where following “pointers” is expensive.
 </ul>
 <li>Splay trees
 <ul>
-<li>Binary tree with <em>no</em> invariant.
+<li>Binary search tree with <em>no</em> additional shape invariant.
 <li>Searched-for nodes are rotated to top of tree, so repeatedly
     searching for the same elements is especially fast.
-<li>\(O(\log n)\) amortized performance.
+<li>Asymptotically optimal (amortized) performance: \(O(\log n)\).
 <li>Used in network routers to figure out where to send packets.
 </ul>
 </ul>
 <p>
-Each of these except splay trees imposes an additional invariant that
+Each of these data structures (except splay trees) imposes an additional invariant that
 ensures the tree remains balanced. For example, red–black trees have a
 <b>color invariant</b>: every node is either red or black, and on every path
 from the root to a leaf, there are the same number of black nodes but no
-adjacent red nodes. B-trees and 2-3 trees are perfectly balanced n-ary search
-trees in which the number of children varies between &lceil;n/2&rceil; and n
+adjacent red nodes. B-trees and 2–3–4 trees are perfectly balanced n-ary search
+trees in which the number of children varies between \(&lceil;n/2&rceil;\) and \(n\)
 (except that the root may have as few as 2 children).
 </p>
 <p>
-Note that search trees with a branching factor of b must store at least b–1 keys
+Note that search trees with a branching factor of \(b\) must store at least \(b&minus;1\) keys
 at each node in order to know which child to go to when searching. For example,
-in a 2–3 tree, there can be up to 3 keys at a given node.
+in a 2–3–4 tree, there can be up to 3 keys at a given node.
 </p>
