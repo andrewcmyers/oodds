@@ -111,8 +111,9 @@ N(5)  &= 20 \\
      \dots \\
 \end{align}
 
-<p>It is not obvious that the function \(N\)\) grows exponentially, but it does. You
-may already have noticed that the recurrence closely resembles the <em>Fibonacci recurrence</em>:
+<p>It is not obvious that the function \(N(h)\) grows exponentially, but it does.
+Perhaps you noticed that the recurrence for \(N(h)\) closely resembles the famous
+<em>Fibonacci recurrence</em>:
 \begin{align}
 F_n &= F_{n-1} + F_{n-2} \\
 F_0 &= 0 \\
@@ -227,7 +228,7 @@ with its parent while preserving the BST invariant. If a node \(y\) is the
 right child of its parent node \(x\), a <b>left rotation</b> is performed by changing
 pointers so that \(y\) becomes the parent of \(x\), turning the data structure on the left into the data structure on the
 right.
-(Note that A, B, and C here represent entire subtrees that are not affected by the
+(Note that \(A\), \(B\), and \(C\) here represent entire subtrees that are not affected by the
 rotation except that their parent nodes may change.)
 </p>
 <div class=figure>
@@ -255,7 +256,7 @@ rotation except that their parent nodes may change.)
     drawEdge(n1, n2) { return this.figure.connector(n1.gobj, n2.gobj) }
   }
   window.RotTree = RotTree  
-  with (new CFigure("tree_rot", true)) {
+  with (window.rot_tree = new CFigure("tree_rot", true)) {
     setFontSize(16)
     setConnectionStyle("intersection")
     const left = tree(new RotTree(thisFigure()), "x", "A", ["y", "B", "C"]),
@@ -267,16 +268,16 @@ rotation except that their parent nodes may change.)
     arrow(left.bbox, right.bbox)
         .setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66")
         .setFillStyle("#d66").setStartArrow("arrow")
-    const f1 = addFrame().setLength(1500)
+    const f1 = addFrame().setLength(1500),
+          f2 = addFrame().setLength(1500)
     left.view(f1).rotateNodeWithParent("y")
-    const f2 = addFrame().setLength(1500)
-    left.view(f2).rotateNodeWithParent("x")
+    right.view(f2).rotateNodeWithParent("x")
   }
 </script>
 </div>
 <p>
 Rotations preserve the BST invariant. Because the BST invariant held before the rotation,
-we know that \(A < x < B < y < C\) (where \(A, B, C\) stand for all nodes in the
+we know that \(A < x < B < y < C\) (where \(A\), \(B\), and \(C\) stand for all nodes in the
 respective subtrees). This ordering of the keys is preserved in the rotated tree.
 </p>
 <p>
