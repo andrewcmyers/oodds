@@ -333,6 +333,12 @@ two cases to consider, which we will call the LL case and the LR case:
 <div class=figure>
 <canvas id=case_LL_LR style="width: 500px; height: 180px"></canvas>
 <script class=graphics>
+function measure(p1, p2) {
+    return this.vertLine(p1, p2)
+        .setEndArrow("curved").setStartArrow("curved")
+        .setArrowSize(8).setStrokeStyle("#06c")
+}
+CFigure.prototype.measure = measure
 with (new CFigure("case_LL_LR", true)) {
     setFontSize(14)
     setConnectionStyle("intersection")
@@ -354,27 +360,23 @@ with (new CFigure("case_LL_LR", true)) {
     
     setStrokeStyle("#06c")
     setTextStyle("#06c")
-    const l1 = line(p1, p3).setEndArrow("curved").setStartArrow("curved").setArrowSize(8)
+    const l1 = measure(p3, p1)
     align("abut", "center", l1, hspace(3), label("h + 1").setFontSize(10))
 
     const pc1 = ll1.findObj("C").lr().toRight(5)
-    const l2 = line(pc1, point(pc1.x(), ll1.findObj("C").y0()))
-        .setEndArrow("curved").setStartArrow("curved").setArrowSize(8)
+    const l2 = measure(point(pc1.x(), ll1.findObj("C").y0()), pc1)
     align("abut", "center", l2, hspace(3), label("h").setFontSize(10))
 
     const pd1 = ll1.findObj("D").lr().toRight(5)
-    const l3 = line(pd1, point(pd1.x(), ll1.findObj("D").y0()))
-        .setEndArrow("curved").setStartArrow("curved").setArrowSize(8)
+    const l3 = measure(point(pd1.x(), ll1.findObj("D").y0()), pd1)
     align("abut", "center", l3, hspace(3), label("h").setFontSize(10))
 
     const pa2 = lr1.findObj("A").ll().toLeft(5)
-    const l4 = line(pa2, point(pa2.x(), lr1.findObj("A").y0()))
-        .setEndArrow("curved").setStartArrow("curved").setArrowSize(8)
+    const l4 = measure(point(pa2.x(), lr1.findObj("A").y0()), pa2)
     align("abut", "center", l4, hspace(3), label("h").setFontSize(10))
 
     const pd2 = lr1.findObj("D").lr().toRight(5)
-    const l5 = line(pd2, point(pd2.x(), lr1.findObj("D").y0()))
-        .setEndArrow("curved").setStartArrow("curved").setArrowSize(8)
+    const l5 = measure(point(pd2.x(), lr1.findObj("D").y0()), pd2)
     align("abut", "center", l5, hspace(3), label("h").setFontSize(10))
 
     setStrokeStyle("black")
@@ -387,12 +389,9 @@ with (new CFigure("case_LL_LR", true)) {
     lr.view(f2 = addFrame().setLength(1500)).rotateNodeWithParent("y")
     lr.view(f3 = addFrame().setLength(1500)).rotateNodeWithParent("y")
 
-    const pc2 = lr1.findObj("C").lr().toRight(5),
-            pc2s = smooth(f3, pc2, pc2.toLeft(50))
-    const l6 = drawBefore(f2, line(pc2s, point(pc2s.x(),
-                                smooth(f3, lr1.findObj("y").y0(),
-                                        lr1.findObj("z").y0())))
-        .setEndArrow("curved").setStartArrow("curved").setArrowSize(8).setStrokeStyle("#06c"))
+    const pc2 = lr1.findObj("C").lr().toRight(5), pc2s = pc2,
+          l6 = drawBefore(f2,
+                measure(point(pc2s.x(), lr1.findObj("y").y0()), pc2s))
 
     align("abut", "center", l6, hspace(3), drawBefore(f2, label("h + 1").setFontSize(10)))
 }
@@ -423,7 +422,7 @@ with (new CFigure("balanced_avl")) {
     setStrokeStyle("#06c")
     const l1 = horzLine(point(), point()).setLineDash([2,5])
     const l2 = horzLine(point(), point()).setLineDash([2,5])
-    const l3 = vertLine(point(), point()).setStartArrow("curved").setEndArrow("curved").setArrowSize(8)
+    const l3 = measure(point(), point())
     const A = t.view().findObj("A"), x = t.view().findObj("x")
     const D = t.view().findObj("D")
     align("LR", "none", l1, l2, margin())
@@ -434,7 +433,7 @@ with (new CFigure("balanced_avl")) {
     equal(l3.x(), minus(A.ll().x(), 10))
     align("abut", "top", l3, hspace(3), label("h+1").setFontSize(12).setTextStyle("#06c"))
 
-    const l4 = vertLine(point(), point()).setStartArrow("curved").setEndArrow("curved").setArrowSize(8)
+    const l4 = measure(point(), point())
     equal(l4.y1(), A.y1())
     equal(l4.y0(), D.y0())
     equal(l4.x(), plus(D.x1(), 10))
@@ -442,7 +441,7 @@ with (new CFigure("balanced_avl")) {
 }
 </script>
 <p class=caption>
-Resulting tree after tree rotation(s)
+Balanced subtree after tree rotation(s)
 </p>
 </div>
 <p>
@@ -474,34 +473,79 @@ above.
 </p>
 
 <div class=figure>
-<table>
-<tr>
-<td>
-<img src="case_RR.png"><br>RR case
-<td>
-<img src="case_RL.png"><br>RL case
-</tr>
-</table>
+<canvas id="case_RR_RL" style="width: 500px; height: 180px"></canvas>
+<script class=graphics>
+with (new CFigure("case_RR_RL", true)) {
+    setFontSize(14)
+    setConnectionStyle("intersection")
+    const rr = tree(new RotTree(thisFigure()), "x", "A", ["y", "B", ["z", "C", "D"]]),
+          rl = tree(new RotTree(thisFigure()), "x", "A", ["z", ["y", "B","C"], "D"])
+    const trees = group(rr.bbox, rl.bbox).align("distribute", "TB")
+    equal(rr.bbox.w(), rl.bbox.w(), 200)
+    equal(trees.y0(), 10)
+    const rr_label = label("RR case"), rl_label = label("RL case")
+    align("none", "B", rr_label, rl_label, margin().toBottom(-5))
+    align("none", "abut", trees, rr_label)
+    align("none", "abut", trees, rl_label)
+    align("center", "abut", rr.bbox, vspace(10), rr_label)
+    align("center", "abut", rl.bbox, vspace(10), rl_label)
+    const rr1 = rr.view(), rl1 = rl.view()
+    const p1 = rr1.findObj("A").ll().toLeft(10),
+          p2 = rr1.findObj("x").ul(),
+          p3 = point(p1.x(), p2.y())
+    
+    setStrokeStyle("#06c")
+    setTextStyle("#06c")
+    const l1 = line(p1, p3).setEndArrow("curved").setStartArrow("curved").setArrowSize(8)
+    align("abut", "center", l1, hspace(3), label("h + 1").setFontSize(10))
+
+    const pc1 = rr1.findObj("C").lr().toRight(5)
+    const l2 = measure(point(pc1.x(), rr1.findObj("C").y0()), pc1)
+    align("abut", "center", l2, hspace(3), label("h").setFontSize(10))
+
+    const pd1 = rr1.findObj("D").lr().toRight(5)
+    const l3 = measure(point(pd1.x(), rr1.findObj("D").y0()), pd1)
+    align("abut", "center", l3, hspace(3), label("h").setFontSize(10))
+
+    const pa2 = rl1.findObj("A").ll().toLeft(5)
+    const l4 = measure(point(pa2.x(), rl1.findObj("A").y0()), pa2)
+    align("abut", "center", l4, hspace(3), label("h").setFontSize(10))
+
+    const pd2 = rl1.findObj("D").lr().toRight(5)
+    const l5 = measure(point(pd2.x(), rl1.findObj("D").y0()), pd2)
+    align("abut", "center", l5, hspace(3), label("h").setFontSize(10))
+
+    setStrokeStyle("black")
+
+    equal(rl1.findObj("D").x1(), minus(margin().x1(), 20))
+
+    equal(p3.x(), 10)
+    let f1, f2, f3
+    rr.view(f1 = addFrame().setLength(1500)).rotateNodeWithParent("y")
+    rl.view(f2 = addFrame().setLength(1500)).rotateNodeWithParent("y")
+    rl.view(f3 = addFrame().setLength(1500)).rotateNodeWithParent("y")
+
+    const pc2 = rl1.findObj("B").ll().toLeft(5),
+          pc2s = pc2,
+          l6 = drawBefore(f2, measure(point(pc2s.x(), rl1.findObj("y").y0()), pc2s))
+
+    align("abut", "center", drawBefore(f2, label("h + 1").setFontSize(10)), hspace(3), l6)
+}
+</script>
 <p class=caption>
-The symmetrical RR and LL cases
-</p>
-</div>
-<div class=figure>
-<canvas id="case_RR_RL"></canvas>
-<p class=caption>
-The symmetrical RR and LL cases
+The symmetrical RR and RL cases
 </p>
 </div>
 
 <h2>An optimization</h2>
 <p>
 It is not really necessary to store the height of each node at the node.
-Instead, we can store just the difference in height between the left
-and right subtrees: –1, 0, or 1. This requires only two bits of space
-at each node. It only needs to be updated when it changes. When inserting a
-node, the only nodes for which it changes are those on the path from
-the leaf up to the first unbalanced node (or the root) and those involved in
-whatever tree rotations are performed.
+Instead, we can store just the balance factor of the node: –1, 0, or 1.  Since
+there are only three possibilities, only two bits of space are needed at each
+node, and the balance factor only needs to be updated when it changes.  For
+example, when inserting a node, the only nodes whose balance factor changes are
+those on the path from the leaf up to the first unbalanced node (or the root)
+and those involved in whatever tree rotations are performed.
 </p>
 
 <h2>Deleting from an AVL tree</h2>
@@ -524,43 +568,91 @@ unbalanced as the result of deleting a node below it. Without loss
 of generality, let's assume that the deleted node is on the right side
 of the unbalanced node. Just as for insertion, the cases for deletion
 on the other side are symmetrical.
-The right child is at some height h (formerly h+1),
-and the left side is at height h+2. One of the two grandchildren on the left
-side must have height h+1. Let us first consider the case in which the left
-grandchild has height h+1 but the right grandchild has only height h.  The tree
-then looks as shown in this figure, essentially the same as the LL case above:
+The right child is now at some height \(h\) (formerly \(h+1\)),
+and the left side is at height \(h+2\). One of the two grandchildren on the left
+side must have height \(h+1\). Let us first consider the case in which the left
+grandchild has height \(h+1\) but the right grandchild has only height \(h\).  The tree
+then looks as shown in this figure, essentially the same as the LL case for insertion
+above:
 </p>
 <div class=figure>
-<img src="case_LL_del.png">
+<canvas id=case_LL_del style="width: 200px; height: 180px"></canvas>
+<script class=graphics>
+with (new CFigure("case_LL_del")) {
+    setFontSize(14)
+    setConnectionStyle("intersection")
+    const t = tree(new RotTree(thisFigure()), "z", ["y", ["x", "A", "B"], "C"], "D")
+    align("none", "TB", t.bbox, margin())
+    let l1 = measure(point(), point())
+    const tv = t.view()
+    align("abut", "bottom", l1, hspace(5), tv.findObj("A"))
+    align("none", "top", l1, tv.findObj("x"))
+    align("left", "none", l1, margin(4))
+    setTextStyle("#06c"); setFontSize(10)
+    align("abut", "center", l1, hspace(3), label("h+1"))
+    let l2 = measure(point(), tv.findObj("C").lr().toRight(5))
+    align("none", "top", l2, tv.findObj("C"))
+    align("abut", "center", l2, hspace(3), label("h"))
+    let l3 = measure(point(), tv.findObj("D").lr().toRight(5))
+    align("none", "top", l3, tv.findObj("D"))
+    align("abut", "center", l3, hspace(3), label("h"))
+    align("right", "none", l3, margin(10))
+}
+</script>
 </div>
 <p>
 To rebalance the tree, we simply use the same single rotation of y and z as in
 the LL case above, with the y node becoming the new root of the subtree.
-However, notice that this rotation reduces the height of the subtree from h+3
-to h+2. Therefore, it is necessary to continue walking up toward the root,
+However, notice that this rotation reduces the height of the subtree from \(h+3\)
+to \(h+2\). Therefore, it is necessary to continue walking up toward the root,
 potentially fixing other unbalanced nodes along the way.
 </p>
 <p>
-We just assumed that the right grandchild had height h. What if the right grandchild
-has height h+1, instead? The picture then looks like much like the LR case above:
+We just assumed that the right grandchild had height \(h\). What if the right grandchild
+had height \(h+1\), instead? The picture would then look much like the LR case above:
 </p>
 <div class=figure>
-<img src="case_LR_del.png">
+<canvas id=case_LR_del style="width: 250px; height: 200px"></canvas>
+<script class=graphics>
+with (new CFigure("case_LR_del")) {
+    setFontSize(14)
+    setConnectionStyle("intersection")
+    const t = tree(new RotTree(thisFigure()), "z", ["x", "A", ["y", "B", "C"]], "D")
+    align("none", "TB", t.bbox, margin())
+    let l1 = measure(point(), point())
+    const tv = t.view()
+    align("abut", "bottom", l1, hspace(5), tv.findObj("A"))
+    align("none", "top", l1, tv.findObj("A"))
+    setTextStyle("#06c"); setFontSize(10)
+    let lb
+    align("abut", "center", lb = label("h or\n h+1"), hspace(3), l1 )
+    align("left", "none", lb, margin())
+    let l2 = measure(point(), tv.findObj("C").lr().toRight(5))
+    align("none", "top", l2, tv.findObj("y"))
+    align("abut", "center", l2, hspace(3), label("h + 1"))
+    let l3 = measure(point(), tv.findObj("D").lr().toRight(5))
+    align("none", "top", l3, tv.findObj("D"))
+    align("abut", "center", l3, hspace(3), label("h"))
+    align("right", "none", l3, margin(10))
+}
+</script>
 </div>
 <p>
-As in the LR case, we use a double rotation of the tree to arrive at the
-tree rotation shown above. There is one twist, however. Depending on the height of
-the subtree a, the y node after rotation may be either h+2 or h+3. In other words,
-the double rotation may or may not change the height of the whole subtree. It
-is only necessary to check whether nodes above are still balanced if the height
-of the y node becomes h+2.
+As in the LR insertion case, we rotate the node \(y\) upward twice to arrive at
+the same balanced tree configuration shown above. There is one twist, however.
+Depending on the height of the subtree \(A\), the height of the \(y\) node
+after the double rotation may be either \(h+2\) or \(h+3\). In other words, the
+double rotation may or may not change the height of the whole subtree. It is
+only necessary to check whether nodes above are still balanced if the double
+rotation changes the height of the y node to \(h+2\).
 </p>
 
 <h2>Random Treaps</h2>
 <p>
-An alternative to AVL trees is <b>random treaps</b>, which are balanced with high probability.
-achieved by ensuring the tree has exactly the same structure that it would have had if
-the elements had been inserted into a binary search tree in a random order.
+There are several other ways to balance search trees. One good one is <b>random
+treaps</b>, which are balanced with high probability. Balancing is achieved by
+ensuring the tree has exactly the same structure that it would have had if the
+elements had been inserted into a binary search tree in a random order.
 </p>
 <p>
 A <b>treap</b> is both a binary search tree and a heap.
