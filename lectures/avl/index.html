@@ -327,33 +327,120 @@ has height \(h+2\).
 Since insertion only affected one path, one of the two subtrees
 of the left subtree must have height \(h+1\) and the other, \(h\).
 Depending on which subtree has height \(h+1\), there are
-two cases to consider:
+two cases to consider, which we will call the LL case and the LR case:
 </p>
 
 <div class=figure>
-<table>
-<tr>
-<td>
-<img src="case_LL.png"><br>LL case
-<td>
-<img src="case_LR.png"><br>LR case
-</tr>
-</table>
+<canvas id=case_LL_LR style="width: 500px; height: 180px"></canvas>
+<script class=graphics>
+with (new CFigure("case_LL_LR", true)) {
+    setFontSize(14)
+    setConnectionStyle("intersection")
+    const ll = tree(new RotTree(thisFigure()), "z", ["y", ["x", "A", "B"],"C"], "D"),
+          lr = tree(new RotTree(thisFigure()), "z", ["x", "A", ["y", "B","C"]], "D")
+    const trees = group(ll.bbox, lr.bbox).align("distribute", "TB")
+    equal(ll.bbox.w(), lr.bbox.w(), 200)
+    equal(trees.y0(), 10)
+    const ll_label = label("LL case"), lr_label = label("LR case")
+    align("none", "B", ll_label, lr_label, margin().toBottom(-5))
+    align("none", "abut", trees, ll_label)
+    align("none", "abut", trees, lr_label)
+    align("center", "abut", ll.bbox, vspace(10), ll_label)
+    align("center", "abut", lr.bbox, vspace(10), lr_label)
+    const ll1 = ll.view(), lr1 = lr.view()
+    const p1 = ll1.findObj("A").ll().toLeft(10),
+          p2 = ll1.findObj("x").ul(),
+          p3 = point(p1.x(), p2.y())
+    
+    setStrokeStyle("#06c")
+    setTextStyle("#06c")
+    const l1 = line(p1, p3).setEndArrow("curved").setStartArrow("curved").setArrowSize(8)
+    align("abut", "center", l1, hspace(3), label("h + 1").setFontSize(10))
+
+    const pc1 = ll1.findObj("C").lr().toRight(5)
+    const l2 = line(pc1, point(pc1.x(), ll1.findObj("C").y0()))
+        .setEndArrow("curved").setStartArrow("curved").setArrowSize(8)
+    align("abut", "center", l2, hspace(3), label("h").setFontSize(10))
+
+    const pd1 = ll1.findObj("D").lr().toRight(5)
+    const l3 = line(pd1, point(pd1.x(), ll1.findObj("D").y0()))
+        .setEndArrow("curved").setStartArrow("curved").setArrowSize(8)
+    align("abut", "center", l3, hspace(3), label("h").setFontSize(10))
+
+    const pa2 = lr1.findObj("A").ll().toLeft(5)
+    const l4 = line(pa2, point(pa2.x(), lr1.findObj("A").y0()))
+        .setEndArrow("curved").setStartArrow("curved").setArrowSize(8)
+    align("abut", "center", l4, hspace(3), label("h").setFontSize(10))
+
+    const pd2 = lr1.findObj("D").lr().toRight(5)
+    const l5 = line(pd2, point(pd2.x(), lr1.findObj("D").y0()))
+        .setEndArrow("curved").setStartArrow("curved").setArrowSize(8)
+    align("abut", "center", l5, hspace(3), label("h").setFontSize(10))
+
+    setStrokeStyle("black")
+
+    equal(lr1.findObj("D").x1(), minus(margin().x1(), 20))
+
+    equal(p3.x(), 10)
+    let f1, f2, f3
+    ll.view(f1 = addFrame().setLength(1500)).rotateNodeWithParent("y")
+    lr.view(f2 = addFrame().setLength(1500)).rotateNodeWithParent("y")
+    lr.view(f3 = addFrame().setLength(1500)).rotateNodeWithParent("y")
+
+    const pc2 = lr1.findObj("C").lr().toRight(5),
+            pc2s = smooth(f3, pc2, pc2.toLeft(50))
+    const l6 = drawBefore(f2, line(pc2s, point(pc2s.x(),
+                                smooth(f3, lr1.findObj("y").y0(),
+                                        lr1.findObj("z").y0())))
+        .setEndArrow("curved").setStartArrow("curved").setArrowSize(8).setStrokeStyle("#06c"))
+
+    align("abut", "center", l6, hspace(3), drawBefore(f2, label("h + 1").setFontSize(10)))
+}
+</script>
 </div>
 <p>
 In this figure, \(z\) is the lowest node that is unbalanced. Therefore, the
-shorter subtree (\(c\) on the left side and \(a\) on the right side) must have height
-h; if their heights were lower, z would not be the lowest unbalanced node.
+shorter subtree (\(C\) on the left side and \(A\) on the right side) must have height
+\(h\); if their heights were smaller, \(z\) would not be the lowest unbalanced node.
 </p>
 <p>
 Now, how do we fix the AVL invariant? If we are in the LL case shown on the
 left, we perform a single right rotation to make \(y\) the parent of \(z\), which
-updates \(z\) so that its left child is now the former right child of \(y\) (that is, \(c\)).
+updates \(z\) so that its left child is now the former right child of \(y\) (that is, \(C\)).
 The resulting tree looks as follows:
 </p>
 
 <div class=figure>
-<img src="rotation_result.png">
+<canvas id=balanced_avl style="width: 250px; height: 120px"></canvas>
+<script class=graphics>
+with (new CFigure("balanced_avl")) {
+    setFontSize(14)
+    setConnectionStyle("intersection")
+    const t = tree(new RotTree(thisFigure()), "y", ["x", "A", "B"], ["z", "C","D"])
+    equal(t.bbox.y0(), 10)
+    equal(t.bbox.y1(), margin().y1())
+    align("LR", "none", t.bbox, margin().inset(30))
+    setStrokeStyle("#06c")
+    const l1 = horzLine(point(), point()).setLineDash([2,5])
+    const l2 = horzLine(point(), point()).setLineDash([2,5])
+    const l3 = vertLine(point(), point()).setStartArrow("curved").setEndArrow("curved").setArrowSize(8)
+    const A = t.view().findObj("A"), x = t.view().findObj("x")
+    const D = t.view().findObj("D")
+    align("LR", "none", l1, l2, margin())
+    align("none", "T", l1, A)
+    align("none", "center", l2, x)
+    equal(l3.y1(), A.y1())
+    equal(l3.y0(), x.y())
+    equal(l3.x(), minus(A.ll().x(), 10))
+    align("abut", "top", l3, hspace(3), label("h+1").setFontSize(12).setTextStyle("#06c"))
+
+    const l4 = vertLine(point(), point()).setStartArrow("curved").setEndArrow("curved").setArrowSize(8)
+    equal(l4.y1(), A.y1())
+    equal(l4.y0(), D.y0())
+    equal(l4.x(), plus(D.x1(), 10))
+    align("abut", "center", l4, hspace(3), label("≤h").setFontSize(12).setTextStyle("#06c"))
+}
+</script>
 <p class=caption>
 Resulting tree after tree rotation(s)
 </p>
@@ -361,15 +448,15 @@ Resulting tree after tree rotation(s)
 <p>
 As observed earlier, rotations preserve the BST invariant.
 Because the BST invariant held before the rotation, we know
-that \(a &lt; x &lt; b &lt; y &lt; c &lt; z &lt; d\) (where \(a, b, c, d\) stand
-for all nodes in subtrees \(a, b, c, d\)).
+that \(A &lt; x &lt; B &lt; y &lt; C &lt; z &lt; D\) (where \(A, B, C, D\) stand
+for all nodes in subtrees \(A, B, C, D\)).
 This ordering of the keys is preserved in the rotated tree.</p>
 
 <p>
 The rotation reestablishes the AVL invariant.
-Since subtrees \(a\), \(b\), \(c\), and \(d\) all have at most height \(h\), the nodes \(x\) and \(z\)
+Since subtrees \(A\), \(B\), \(C\), and \(D\) all have at most height \(h\), the nodes \(x\) and \(z\)
 are now at height \(h+1\), and node \(y\) is at height \(h+2\). The longest path within this
-part of the tree is now one shorter than before–it's back to \(h+2\)—so
+part of the tree is now one shorter than before—it's back to \(h+2\)—so
 this change also fixes the AVL invariant for all nodes above node \(y\).
 </p>
 <p>
@@ -395,6 +482,12 @@ above.
 <img src="case_RL.png"><br>RL case
 </tr>
 </table>
+<p class=caption>
+The symmetrical RR and LL cases
+</p>
+</div>
+<div class=figure>
+<canvas id="case_RR_RL"></canvas>
 <p class=caption>
 The symmetrical RR and LL cases
 </p>
