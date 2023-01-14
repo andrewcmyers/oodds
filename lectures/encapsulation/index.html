@@ -262,8 +262,8 @@ download them).
 There are many interesting things going on in this implementation. We start out with a very
 important comment, which we call the <b>class overview</b>. This describes how client
 code programmers should think about the values of class <code>Rational</code>. 
-To the client, the objects are simply rational numbers, with a numerator p and a denominator q.
-The overview also gives the client a notation for talking about these objects abstractly, as a fraction p/q.
+To the client, the objects are simply rational numbers, with a numerator \(p\) and a denominator \(q\).
+The overview also gives the client a notation for talking about these objects abstractly, as a fraction \(p/q\).
 Having a notation for objects of the class is helpful for expressing the specifications of the methods.
 </p>
 <p>
@@ -271,10 +271,12 @@ The data in
 <code>Rational</code> objects is the fields <code>p</code> and <code>q</code>, with type <code>int</code>.
 This is just one possible representation of rational numbers. For example, it would probably be better
 to make the types of these fields <code>long</code> or even use <code>BigInteger</code>. We could also
-imagine keeping track of the sign of the number in a separate boolean field, leaving both p and q as
-nonnegative numbers. The point is that the client doesn't and shouldn't need to know how the number
-is represented internally. The client should think of the objects of class <code>Rational</code>
-as simply rational numbers.
+imagine keeping track of the sign of the number in a separate boolean field, leaving both <code>p</code>
+and </code>q</code> as
+nonnegative numbers. The point is that the client <em>doesn't</em> and
+<em>shouldn't</em> need to know how the number is represented internally. The
+client should think of the objects of class <code>Rational</code> as simply
+rational numbers.
 </p>
 <p>The fields of the class are marked <code>private</code> to ensure that they
 are encapsulated inside the class. The keywords <code>public</code> and

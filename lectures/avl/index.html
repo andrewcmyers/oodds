@@ -601,8 +601,8 @@ with (new CFigure("case_LL_del")) {
 </script>
 </div>
 <p>
-To rebalance the tree, we simply use the same single rotation of y and z as in
-the LL case above, with the y node becoming the new root of the subtree.
+To rebalance the tree, we simply use the same single rotation of \(y\) and \(z\) as in
+the LL case above, with the \(y\) node becoming the new root of the subtree.
 However, notice that this rotation reduces the height of the subtree from \(h+3\)
 to \(h+2\). Therefore, it is necessary to continue walking up toward the root,
 potentially fixing other unbalanced nodes along the way.
@@ -643,8 +643,8 @@ the same balanced tree configuration shown above. There is one twist, however.
 Depending on the height of the subtree \(A\), the height of the \(y\) node
 after the double rotation may be either \(h+2\) or \(h+3\). In other words, the
 double rotation may or may not change the height of the whole subtree. It is
-only necessary to check whether nodes above are still balanced if the double
-rotation changes the height of the y node to \(h+2\).
+only necessary to check whether nodes above \(z\) are still balanced if the double
+rotation changes the height of the \(y\) node to \(h+2\).
 </p>
 
 <h2>Random Treaps</h2>

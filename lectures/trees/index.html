@@ -129,7 +129,7 @@ A node with no children is called a <b>leaf</b>.
     align("left", "none", m, hl[1])
     align("center", "none", p1, p2, p3, p4, t.bbox.toRight(20))
     align("center", "bottom", leaves, m)
-    setStrokeStyle('#44e')
+    setStrokeStyle('#44e');
     ['A', 'C', 'D', 'F'].forEach(n => 
         connector(leaves, tv.findObj(n)).setEndArrow('bullet')
     )
