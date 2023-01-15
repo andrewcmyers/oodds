@@ -668,7 +668,15 @@ priority order into a regular binary search tree.
 <p>For example, the following tree is a treap in which the keys are the letters and the priorities
 are the numbers.</p>
 <div class=figure>
-<img src="treap_example.png">
+<canvas id=treap_example style="width: 180px; height: 120px"></canvas>
+<script class=graphics>
+with (new CFigure("treap_example")) {
+    setFontSize(16)
+    setConnectionStyle("intersection")
+    const t = tree(lightStyle(), "E, 1", ["B, 3", "A, 7", "C, 8"], ["F, 4", undefined, "G, 9"])
+    align("LR", "TB", t.bbox, margin())
+}
+</script>
 </div>
 <p>
 Elements are added to the treap in the usual way for binary search trees. However,
@@ -682,7 +690,27 @@ For example, adding a node D with priority 2 to the treap above results in the f
 rotations being done to restore the heap invariant.
 </p>
 <div class=figure>
-<img src="treap_add.png">
+<canvas id=treap_add style="width: 540px; height: 150px"></canvas>
+<script class=graphics>
+with (new CFigure("treap_add")) {
+    setFontSize(16)
+    setConnectionStyle("intersection")
+    function transform(t1, t2) {
+        return arrow(t1.bbox, t2.bbox)
+            .setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66").setFillStyle("#d66")
+    }
+    const u = undefined
+    const t1 = tree(lightStyle(), "E,1", ["B,3", "A,7", ["C,8", u, "D,2"]], ["F,4", u, "G,9"])
+    const t2 = tree(lightStyle(null, ["D,2", "C,8"]), "E,1", ["B,3", "A,7", ["D,2", "C,8", u]], ["F,4", u, "G,9"])
+    const t3 = tree(lightStyle(null, ["D,2", "C,8", "B,3"]), "E,1", ["D,2", ["B,3", "A,7", "C,8"], u], ["F,4", u, "G,9"])
+    equal(t1.bbox.w(), t2.bbox.w(), t3.bbox.w())
+    align("LR", "TB",
+        group(t1.bbox, transform(t1, t2).setW(50),
+              t2.bbox, transform(t2, t3).setW(50),
+              t3.bbox)
+        .align("abut", "TB"), margin())
+}
+</script>
 </div>
 <p>
 This is exactly the tree structure we would have gotten if we had inserted all the nodes

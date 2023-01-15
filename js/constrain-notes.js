@@ -7,6 +7,33 @@ const GRAPH_COST = 0.001
 // How densely laid out nodes in a graph are, relative to their size, by default.
 const GRAPH_SPARSITY = 1
 
+class LightStyle extends Constrain.Trees.TreeStyle {
+    constructor(figure, specialEdges, specialNodes) {
+        super(figure)
+        this.specialEdges = new Set()
+        if (specialEdges) specialEdges.forEach(g => this.specialEdges.add(g))
+        this.specialNodes = new Set()
+        if (specialNodes) specialNodes.forEach(n => this.specialNodes.add(n))
+        this.specialEdgeColor = '#bbb'
+        this.specialNodeColor = '#d66'
+    }
+    drawNode(s) {
+        if (s === undefined) {
+            return this.figure.point()
+        } else {
+            const result = this.figure.label("" + s)
+            if (this.specialNodes.has(s)) result.setTextStyle(this.specialNodeColor)
+            return this.figure.group(result, result.expand(5))
+        }
+    }
+    drawEdge(n1, n2) {
+        const result = this.figure.connector(n1.gobj, n2.gobj).setLineWidth(1.5)
+        if (this.specialEdges.has(n2.value))
+            result.setStrokeStyle('#bbb').setLineWidth(2)
+        return result
+    }
+}
+
 class CFigure extends Constrain.Figure {
     constructor(canvas, advance) {
         super(canvas)
@@ -117,5 +144,8 @@ class CFigure extends Constrain.Figure {
     }
     roundedRectangle(w, h) {
         return this.rectangle().setW(w).setH(h).setCornerRadius(16)
+    }
+    lightStyle(specialEdges, specialNodes) {
+        return new LightStyle(this, specialEdges, specialNodes)
     }
 }

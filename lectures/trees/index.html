@@ -352,32 +352,6 @@ shown by the gray edge.
 <div class=figure>
 <canvas id=add_diagram style="width:200px; height:150px"></canvas>
 <script class=graphics>
-class LightStyle extends Constrain.Trees.TreeStyle {
-    constructor(figure, grays) {
-        super(figure)
-        this.grays = new Set()
-        if (grays) {
-            grays.forEach(g => this.grays.add(g))
-        }
-    }
-    drawNode(s) {
-        if (s === undefined) {
-            return this.figure.point()
-        } else {
-            const result = this.figure.label("" + s)
-            return this.figure.group(result, result.expand(5))
-        }
-    }
-    drawEdge(n1, n2) {
-        const result = this.figure.connector(n1.gobj, n2.gobj).setLineWidth(1.5)
-        if (this.grays.has(n2.value))
-            result.setStrokeStyle('#bbb').setLineWidth(2)
-        return result
-    }
-}
-Constrain.Figure.prototype.lightStyle = function(grays) {
-    return new LightStyle(this, grays)
-}
 with (new CFigure("add_diagram")) {
     setConnectionStyle("intersection")
     const t = tree(lightStyle([3]), 2, 1, [5, [4, 3, undefined], 6])
