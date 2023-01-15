@@ -17,6 +17,14 @@ class LightStyle extends Constrain.Trees.TreeStyle {
         this.specialEdgeColor = '#bbb'
         this.specialNodeColor = '#d66'
     }
+    specialNodeColor(c) {
+        this.specialNodeColor = c
+        return this
+    }
+    specialEdgeColor(c) {
+        this.specialEdgeColor = c
+        return this
+    }
     drawNode(s) {
         if (s === undefined) {
             return this.figure.point()
