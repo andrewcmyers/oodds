@@ -291,7 +291,7 @@ A more flexible way to define the ordering is to provide it through a
 <a href="Comparator.java">BST</a>
 </pre>
 <p>
-The comparator approach, which is known as the Concept design pattern,
+The comparator approach, which is is an example of the Concept design pattern,
 has slightly higher storage requirements since the
 comparator must be remembered, but its advantage is that it allows the binary
 search tree to be used with <em>any</em> type for which a reasonable comparison
@@ -352,17 +352,18 @@ shown by the gray edge.
 <div class=figure>
 <canvas id=add_diagram style="width:200px; height:150px"></canvas>
 <script class=graphics>
-with (new CFigure("add_diagram")) {
+with (new CFigure("add_diagram", true)) {
     setConnectionStyle("intersection")
     const t = tree(lightStyle([3]), 2, 1, [5, [4, 3, undefined], 6])
-    align("LR", "T", t.bbox, margin())
+    align("center", "T", t.bbox, margin())
+    t.bbox.setW(180)
     const tv = t.view(currentFrame)
-    equal(tv.findObj(4).y(), 100)
+    equal(tv.findObj(4).y(), 90)
     const swoosh = connector(tv.findObj(2).toBottom(0), tv.findObj(5), tv.findObj(4).toLeft(10))
         .setLineWidth(2).setLineDash([2, 4]).setStrokeStyle('#06c').setEndArrow("arrow").setFillStyle('#06c')
-    /*
-    const f2 = addFrame()
+    const f2 = addFrame().setLength(100)
     const tv2 = t.view(f2)
+    equal(tv.findObj(4).y(), 100)
     before(f2, swoosh)
     setTextStyle("#06c")
     setFontStyle("bold")
@@ -370,22 +371,24 @@ with (new CFigure("add_diagram")) {
     inFrame(f2,
         label("< 3").at(tv2.findObj(2).toRight(10)))
     const f3 = addFrame().setLength(1500)
-    inFrame(f3, label("3").at(smooth(f3, tv2.findObj(2).toRight(10),
-                             tv2.findObj(5).toLeft(10))))
-    const f4 = addFrame()
+    const p1 = tv2.findObj(2).toRight(10), p2 = tv2.findObj(5).toLeft(10)
+    inFrame(f3, label("3").at(point(smooth(f3, p1.x(), p2.x()), smooth(f3, p1.y(), p2.y()))))
+
+    const f4 = addFrame().setAutoAdvance(true)
     inFrame(f4, label("3 <").at(tv2.findObj(5).toLeft(10)))
     const f5 = addFrame().setLength(1500)
     inFrame(f5, label("3").at(smooth(f5, tv2.findObj(5).toLeft(10),
                                          tv2.findObj(4).toLeft(10))))
-    const f6 = addFrame()
+    const f6 = addFrame().setAutoAdvance(true)
     inFrame(f6, label("3 <").at(tv2.findObj(4).toLeft(10)))
 
-    const f7 = addFrame()
-    const tv7 = t.view(f7)
-    const n4 = tv7.findNode(4)
+    setTextStyle("black")
+    setFontStyle("")
+    const f7 = addFrame().setLength(100)
+          tv7 = t.view(f7),
+          n4 = tv7.findNode(4)
     t.addLeaf(f7, 3, n4, 0)
     after(f7, tv7.findObj(3))
-    */
 }
 </script>
 </div>

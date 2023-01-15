@@ -344,13 +344,11 @@ with (new CFigure("case_LL_LR", true)) {
     setConnectionStyle("intersection")
     const ll = tree(new RotTree(thisFigure()), "z", ["y", ["x", "A", "B"],"C"], "D"),
           lr = tree(new RotTree(thisFigure()), "z", ["x", "A", ["y", "B","C"]], "D")
-    const trees = group(ll.bbox, lr.bbox).align("distribute", "TB")
+    const trees = group(ll.bbox, lr.bbox).align("none", "TB")
     equal(ll.bbox.w(), lr.bbox.w(), 200)
     equal(trees.y0(), 10)
     const ll_label = label("LL case"), lr_label = label("LR case")
     align("none", "B", ll_label, lr_label, margin().toBottom(-5))
-    align("none", "abut", trees, ll_label)
-    align("none", "abut", trees, lr_label)
     align("center", "abut", ll.bbox, vspace(10), ll_label)
     align("center", "abut", lr.bbox, vspace(10), lr_label)
     const ll1 = ll.view(), lr1 = lr.view()
@@ -381,7 +379,7 @@ with (new CFigure("case_LL_LR", true)) {
 
     setStrokeStyle("black")
 
-    equal(lr1.findObj("D").x1(), minus(margin().x1(), 20))
+    equal(lr.bbox.x1(), minus(margin().x1(), 20))
 
     equal(p3.x(), 10)
     let f1, f2, f3
@@ -480,13 +478,11 @@ with (new CFigure("case_RR_RL", true)) {
     setConnectionStyle("intersection")
     const rr = tree(new RotTree(thisFigure()), "x", "A", ["y", "B", ["z", "C", "D"]]),
           rl = tree(new RotTree(thisFigure()), "x", "A", ["z", ["y", "B","C"], "D"])
-    const trees = group(rr.bbox, rl.bbox).align("distribute", "TB")
+    const trees = group(rr.bbox, rl.bbox).align("none", "TB")
     equal(rr.bbox.w(), rl.bbox.w(), 200)
     equal(trees.y0(), 10)
     const rr_label = label("RR case"), rl_label = label("RL case")
     align("none", "B", rr_label, rl_label, margin().toBottom(-5))
-    align("none", "abut", trees, rr_label)
-    align("none", "abut", trees, rl_label)
     align("center", "abut", rr.bbox, vspace(10), rr_label)
     align("center", "abut", rl.bbox, vspace(10), rl_label)
     const rr1 = rr.view(), rl1 = rl.view()
@@ -513,11 +509,12 @@ with (new CFigure("case_RR_RL", true)) {
 
     const pd2 = rl1.findObj("D").lr().toRight(5)
     const l5 = measure(point(pd2.x(), rl1.findObj("D").y0()), pd2)
-    align("abut", "center", l5, hspace(3), label("h").setFontSize(10))
+    let righth = label("h").setFontSize(10)
+    align("abut", "center", l5, hspace(3), righth)
 
     setStrokeStyle("black")
 
-    equal(rl1.findObj("D").x1(), minus(margin().x1(), 20))
+    equal(rl.bbox.x1(), minus(margin().x1(), 20))
 
     equal(p3.x(), 10)
     let f1, f2, f3
