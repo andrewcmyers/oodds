@@ -16,7 +16,8 @@ reachable from the root by following a path of edges.
 All nodes except the root have exactly one predecessor node, called its
 <b>parent</b>. The root is the only node with no parent.</p>
 
-<p>In computer science, it is customary to draw trees growing downward:
+<p>It is customary to draw trees growing downward. The root
+node may be indicated by an incoming edge.
 </p>
 <div class=figure>
 <canvas id=tree_pics style="width: 400px; height: 350px"></canvas>
@@ -146,7 +147,7 @@ A node with no children is called a <b>leaf</b>.
 <p>
 Each node in a tree has a <b>height</b> and a <b>depth</b>. The <b>depth</b> of
 a node is the length of the (unique) path from the root down to that node. The
-length of a path is the number of edges in the path. Thus the depth of the root
+length of a path is the number of edges in the path, so the depth of the root
 is always 0.  The <b>height</b> of a node is the length of the longest path
 from that node to a leaf below it, so leaf nodes have height 0. The height of
 the tree is the height of its root, which is the same as the depth of its
@@ -355,6 +356,7 @@ shown by the gray edge.
 with (new CFigure("add_diagram", true)) {
     setConnectionStyle("intersection")
     const t = tree(lightStyle([3]), 2, 1, [5, [4, 3, undefined], 6])
+    const n3 = t.findNode(3)
     align("center", "T", t.bbox, margin())
     t.bbox.setW(180)
     const tv = t.view(currentFrame)
@@ -438,7 +440,7 @@ by using a <code>Comparator</code> that only compares keys.
 <p>
 Removing elements from a tree is generally more complicated than adding them, because the
 elements to be removed are not necessarily leaves. The algorithm starts by first finding the
-node containing the value \(x\) to be removed and its parent node \(p\).
+node containing the value \(x\) to be removed and its parent node \(p\) (if any).
 There are three cases to consider:
 </p>
 <ol>
@@ -486,6 +488,23 @@ with (delete_leaf_fig) {
 }
 </script>
 </div>
+<div class=figure>
+<canvas id=delete_leaf_ex style="width: 250px; height: 100px"> </canvas>
+<script class=graphics>
+  const traverse_fig = new CFigure("delete_leaf_ex", true)
+  with (traverse_fig) {
+    setConnectionStyle("intersection")
+    let op = label("remove(10)").setTextStyle("#44f")
+    align("R", "abut", op, vspace(5), theAdvanceButton)
+    const t = tree(lightStyle(), 5, [3, 1, undefined], [11, 10, 17])
+    const f1 = addFrame().setLength(250)
+    t.view(f1).replaceLeaf(10, undefined)
+    drawBefore(f1, t.findNode(10).gobj)
+    align("L", "TB", t.bbox, margin())
+    align("abut", "none", t.bbox, hspace(20), op)
+  }
+</script>
+</div>
 
 </li>
 <li><em>Node \(x\) has one child.</em>
@@ -521,6 +540,25 @@ with (delete_one_child) {
 }
 </script>
 </div>
+<div class=figure>
+<canvas id=splice_node_ex style="width: 250px; height: 100px"> </canvas>
+<script class=graphics>
+  const traverse_fig = new CFigure("splice_node_ex", true)
+  with (traverse_fig) {
+    setConnectionStyle("intersection")
+    let op = label("remove(3)").setTextStyle("#44f")
+    align("R", "abut", op, vspace(5), theAdvanceButton)
+    const t = tree(lightStyle(), 5, [3, 1, undefined], [11, 10, 17])
+    const f1 = addFrame().setLength(250)
+    const t1 = t.view(f1)
+    t1.spliceNode(3)
+    const n3 = t1.findObj(3)
+    drawBefore(f1, n3)
+    align("L", "TB", t.bbox, margin())
+    align("abut", "none", t.bbox, hspace(20), op)
+  }
+</script>
+</div>
 </li>
 <li><em>Node \(x\) has two children.</em>
 <p>In this case it is not as easy to remove node \(x\). Instead, we
@@ -548,21 +586,49 @@ with (delete_two_children) {
     setConnectionStyle("intersection")
     let b1, b2, x
     const t1 = tree(new SimpleTree(delete_two_children),
-                    label("p").expand(2), [x = label("x").expand(2), subtree("A"), b1 = subtree("B")])
+                    label("p").expand(2), [x = label("x").expand(2), subtree("A"), b1 = subtree("B")], subtree("C"))
 
-    align("L", "none", t1.bbox, margin())
+    align("center", "none", t1.bbox, margin())
+    t1.bbox.setW(200)
     function transform(t1, t2) {
         return arrow(t1.bbox, t2.bbox)
             .setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66").setFillStyle("#d66")
     }
-    const y = node(delete_two_children, "y").at(b1.ll()).setFillStyle("#eee")
+    const y = node(delete_two_children, "y").at(b1.ll()).setFillStyle("#fcc")
 
 
-    arrow(y, y.toTop(25).toLeft(25), x).setLineDash([2,5]).setEndArrow("curved").setArrowSize(10)
+    arrow(y, y.toTop(25).toLeft(15), x).setLineDash([2,5]).setEndArrow("curved").setArrowSize(10)
         .setStrokeStyle("#d66").setLineWidth(2).setFillStyle("#d66")
     align("none", "T", t1.bbox.toTop(25), margin())
     align("none", "B", y, margin())
 }
+</script>
+</div>
+<div class=figure>
+<canvas id=del_two_kids_ex style="width: 250px; height: 150px"> </canvas>
+<script class=graphics>
+  const traverse_fig = new CFigure("del_two_kids_ex", true)
+  with (traverse_fig) {
+    setConnectionStyle("intersection")
+    let op = label("remove(3)").setTextStyle("#44f")
+    align("R", "abut", op, vspace(5), theAdvanceButton)
+    const t = tree(lightStyle(), 7, [3, 1, [5, 4, 6]], [11, 10, 17])
+    align("L", "TB", t.bbox, margin())
+    align("abut", "none", t.bbox, hspace(20), op)
+    const n4 = t.findNode(4), n7 = t.findNode(7), n3 = t.findNode(3)
+    const f0 = addFrame()
+    inFrame(f0, square().setW(20).setCornerRadius(5).at(n4.gobj).setFillStyle("#fcc").placeUnder(n4.gobj))
+    const f1 = addFrame().setLength(250)
+    const t1 = t.view(f1)
+    t.deferConstraints = true
+    t.removeLeaf(f1, n4, new Constrain.Trees.Node(t, undefined))
+    const edges = t1.getEdges()
+    edges.replaceEdge(n7, n4, n7, n3)
+    drawBefore(f1, n3.gobj)
+    edges.addEdge(n4, t1.findNode(1))
+    edges.addEdge(n4, t1.findNode(5))
+    t.frameConstraints(f1)
+  }
 </script>
 </div>
 <p>

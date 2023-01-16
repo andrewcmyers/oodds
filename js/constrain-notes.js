@@ -53,8 +53,9 @@ class CFigure extends Constrain.Figure {
         this.boxh = 20
 
         if (advance) {
+            this.theAdvanceButton = this.advanceButton()
             this.setRepeat(true)
-            this.align("right", "bottom", this.advanceButton(), this.margin())
+            this.align("right", "bottom", this.theAdvanceButton, this.margin())
         }
         setTimeout(() => this.start())
     }
