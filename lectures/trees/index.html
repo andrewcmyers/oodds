@@ -370,6 +370,7 @@ with (new CFigure("add_diagram", true)) {
     setTextStyle("#06c")
     setFontStyle("bold")
     tv2.removeLeaf(3)
+    drawBefore(f2, n3.gobj)
     inFrame(f2,
         label("< 3").at(tv2.findObj(2).toRight(10)))
     const f3 = addFrame().setLength(1500)
@@ -390,7 +391,6 @@ with (new CFigure("add_diagram", true)) {
           tv7 = t.view(f7),
           n4 = tv7.findNode(4)
     t.addLeaf(f7, 3, n4, 0)
-    after(f7, tv7.findObj(3))
 }
 </script>
 </div>
