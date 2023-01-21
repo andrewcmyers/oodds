@@ -622,16 +622,16 @@ with (new CFigure("state_machine")) {
     align("none", "center", closed, minimized)
     align("center", "none", opened, minimized)
     align("center", "none", fullscreen, closed)
-    align("none", "top", opened, canvasRect().inset(2))
-    align("right", "bottom", closed, canvasRect().inset(2));
+    align("none", "top", opened, margin())
+    align("right", "bottom", closed, margin())
+    align("left", "top", opened.ul().toLeft(20), margin())
 
     connector(opened, average(opened, fullscreen).toTop(15), fullscreen).setEndArrow("arrow").addLabel(lineLabel("maximize", 0.5, 5));
     connector(fullscreen, average(opened, fullscreen).toBottom(15), opened).setEndArrow("arrow").addLabel(lineLabel("maximize", 0.5, 5));
-    connector(opened, average(opened, minimized).toLeft(20), minimized).setEndArrow("arrow").addLabel(lineLabel("minimize", 0.2, -27));
+    connector(opened, average(opened, minimized).toLeft(20), minimized).setEndArrow("arrow").addLabel(lineLabel("minimize", 0.2, -29));
     connector(fullscreen, closed).setEndArrow("arrow").addLabel(lineLabel("close", 0.5, 20));
-    connector(minimized, average(opened, minimized).toRight(20), opened).setEndArrow("arrow").addLabel(lineLabel("open", 0.5, -10));
+    connector(minimized, average(opened, minimized).toRight(20), opened).setEndArrow("arrow").addLabel(lineLabel("open", 0.5, -25));
     connector(opened, closed).setEndArrow("arrow").addLabel(lineLabel("close", 0.5, -20));
-    start()     
 }
 </script>
 
