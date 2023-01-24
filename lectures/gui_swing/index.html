@@ -191,7 +191,7 @@ modifying an object while another thread accesses the object, it is easy for
 the observing thread to see the object in a state in which its class invariant
 does not hold. A good programming pattern for preventing interference is to
 have most objects <strong>owned</strong> by a single thread. Accesses (either
-reading or writing) to an object by a thread that does own the object are
+reading or writing) to an object by a thread that does not own the object are
 unsafe and are not permitted by the pattern.
 </p>
 <p>
