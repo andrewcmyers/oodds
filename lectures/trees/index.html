@@ -38,7 +38,7 @@ node may be indicated by an incoming edge.
         return figure.connector(n1.gobj, n2.gobj).setEndArrow("arrow")
       }
       decorateRoot(figure, n) {
-        return this.figure.arrow(n.gobj.toTop(20), n.gobj)
+        return figure.arrow(n.gobj.toTop(20), n.gobj)
       }
   }
   window.ArrowTree = ArrowTree

@@ -25,17 +25,17 @@ class LightStyle extends Constrain.Trees.TreeStyle {
         this.specialEdgeColor = c
         return this
     }
-    drawNode(s) {
+    drawNode(figure, s) {
         if (s === undefined) {
-            return this.figure.point()
+            return figure.point()
         } else {
-            const result = this.figure.label("" + s)
+            const result = figure.label("" + s)
             if (this.specialNodes.has(s)) result.setTextStyle(this.specialNodeColor)
-            return this.figure.group(result, result.expand(5))
+            return figure.group(result, result.expand(5))
         }
     }
-    drawEdge(n1, n2) {
-        const result = this.figure.connector(n1.gobj, n2.gobj).setLineWidth(1.5)
+    drawEdge(figure, n1, n2) {
+        const result = figure.connector(n1.gobj, n2.gobj).setLineWidth(1.5)
         if (this.specialEdges.has(n2.value))
             result.setStrokeStyle('#bbb').setLineWidth(2)
         return result
