@@ -27,18 +27,17 @@ node may be indicated by an incoming edge.
                 .setFontSize(10).setW(20).setCornerRadius(5).setFillStyle('white')
   }
   class ArrowTree extends Constrain.Trees.TreeStyle {
-      constructor(figure) {
-        super(figure)
-      }
-      drawNode(s) {
+      drawNode(figure, s) {
         if (s === undefined) {
-            return this.figure.point()
+            return figure.point()
         } else {
-            return node(this.figure, s)
+            return node(figure, s)
         }
       }
-      drawEdge(n1, n2) { return this.figure.connector(n1.gobj, n2.gobj).setEndArrow("arrow")}
-      decorateRoot(n) {
+      drawEdge(figure, n1, n2) {
+        return figure.connector(n1.gobj, n2.gobj).setEndArrow("arrow")
+      }
+      decorateRoot(figure, n) {
         return this.figure.arrow(n.gobj.toTop(20), n.gobj)
       }
   }
@@ -55,7 +54,7 @@ node may be indicated by an incoming edge.
     align("left", "top", t1.bbox.ul().toTop(20), m)
 
     let t2 = tree(new ArrowTree(fig1), 4, [3, [3, undefined, 1], [5, 4, 7]], 1)
-    let root2 = new Constrain.Trees.TreeView(t2).rootGraphicalObject()
+    let root2 = new Constrain.Trees.TreeView(t2).rootObject()
     arrow(root2.toTop(20), root2)
     t1.bbox.setW(140)
     t2.bbox.setW(140)
@@ -119,10 +118,10 @@ A node with no children is called a <b>leaf</b>.
     align("center", "TB", t.bbox.expand(20), m)
     t.bbox.setW(140)
     let tv = new Constrain.Trees.TreeView(t)
-    align("abut", "top", tv.rootGraphicalObject(), hspace(5), label('root'))
+    align("abut", "top", tv.rootObject(), hspace(5), label('root'))
 
     align("right", "distribute", ...hl)
-    align("none", "center", hl[0], tv.rootGraphicalObject(), p1)
+    align("none", "center", hl[0], tv.rootObject(), p1)
     align("abut", "center", hl[2], hspace(10), tv.findObj('A'))
     align("none", "center", hl[1], p2)
     align("none", "center", hl[2], p3)
@@ -231,11 +230,10 @@ drawing arrowheads on the tree edges, relying instead on the convention that edg
 const fig3 = new CFigure("bst_invariant")
 with (fig3) {
     class BSTTree extends Constrain.Trees.TreeStyle {
-        constructor(figure) {super(figure)}
-      decorateRoot(n) {
-        return this.figure.line(margin().uc(), n.gobj.toTop(5))
+      decorateRoot(figure, n) {
+        return figure.line(margin().uc(), n.gobj.toTop(5))
       }
-      drawNode(v) {
+      drawNode(figure, v) {
         if (v.match("^[<>]")) {
             const result = point()
             polygon(result, point(plus(result.x(), 30), plus(result.y(), 45)),
@@ -246,7 +244,7 @@ with (fig3) {
             return label(v).expand(3)
         }
       }
-      drawEdge(n1, n2) { return this.figure.connector(n1.gobj, n2.gobj) }
+      drawEdge(figure, n1, n2) { return figure.connector(n1.gobj, n2.gobj) }
     }
     setConnectionStyle("intersection")
     const t = tree(new BSTTree(fig3), "data", "<data", ">data")
@@ -464,9 +462,8 @@ CFigure.prototype.subtree = function(name) {
     return result
 }
 class SimpleTree extends Constrain.Trees.TreeStyle {
-    constructor(figure) { super(figure) }
-    decorateRoot(n) {
-        return this.figure.line(n.gobj.toTop(25), n.gobj.toTop(5))
+    decorateRoot(figure, n) {
+        return figure.line(n.gobj.toTop(25), n.gobj.toTop(5))
     }
 }
 window.SimpleTree = SimpleTree  

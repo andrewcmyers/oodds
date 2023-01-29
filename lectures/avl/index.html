@@ -38,8 +38,8 @@ All but one of the following trees satisfies the AVL invariant. Which one violat
 <canvas id=avl_exercise1 style="width:600px; height: 100px"></canvas>
 <script class=graphics>
 class DotTree extends Constrain.Trees.TreeStyle {
-    drawNode(n) {
-        return n ? this.figure.circle().setW(8).setFillStyle('black') : this.figure.point()
+    drawNode(figure, n) {
+        return n ? figure.circle().setW(8).setFillStyle('black') : figure.point()
     }
 }
 let fig1 = new CFigure("avl_exercise1")
@@ -235,12 +235,10 @@ rotation except that their parent nodes may change.)
 <canvas id=tree_rot style="width: 450px; height: 120px"></canvas>
 <script class=graphics>
   class RotTree extends Constrain.Trees.TreeStyle {
-    constructor(figure) {super(figure)}
-    decorateRoot(n) {
-      return this.figure.connector(n.gobj.toTop(15), n.gobj)
+    decorateRoot(figure, n) {
+      return figure.connector(n.gobj.toTop(15), n.gobj)
     }
-    drawNode(v) {
-        const f = this.figure
+    drawNode(f, v) {
         if (v === undefined) return f.point()
         if (v.match("^[A-Z]")) {
             const top = f.point()
@@ -253,7 +251,7 @@ rotation except that their parent nodes may change.)
             return f.label(v).expand(3)
         }
     }
-    drawEdge(n1, n2) { return this.figure.connector(n1.gobj, n2.gobj) }
+    drawEdge(figure, n1, n2) { return figure.connector(n1.gobj, n2.gobj) }
   }
   window.RotTree = RotTree  
   with (window.rot_tree = new CFigure("tree_rot", true)) {
