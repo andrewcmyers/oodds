@@ -9,15 +9,15 @@ Our goal for documenting the implementation of a module is to support implementa
 maintenance by describing implementation methods and even abstracting them.
 Therefore, private method specifications have the same clauses as specifications for public methods.
 </p><p>
-We also want to write specifications for fields where it is not obvious.
+We also want to write specifications for instance variables where it is not obvious.
 Two kinds of information are essential:
 <ol>
-<li>The meaning of the field in terms of the client's abstract view.
-<li>The representation invariant that the field must satisfy.
+<li>The meaning of the instance variable in terms of the client's abstract view.
+<li>Aspects of the class invariant that the instance variable must satisfy.
 </ol>
 </p>
 <p>
-Example of field specifications including rep invariants:
+Example of instance variable specifications, including class invariants:
 </p><p>
 <pre>
 class LinkedList<T> {
@@ -48,6 +48,17 @@ broken:
   size++; // invariant restored here
  }
 </pre>
+<h3>Default conditions</h3>
+<p>
+Just as with preconditions and postconditions, it is useful to have some
+default expectations for class invariants, in order to keep the documentation
+clear and concise. In particular, most class fields are typically required to
+be non-null in order to satisfy the class invariant. Stating this condition
+explicitly for each field is tiresome and clutters the code, so it is better to
+follow the convention that the class invariant requires all instance variables
+to be be non-null, unless it is explicitly documented otherwise, as in the case
+of the instance variables <code>first</code> and <code>last</code>, above.
+</p>
 
 <h2>Documenting implementations: the specializer's view</h2>
 

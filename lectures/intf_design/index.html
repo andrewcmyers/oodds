@@ -401,7 +401,11 @@ not need to be stated explicitly. A good example of such a precondition is an
 expectation that no argument values to a method are <code>null</code>.  If a
 method might be able to handle a null argument, the method spec should
 explicitly say so. Otherwise, clients should assume that null is an invalid
-argument.
+argument. In the absence of such a default preconditions, most method preconditions
+will have rule about the possibility that various arguments are null, creating
+tedious clutter that distracts from the main point of the precondition. Similarly,
+it is useful to assume that results returned from methods are null unless the
+method spec explicitly states that the result can be null.
 </p>
 
 <h4>Using Javadoc</h4>

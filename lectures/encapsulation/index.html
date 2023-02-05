@@ -358,7 +358,8 @@ is extremely valuable.
 
 <h2>Class invariants</h2>
 <p>
-An early comment in the <code>Rational</code> example expresses an <b>invariant</b> regarding the fields <code>p</code> and
+An early comment in the <code>Rational</code> example expresses an <b>invariant</b> regarding the instance
+variables <code>p</code> and
 <code>q</code>:</p>
 <pre class=code>
  // class invariant: q &gt; 0, gcd(p, q) = 1
@@ -383,7 +384,7 @@ invariant (or, at least, to a small number of classes in a package).
 </p>
 <p>
 Encapsulation aids with this goal of localization.
-Because the fields <code>p</code> and <code>q</code>
+Because the instance variables <code>p</code> and <code>q</code>
 are private, the code of the class can enforce this invariant. Code
 outside the current class has no way to, say, modify <code>q</code> to be zero.
 Conversely, we can see that making any assignable
@@ -395,15 +396,15 @@ Like the method <code>plus</code>,
 the class constructor, which must also be named <code>Rational</code> like its class,
 is also static in the sense
 that it is not called using a receiver object. Unlike in a static method, the variable
-<code>this</code> and its fields <em>are</em> in scope inside the constructor. They
-refer to the fields of the object currently being constructed. Notice that the
+<code>this</code> and its instance variables <em>are</em> in scope inside the constructor. They
+refer to the instance variables of the object currently being constructed. Notice that the
 constructor does not simply accept the numerator and denominator
 directly, but instead computes a new numerator and denominator that
 represent the same number while satisfying the invariant. This ensures that at
 the end of the constructor, the invariant holds.
 </p><p>
 Because of the invariant, the method <code>equals</code> can be implemented very
-simply and efficiently, by comparing the corresponding fields of
+simply and efficiently, by comparing the corresponding instance variables of
 <code>this</code> and <code>r</code>. This implementation relies on the fact that the
 invariant we chose ensures there is only
 one way to represent a given rational number. In general, it is not required that there be
@@ -418,6 +419,14 @@ we would have to write something more expensive like the following:
 There is no free lunch here, of course.  We had to pay up front for the
 simplicity of <code>equals</code> (and <code>toString</code>), by enforcing the
 invariant elsewhere in the code.
+</p>
+<p>
+What conditions are part of the class invariant?  A rule of thumb is that the
+class invariant should enforce everything that is assumed by the method
+implementations of the class. We might imagine that there is an adversary
+arbitrarily changing the instance variables of objects, but only in ways that
+the class invariant permits. A fully correct class invariant should prevent
+such an adversary from causing method implementations to malfunction.
 </p>
 <h2>Assertions</h2>
 <p>
