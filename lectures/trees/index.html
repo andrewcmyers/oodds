@@ -48,34 +48,34 @@ node may be indicated by an incoming edge.
     setConnectionStyle("intersection")
     setArrowSize(8)
     let t1 = tree(new ArrowTree(fig1), 4, [3, [6, 2], [5, 4, 7, 0]], 1)
-    t1.bbox.setW(140)
-    t1.bbox.setH(150)
-    align("center", "abut", t1.bbox, vspace(5), label("a tree"))
-    align("left", "top", t1.bbox.ul().toTop(20), m)
+    t1.setW(140)
+    t1.setH(150)
+    align("center", "abut", t1, vspace(5), label("a tree"))
+    align("left", "top", t1.ul().toTop(20), m)
 
     let t2 = tree(new ArrowTree(fig1), 4, [3, [3, undefined, 1], [5, 4, 7]], 1)
-    let root2 = new Constrain.Trees.TreeView(t2).rootObject()
+    let root2 = new Constrain.Trees.TreeView(t2).rootGraphic()
     arrow(root2.toTop(20), root2)
-    t1.bbox.setW(140)
-    t2.bbox.setW(140)
-    align("center", "abut", t2.bbox, vspace(5), label("a binary tree"))
-    align("abut", "TB", t1.bbox, hspace(20), t2.bbox)
+    t1.setW(140)
+    t2.setW(140)
+    align("center", "abut", t2, vspace(5), label("a binary tree"))
+    align("abut", "TB", t1, hspace(20), t2)
 
     let t3 = tree(new ArrowTree(fig1), 4, [3, 2, 5], 1)
-    align("LR", "abut", t1.bbox, vspace(50),  t3.bbox)
-    t3.bbox.setH(100)
+    align("LR", "abut", t1, vspace(50),  t3)
+    t3.setH(100)
     arrow(t3.findNode(1).gobj, t3.findNode(5).gobj)
 
     let t4 = tree(new ArrowTree(fig1), 4, [3, 2, 5], 1)
-    align("none", "TB", t3.bbox, t4.bbox)
-    align("LR", "none", t2.bbox, t4.bbox)
+    align("none", "TB", t3, t4)
+    align("LR", "none", t2, t4)
     connector(t4.findNode(5).gobj,
         t4.findNode(5).gobj.toRight(50),
         t4.findNode(1).gobj.toRight(35),
         t4.findNode(4).gobj.toRight(50),
         t4.findNode(4).gobj)
         .setEndArrow("arrow")
-    align("center", "abut", group(t3.bbox, t4.bbox), vspace(10), label("non-trees"))
+    align("center", "abut", group(t3, t4), vspace(10), label("non-trees"))
   }
 </script>
 </div>
@@ -115,23 +115,23 @@ A node with no children is called a <b>leaf</b>.
     setStrokeStyle('#000')
       
     let t = tree(new ArrowTree(fig2), 'G', ['B', 'A', 'C'], ['H', 'D', ['E', 'F']])
-    align("center", "TB", t.bbox.expand(20), m)
-    t.bbox.setW(140)
+    align("center", "TB", t.expand(20), m)
+    t.setW(140)
     let tv = new Constrain.Trees.TreeView(t)
-    align("abut", "top", tv.rootObject(), hspace(5), label('root'))
+    align("abut", "top", tv.rootGraphic(), hspace(5), label('root'))
 
     align("right", "distribute", ...hl)
-    align("none", "center", hl[0], tv.rootObject(), p1)
-    align("abut", "center", hl[2], hspace(10), tv.findObj('A'))
+    align("none", "center", hl[0], tv.rootGraphic(), p1)
+    align("abut", "center", hl[2], hspace(10), tv.findGraphic('A'))
     align("none", "center", hl[1], p2)
     align("none", "center", hl[2], p3)
     align("none", "center", hl[3], p4)
     align("left", "none", m, hl[1])
-    align("center", "none", p1, p2, p3, p4, t.bbox.toRight(20))
+    align("center", "none", p1, p2, p3, p4, t.toRight(20))
     align("center", "bottom", leaves, m)
     setStrokeStyle('#44e');
     ['A', 'C', 'D', 'F'].forEach(n => 
-        connector(leaves, tv.findObj(n)).setEndArrow('bullet')
+        connector(leaves, tv.findGraphic(n)).setEndArrow('bullet')
     )
     align("abut", "none", p1, hspace(10), tree_height)
     const p5 = point(), p6 = point()
@@ -231,15 +231,16 @@ const fig3 = new CFigure("bst_invariant")
 with (fig3) {
     class BSTTree extends Constrain.Trees.TreeStyle {
       decorateRoot(figure, n) {
-        return figure.line(margin().uc(), n.gobj.toTop(5))
+        return figure.line(n.graphic().toTop(25), n.graphic().toTop(5))
       }
       drawNode(figure, v) {
         if (v.match("^[<>]")) {
-            const result = point()
-            polygon(result, point(plus(result.x(), 30), plus(result.y(), 45)),
-                            point(minus(result.x(), 30), plus(result.y(), 45)))
+            const top = point()
+            const result = polygon(top, point(plus(top.x(), 30), plus(top.y(), 45)),
+                            point(minus(top.x(), 30), plus(top.y(), 45)))
               .addText(v).setVerticalAlign("bottom")
-            return result
+            result.target = () => top
+            return top
         } else {
             return label(v).expand(3)
         }
@@ -248,9 +249,9 @@ with (fig3) {
     }
     setConnectionStyle("intersection")
     const t = tree(new BSTTree(fig3), "data", "<data", ">data")
-    align("LR", "none", t.bbox, margin().inset(30))
-    equal(plus(margin().y0(), 20), t.bbox.y0())
-    equal(plus(45, t.bbox.y1()), margin().y1())
+    align("LR", "none", t, margin().inset(30))
+    equal(margin().y0(), t.y0())
+    equal(plus(45, t.y1()), margin().y1())
 }
 </script>
 </div>
@@ -355,33 +356,33 @@ with (new CFigure("add_diagram", true)) {
     setConnectionStyle("intersection")
     const t = tree(lightStyle([3]), 2, 1, [5, [4, 3, undefined], 6])
     const n3 = t.findNode(3)
-    align("center", "T", t.bbox, margin())
-    t.bbox.setW(180)
+    align("center", "T", t, margin())
+    t.setW(180)
     const tv = t.view(currentFrame)
-    equal(tv.findObj(4).y(), 90)
-    const swoosh = connector(tv.findObj(2).toBottom(0), tv.findObj(5), tv.findObj(4).toLeft(10))
+    equal(tv.findGraphic(4).y(), 90)
+    const swoosh = connector(tv.findGraphic(2).toBottom(0), tv.findGraphic(5), tv.findGraphic(4).toLeft(10))
         .setLineWidth(2).setLineDash([2, 4]).setStrokeStyle('#06c').setEndArrow("arrow").setFillStyle('#06c')
     const f2 = addFrame().setLength(100)
     const tv2 = t.view(f2)
-    equal(tv.findObj(4).y(), 100)
+    equal(tv.findGraphic(4).y(), 100)
     before(f2, swoosh)
     setTextStyle("#06c")
     setFontStyle("bold")
     tv2.removeLeaf(3)
     drawBefore(f2, n3.gobj)
     inFrame(f2,
-        label("< 3").at(tv2.findObj(2).toRight(10)))
+        label("< 3").at(tv2.findGraphic(2).toRight(10)))
     const f3 = addFrame().setLength(1500)
-    const p1 = tv2.findObj(2).toRight(10), p2 = tv2.findObj(5).toLeft(10)
+    const p1 = tv2.findGraphic(2).toRight(10), p2 = tv2.findGraphic(5).toLeft(10)
     inFrame(f3, label("3").at(point(smooth(f3, p1.x(), p2.x()), smooth(f3, p1.y(), p2.y()))))
 
     const f4 = addFrame().setAutoAdvance(true)
-    inFrame(f4, label("3 <").at(tv2.findObj(5).toLeft(10)))
+    inFrame(f4, label("3 <").at(tv2.findGraphic(5).toLeft(10)))
     const f5 = addFrame().setLength(1500)
-    inFrame(f5, label("3").at(smooth(f5, tv2.findObj(5).toLeft(10),
-                                         tv2.findObj(4).toLeft(10))))
+    inFrame(f5, label("3").at(smooth(f5, tv2.findGraphic(5).toLeft(10),
+                                         tv2.findGraphic(4).toLeft(10))))
     const f6 = addFrame().setAutoAdvance(true)
-    inFrame(f6, label("3 <").at(tv2.findObj(4).toLeft(10)))
+    inFrame(f6, label("3 <").at(tv2.findGraphic(4).toLeft(10)))
 
     setTextStyle("black")
     setFontStyle("")
@@ -411,7 +412,7 @@ has only right children and has the performance characteristics of a linked list
     const u = undefined
     setConnectionStyle("intersection")
     align("LR", "TB", margin(),
-        tree(lightStyle(), 1, u, [2, u, [3, u, ["...", u, "n"]]]).bbox)
+        tree(lightStyle(), 1, u, [2, u, [3, u, ["...", u, "n"]]]))
   }
 </script>
 </div>
@@ -463,7 +464,7 @@ CFigure.prototype.subtree = function(name) {
 }
 class SimpleTree extends Constrain.Trees.TreeStyle {
     decorateRoot(figure, n) {
-        return figure.line(n.gobj.toTop(25), n.gobj.toTop(5))
+        return figure.line(n.graphic().toTop(20), n.graphic().toTop(3))
     }
 }
 window.SimpleTree = SimpleTree  
@@ -471,14 +472,13 @@ with (delete_leaf_fig) {
     setConnectionStyle("intersection")
     const t1 = tree(new SimpleTree(delete_leaf_fig),
                     label("p").expand(2), label("x").expand(2), subtree("A"))
-    align("none", "T", t1.bbox.toTop(25), margin())
-    align("none", "B", t1.bbox, margin())
+    align("none", "TB", t1, margin())
 
     const t2 = tree(new SimpleTree(delete_leaf_fig),
                     label("p"), undefined, subtree("A"))
-    align("abut", "TB", t1.bbox, hspace(50), t2.bbox)
+    align("abut", "TB", t1, hspace(50), t2)
     function transform(t1, t2) {
-        return arrow(t1.bbox, t2.bbox)
+        return arrow(t1, t2)
             .setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66").setFillStyle("#d66")
     }
     transform(t1, t2)
@@ -497,8 +497,8 @@ with (delete_leaf_fig) {
     const f1 = addFrame().setLength(250)
     t.view(f1).replaceLeaf(10, undefined)
     drawBefore(f1, t.findNode(10).gobj)
-    align("L", "TB", t.bbox, margin())
-    align("abut", "none", t.bbox, hspace(20), op)
+    align("L", "TB", t, margin())
+    align("abut", "none", t, hspace(20), op)
   }
 </script>
 </div>
@@ -518,22 +518,22 @@ with (delete_one_child) {
     let b1, b2
     const t1 = tree(new SimpleTree(delete_one_child),
                     label("p").expand(2), [label("x").expand(2), subtree("A"), undefined], b1 = subtree("B"))
-    align("none", "T", t1.bbox.toTop(25), margin())
-    align("none", "B", t1.bbox, margin())
+    align("none", "T", t1, margin())
+    align("none", "B", t1, margin())
 
     const t2 = tree(new SimpleTree(delete_one_child),
                     label("p").expand(2), subtree("A"), b2 = subtree("B"))
-    align("abut", "T", t1.bbox, hspace(50), t2.bbox)
-    align("L", "none", t1.bbox, margin())
-    align("R", "none", t2.bbox, margin())
+    align("abut", "T", t1, hspace(50), t2)
+    align("L", "none", t1, margin())
+    align("R", "none", t2, margin())
     align("none", "top", b1, b2)
     function transform(t1, t2) {
         return arrow(t1, t2)
             .setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66").setFillStyle("#d66")
     }
-    const p = point(t1.bbox.x1(), t2.bbox.y())
-    equal(t1.bbox.w(), t2.bbox.w())
-    transform(p, t2.bbox)
+    const p = point(t1.x1(), t2.y())
+    equal(t1.w(), t2.w())
+    transform(p, t2)
 }
 </script>
 </div>
@@ -549,10 +549,10 @@ with (delete_one_child) {
     const f1 = addFrame().setLength(250)
     const t1 = t.view(f1)
     t1.spliceNode(3)
-    const n3 = t1.findObj(3)
+    const n3 = t1.findGraphic(3)
     drawBefore(f1, n3)
-    align("L", "TB", t.bbox, margin())
-    align("abut", "none", t.bbox, hspace(20), op)
+    align("L", "TB", t, margin())
+    align("abut", "none", t, hspace(20), op)
   }
 </script>
 </div>
@@ -585,10 +585,10 @@ with (delete_two_children) {
     const t1 = tree(new SimpleTree(delete_two_children),
                     label("p").expand(2), [x = label("x").expand(2), subtree("A"), b1 = subtree("B")], subtree("C"))
 
-    align("center", "none", t1.bbox, margin())
-    t1.bbox.setW(200)
+    align("center", "none", t1, margin())
+    t1.setW(200)
     function transform(t1, t2) {
-        return arrow(t1.bbox, t2.bbox)
+        return arrow(t1, t2)
             .setLineWidth(10).setArrowSize(25).setStrokeStyle("#d66").setFillStyle("#d66")
     }
     const y = node(delete_two_children, "y").at(b1.ll()).setFillStyle("#fcc")
@@ -596,7 +596,7 @@ with (delete_two_children) {
 
     arrow(y, y.toTop(25).toLeft(15), x).setLineDash([2,5]).setEndArrow("curved").setArrowSize(10)
         .setStrokeStyle("#d66").setLineWidth(2).setFillStyle("#d66")
-    align("none", "T", t1.bbox.toTop(25), margin())
+    align("none", "T", t1, margin())
     align("none", "B", y, margin())
 }
 </script>
@@ -607,11 +607,11 @@ with (delete_two_children) {
   const traverse_fig = new CFigure("del_two_kids_ex", true)
   with (traverse_fig) {
     setConnectionStyle("intersection")
-    let op = label("remove(3)").setTextStyle("#44f")
+    let op = label("remove(4)").setTextStyle("#44f")
     align("R", "abut", op, vspace(5), theAdvanceButton)
     const t = tree(lightStyle(), 7, [3, 1, [5, 4, 6]], [11, 10, 17])
-    align("L", "TB", t.bbox, margin())
-    align("abut", "none", t.bbox, hspace(20), op)
+    align("L", "TB", t, margin())
+    align("abut", "none", t, hspace(20), op)
     const n4 = t.findNode(4), n7 = t.findNode(7), n3 = t.findNode(3)
     const f0 = addFrame()
     inFrame(f0, square().setW(20).setCornerRadius(5).at(n4.gobj).setFillStyle("#fcc").placeUnder(n4.gobj))
@@ -743,7 +743,7 @@ For example, consider using this algorithm on the following binary search tree:<
   with (traverse_fig) {
     setConnectionStyle("intersection")
     const t = tree(lightStyle(), 5, [3, 1, undefined], [11, 10, 17])
-    align("LR", "TB", t.bbox, margin())
+    align("LR", "TB", t, margin())
   }
 </script>
 </div>

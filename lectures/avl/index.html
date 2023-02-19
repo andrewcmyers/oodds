@@ -236,7 +236,7 @@ rotation except that their parent nodes may change.)
 <script class=graphics>
   class RotTree extends Constrain.Trees.TreeStyle {
     decorateRoot(figure, n) {
-      return figure.connector(n.gobj.toTop(15), n.gobj)
+      return figure.line(n.graphic().toTop(15), n.graphic().uc())
     }
     drawNode(f, v) {
         if (v === undefined) return f.point()
@@ -344,14 +344,14 @@ with (new CFigure("case_LL_LR", true)) {
           lr = tree(new RotTree(thisFigure()), "z", ["x", "A", ["y", "B","C"]], "D")
     const trees = group(ll.bbox, lr.bbox).align("none", "TB")
     equal(ll.bbox.w(), lr.bbox.w(), 200)
-    equal(trees.y0(), 10)
+    equal(trees.y0(), 0)
     const ll_label = label("LL case"), lr_label = label("LR case")
     align("none", "B", ll_label, lr_label, margin().toBottom(-5))
     align("center", "abut", ll.bbox, vspace(10), ll_label)
     align("center", "abut", lr.bbox, vspace(10), lr_label)
     const ll1 = ll.view(), lr1 = lr.view()
-    const p1 = ll1.findObj("A").ll().toLeft(10),
-          p2 = ll1.findObj("x").ul(),
+    const p1 = ll1.findGraphic("A").ll().toLeft(10),
+          p2 = ll1.findGraphic("x").ul(),
           p3 = point(p1.x(), p2.y())
     
     setStrokeStyle("#06c")
@@ -359,20 +359,20 @@ with (new CFigure("case_LL_LR", true)) {
     const l1 = measure(p3, p1)
     align("abut", "center", l1, hspace(3), label("h + 1").setFontSize(10))
 
-    const pc1 = ll1.findObj("C").lr().toRight(5)
-    const l2 = measure(point(pc1.x(), ll1.findObj("C").y0()), pc1)
+    const pc1 = ll1.findGraphic("C").lr().toRight(5)
+    const l2 = measure(point(pc1.x(), ll1.findGraphic("C").y0()), pc1)
     align("abut", "center", l2, hspace(3), label("h").setFontSize(10))
 
-    const pd1 = ll1.findObj("D").lr().toRight(5)
-    const l3 = measure(point(pd1.x(), ll1.findObj("D").y0()), pd1)
+    const pd1 = ll1.findGraphic("D").lr().toRight(5)
+    const l3 = measure(point(pd1.x(), ll1.findGraphic("D").y0()), pd1)
     align("abut", "center", l3, hspace(3), label("h").setFontSize(10))
 
-    const pa2 = lr1.findObj("A").ll().toLeft(5)
-    const l4 = measure(point(pa2.x(), lr1.findObj("A").y0()), pa2)
+    const pa2 = lr1.findGraphic("A").ll().toLeft(5)
+    const l4 = measure(point(pa2.x(), lr1.findGraphic("A").y0()), pa2)
     align("abut", "center", l4, hspace(3), label("h").setFontSize(10))
 
-    const pd2 = lr1.findObj("D").lr().toRight(5)
-    const l5 = measure(point(pd2.x(), lr1.findObj("D").y0()), pd2)
+    const pd2 = lr1.findGraphic("D").lr().toRight(5)
+    const l5 = measure(point(pd2.x(), lr1.findGraphic("D").y0()), pd2)
     align("abut", "center", l5, hspace(3), label("h").setFontSize(10))
 
     setStrokeStyle("black")
@@ -385,9 +385,9 @@ with (new CFigure("case_LL_LR", true)) {
     lr.view(f2 = addFrame().setLength(1500)).rotateNodeWithParent("y")
     lr.view(f3 = addFrame().setLength(1500)).rotateNodeWithParent("y")
 
-    const pc2 = lr1.findObj("C").lr().toRight(5), pc2s = pc2,
+    const pc2 = lr1.findGraphic("C").lr().toRight(5), pc2s = pc2,
           l6 = drawBefore(f2,
-                measure(point(pc2s.x(), lr1.findObj("y").y0()), pc2s))
+                measure(point(pc2s.x(), lr1.findGraphic("y").y0()), pc2s))
 
     align("abut", "center", l6, hspace(3), drawBefore(f2, label("h + 1").setFontSize(10)))
 }
@@ -419,8 +419,8 @@ with (new CFigure("balanced_avl")) {
     const l1 = horzLine(point(), point()).setLineDash([2,5])
     const l2 = horzLine(point(), point()).setLineDash([2,5])
     const l3 = measure(point(), point())
-    const A = t.view().findObj("A"), x = t.view().findObj("x")
-    const D = t.view().findObj("D")
+    const A = t.view().findGraphic("A"), x = t.view().findGraphic("x")
+    const D = t.view().findGraphic("D")
     align("LR", "none", l1, l2, margin())
     align("none", "T", l1, A)
     align("none", "center", l2, x)
@@ -484,8 +484,8 @@ with (new CFigure("case_RR_RL", true)) {
     align("center", "abut", rr.bbox, vspace(10), rr_label)
     align("center", "abut", rl.bbox, vspace(10), rl_label)
     const rr1 = rr.view(), rl1 = rl.view()
-    const p1 = rr1.findObj("A").ll().toLeft(10),
-          p2 = rr1.findObj("x").ul(),
+    const p1 = rr1.findGraphic("A").ll().toLeft(10),
+          p2 = rr1.findGraphic("x").ul(),
           p3 = point(p1.x(), p2.y())
     
     setStrokeStyle("#06c")
@@ -493,20 +493,20 @@ with (new CFigure("case_RR_RL", true)) {
     const l1 = line(p1, p3).setEndArrow("curved").setStartArrow("curved").setArrowSize(8)
     align("abut", "center", l1, hspace(3), label("h + 1").setFontSize(10))
 
-    const pc1 = rr1.findObj("C").lr().toRight(5)
-    const l2 = measure(point(pc1.x(), rr1.findObj("C").y0()), pc1)
+    const pc1 = rr1.findGraphic("C").lr().toRight(5)
+    const l2 = measure(point(pc1.x(), rr1.findGraphic("C").y0()), pc1)
     align("abut", "center", l2, hspace(3), label("h").setFontSize(10))
 
-    const pd1 = rr1.findObj("D").lr().toRight(5)
-    const l3 = measure(point(pd1.x(), rr1.findObj("D").y0()), pd1)
+    const pd1 = rr1.findGraphic("D").lr().toRight(5)
+    const l3 = measure(point(pd1.x(), rr1.findGraphic("D").y0()), pd1)
     align("abut", "center", l3, hspace(3), label("h").setFontSize(10))
 
-    const pa2 = rl1.findObj("A").ll().toLeft(5)
-    const l4 = measure(point(pa2.x(), rl1.findObj("A").y0()), pa2)
+    const pa2 = rl1.findGraphic("A").ll().toLeft(5)
+    const l4 = measure(point(pa2.x(), rl1.findGraphic("A").y0()), pa2)
     align("abut", "center", l4, hspace(3), label("h").setFontSize(10))
 
-    const pd2 = rl1.findObj("D").lr().toRight(5)
-    const l5 = measure(point(pd2.x(), rl1.findObj("D").y0()), pd2)
+    const pd2 = rl1.findGraphic("D").lr().toRight(5)
+    const l5 = measure(point(pd2.x(), rl1.findGraphic("D").y0()), pd2)
     let righth = label("h").setFontSize(10)
     align("abut", "center", l5, hspace(3), righth)
 
@@ -520,9 +520,9 @@ with (new CFigure("case_RR_RL", true)) {
     rl.view(f2 = addFrame().setLength(1500)).rotateNodeWithParent("y")
     rl.view(f3 = addFrame().setLength(1500)).rotateNodeWithParent("y")
 
-    const pc2 = rl1.findObj("B").ll().toLeft(5),
+    const pc2 = rl1.findGraphic("B").ll().toLeft(5),
           pc2s = pc2,
-          l6 = drawBefore(f2, measure(point(pc2s.x(), rl1.findObj("y").y0()), pc2s))
+          l6 = drawBefore(f2, measure(point(pc2s.x(), rl1.findGraphic("y").y0()), pc2s))
 
     align("abut", "center", drawBefore(f2, label("h + 1").setFontSize(10)), hspace(3), l6)
 }
@@ -580,16 +580,16 @@ with (new CFigure("case_LL_del")) {
     align("none", "TB", t.bbox, margin())
     let l1 = measure(point(), point())
     const tv = t.view()
-    align("abut", "bottom", l1, hspace(5), tv.findObj("A"))
-    align("none", "top", l1, tv.findObj("x"))
+    align("abut", "bottom", l1, hspace(5), tv.findGraphic("A"))
+    align("none", "top", l1, tv.findGraphic("x"))
     align("left", "none", l1, margin(4))
     setTextStyle("#06c"); setFontSize(10)
     align("abut", "center", l1, hspace(3), label("h+1"))
-    let l2 = measure(point(), tv.findObj("C").lr().toRight(5))
-    align("none", "top", l2, tv.findObj("C"))
+    let l2 = measure(point(), tv.findGraphic("C").lr().toRight(5))
+    align("none", "top", l2, tv.findGraphic("C"))
     align("abut", "center", l2, hspace(3), label("h"))
-    let l3 = measure(point(), tv.findObj("D").lr().toRight(5))
-    align("none", "top", l3, tv.findObj("D"))
+    let l3 = measure(point(), tv.findGraphic("D").lr().toRight(5))
+    align("none", "top", l3, tv.findGraphic("D"))
     align("abut", "center", l3, hspace(3), label("h"))
     align("right", "none", l3, margin(10))
 }
@@ -616,17 +616,17 @@ with (new CFigure("case_LR_del")) {
     align("none", "TB", t.bbox, margin())
     let l1 = measure(point(), point())
     const tv = t.view()
-    align("abut", "bottom", l1, hspace(5), tv.findObj("A"))
-    align("none", "top", l1, tv.findObj("A"))
+    align("abut", "bottom", l1, hspace(5), tv.findGraphic("A"))
+    align("none", "top", l1, tv.findGraphic("A"))
     setTextStyle("#06c"); setFontSize(10)
     let lb
     align("abut", "center", lb = label("h or\n h+1"), hspace(3), l1 )
     align("left", "none", lb, margin())
-    let l2 = measure(point(), tv.findObj("C").lr().toRight(5))
-    align("none", "top", l2, tv.findObj("y"))
+    let l2 = measure(point(), tv.findGraphic("C").lr().toRight(5))
+    align("none", "top", l2, tv.findGraphic("y"))
     align("abut", "center", l2, hspace(3), label("h + 1"))
-    let l3 = measure(point(), tv.findObj("D").lr().toRight(5))
-    align("none", "top", l3, tv.findObj("D"))
+    let l3 = measure(point(), tv.findGraphic("D").lr().toRight(5))
+    align("none", "top", l3, tv.findGraphic("D"))
     align("abut", "center", l3, hspace(3), label("h"))
     align("right", "none", l3, margin(10))
 }
