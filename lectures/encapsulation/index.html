@@ -118,8 +118,9 @@ with (modular_fig) {
         dedge(c2, c3)
         dedge(c2, c4)
     }
-    g.repulsion *= 10
-    g.branchSpread *= 10
+    align("distribute", "bottom", c1, c3, c4)
+    align("LR", "bottom", group(c1, c3, c4), margin())
+    align("center", "top", c2, margin())
     // modular_fig.animatedSolving = true
 }
 </script>
