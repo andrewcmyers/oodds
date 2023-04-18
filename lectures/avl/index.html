@@ -700,9 +700,11 @@ with (new CFigure("treap_add")) {
     const t2 = tree(lightStyle(null, ["D,2", "C,8"]), "E,1", ["B,3", "A,7", ["D,2", "C,8", u]], ["F,4", u, "G,9"])
     const t3 = tree(lightStyle(null, ["D,2", "C,8", "B,3"]), "E,1", ["D,2", ["B,3", "A,7", "C,8"], u], ["F,4", u, "G,9"])
     equal(t1.bbox.w(), t2.bbox.w(), t3.bbox.w())
+    transform(t1, t2)
+    transform(t2, t3)
     align("LR", "TB",
-        group(t1.bbox, transform(t1, t2).setW(50),
-              t2.bbox, transform(t2, t3).setW(50),
+        group(t1.bbox, hspace(50),
+              t2.bbox, hspace(50),
               t3.bbox)
         .align("abut", "TB"), margin())
 }
