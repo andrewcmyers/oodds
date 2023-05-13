@@ -616,7 +616,8 @@ subtype, whereas that object's own <code>equals</code> would conclude
 through an <code>instanceof</code> test that the objects are not equal.
 </p>
 <p>
-Symmetry can be restored by using the Java feature of <b>reflection</b>:
+Symmetry can be restored by using the Java feature of <b>reflection</b>,
+<b>reflection</b>, in which we access properties of types at run time.
 </p>
 <pre>
     boolean equals(Object o) {
@@ -630,19 +631,18 @@ Symmetry can be restored by using the Java feature of <b>reflection</b>:
     }
 </pre>
 <p>
-This code uses the method <code>getClass()</code> to access the run-time class
-of the objects being compared. This is an example of <b>reflection</b>, in
-which we access properties of types at run time. Two  objects can only be considered
-equal if they are implemented by the same class.
+This code uses the reflective method <code>getClass()</code> to access the
+run-time class of the objects being compared. Two objects can only be
+considered equal if they are implemented by the same class.
 </p>
 <p>
-This reflection-based approach is generally considered a best practice for
+This reflection-based approach is often considered a best practice for
 implementing <code>equals()</code>, but even it is not entirely satisfactory.
-If we have two classes that provide alternate implementations of the same
-immutable interface, we might want to consider objects equal even when their
-classes are different, in the case where they cannot be distinguished using their
-interfaces. For example, suppose we had classes <code>CartesianPoint</code>
-and <code>PolarPoint</code> that provided different implementations of an
+If two classes provide alternate implementations of the same
+immutable interface, Leibniz equality says that we should consider their objects equal
+even when their classes are different, if the objects cannot be distinguished using their
+interfaces. For example, suppose classes <code>CartesianPoint</code>
+and <code>PolarPoint</code> provide different implementations of an
 interface <code>Point</code> representing a mathematical point. It should be
 possible for two points to be equal even if their underlying representations are
 different, and an implementation of <code>Cartesian.equals()</code> like the following
@@ -681,14 +681,18 @@ class Polynomial {
 This method does not try to answer whether two objects are truly equal; it only
 answers whether they are “polynomial-equal”. It is obviously reflexive,
 transitive, and symmetric, and simpler to implement. Unfortunately, the
-standard Java libraries are not designed to work with this approach, though
-it is compatible with the way we will soon suggest writing generic code.
+standard Java libraries are not designed to work with this notion of equality,
+though both notions of equality can be coexist. Another advantage of this
+approach is that it is compatible with the way we later suggest writing generic code.
 </p>
+
 <h3>canEqual</h3>
+
 <p>
-Another approach to restoring the symmetry of equality is suggested in the
-programming language Scala. A second method <code>canEqual()</code> is
-introduced whose job is to determine whether equality is possible <em>from
+Another approach to restoring the symmetry of equality is suggested by the
+programming language Scala. The <code>equals()</code> method is implemented
+in terms of a second method <code>canEqual()</code>,
+whose job is to determine whether equality is possible <em>from
 the perspective of the other object</em>.
 </p>
 <p>
@@ -703,8 +707,9 @@ for <code>CartesianPoint</code>, by adding a test of <code>canEqual()</code>:
     }
 </pre>
 <p>
-Different implementations of <code>Point</code> can then provide a
-<code>canEqual()</code> method that only tests whether this object is a point:
+To achieve Leibniz equality, different implementations of <code>Point</code>
+then provide a <code>canEqual()</code> method that only tests whether this
+object is a point:
 </p>
 <pre>
     boolean canEqual(Object o) {
@@ -713,10 +718,10 @@ Different implementations of <code>Point</code> can then provide a
 </pre>
 <p>
 On the other hand, if class <code>Point</code> has a subtype
-<code>ColoredPoint</code> whose observer <code>color()</code> that naturally
+<code>ColoredPoint</code> whose observer <code>color()</code> (naturally)
 distinguishes two colored points, it can override <code>canEqual()</code>
 to prevent non-colored points from being equal to colored points regardless
-of in which order the comparison is made:
+of the order in which the comparison is made:
 <pre>
     // In ColoredPoint.equals()
     boolean canEqual(Object o) {
