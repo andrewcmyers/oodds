@@ -671,7 +671,7 @@ type</em>. For example, we might evaluate equality of two polynomials
 using a <em>static</em> method of the class <code>Polynomial</code>:
 <pre>
 class Polynomial {
-    /** Returns whether p and q are equal polynomials. */
+    /** Returns whether p and q are equal as polynomials. */
     static boolean equal(Polynomial p, Polynomial q) {
         return Arrays.equals(p.coefficients, q.coefficients);
     }
@@ -682,19 +682,26 @@ This method does not try to answer whether two objects are truly equal; it only
 answers whether they are “polynomial-equal”. It is obviously reflexive,
 transitive, and symmetric, and simpler to implement. Unfortunately, the
 standard Java libraries are not designed to work with this notion of equality,
-though both notions of equality can be coexist. Another advantage of this
-approach is that it is compatible with the way we later suggest writing generic code.
+and it does not implement Leibniz equality. On the other hand,
+both notions of equality can coexist, and an advantage of this approach is that
+it is compatible with the way we later suggest writing generic code.
 </p>
 
 <h3>canEqual</h3>
 
 <p>
-Another approach to restoring the symmetry of equality is suggested by the
+A nice approach to restoring the symmetry of equality was developed for the
 programming language Scala. The <code>equals()</code> method is implemented
 in terms of a second method <code>canEqual()</code>,
 whose job is to determine whether equality is possible <em>from
-the perspective of the other object</em>.
+the perspective of the other object</em>. The specification is as follows:
 </p>
+<pre>
+/** Returns: whether the run-time type of <code>o</code> is compatible
+ *  with equality with the receiver object.
+ */
+boolean canEqual(Object o);
+</pre>
 <p>
 In the example above of the interface <code>Point</code> with its
 two implementing classes, we would implement <code>equals()</code> as follows
@@ -718,9 +725,9 @@ object is a point:
 </pre>
 <p>
 On the other hand, if class <code>Point</code> has a subtype
-<code>ColoredPoint</code> whose observer <code>color()</code> (naturally)
-distinguishes two colored points, it can override <code>canEqual()</code>
-to prevent non-colored points from being equal to colored points regardless
+<code>ColoredPoint</code> whose observer <code>color()</code> can be used to
+distinguish two differently colored points, the class <code>ColoredPoint</code> can override <code>canEqual()</code>
+to prevent non-colored points from being equal to colored points, regardless
 of the order in which the comparison is made:
 <pre>
     // In ColoredPoint.equals()
