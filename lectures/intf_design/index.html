@@ -138,16 +138,17 @@ with (new CFigure("design-process", false)) {
         l2 = design_step("design"),
         l3 = design_step("code"),
         l4 = design_step("debug"),
-        l5 = design_step("document"))
+        l5 = design_step("document")),
+        m = margin()
+    geq(minus(l3.y0(), l2.y1()), 25)
     align("center", "abut", l1, vspace(10), l2)
-    align("left", "none", l4, canvasRect().inset(2))
+    align("left", "none", l4, m)
+    align("none", "bottom", l5, m)
     arrow(l2, l3)
     arrow(l3, l4)
     arrow(l4, l5)
-    equal(l2.h(), 80)
-    equal(l5.y1(), canvasRect().inset(2).y1())
-    equal(l1.y0(), canvasRect().inset(2).y0())
-    equal(30, l2.w(), times(l3.w(), 0.4), times(l4.w(), 0.2), times(l5.w(), 0.4))
+    align("none", "top", l1, m)
+    equal(55, l2.w(), times(l3.w(), 0.7), times(l4.w(), 0.3), times(l5.w(), 0.9))
     connector(l4, l3.toRight(150), l2.toRight(80), l2).setEndArrow("arrow")
 
     let r1, r2, r3, r4
@@ -666,8 +667,8 @@ are more philosophically consistent, but since the Java libraries rely on the
 <h3>Equality at a type</h3>
 <p>
 An alternative way to handle equality that is consistent and flexible 
-is to think of equality as being evaluated <em>at a particular
-type</em>. For example, we might evaluate equality of two polynomials
+is to implement equality <em>at a particular type</em>.
+For example, we might evaluate equality of two polynomials
 using a <em>static</em> method of the class <code>Polynomial</code>:
 <pre>
 class Polynomial {
@@ -682,9 +683,10 @@ This method does not try to answer whether two objects are truly equal; it only
 answers whether they are “polynomial-equal”. It is obviously reflexive,
 transitive, and symmetric, and simpler to implement. Unfortunately, the
 standard Java libraries are not designed to work with this notion of equality,
-and it does not implement Leibniz equality. On the other hand,
-both notions of equality can coexist, and an advantage of this approach is that
-it is compatible with the way we later suggest writing generic code.
+and it is not implement Leibniz equality, because it may consider
+distinguishable objects to be equal. On the other hand, both notions of
+equality can coexist, and an advantage of this approach is that it is
+compatible with the way we later suggest writing generic code.
 </p>
 
 <h3>canEqual</h3>
@@ -692,9 +694,9 @@ it is compatible with the way we later suggest writing generic code.
 <p>
 A nice approach to restoring the symmetry of equality was developed for the
 programming language Scala. The <code>equals()</code> method is implemented
-in terms of a second method <code>canEqual()</code>,
-whose job is to determine whether equality is possible <em>from
-the perspective of the other object</em>. The specification is as follows:
+using a second method <code>canEqual()</code>, whose job is to determine
+whether equality is possible <em>from the perspective of the other object</em>.
+The specification of <code>canEqual()</code> is as follows:
 </p>
 <pre>
 /** Returns: whether the run-time type of <code>o</code> is compatible
@@ -703,9 +705,9 @@ the perspective of the other object</em>. The specification is as follows:
 boolean canEqual(Object o);
 </pre>
 <p>
-In the example above of the interface <code>Point</code> with its
-two implementing classes, we would implement <code>equals()</code> as follows
-for <code>CartesianPoint</code>, by adding a test of <code>canEqual()</code>:
+In the above example of the interface <code>Point</code> with two implementing
+classes, we would implement <code>equals()</code> as follows for
+<code>CartesianPoint</code>, by adding a test of <code>canEqual()</code>:
 <pre>
     boolean equals(Object o) {
         if (o instanceof Point p) {
@@ -746,3 +748,4 @@ A ColoredPoint is not equal to a CartesianPoint because the point does not pass 
 test in <code>ColoredPoint.equals()</code>; a CartesianPoint will not be equal to a
 <code>ColoredPoint</code> because the CartesianPoint does not pass the <code>instanceof</code> test in
 <code>ColoredPoint.canEqual()</code>.
+</p>
