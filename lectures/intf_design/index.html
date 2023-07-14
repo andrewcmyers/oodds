@@ -443,7 +443,7 @@ Pragmatically, if an instance variable has both a getter and a setter, it become
 hard to enforce any kind of abstraction barrier, since clients can modify it
 arbitrarily. It is not much better than making the instance variable public.
 Of course, we can define setters with preconditions, but it is
-better to think of these setters as mutators.
+better to think of such setters as mutators.
 </p>
 
 <p>
@@ -478,13 +478,13 @@ part of the object representation, the client may retain the ability to modify t
 mutable object through a reference it is holding. For example,
 a setter <code>setCoefficients()</code> that allowed a client to override the polynomial's
 coefficients with a new array would be just as bad as <code>getCoefficients()</code>.
-A well-defended abstraction barrier.
+A well-defended abstraction barrier
 requires that clients not hold any references to mutable state inside the implementation,
 because they could use those references to break the implementation, whether accidentally
 or maliciously.
 </p>
 <p>The moral is that some observers and some mutators may look like getters and
-setters, but you should not reflexively implement instance variables accessors.
+setters, but you should not reflexively implement instance-variable accessors.
 Instead, choose observers and mutators that are appropriate to the abstraction
 being designed.
 </p>
@@ -496,8 +496,9 @@ job of constructors to create a properly initialized object. Unfortunately,
 one often sees code that uses a default constructor to create the object,
 then initializes the fields using setters. Until the fields are initialized,
 the object will not satisfy the class invariant, and the setters are prone to
-being misused by confused clients. A better approach is to use a constructor
-for initialization, or to use the Builder pattern, which we will discuss later.
+being misused by confused clients. In situations where one is tempted to have
+a default constructor, a better approach is to use a real constructor
+to perform initialization, or to use the Builder pattern, which we discuss later.
 </p>
 
 <h2>Implementing equality</h2>
