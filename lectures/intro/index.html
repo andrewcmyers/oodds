@@ -61,7 +61,119 @@ a way that makes it easy to maintain and improve over time.
 </p>
 <p>
 To illustrate these challenges of software development, let us suppose that we
-are building an application whose userse can play some simple games and
+are building an application whose users can play some simple games and
 puzzles.
 </p>
 <p>
+One classic puzzle that the reader may have seen is the 15-puzzle, introduced
+by the famous puzzle designer Sam Lloyd. This puzzle has 15 numbered tiles
+within a 4 by 4 grid. There is one empty space, so tiles can be slid into the
+empty space to rearrange them. The goal is to arrange the titles in sorted
+order starting from the upper left. The puzzle is shown below in a possible
+initial unsolved configuration.
+
+<div class=figure>
+<canvas id=lloyd_puzzle style="width: 250px; height: 250px">
+</canvas>
+<audio id=ssh>
+  <source src="lectures/intro/ssh.m4a" type="audio/mp4">
+</audio>
+<audio id=win>
+  <source src="lectures/intro/mixkit-ethereal-fairy-win-sound-2019.wav"
+          type="audio/wav">
+</audio>
+<script class=graphics>
+    with (new CFigure("lloyd_puzzle")) {
+        let border = square().setLineWidth(8).setStrokeStyle("#666")
+            .setFillStyle("#aaa")
+        let gridSpace = times(border.w(), 0.25)
+        align("LR", "TB", border, margin(6))
+        const ssh = document.getElementById("ssh"),
+              win = document.getElementById("win")
+        const positions = []
+        let emptyPos = 15
+        for (let i = 0; i < 16; i++) {
+            positions[i] = point(plus(border.x0(), times(0.5, gridSpace),
+                                      times(i % 4, gridSpace)),
+                                 plus(border.y0(), times(0.5, gridSpace),
+                                      times(Math.floor(i / 4), gridSpace)))
+        }
+        freeze()
+        function tile(n) {
+            const result = square().addText("" + n).setLineWidth(4).setFontSize(20)
+                .setFillStyle("#db9")
+                .setStrokeStyle("#975")
+                .setCornerRadius(5)
+            result.index = n
+            result.control = new TileControl(result)
+            return result
+        }
+        function winningConfig() {
+            for (let i = 0; i < 15; i++) {
+                if (!tiles[i] || tiles[i].index != i+1) return false
+            }
+            return true
+        }
+        class TileControl extends Constrain.Control {
+            constructor(tile) {
+                super(thisFigure(), tile)
+            }
+            mousedown(x, y, e) {
+                if (this.inBounds(x, y)) {
+                    let pos
+                    const tile = this.graphic
+                    for (let i = 0; i < 16; i++) {
+                        if (tiles[i] && tiles[i].index == this.graphic.index) pos = i
+                    }
+                    function doMove() {
+                        const nf = addFrame().setLength(300)
+                        tile.constraint.endBefore(nf)
+                        const constraints = constraintGroup(
+                            equal(tile.x(), smooth(nf, positions[pos].x(),
+                                                       positions[emptyPos].x())),
+                            equal(tile.y(), smooth(nf, positions[pos].y(),
+                                                       positions[emptyPos].y())))
+                        tile.constraint = after(nf, constraints)
+                        tiles[pos] = undefined
+                        tiles[emptyPos] = tile
+                        emptyPos = pos
+                        advance()
+                        if (winningConfig()) {
+                            win.play()
+                        } else {
+                            ssh.play()
+                        }
+                    }
+                    if (pos == emptyPos - 1 && pos % 4 < 3 ||
+                        pos == emptyPos + 1 && pos % 4 > 0 ||
+                        pos == emptyPos - 4 && pos < 12 ||
+                        pos == emptyPos + 4 && pos > 3) { doMove(this) }
+                }
+            }
+        }
+        const tiles = new Array(15)
+        for (let i = 0; i < 15; i++) {
+            tiles[i] = tile(i+1)
+            equal(tiles[i].w(), minus(times(0.25, border.w()), 5))
+        }
+        for (let j = 0; j < 1; j++) {
+            const t1 = Math.floor(Math.random() * 15),
+                  t2 = Math.floor(Math.random() * 15)
+            if (t1 != t2) {
+                const tile = tiles[t1]; tiles[t1] = tiles[t2]; tiles[t2] = tile
+            } else {
+                j-- // ensure solvability
+            }
+        }
+        let initial = addFrame()
+        for (let i = 0; i < 15; i++) {
+            const constraints = constraintGroup(
+                equal(tiles[i].x(), positions[i].x()),
+                equal(tiles[i].y(), (positions[i].y())))
+
+        tiles[i].constraint = after(initial, constraints)
+        }
+    }
+</script>
+<p class=caption>The 15-puzzle with most but not all tiles in the right place. Click on tiles to move them.</p>
+</div>
