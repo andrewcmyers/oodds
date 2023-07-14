@@ -156,13 +156,13 @@ initial unsolved configuration.
             tiles[i] = tile(i+1)
             equal(tiles[i].w(), minus(times(0.25, border.w()), 5))
         }
-        for (let j = 0; j < 1; j++) {
+        for (let j = 0; j < 2; j++) {
             const t1 = Math.floor(Math.random() * 15),
                   t2 = Math.floor(Math.random() * 15)
             if (t1 != t2) {
                 const tile = tiles[t1]; tiles[t1] = tiles[t2]; tiles[t2] = tile
             } else {
-                j-- // ensure solvability
+                j-- // only even numbers of swaps are solvable
             }
         }
         let initial = addFrame()
