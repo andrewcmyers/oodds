@@ -99,9 +99,13 @@ initial unsolved configuration.
                                       times(Math.floor(i / 4), gridSpace)))
         }
         freeze()
+        const grd = ctx.createLinearGradient(0, 0, 15, 40)
+        grd.addColorStop(0, "#fff"); grd.addColorStop(1, "#db9")
         function tile(n) {
-            const result = square().addText("" + n).setLineWidth(4).setFontSize(20)
-                .setFillStyle("#db9")
+            const result = square().addText("" + n)
+                .setLineWidth(4)
+                .setFontSize(20)
+                .setFillStyle(grd)
                 .setStrokeStyle("#975")
                 .setCornerRadius(5)
             result.index = n
@@ -123,16 +127,17 @@ initial unsolved configuration.
                     let pos
                     const tile = this.graphic
                     for (let i = 0; i < 16; i++) {
-                        if (tiles[i] && tiles[i].index == this.graphic.index) pos = i
+                        if (tiles[i] && tiles[i].index == this.graphic.index)
+                            pos = i
                     }
                     function doMove() {
                         const nf = addFrame().setLength(300)
                         tile.constraint.endBefore(nf)
                         const constraints = constraintGroup(
                             equal(tile.x(), smooth(nf, positions[pos].x(),
-                                                       positions[emptyPos].x())),
+                                                   positions[emptyPos].x())),
                             equal(tile.y(), smooth(nf, positions[pos].y(),
-                                                       positions[emptyPos].y())))
+                                                   positions[emptyPos].y())))
                         tile.constraint = after(nf, constraints)
                         tiles[pos] = undefined
                         tiles[emptyPos] = tile
@@ -156,13 +161,13 @@ initial unsolved configuration.
             tiles[i] = tile(i+1)
             equal(tiles[i].w(), minus(times(0.25, border.w()), 5))
         }
-        for (let j = 0; j < 2; j++) {
-            const t1 = Math.floor(Math.random() * 15),
-                  t2 = Math.floor(Math.random() * 15)
-            if (t1 != t2) {
-                const tile = tiles[t1]; tiles[t1] = tiles[t2]; tiles[t2] = tile
-            } else {
-                j-- // only even numbers of swaps are solvable
+        for (let swaps = 0; swaps < 2; ) {
+            // Note: only even numbers of swaps are solvable
+            const i = Math.floor(Math.random() * 15),
+                  j = Math.floor(Math.random() * 15)
+            if (i != j) {
+                const tile = tiles[i]; tiles[i] = tiles[j]; tiles[j] = tile
+                swaps++
             }
         }
         let initial = addFrame()
@@ -171,9 +176,10 @@ initial unsolved configuration.
                 equal(tiles[i].x(), positions[i].x()),
                 equal(tiles[i].y(), (positions[i].y())))
 
-        tiles[i].constraint = after(initial, constraints)
+            tiles[i].constraint = after(initial, constraints)
         }
     }
 </script>
-<p class=caption>The 15-puzzle with most but not all tiles in the right place. Click on tiles to move them.</p>
+<p class=caption>The 15-puzzle with most but not all tiles in the right place.
+Click on tiles to move them.</p>
 </div>
