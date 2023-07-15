@@ -28,9 +28,10 @@
 </p>
 <p>
     The material in this book was developed as part of teaching two courses
-    at Cornell, CS 2112 and CS 2110. Many people have contributed to the development
-    of these courses, including not only the authors but also David Gries,
-    Michael Clarkson
+    at Cornell, CS 2112 and CS 2110. Many people have contributed to the
+    development of these courses.
+    <!--, including not only the authors but also David Gries, ...!
+    Michael Clarkson? Keshav Pingali? ... -->
 </p>
 <p>
     This material is a work in progress, and the <a
@@ -54,18 +55,75 @@ possible? Of course, we need to understand how to use a programming language
 to write code, and this text is written under the assumption that the reader
 has done some programming. To build complex software, however, we need more
 than just the ability to write code. We need to understand what algorithms and
-data structures are available to solve problems efficiently. We need to know
-how to break apart a large programming problem into smaller problems that are
-less daunting. And for our code to be truly useful, it needs to be written in
-a way that makes it easy to maintain and improve over time.
+data structures are available to solve problems efficiently. We need to be
+expert in using the programming language to express the desired functionality.
+We need to know how to break apart a large programming problem into smaller
+problems that are less daunting. And for our code to be truly useful, it needs
+to be written in a way that makes it easy to maintain and improve over time.
+These are the topics covered here.
+</p>
+
+<h2>Overview of topics</h2>
+
+<h3>Programming Language Features</h3>
+<p>
+An important part of being a good software engineer is the ability to
+effectively use the features of the programming language being used.  Modern
+programming languages have many features that can be used effectively to write
+clearer, simpler, and more efficient code, or misused to write complex code
+that is hard to maintain. This book is written using Java as the programming
+language. Java is one of the most commonly used programming languages.
+Of course, Java is far from the only programming language used in practice,
+but the lessons we learn from understanding how to use Java will carry
+over to other programming lanugages.
 </p>
 <p>
-To illustrate these challenges of software development, let us suppose that we
-are building an application whose users can play some simple games and
-puzzles.
+Like
+many popular programming languages, Java is object-oriented, so object-oriented
+programming (OOP) is a key topic. However, OOP is actually a harmonious
+collection of related ideas that we will carefully explore: data abstraction,
+subtyping, and inheritance. Java also supports other important features such as
+generics and concurrent programming, and we will see how to use these features
+as well.
+</p>
+
+<h3>Modular software design</h3>
+<p>
+Object-oriented languages were designed to support the construction
+of complex software systems. A major focus of this text is how to
+organize large programs, by breaking them up into separate code
+modules that make it easier to design and implement. We will also
+explore programming paradigms like concurrent and event-driven programming,
+talk about how to design and program user interfaces using graphical
+user interface frameworks, and learn about design patterns that can help
+us organize code.
+</p>
+
+<h3>Algorithms and data structures</h3>
+
+<p>
+To write efficient code, a software developer needs to choose how to represent
+information in data structures and pick the right algorithms.  Fortunately,
+computer scientists have been studying these problems for decades, and have
+developed many useful algorithms and data structures. Algorithms can be
+tricky to get right, especially when coded for maximum efficiency, so we
+will also need to reason carefully about the correctness and
+efficiency of algorithms, using techniques like mathematical induction and
+asumptotic complexity. We will see how to apply these intellectual
+tools to a variety of important data strucutres, including
+arrays, lists, stacks, queues, trees, graphs, and hash tables, and to
+algorithm that operate on them.
+</ul>
+
+</p>
+<h2>A Motivating Example</h2>
+<p>
+To illustrate how the content of this text may be helpful to a software
+developer, let us consider an example. Suppose that we want to build a
+simple game.
 </p>
 <p>
-One classic puzzle that the reader may have seen is the 15-puzzle, introduced
+One classic puzzle that you may have seen is the 15-puzzle, introduced
 by the famous puzzle designer Sam Lloyd. This puzzle has 15 numbered tiles
 within a 4 by 4 grid. There is one empty space, so tiles can be slid into the
 empty space to rearrange them. The goal is to arrange the titles in sorted
