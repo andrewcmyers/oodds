@@ -207,10 +207,10 @@ initial unsolved configuration.
                             ssh.play()
                         }
                     }
-                    if (pos == emptyPos - 1 && pos % 4 < 3 ||
-                        pos == emptyPos + 1 && pos % 4 > 0 ||
-                        pos == emptyPos - 4 && pos < 12 ||
-                        pos == emptyPos + 4 && pos > 3) { doMove(this) }
+                    if (Math.abs(pos - emptyPos) == 4 ||
+                        Math.abs(pos - emptyPos) == 1 && 
+                          Math.floor(pos/4) == Math.floor(emptyPos/4))
+                      doMove(this)
                 }
             }
         }
@@ -241,3 +241,24 @@ initial unsolved configuration.
 <p class=caption>The 15-puzzle with most but not all tiles in the right place.
 Click on tiles to move them.</p>
 </div>
+
+<p>
+Suppose that we want the final version of the app to support hints to the user
+about what move to make next, and even automatic solving capabilitiy.
+</p>
+
+<p>
+The problem of designing this application raises many questions. In
+an object-oriented languages, we probably want to represent the state
+of the puzzle as an object. What operations should puzzle objects have?
+What data is stored inside puzzle objects to represent the state
+of the puzzle? What is the right user interface for the application,
+one that presents the right information to the user and gives them the
+ability to interact efficiently and enjoyably with it?
+</p>
+
+<p>
+The application also raises questions about data structures and algorithms.
+Efficient algorithms are especially important if we want the
+
+<h2>Puzzles as graphs</h2>
