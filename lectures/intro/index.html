@@ -141,101 +141,139 @@ initial unsolved configuration.
           type="audio/wav">
 </audio>
 <script class=graphics>
-    with (new CFigure("lloyd_puzzle")) {
-        let border = square().setLineWidth(8).setStrokeStyle("#666")
-            .setFillStyle("#aaa")
-        let gridSpace = times(border.w(), 0.25)
-        align("LR", "TB", border, margin(6))
-        const ssh = document.getElementById("ssh"),
-              win = document.getElementById("win")
-        const positions = []
-        let emptyPos = 15
-        for (let i = 0; i < 16; i++) {
-            positions[i] = point(plus(border.x0(), times(0.5, gridSpace),
-                                      times(i % 4, gridSpace)),
-                                 plus(border.y0(), times(0.5, gridSpace),
-                                      times(Math.floor(i / 4), gridSpace)))
+    class TileControl extends Constrain.Control {
+        constructor(puzzle, tile) {
+            super(puzzle.figure, tile)
+            this.puzzle = puzzle
         }
-        freeze()
-        const grd = ctx.createLinearGradient(0, 0, 15, 40)
-        grd.addColorStop(0, "#fff"); grd.addColorStop(1, "#db9")
-        function tile(n) {
-            const result = square().addText("" + n)
-                .setLineWidth(4)
-                .setFontSize(20)
-                .setFillStyle(grd)
-                .setStrokeStyle("#975")
-                .setCornerRadius(5)
-            result.index = n
-            result.control = new TileControl(result)
-            return result
-        }
-        function winningConfig() {
-            for (let i = 0; i < 15; i++) {
-                if (!tiles[i] || tiles[i].index != i+1) return false
-            }
-            return true
-        }
-        class TileControl extends Constrain.Control {
-            constructor(tile) {
-                super(thisFigure(), tile)
-            }
-            mousedown(x, y, e) {
-                if (this.inBounds(x, y)) {
-                    let pos
-                    const tile = this.graphic
-                    for (let i = 0; i < 16; i++) {
-                        if (tiles[i] && tiles[i].index == this.graphic.index)
-                            pos = i
-                    }
-                    function doMove() {
-                        const nf = addFrame().setLength(300)
-                        tile.constraint.endBefore(nf)
-                        const constraints = constraintGroup(
-                            equal(tile.x(), smooth(nf, positions[pos].x(),
-                                                   positions[emptyPos].x())),
-                            equal(tile.y(), smooth(nf, positions[pos].y(),
-                                                   positions[emptyPos].y())))
-                        tile.constraint = after(nf, constraints)
-                        tiles[pos] = undefined
-                        tiles[emptyPos] = tile
-                        emptyPos = pos
-                        advance()
-                        if (winningConfig()) {
-                            win.play()
-                        } else {
-                            ssh.play()
-                        }
-                    }
-                    if (Math.abs(pos - emptyPos) == 4 ||
-                        Math.abs(pos - emptyPos) == 1 && 
-                          Math.floor(pos/4) == Math.floor(emptyPos/4))
-                      doMove(this)
+        mousedown(x, y, e) {
+            if (this.inBounds(x, y)) {
+                let pos
+                const control = this,
+                        puzzle = this.puzzle,
+                        tile = this.graphic,
+                        emptyPos = puzzle.emptyPos,
+                        tiles = puzzle.tiles,
+                        positions = puzzle.positions,
+                        f = puzzle.figure
+                for (let i = 0; i < 16; i++) {
+                    if (puzzle.tiles[i] &&
+                        puzzle.tiles[i].index == this.graphic.index)
+                        pos = i
+                }
+                const diff = Math.abs(pos - emptyPos), s = puzzle.size
+                if (diff == s ||
+                    diff == 1 && 
+                        Math.floor(pos/s) == Math.floor(emptyPos/s))
+                {
+                    const nf = f.addFrame().setLength(300)
+                    tile.constraint.endBefore(nf)
+                    const constraints = f.constraintGroup(
+                        f.equal(tile.x(), f.smooth(nf, positions[pos].x(),
+                                                positions[emptyPos].x())),
+                        f.equal(tile.y(), f.smooth(nf, positions[pos].y(),
+                                                positions[emptyPos].y())))
+                    tile.constraint = f.after(nf, constraints)
+                    tiles[pos] = undefined
+                    tiles[emptyPos] = tile
+                    puzzle.emptyPos = pos
+                    f.advance()
+                    if (puzzle.winningConfig()) win.play()
+                    else ssh.play()
                 }
             }
         }
-        const tiles = new Array(15)
-        for (let i = 0; i < 15; i++) {
-            tiles[i] = tile(i+1)
-            equal(tiles[i].w(), minus(times(0.25, border.w()), 5))
+    }
+    class LloydPuzzle extends Constrain.LayoutObject {
+        constructor(figure, labels, startFrame, solvable) {
+            super(figure)
+            this.figure = figure
+            this.solvable = solvable
+            this.size = Math.ceil(Math.sqrt(labels.length))
+            // console.log("size = " + this.size)
+            const ssh = document.getElementById("ssh"),
+                win = document.getElementById("win"),
+                grd = figure.ctx.createLinearGradient(0, 0, 15, 40)
+            grd.addColorStop(0, "#fff"); grd.addColorStop(1, "#db9")
+
+            const tiles = this.tiles = new Array(16),
+                    border = this.border =
+                figure.square().setLineWidth(8).setStrokeStyle("#666")
+                    .setFillStyle("#aaa"),
+                    positions = this.setupPositions()
+            for (let i = 0; i < this.size * this.size; i++) {
+                if (labels[i] !== undefined) {
+                    const tile = tiles[i] = this.makeTile(labels[i], grd)
+                    figure.equal(tile.w(), figure.minus(figure.times(1/this.size, border.w()), 5))
+                    const constraints = figure.constraintGroup(
+                            figure.equal(tile.x(), positions[i].x()),
+                            figure.equal(tile.y(), positions[i].y()))
+                    tiles[i].constraint = solvable
+                        ? figure.after(startFrame, constraints)
+                        : constraints
+                } else {
+                    this.emptyPos = i
+                }
+            }
         }
+        makeTile(n, fill) {
+            const f = this.figure
+            const result = f.square().addText("" + n)
+                .setLineWidth(3)
+                .setFillStyle(fill)
+                .setStrokeStyle("#975")
+                .setCornerRadius(5)
+            // result.setFontSize(f.times(result.w(), 0.2))
+            result.setFontSize(18)
+            result.index = n
+            if (this.solvable)
+                result.control = new TileControl(this, result)
+            return result
+        }
+        setupPositions() {
+            const positions = new Array(this.size*this.size),
+                  border = this.border,
+                  f = this.figure,
+                  gridSpace = f.times(border.w(), 1/this.size)
+            for (let i = 0; i < this.size*this.size; i++) {
+                const x = f.plus(border.x0(), f.times(0.5, gridSpace),
+                             f.times(i % this.size, gridSpace)),
+                      y = f.plus(border.y0(), f.times(0.5, gridSpace),
+                             f.times(Math.floor(i/this.size), gridSpace))
+                positions[i] = f.point(x, y)
+            }
+            this.positions = positions
+            return positions
+        }
+        winningConfig() {
+            for (let i = 0; i < this.size*this.size-1; i++) {
+                if (!this.tiles[i] || this.tiles[i].index != i+1)
+                    return false
+            }
+            return true
+        }
+        x() { return this.border.x() }
+        y() { return this.border.y() }
+        w() { return this.border.w() }
+        h() { return this.border.h() }
+    }
+    window.LloydPuzzle = LloydPuzzle
+    with (new CFigure("lloyd_puzzle")) {
+        let first = addFrame()
+        const size = 15
+        const init = new Array(size)
+        for (let i = 0; i < size; i++) init[i] = i+1
         for (let swaps = 0; swaps < 2; ) {
             // Note: only even numbers of swaps are solvable
-            const i = Math.floor(Math.random() * 15),
-                  j = Math.floor(Math.random() * 15)
+            const i = Math.floor(Math.random() * size),
+                  j = Math.floor(Math.random() * size)
             if (i != j) {
-                const tile = tiles[i]; tiles[i] = tiles[j]; tiles[j] = tile
+                const tile = init[i]; init[i] = init[j]; init[j] = tile
                 swaps++
             }
         }
-        let initial = addFrame()
-        for (let i = 0; i < 15; i++) {
-            const constraints = constraintGroup(
-                equal(tiles[i].x(), positions[i].x()),
-                equal(tiles[i].y(), (positions[i].y())))
-
-            tiles[i].constraint = after(initial, constraints)
-        }
+        const puzzle = new LloydPuzzle(thisFigure(), init, first, true)
+        align("LR", "TB", puzzle, margin(6))
     }
 </script>
 <p class=caption>The 15-puzzle with most but not all tiles in the right place.
@@ -244,7 +282,7 @@ Click on tiles to move them.</p>
 
 <p>
 Suppose that we want the final version of the app to support hints to the user
-about what move to make next, and even automatic solving capabilitiy.
+about what move to make next, and even some automatic solving capability.
 </p>
 
 <p>
@@ -259,6 +297,141 @@ ability to interact efficiently and enjoyably with it?
 
 <p>
 The application also raises questions about data structures and algorithms.
-Efficient algorithms are especially important if we want the
+Efficient algorithms are especially important to support features like
+suggestions and automatic solving, because the software needs to be able
+to explore many possible sequences of moves.
 
 <h2>Puzzles as graphs</h2>
+
+<p>
+Developing algorithms for the 15-puzzle is made much easier if we
+recognize that it is an example of an important computer science
+abstraction: a <b>graph</b>.
+</p>
+<p>
+Imagine we could draw all of the possible states of the 15-puzzle
+on a sheet of paper. We'd need a truly huge sheet of paper because
+there are so many possible states of the puzzle. From each of these
+possible states there are 2, 3, or 4 possible moves that can be
+made, depending on the position of the empty space into which tiles
+can be slid.
+</p>
+<p>
+For example, consider the puzzle configuration shown at the center
+of the following diagram. In this state, there are four possible
+moves, as indicated by the four outgoing arrows labeled N, S, E, and W for
+the points of the compass. Making one of these moves results in the
+state that the arrow leads to, from which additional moves can be
+made. For example, after making an N move, you can make an S move
+to get back to the original state.
+</p>
+
+<div class=figure>
+<canvas id=puzzle_moves style="height: 600px; width: 600px"></canvas>
+<p class=caption>Some puzzle states and possible moves between them</p>
+<script class=graphics>
+    with (new CFigure("puzzle_moves")) {
+        const frame = addFrame()
+        function puzzle(init) {
+          const result = new LloydPuzzle(thisFigure(), init, frame, false)
+          equal(result.w(), 150)
+          return result
+        }
+        const center = puzzle([6,  1,  2, 4,
+                               15, 10, undefined, 7,
+                               9,  11, 3, 8,
+                               13, 14, 5, 12])
+        const east = puzzle([6,  1,  2, 4,
+                              15, undefined, 10, 7,
+                              9,  11, 3, 8,
+                              13, 14, 5, 12])
+        const west = puzzle([6,  1,  2, 4,
+                              15, 10, 7, undefined,
+                              9,  11, 3, 8,
+                              13, 14, 5, 12])
+        const north = puzzle([6,  1,  2, 4,
+                              15, 10, 3, 7,
+                              9,  11, undefined, 8,
+                              13, 14, 5, 12])
+        const south = puzzle([6,  1,  undefined, 4,
+                              15, 10, 2, 7,
+                              9,  11, 3, 8,
+                              13, 14, 5, 12])
+
+        align("abut", "TB", west, hspace(50), center, hspace(50), east)
+        align("LR", "abut", north, vspace(50), center, vspace(50), south)
+        align("center", "center", center, margin())
+        setLineWidth(2)
+        freeze()
+        const ne = puzzle([6,  1,  2, 4,
+                           15, 10, 3, 7,
+                           9,  undefined, 11, 8,
+                           13, 14, 5, 12])
+        const nw = puzzle([6,  1,  2, 4,
+                           15, 10, 3, 7,
+                           9,  11, 8, undefined,
+                           13, 14, 5, 12])
+        align("L", "none", west, margin(6))
+        align("none", "T", north, margin(6))
+        align("none", "B", south, margin(6))
+        align("LR", "none", ne, east)
+        align("LR", "none", nw, west)
+        align("none", "TB", ne, north)
+        align("none", "TB", nw, north)
+
+        freeze()
+        setTextStyle("black")
+        const se = puzzle([6,  undefined, 1, 4,
+                           15, 10, 2, 7,
+                           9,  11, 3, 8,
+                           13, 14, 5, 12])
+        const sw = puzzle([6,  1,  4, undefined,
+                           15, 10, 2, 7,
+                           9,  11, 3, 8,
+                           13, 14, 5, 12])
+        align("none", "TB", sw, south, se)
+        align("LR", "none", west, sw)
+        align("LR", "none", east, se)
+        setTextStyle("blue")
+        setStrokeStyle("blue")
+        arrow(center, east).addLabel("E")
+        arrow(center, west).addLabel("W")
+        arrow(center, north).addLabel("N")
+        arrow(center, south).addLabel("S")
+        arrow(north, ne).addLabel("E")
+        arrow(north, nw).addLabel("W")
+        arrow(south, se).addLabel("E")
+        arrow(south, sw).addLabel("W")
+
+        const as = 12
+        arrow(south.uc().toLeft(as), center.lc().toLeft(as)).addLabel("N")
+        arrow(north.lc().toRight(as), center.uc().toRight(as)).addLabel("S")
+        arrow(east.cl().toBottom(as), center.cr().toBottom(as)).addLabel("W")
+        arrow(west.cr().toTop(as), center.cl().toTop(as)).addLabel("E")
+        arrow(ne.cl().toBottom(as), north.cr().toBottom(as)).addLabel("W")
+        arrow(nw.cr().toTop(as), north.cl().toTop(as)).addLabel("E")
+        arrow(sw.cr().toTop(as), south.cl().toTop(as)).addLabel("E")
+        arrow(se.cl().toBottom(as), south.cr().toBottom(as)).addLabel("W")
+    }
+</script>
+</div>
+
+<p>
+The problem of solving the 15-puzzle is the problem of finding a path
+through this diagram until the solved state is reached. Fortunately,
+this is a problem that computer scientists have though about a great deal,
+though not specifically in the context of the 15-puzzle. Instead, a
+computer scientist might view this problem as the more general problem
+for finding a path through a <b>graph</b>. A graph is a mathematical
+structure comprising a set of <b>vertices</b> (or <b>nodes</b>), connected
+by a set of <b>edges</b>. To view the diagram above as a graph, we
+consider the puzzle states to be the vertices of the graph and the
+moves between the states to be the edges of the graph.
+</p>
+<p>
+The value of seeing this problem as a graph is that graphs have been
+studied for centuries by mathematicians and computer scientists, and
+there is a huge toolbox of problem-solving techniques that we can
+draw upon.
+</p>
+
