@@ -432,6 +432,13 @@ there is a huge toolbox of problem-solving techniques that we can
 draw upon.
 </p>
 <p>
+Graphs can be used to solve many problems, because many problems can be
+represented as graphs. Other examples of graphs include airline routes,
+roadmaps, organization charts, pipelines, and family trees, and the
+algorithms
+</p>
+<h3>Connectedness</h3>
+<p>
 One interesting property of graphs is whether they are <b>connected</b>:
 that is, whether there is a path to any given vertex from any other.
 Perhaps surprisingly, the graph of 15-puzzle states is <em>not</em>
@@ -442,6 +449,7 @@ of the 15-puzzle (which we might call a 3-puzzle) is small enough that we can
 see all the states. The 3-puzzle has 4 locations for tiles, so there are
 4×3×2×1 = 24 possible states, shown in the following diagram with 
 blue arrows representing all legal moves again connecting states.
+</p>
 
 <div class=figure>
 <canvas id=connected_components style="height: 430px; width: 600px"></canvas>
@@ -508,4 +516,31 @@ blue arrows representing all legal moves again connecting states.
 <p>
 Clearly, if the puzzle looks like any of the bottom states in the diagram,
 there is no way to solve the puzzle.
+</p>
+
+<h3>Other graph problems</h3>
+
+<p>
+Depending on the problem we want to solve, a graph representation of the 
+problem may allow us to use many other algorithms:
+
+<ul>
+<li><b>Search algorithms</b> find the best paths through a graph, or the paths to
+the best nodes in a graph, according to some notion of best.
+<li>When edges in a graph represent the ability to carry some material
+from one point to another, <b>maximum-flow algorithms</b> find the maximum
+carrying capacity of the graph.
+<li><b>Minimum spanning trees</b> choose the best set of edges to ensure that
+a graph is fully connected.
+</ul>
+<p>
+It is also useful to know when a problem is too hard to solve. For example,
+consider the problem of finding a path through a graph that visits each vertex
+once and ends back at the start vertex. Such a path is called a <b>Hamiltonian
+cycle</b>. No efficient algorithm is known for solving this problem! Nor should
+we bet on such an algorithm being discovered, because if an efficient algorithm
+were found, it would allow us to solve a number of other seemingly intractable
+problems that scientists have been struggling with for decades. If you can
+show that your problem is as hard as finding Hamilonian cycles, it is time
+to change what you are working on!
 </p>
