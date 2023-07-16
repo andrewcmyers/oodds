@@ -75,8 +75,8 @@ that is hard to maintain. This book is written using Java as the programming
 language.
 While Java is a popular language, it
 is far from the only programming language used in practice.
-Fortunately, the lessons we learn from understanding how to use Java will carry
-over to other programming lanugages.
+Fortunately, most of the lessons we learn from understanding how to use Java
+will carry over to other programming languages.
 </p>
 <p>
 Like many popular programming languages, Java is object-oriented, so
@@ -109,21 +109,19 @@ tricky to get right, especially when coded for maximum efficiency, so we
 will also need to reason carefully about the correctness and
 efficiency of algorithms, using techniques like mathematical induction and
 asumptotic complexity. We will see how to apply these intellectual
-tools to a variety of important data strucutres, including
+tools to a variety of important data structures, including
 arrays, lists, stacks, queues, trees, graphs, and hash tables, and to
-algorithm that operate on them.
+algorithms that operate on them.
 </ul>
 
 </p>
 <h2>A Motivating Example</h2>
 <p>
-To illustrate how the content of this text may be helpful to a software
-developer, let us consider an example. Suppose that we want to build a
+To illustrate how the content of this text may be helpful,
+let us consider an example. Suppose that we want to build a
 simple game.
-</p>
-<p>
 One classic puzzle that you may have seen is the 15-puzzle, introduced
-by the famous puzzle designer Sam Lloyd. This puzzle has 15 numbered tiles
+by famous puzzle designer Sam Loyd. This puzzle has 15 numbered tiles
 within a 4 by 4 grid. There is one empty space, so tiles can be slid into the
 empty space to rearrange them. The goal is to arrange the titles in sorted
 order starting from the upper left. The puzzle is shown below in a possible
@@ -183,7 +181,7 @@ initial unsolved configuration.
             }
         }
     }
-    class LloydPuzzle extends Constrain.LayoutObject {
+    class LoydPuzzle extends Constrain.LayoutObject {
         constructor(figure, labels, startFrame, solvable) {
             super(figure)
             this.figure = figure
@@ -254,7 +252,7 @@ initial unsolved configuration.
         w() { return this.border.w() }
         h() { return this.border.h() }
     }
-    window.LloydPuzzle = LloydPuzzle
+    window.LoydPuzzle = LoydPuzzle
     with (new CFigure("lloyd_puzzle")) {
         let first = addFrame()
         const size = 15
@@ -270,7 +268,7 @@ initial unsolved configuration.
             }
         }
         setFontSize(22)
-        const puzzle = new LloydPuzzle(thisFigure(), init, first, true)
+        const puzzle = new LoydPuzzle(thisFigure(), init, first, true)
         align("LR", "TB", puzzle, margin(6))
     }
 </script>
@@ -331,7 +329,7 @@ to get back to the original state.
     with (new CFigure("puzzle_moves")) {
         const frame = addFrame()
         function puzzle(init) {
-          const result = new LloydPuzzle(thisFigure(), init, frame, false)
+          const result = new LoydPuzzle(thisFigure(), init, frame, false)
           equal(result.w(), 150)
           return result
         }
@@ -452,7 +450,7 @@ blue arrows representing all legal moves again connecting states.
     with (new CFigure("connected_components")) {
         const frame = addFrame()
         function puzzle(init) {
-          const result = new LloydPuzzle(thisFigure(), init, frame, false)
+          const result = new LoydPuzzle(thisFigure(), init, frame, false)
           equal(result.w(), 60)
           return result
         }
