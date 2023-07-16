@@ -72,19 +72,18 @@ effectively use the features of the programming language being used.  Modern
 programming languages have many features that can be used effectively to write
 clearer, simpler, and more efficient code, or misused to write complex code
 that is hard to maintain. This book is written using Java as the programming
-language. Java is one of the most commonly used programming languages.
-Of course, Java is far from the only programming language used in practice,
-but the lessons we learn from understanding how to use Java will carry
+language.
+While Java is a popular language, it
+is far from the only programming language used in practice.
+Fortunately, the lessons we learn from understanding how to use Java will carry
 over to other programming lanugages.
 </p>
 <p>
-Like
-many popular programming languages, Java is object-oriented, so object-oriented
-programming (OOP) is a key topic. However, OOP is actually a harmonious
-collection of related ideas that we will carefully explore: data abstraction,
-subtyping, and inheritance. Java also supports other important features such as
-generics and concurrent programming, and we will see how to use these features
-as well.
+Like many popular programming languages, Java is object-oriented, so
+object-oriented programming (OOP) is a key topic. However, OOP is actually a
+harmonious collection of related ideas that we will carefully explore.  Java
+also supports other important features such as generics and concurrent
+programming, and we will see how to use these features as well.
 </p>
 
 <h3>Modular software design</h3>
@@ -223,8 +222,6 @@ initial unsolved configuration.
                 .setFillStyle(fill)
                 .setStrokeStyle("#975")
                 .setCornerRadius(5)
-            // result.setFontSize(f.times(result.w(), 0.2))
-            result.setFontSize(18)
             result.index = n
             if (this.solvable)
                 result.control = new TileControl(this, result)
@@ -272,6 +269,7 @@ initial unsolved configuration.
                 swaps++
             }
         }
+        setFontSize(22)
         const puzzle = new LloydPuzzle(thisFigure(), init, first, true)
         align("LR", "TB", puzzle, margin(6))
     }
@@ -337,6 +335,7 @@ to get back to the original state.
           equal(result.w(), 150)
           return result
         }
+        setFontSize(14)
         const center = puzzle([6,  1,  2, 4,
                                15, 10, undefined, 7,
                                9,  11, 3, 8,
@@ -392,8 +391,8 @@ to get back to the original state.
         align("none", "TB", sw, south, se)
         align("LR", "none", west, sw)
         align("LR", "none", east, se)
-        setTextStyle("blue")
-        setStrokeStyle("blue")
+        setTextStyle("#36f")
+        setStrokeStyle("#25f")
         arrow(center, east).addLabel("E")
         arrow(center, west).addLabel("W")
         arrow(center, north).addLabel("N")
@@ -434,4 +433,81 @@ studied for centuries by mathematicians and computer scientists, and
 there is a huge toolbox of problem-solving techniques that we can
 draw upon.
 </p>
+<p>
+One interesting property of graphs is whether they are <b>connected</b>:
+that is, whether there is a path to any given vertex from any other.
+Perhaps surprisingly, the graph of 15-puzzle states is <em>not</em>
+connected: rather, it consists of two separate sets of states that
+are not reachable from each other. The graph for the 15-puzzle is too large to
+show these <b>connected components</b> directly, but a scaled-down 2×2 version
+of the 15-puzzle (which we might call a 3-puzzle) is small enough that we can
+see all the states. The 3-puzzle has 4 locations for tiles, so there are
+4×3×2×1 = 24 possible states, shown in the following diagram with 
+blue arrows representing all legal moves again connecting states.
 
+<div class=figure>
+<canvas id=connected_components style="height: 430px; width: 600px"></canvas>
+<p class=caption>Connected components of the 3-puzzle</p>
+<script class=graphics>
+    with (new CFigure("connected_components")) {
+        const frame = addFrame()
+        function puzzle(init) {
+          const result = new LloydPuzzle(thisFigure(), init, frame, false)
+          equal(result.w(), 60)
+          return result
+        }
+        const cw = [1, 3, 2, 0], ccw = [2, 0, 3, 1]
+        function rotate(a, clockwise) {
+            for (let i = 0; i < a.length; i++) {
+                if (a[i] === undefined) {
+                    const j = clockwise ? cw[i] : ccw[i]
+                    const t = a[i]
+                    a[i] = a[j]
+                    a[j] = t
+                    return
+                }
+            }
+        }
+        const m = margin(20)
+        for (const component of [[1,2,3, undefined], [2, 1, 3, undefined]]) {
+            let tiles = component, states = []
+            for (let i = 0; i < 12; i++) {
+                const p = puzzle(tiles)
+                tiles = new Array(...tiles)
+                rotate(tiles, true)
+                states.push(p)
+                if (i > 0) {
+                    saveStyle()
+                    setStrokeStyle("#25f")
+                    arrow(states[i-1], states[i]).setStartArrow("arrow")
+                    restoreStyle()
+                }
+                if (i == 11) {
+                    saveStyle()
+                    setStrokeStyle("#25f")
+                    arrow(states[11], states[0]).setStartArrow("arrow")
+                    restoreStyle()
+                }
+            }
+            align("distribute", "TB", ...states.slice(0, 6))
+            align("L", "none", states[0], m)
+            align("R", "none", states[5], m)
+            align("distribute", "TB", ...states.slice(6, 12).reverse())
+            align("R", "none", states[6], m)
+            align("L", "none", states[11], m)
+            align("LR", "abut", states[0], vspace(40), states[11])
+            if (component[0] == 1) {
+                align("none", "T", m, states[0])
+                square().at(states[11]).setW(100).placeOver(states[11])
+            } else {
+                align("none", "B", m, states[11])
+            }
+        }
+    }
+</script>
+</div>
+
+<p>
+Clearly, if the puzzle looks like any of the bottom states in the diagram,
+there is no way to solve the puzzle.
+</p>
