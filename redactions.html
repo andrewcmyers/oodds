@@ -54,7 +54,6 @@ Remove  </th><th>Name</th>
 
     }
   }
-
   function check_all() {
     const checkbox = document.getElementById("check_all")
     for (const tr of current_redactions.getElementsByTagName('TR')) {
@@ -79,6 +78,7 @@ Add new redaction</button>
         items.push(tr.childNodes[1].innerText)
     }
     localStorage.setItem("OODDS.redactions", items.join("\n"))
+    create_page()
   }
 
   function add_redaction() {
@@ -110,9 +110,9 @@ Add new redaction</button>
   }
 </script>
 
-
 <p>
-<button id=create_page onclick="create_page()">Create active link</button>
+The following HTML page will redirect to the table of contents
+while also setting the redactions as indicated.
 </p>
 
 <pre id=active_page>
@@ -122,13 +122,14 @@ Add new redaction</button>
 function create_page() {
     const page = document.getElementById("active_page")
     let href = window.location.href.replace(/\/[^\/]*$/, "/toc.html")
-    href += "?redactions="
-    href += encodeURIComponent(localStorage.getItem("OODDS.redactions"))
+    const data = localStorage.getItem("OODDS.redactions") || ""
+    href += "?redactions=" + encodeURIComponent(data)
 
     page.innerText =
         ('<!DOCTYPE html>\n<html lang="en-us">\n<script>\nwindow.location = "')
         + href+'"\n\x3C/script\x3E\n\x3C/html\x3E'
 }
+create_page()
 </script>
 
 </div>
