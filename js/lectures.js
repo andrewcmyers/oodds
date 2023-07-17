@@ -23,7 +23,7 @@ function relativize(url, lecture_base, base) {
     for (;;) {
         if (url.match('^' + base)) {
             url = url.replace(base, lecture_base)
-            // console.log("result = " + url)
+            // console.log("result -> " + url)
             return url
         }
         const base_match = base.match('^(.*)/')
@@ -76,8 +76,8 @@ function localizeContent(node, lecture_url) {
     for (const img of node.getElementsByTagName('img')) {
         img.src = relativize(img.src, lecture_base, base_url)
     }
-    for (const audio of node.getElementsByTagName('audio')) {
-        audio.src = relativize(audio.src, lecture_base, base_url)
+    for (const source of node.getElementsByTagName('source')) {
+        source.src = relativize(source.src, lecture_base, base_url)
     }
     for (const anchor of node.getElementsByTagName('a')) {
         anchor.href = relativize(anchor.href, lecture_base, base_url)

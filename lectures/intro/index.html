@@ -86,14 +86,13 @@ order starting from the upper left. The puzzle is shown below in a possible
 initial unsolved configuration.
 
 <div class=figure>
-<canvas id=lloyd_puzzle style="width: 250px; height: 250px">
+<canvas id=loyd_puzzle style="width: 250px; height: 250px">
 </canvas>
 <audio id=ssh>
-  <source src="lectures/intro/ssh.m4a" type="audio/mp4">
+  <source src="ssh.m4a" type="audio/mp4">
 </audio>
 <audio id=win>
-  <source src="lectures/intro/mixkit-ethereal-fairy-win-sound-2019.wav"
-          type="audio/wav">
+  <source src="mixkit-ethereal-fairy-win-sound-2019.wav" type="audio/wav">
 </audio>
 <script class=graphics>
     class TileControl extends Constrain.Control {
@@ -211,7 +210,7 @@ initial unsolved configuration.
         h() { return this.border.h() }
     }
     window.LoydPuzzle = LoydPuzzle
-    with (new CFigure("lloyd_puzzle")) {
+    with (new CFigure("loyd_puzzle")) {
         let first = addFrame()
         const size = 15
         const init = new Array(size)
@@ -244,16 +243,19 @@ The problem of designing this application raises many questions. In
 an object-oriented languages, we probably want to represent the state
 of the puzzle as an object. What operations should puzzle objects have?
 What data is stored inside puzzle objects to represent the state
-of the puzzle? What is the right user interface for the application,
+of the puzzle?
+Can we write the code for the 15-puzzle in a way that lets us reuse
+the code for a similar game, such as <a href="https://play2048.co/">the 2048 game</a>?
+What is the right user interface for the application,
 one that presents the right information to the user and gives them the
 ability to interact efficiently and enjoyably with it?
 </p>
-
 <p>
 The application also raises questions about data structures and algorithms.
-Efficient algorithms are especially important to support features like
+Efficient algorithms are especially important for automatic
 suggestions and automatic solving, because the software needs to be able
 to explore many possible sequences of moves.
+</p>
 
 <h2>Puzzles as graphs</h2>
 
@@ -420,7 +422,7 @@ blue arrows representing all legal moves again connecting states.
           equal(result.w(), 60)
           return result
         }
-        const cw = [1, 3, 2, 0], ccw = [2, 0, 3, 1]
+        const cw = [1, 3, 0, 2], ccw = [2, 0, 3, 1]
         function rotate(a, clockwise) {
             for (let i = 0; i < a.length; i++) {
                 if (a[i] === undefined) {
@@ -473,7 +475,8 @@ blue arrows representing all legal moves again connecting states.
 
 <p>
 Clearly, if the puzzle looks like any of the bottom states in the diagram,
-there is no way to solve the puzzle.
+there is no way to solve the puzzle, because the solution state in the upper
+left cannot be reached by any sequence of moves.
 </p>
 
 <h3>Other graph problems</h3>
@@ -484,7 +487,8 @@ problem may allow us to use many other algorithms:
 
 <ul>
 <li><b>Search algorithms</b> find the best paths through a graph, or the paths to
-the best nodes in a graph, according to some notion of best.
+the best nodes in a graph, according to some notion of best. They can also
+be used to determine connectness of graphs.
 <li>When edges in a graph represent the ability to carry some material
 from one point to another, <b>maximum-flow algorithms</b> find the maximum
 carrying capacity of the graph.
