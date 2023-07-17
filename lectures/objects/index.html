@@ -76,19 +76,48 @@ has a corresponding <b>run-time type</b>. Here are some examples of primitive va
 </table>
 
 <p>
-An expression like <code>2+3</code> is a <b>computation</b> that produces a value
-(5, of course). The expression <code>+</code> is a <b>binary operator</b> (binary, because it
-takes two arguments). There are also unary operators like logical negation (<code>!</code>).
-For example, <code>!true</code> evaluates to <code>false</code>.
+An expression like <code>2+3</code> is a <em>computation</em> that produces a
+value (5, of course). The expression <code>+</code> is a <b>binary operator</b>
+(binary, because it takes two arguments). There are also unary operators like
+logical negation (<code>!</code>).  For example, <code>!true</code> evaluates
+to <code>false</code>.
 </p>
 <p>
 Java prevents us from writing certain computations that don't make sense. For
 example, the expression <code>2 + true</code> would be a <b>run-time type
-error</b> if allowed to proceed. However, Java will not allow this expression to
-be written because it can tell that a run-time type error might (and will, in this case)
-result. In fact, run-time type errors are not possible in Java. For that reason we
-say that Java is a <b>strongly typed language</b>.
+error</b> if allowed to proceed. However, Java will not allow this expression
+to be written because it can tell that a run-time type error might (and will,
+in this case) result. In fact, run-time type errors are not possible in Java.
+For that reason we say that Java is a <b>strongly typed language</b>.
 </p>
+<p>Java has many built-in unary and binary operators, some of which are
+rarely used. Some of the commonly used operators are listed here:
+</p>
+<table>
+<tr>
+<th>Operator</th><th style="padding: 0 2em">Arity</th><th>Meaning</th>
+<tr>
+<td><code>+</code></td><td>binary</td><td>Addition of two numbers or concatenation of two strings</td>
+<tr>
+<td><code>-</code></td><td>binary</td><td>Subtraction of two numbers</td>
+<tr>
+<td><code>-</code></td><td>unary</td><td>Negation</td>
+<tr>
+<td><code>*</code></td><td>binary</td><td>Multiplication of two numbers</td>
+<tr>
+<td><code>/</code></td><td>binary</td><td>Division of two numbers. Rounds toward zero when applied to integral types.</td>
+<tr>
+<td><code>%</code></td><td>binary</td><td>Remainder</td>
+<tr>
+<td><code>!</code></td><td>unary</td><td>Logical negation of a boolean value</td>
+<tr>
+<td><code>==</code></td><td>binary</td><td>Equality. Its value is a boolean.</td>
+<tr>
+<td><code>!=</code></td><td>binary</td><td>Inequality: the negation of <code>==</code></td>
+<tr>
+<td><code>&gt;, &lt;, &gt;=, &lt;=</code></td><td>binary</td><td>Numeric comparisons</td>
+<tr>
+</table>
 
 <h2>Variables</h2>
 
@@ -164,6 +193,77 @@ is warranted, but makes the diagrams look as simple as possible. Such hybrid
 diagrams also hint at what is going in the underlying implementation of the
 programming language, because references to objects are typically more expensive than
 references to values of primitive types.
+</p>
+
+<h2>Statements vs. expressions</h2>
+<p>
+The previous example contained a sequence of <b>assignments</b> terminated by
+semicolons (<code>;</code>). An assignment is an example of a <b>statement</b>,
+which is a program expression used for its side effect rather than for the
+value it computes. For example, the statement <code>x = 2</code> has the
+side effect of changing the value of variable <code>x</code>. 
+
+Java has several different kinds of statements, some of which are listed
+here. We see more statement forms later.
+<table>
+<tr>
+<th>Statement syntax</th><th>Meaning</th>
+<tr>
+<td><code><i>var</i> = <i>expr</i></td>
+<td>Assign the value of the expression <i>expr</i> into the variable <i>var</i>
+<tr>
+<td><code>if (<i>expr</i>) <i>stmt</i></code></td>
+<td>A conditional. If expression <i>expr</i> evaluates to <code>true</code>, perform the <b>consequent</b> statement <i>stmt</i>.
+<tr>
+<td><code>if (<i>expr</i>) <i>stmt1</i> else <i>stmt2</i></code>   </td>
+<td>If expression <i>expr</i> evaluates to <code>true</code>, perform the statement <code><i>stmt1</i></code>. Otherwise, perform the <b>alternative</b> statement <code><i>stmt2</i></code>.
+<tr>
+<td><code>while (<i>expr</i>) <i>stmt</i></code> <td>A while-loop. If the <b>guard
+expression</b> <code><i>expr</i></code> evaluates to <code>true</code>, perform
+statement <code><i>stmt</i></code>. Then repeat execution of the entire loop.
+The loop stops when <code><i>expr</i></code> evaluates to <code>false</code> on any iteration of the loop.
+<tr>
+<td><code>return <i>expr</i></code>
+<td>End the execution of the current method and return the value of
+<code><i>expr</i></code> as the value of the method.
+</table>
+
+<p>
+Many statement forms use special <b>keywords</b> such as <code>if</code>,
+<code>while</code>, <code>else</code>, and <code>return</code>.
+Keywords may not be used as the names for variables or for anything else
+that the programmer defines.
+</p>
+
+<p>
+A sequence of statements may be used as a single statement by enclosing it in
+<b>braces</b> (<code>{...}</code>), and is then called a <b>block</b> of
+statements.  Just like we use parentheses <code>()</code> to group expressions
+that compute values, we can use braces to group statements.  Often people call
+them “curly braces” to avoid any confusion with other grouping constructs such
+as parentheses <code>(...)</code> or brackets <code>[...]</code> 
+(“square brackets”).
+</p>
+<p>
+For example, suppose that we want
+to swap the values of variable <code>a</code> and <code>b</code> if
+<code>b</code> is larger than <code>a</code>. We can use a conditional
+to achieve this goal:
+</p>
+<pre>
+  if (b &gt; a) {
+     t = a;
+     a = b;
+     b = t;
+  }
+</pre>
+<p>
+The entire block of statements between the braces is treated as a single
+statement that is the consequent of the if-statement.
+The if-statement does not need to be terminated in a semicolon because
+it ends in a block.
+Notice that this code relies on a third variable <code>t</code> to
+temporarily save the value of <code>a</code>.
 </p>
 
 <h2>Types and declarations</h2>
@@ -243,8 +343,8 @@ itself whereas the argument is the value of that variable.
 <p>
 The <b>body</b> of the method is the part in braces (<tt>{</tt>...<tt>}</tt>).
 The body defines what computation is done by the method, and what result
-it compputes. The
-bolded <b>keyword</b> <code>return</code> causes the function to produce
+it compputes. The body ends in a <code>return</code> statement that
+causes the function to produce
 the value that its expression <code>n + n + n</code> computes. If we've done
 our job correctly, this computation agrees with the spec.
 In Java, braces are used as
