@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>Object-Oriented Design and Data Structures: Redactions</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Language" content="en-us" />
+  <meta http-equiv="Cache-Control" content="public, max-age=600" /> <!-- cache for only 1 hour -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="styles/default.css" />
+  <script src="js/ezdom.js"></script>
+</head>
+
+<body>
+<div id="header">	
+  <div id="identity">
+  <center>
+  <h1 class=booktitle>Object-Oriented Design and Data Structures<br>
+      <small>Andrew Myers and Dexter Kozen</small></h1>
+  </div>
+  </center>
+</div>
+<div id=content>
+<p>
+A specialized view of this book can be constructed by specifying
+<em>redactions</em>. The text of any heading in the text can be
+used to name a section or subsection that should not appear in the
+reader's view. In addition, marked sections in the book can also
+be redacted. Redactions are remembered by the browser on a given
+computer; using this page, an active link can be created that will cause
+any browser to remember the specified redactions.
+</p>
+<p>Note that the capitalization used to name the redaction section
+must be exactly the same as in the document file. The table of contents
+puts chapter titles in lower case, which sometimes differs.
+</p>
+<p>
+Your current list of redactions follows:
+</p>
+
+<table id=current_redactions>
+<tr><th>
+<input type=checkbox id=check_all onclick="check_all()"></input>
+Remove  </th><th>Name</th>
+</table>
+
+<script>
+  var current_redactions = document.getElementById("current_redactions")
+  with (EZDom) {
+    let redactions = localStorage.getItem("OODDS.redactions")
+    const list = redactions ? redactions.split(/ *\n */) : []
+    for (const t of list) {
+        app(current_redactions,
+          tr(td(input({type: "checkbox"})), td(t)))
+
+    }
+  }
+
+  function check_all() {
+    const checkbox = document.getElementById("check_all")
+    for (const tr of current_redactions.getElementsByTagName('TR')) {
+        if (!tr.tagName || tr.firstChild.tagName == 'TH') continue
+        tr.firstChild.firstChild.checked = checkbox.checked
+    }
+  }
+</script>
+
+<p>
+<button id="add_redaction"
+        onclick="add_redaction()">
+Add new redaction</button>
+<input id=new_redaction type=text onchange="add_redaction()"></input>
+</p>
+
+<script>
+  function update_storage() {
+    const items = []
+    for (const tr of current_redactions.getElementsByTagName('TR')) {
+        if (!tr.tagName || tr.firstChild.tagName == 'TH') continue
+        items.push(tr.childNodes[1].innerText)
+    }
+    localStorage.setItem("OODDS.redactions", items.join("\n"))
+  }
+
+  function add_redaction() {
+    with (EZDom) {
+        const new_redaction = document.getElementById("new_redaction").value
+        if (new_redaction.match(/^\s*$/)) return
+        app(current_redactions,
+            tr(td(input({type: "checkbox"})), td(new_redaction)))
+    }
+    update_storage()
+  }
+</script>
+
+<p>
+<button id=remove_redactions onclick="remove_redactions()">Remove checked redactions</button>
+</p>
+
+<script>
+  function remove_redactions() {
+    const items = new Set(current_redactions.getElementsByTagName('TR'))
+    for (const tr of items) {
+        if (!tr.tagName || tr.firstChild.tagName == 'TH') continue
+        if (tr.firstChild.firstChild.checked) {
+            tr.parentNode.removeChild(tr)
+        }
+    }
+    document.getElementById("check_all").checked = false
+    update_storage()
+  }
+</script>
+
+
+<p>
+<button id=create_page onclick="create_page()">Create active link</button>
+</p>
+
+<pre id=active_page>
+</pre>
+
+<script>
+function create_page() {
+    const page = document.getElementById("active_page")
+    let href = window.location.href.replace(/\/[^\/]*$/, "/toc.html")
+    href += "?redactions="
+    href += encodeURIComponent(localStorage.getItem("OODDS.redactions"))
+
+    page.innerText =
+        ('<!DOCTYPE html>\n<html lang="en-us">\n<script>\nwindow.location = "')
+        + href+'"\n\x3C/script\x3E\n\x3C/html\x3E'
+}
+</script>
+
+</div>
+</body>
+</html>

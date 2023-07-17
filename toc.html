@@ -57,22 +57,19 @@ function sentence_case(s) {
 // Add all h1 elements in a node to the table of contents, appropriately
 // linked and converted to sentence case.
 function add_to_toc(node, name) {
-    var headers = node.getElementsByTagName("h1");
+    var headers = node.getElementsByTagName("h1")
     for (let i = 0; i < headers.length; i++) {
-        var h = headers[i];
-        var link = name;
-        if (i > 0) link = link + i;
-        var par = h.parentNode;
-        par.insertBefore(EZDom.a({name: link, className: "chapter"}), h);
-        par.insertBefore(EZDom.p({className: 'noprint'}, '[', EZDom.a({href: '#toc'},
-                'back to table of contents'), ']'), h.nextSibling);
+        const h = headers[i]
+        let link = name
+        if (i > 0) link = link + i
         if (toc == undefined) {
-            toc = EZDom.ol();
-            var tocDiv = document.getElementById("toc");
-            tocDiv.appendChild(toc);
+            toc = EZDom.ol()
+            var tocDiv = document.getElementById("toc")
+            tocDiv.appendChild(toc)
         }
-        var tocline = sentence_case(h.childNodes[0].textContent);
-        toc.appendChild(EZDom.li(EZDom.a({href: "lecture.html?id="+link}, tocline)));
+        const tocline = sentence_case(h.childNodes[0].textContent),
+              href = EZDom.a({href: "lecture.html?id=" + link}, tocline)
+        toc.appendChild(EZDom.li(href))
     }
 }
 
@@ -87,6 +84,7 @@ function append_content(id, url, name, cont) {
         responseText => {
             var content = div({className: "content"});
             content.innerHTML = responseText
+            redactContent(content)
             add_to_toc(content, name);
             if (cont != undefined) cont(content);
         },
@@ -150,6 +148,7 @@ function load_all_lectures() {
 <script>
   var content_node = document.getElementById("content");
   var toc; // table of contents
+  check_redaction_parameters();
   load_all_lectures();
 </script>
 </body>

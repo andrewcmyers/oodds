@@ -7,7 +7,9 @@ function load_lecture() {
     if (match) {
         url = base_url + "/lectures/" + match[1] + "/index.html"
         const content = elem("content")
-        fetch_content_node(content, url, () => localizeContent(content, url), "text/html")
+        fetch_content_node(content, url,
+            () => localizeContent(content, url),
+            "text/html")
     }
 }
 
@@ -56,10 +58,55 @@ function hide_answers() {
     }
 }
 
+function redactToNextHeader(hdr, tag) {
+    let child = hdr
+    const node = hdr.parentNode
+    const level = parseInt(tag.match(/H([1-6])/i)[1])
+    const pattern = new RegExp("H[1-" + level + "]")
+    for (;;) {
+        const redacted = child
+        child = child.nextSibling
+        if (child == null) break
+        node.removeChild(redacted)
+        if (child.tagName && child.tagName.match(pattern)) break
+    }
+}
+
+function redactContent(node) {
+    const REDACTIONS = "OODDS.redactions"
+    if (localStorage.hasOwnProperty(REDACTIONS)) {
+        const data = localStorage.getItem(REDACTIONS),
+              redactions = new Set(data.split(/ *\n */))
+        for (const section of node.getElementsByTagName('section')) {
+            if (redactions.has(section.id)) {
+                section.parentNode.removeChild(section)
+            }
+        }
+        for (const tag of ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']) {
+            for (const hdr of node.getElementsByTagName(tag)) {
+                if (hdr.id && redactions.has(hdr.id)
+                    || redactions.has(hdr.innerText)) {
+                    redactToNextHeader(hdr, tag)
+                }
+            }
+        }
+    }
+}
+
+function check_redaction_parameters() {
+    if (!window.location.search) return
+    const search = new URLSearchParams(window.location.search)
+    const new_redactions = search.get('redactions')
+    if (new_redactions) {
+        localStorage.setItem('OODDS.redactions', new_redactions)
+    }
+}
+
 function localizeContent(node, lecture_url) {
     const lecture_base = basename(lecture_url),
           lec_name = lecture_base.replace(/^.*\//, '')
     let nodenum = 0
+    redactContent(node)
     const pre_nodes = node.getElementsByTagName('pre')
     for (const n of pre_nodes) {
         if (n.className != "load") continue

@@ -131,16 +131,18 @@ variables <code>x</code> and <code>y</code> of the right type, we can write code
     y = y + 1;
 </pre>
 <p>
-We read the equals sign &ldquo;=&rdquo; not as &ldquo;equals&rdquo; but as
+We read the equals sign “<code>=</code>” not as &ldquo;equals&rdquo; but as
 &ldquo;gets&rdquo; or &ldquo;becomes&rdquo;. This is because the operator is
 not testing equality, but rather, changing the value currently in a variable.
-We can see this because as an equation, <code>y = y+1</code> doesn't make much sense!
+Read as an equation, the assignment <code>y = y+1</code> doesn't make much
+sense!
 </p>
 <p>
-A useful way to understand what is happening when we run Java programs is to
-draw an <b>object diagram</b>. There are different styles of object diagrams;
-here are two ways to draw what is going in the code above (click on the "play button"
-in the figure to step through the code and see its effects):
+A good way to understand what is happening when we run programs is to draw an
+<b>object diagram</b>. There are different styles of object diagrams; below are
+two ways to draw what is going in the code above. You can click on the gray play
+button in the lower-right corner of the figure to step through the code and see
+its effects.
 </p>
 <div class=figure>
 <canvas id="var-model-diagrams" style="width: 400px; height: 180px"></canvas>
@@ -199,7 +201,8 @@ references to values of primitive types.
 <p>
 The previous example contained a sequence of <b>assignments</b> terminated by
 semicolons (<code>;</code>). An assignment is an example of a <b>statement</b>,
-which is a program expression used for its side effect rather than for the
+which is a program expression used for its <b>side effect</b>
+rather than for the
 value it computes. For example, the statement <code>x = 2</code> has the
 side effect of changing the value of variable <code>x</code>. 
 
@@ -262,9 +265,16 @@ The entire block of statements between the braces is treated as a single
 statement that is the consequent of the if-statement.
 The if-statement does not need to be terminated in a semicolon because
 it ends in a block.
-Notice that this code relies on a third variable <code>t</code> to
-temporarily save the value of <code>a</code>.
 </p>
+<div class=exercise>
+Notice that this code uses a third variable <code>t</code>. What
+is the purpose of this variable?
+<p class=answer>
+Variable <code>t</code> is used to save the original value of <code>a</code>,
+so that it is not lost when <code>a</code> is assigned.
+</p>
+</div>
+
 
 <h2>Types and declarations</h2>
 <p>
@@ -574,9 +584,12 @@ int ar = r.area(); // evaluates to 3 on rectangle defined above
 Inside the method, we can use the instance variables <code>UR</code> and <code>LL</code>.
 These variable names denote the instance variables of the receiver object.
 </p>
-<p>Methods do not have to be functions; we can also define methods that are procedures,
-used for the <b>side effects</b> they cause. A procedure has a return type of <code>void</code>.
-For example, suppose we want to be able to change <code>Point</code>s to be back at the origin:
+<p>
+Methods do not have to be functions; we can also define methods that are
+procedures, used for the side effects they cause. A procedure has a return type
+of <code>void</code>.  For example, suppose we want to be able to change
+points to be located back at the origin. We can define a procedure
+<code>setOrigin</code> that has this effect:
 </p>
 <pre>
 class Point {
@@ -594,8 +607,8 @@ a.setOrigin(); // a refers to the same object, but its
 
 <h2>Constructors</h2>
 <p>
-It's awkward and error-prone to have to initialize the instance variables of
-objects after creating them with <code>new</code>. A better solution is to
+It's awkward and error-prone to initialize the instance variables of
+objects only after creating them with <code>new</code>. A better solution is to
 define one or more <b>constructors</b> that initialize the object to a
 &ldquo;good&rdquo; state. Constructors are special methods whose name is
 required to be exactly the same as that of the class. A constructor is

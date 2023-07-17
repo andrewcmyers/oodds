@@ -122,6 +122,7 @@ function load_from_i(i) {
 function load_all_lectures() {
     load_from_i(0);
 }
+
 </script>
 
 </head>
@@ -160,6 +161,7 @@ function load_all_lectures() {
 <script>
   var content_node = document.getElementById("content");
   var toc; // table of contents
+  check_redaction_parameters();
   load_all_lectures();
 </script>
 </body>
