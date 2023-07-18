@@ -96,8 +96,8 @@ function redactContent(node) {
 function check_redaction_parameters() {
     if (!window.location.search) return
     const search = new URLSearchParams(window.location.search)
-    const new_redactions = search.get('redactions')
-    if (new_redactions) {
+    if (search.get('redactions') != null) {
+        const new_redactions = search.get('redactions')
         localStorage.setItem('OODDS.redactions', new_redactions)
     }
 }
