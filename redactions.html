@@ -117,6 +117,7 @@ while also setting the redactions as indicated.
 
 <pre id=active_page>
 </pre>
+<span id=toc_link></span>
 
 <script>
 function create_page() {
@@ -128,6 +129,7 @@ function create_page() {
     page.innerText =
         ('<!DOCTYPE html>\n<html lang="en-us">\n<script>\nwindow.location = "')
         + href+'"\n\x3C/script\x3E\n\x3C/html\x3E'
+    document.getElementById('toc_link').innerHTML = '<a target=x href="' + href + '">' + 'Open table of contents</a>'
 }
 create_page()
 </script>
