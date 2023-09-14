@@ -168,7 +168,9 @@ stream is stored in the iterator object, not in the producer.
 <p>Java provides some convenient syntactic sugar for invoking iterators. A
 statement of the form</p>
 <pre>
-for (T x : c) { ... body ... }
+for (T x : c) {
+    // ...body...
+}
 </pre>
 <p>is syntactic sugar for</p>
 <pre class=load>
@@ -313,21 +315,27 @@ make this a bit more compelling. Using A → B to represent the type of a functi
 that takes in an A and returns a B, and using () to represent the type of an
 empty argument list (which is really the same thing as <code>void</code>), we
 have the following types:
-<pre>
-Iterator:
 
+<p><b>
+Iterator:
+</b></p>
+<pre>
   next: () → T
   iterator: () → (() → T)
+</pre>
 
+<p><b>
 Observer:
-
+</b></p>
+<pre>
   notify: T → ()
   registerObserver: (T → ()) → ()
 </pre>
 <p>
-The types of the Iterator operations are exactly the same as the types of the Observer operations,
-except that all the arrows are flipped! This shows that we have a
-<b>duality</b> between Iterator and Observer.
+Notice that the types of the Iterator operations are exactly the same as the
+types of the Observer operations, except that all the arrows are flipped to
+point in the opposite direction! This shows that we have a <b>duality</b>
+between Iterator and Observer.
 </p>
 
 <h2>Factory and Abstract Factory patterns</h2>
