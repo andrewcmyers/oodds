@@ -284,7 +284,7 @@ design and clear specs are especially important at the boundaries where
 different programmers will interact.
 </p>
 
-<h1>Testing</h1>
+<h1 id="Testing">Testing</h1>
 
 <h2>Testing in software development</h2>
 <p>
@@ -460,24 +460,22 @@ in generating test cases if the corner cases are unlikely to be hit by chance.
 <p>
 With black-box and glass-box testing, input/output pairs must be designed. Where
 do we get these when doing randomized testing? In general we are not going to be
-able to fully test that the outputs of the code are according to the specification,
-and must settle for weaker properties of the code being tested, such as not
-throwing unexpected assertions or failing assertions.
+able to fully test that the outputs of the code agree with the specification,
+so we must settle for weaker properties of the code being tested, such as not
+throwing unexpected assertions or failing assertions. Therefore, adding useful
+assertions to code helps with testing. By capturing programmer knowledge and
+intent, as discussed earlier. Test cases that cause assertions to fail reveal
+discrepancies between the code and the intent of the programmer
+even if the final output of the test is not checked.
 </p>
 <p>
-One way that we can use randomized testing to test against the spec is if we
-have a <b>reference implementation</b> of the same specification&mdash;perhaps a less
+One way that we can use randomized testing to test against the spec is with
+a <b>reference implementation</b> of the same specification&mdash;perhaps a less
 efficient, simpler implementation of the same abstraction. In this case, the
 two implementations can be compared on random test cases to ensure they agree.
 This approach is especially useful in large software projects that start with
 a prototype implementation to establish feasability. The prototype can be used
 as a reference implementation during the development of the final product. 
-</p>
-<p>
-In the absence of a reference implementation, random tests can still be useful
-when code is written to use assertions that capture programmer knowledge and
-intent, as discussed earlier. Test cases that cause assertions to trip reveal
-bugs even if the final output of the test is not checked.
 </p>
 <p>
 Another approach that can be used to find bugs in the absence of a reference implementation
@@ -504,6 +502,7 @@ cases to increase code coverage. They generate new random test cases by
 mutating existing ones, keeping track of which code paths are explored during
 execution. Test cases are deemed interesting if they cause new paths to be
 explored.
+</p>
 <p>
 While automatic test case generation is not always easy, tool support is
 steadily improving. JUnit Theories and Haskell QuickCheck are examples of
