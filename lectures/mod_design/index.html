@@ -1,8 +1,18 @@
 <h1>Modular Design and Implementation</h1>
 
+<h2>Good code is an iceberg</h2>
+<p>
+Good modular design has the property that clients don't need to see much of the code they are using. They
+can rely on the specification. Good code is like an iceberg, with most of the code hidden below the water,
+where only implementers need to look. In an OO language, there are actually two kinds of implementers,
+with two different views of the code: the implementers of the class, and the implementers of subclasses,
+who we will call specializers.
+</p>
+
+<img src="codeberg.png"/>
+
 <h2>Documenting implementations: The implementer's view</h2>
 <div class="figure">
-<img src="codeberg.png"/>
 </div>
 <p>
 Our goal for documenting the implementation of a module is to support implementation and
@@ -202,10 +212,11 @@ of this assignment is something like the following:
 </div>
 <p class=cont>
 Notice that the subclass hierarchies appear as parts of the MDD, albeit
-upside-down from the usual way that we draw them.
+upside-down from the usual way that we draw them, so that superclasses and
+interfaces appear at the bottom of the diagram rather than the top.
 </p>
 <p>
-The MDD helps diagnose the quality of a design and helps us plan its
+Drawing the MDD can help us diagnose the quality of a design and plan its
 implementation.  We can tell which modules are important to the overall design,
 because they have a lot of incoming arrows or can be reached from many modules
 by following arrows through the MDD. We can also tell which modules are more
@@ -216,13 +227,14 @@ modules by following arrows.
 A good design tends to lead to a clean-looking MDD, because the dependencies of
 different modules are easy to understand. A good design in which modules are
 loosely coupled tends to look like a tree or an acyclic graph (a graph without cycles). Cycles in
-the graph are a danger sign for the design. For example, two modules that
-depend on each other are really intimately tied to each other, because changes
-to either one will tend to propagate to the other, and perhaps back. A messy
-MDD that looks like spaghetti probably means you should
-rethink how you have divided the tasks into modules. Often the problem is that modules
+the graph are a danger sign. For example, two modules that
+depend on each other are intimately tied to one other, because changes
+to either one will tend to propagate to the other, and perhaps back! A messy
+MDD that looks like spaghetti probably means we should
+rethink how we have divided up the tasks among modules. Often the problem is that modules
 are mixing concerns, and code that has ended up in some module ought to be moved
-to a different module.
+to a different module. The dependency arrows in the MDD can show us the direction in which
+code ought to move.
 </p>
 <h2>Implementation strategies</h2>
 <p>
