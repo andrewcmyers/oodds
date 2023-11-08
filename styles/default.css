@@ -208,7 +208,7 @@ p.definition { font-weight: bold; padding: 1em; background-color: #ddd; border: 
 		color: #000;
 	}
 	#footer a {
-		border: 0;
+		border: 1px solid blue;
 	}
 	h1 {
 		margin: 0 0 15px 0;

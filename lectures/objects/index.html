@@ -205,6 +205,17 @@ which is a program expression used for its <b>side effect</b>
 rather than for the
 value it computes. For example, the statement <code>x = 2</code> has the
 side effect of changing the value of variable <code>x</code>. 
+</p>
+<p>
+Unlike Python, which you might be familiar with, Java is
+<b>whitespace-insensitive</b>.  This means that whitespace characters such as
+spaces, newlines, and tabs are all equivalent to each other (outside of string
+and and character literals).  Multiple statements can legally be put on the
+same line as long as they are properly terminated with semicolons. However, by
+convention we normally have only one statement per line of code, to make code
+more readable. Code tends to be read many more times than it is changed, so
+readability is very important.
+</p>
 
 Java has several different kinds of statements, some of which are listed
 here. We see more statement forms later.
@@ -245,11 +256,13 @@ statements.  Just like we use parentheses <code>()</code> to group expressions
 that compute values, we can use braces to group statements.  Often people call
 them “curly braces” to avoid any confusion with other grouping constructs such
 as parentheses <code>(...)</code> or brackets <code>[...]</code> 
-(“square brackets”).
+(“square brackets”). Code inside braces is indented by convention.
+Unlike in Python, indenting code does not have any effect other than 
+making it more readable.
 </p>
 <p>
 For example, suppose that we want
-to swap the values of variable <code>a</code> and <code>b</code> if
+to swap the values of variables <code>a</code> and <code>b</code> if
 <code>b</code> is larger than <code>a</code>. We can use a conditional
 to achieve this goal:
 </p>
@@ -274,7 +287,18 @@ Variable <code>t</code> is used to save the original value of <code>a</code>,
 so that it is not lost when <code>a</code> is assigned.
 </p>
 </div>
-
+<p>
+There are other styles that people use to format code like this. For example,
+some people put the opening brace <code>{</code> on a line by itself, so that
+the two matching braces appear in the same column, or indent the braces
+themselves.  Some people do not put a space after the keyword <code>if</code>,
+making it look like a function call.  The style shown is the one we follow, a
+very standard style called K&amp;R style, after Kernighan and Richie, authors
+of <i>The C Programming Language</i>. However, professional software engineers
+learn to follow whatever style is used by the codebase they are working on,
+even if their personal preference differs. Code that is inconsistent about
+stylistic conventions is harder to read.
+</p>
 
 <h2>Types and declarations</h2>
 <p>
