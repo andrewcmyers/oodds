@@ -201,6 +201,7 @@ be holding it at a given time.
           s3 = state("Thread running,\nholding mutex"),
           s4 = state("Thread blocked,\nnot holding mutex,\nwaiting for CV")
     const m = margin()
+    s4.setFontSize(8)
     
     align("left", "top", m, s1)
     align("center", "none", s1, s2)
