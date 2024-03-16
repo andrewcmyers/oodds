@@ -199,9 +199,9 @@ be holding it at a given time.
     const s1 = state("Thread running,\nnot holding mutex"), 
           s2 = state("Thread blocked,\nwaiting for mutex"),
           s3 = state("Thread running,\nholding mutex"),
-          s4 = state("Thread blocked\nnot holding mutex,\nwaiting for CV")
+          s4 = state("Thread blocked\nwaiting for CV,\nnot holding mutex")
     const m = margin()
-    s4.setFontSize(8)
+    s4.setFontSize(11)
     
     align("left", "top", m, s1)
     align("center", "none", s1, s2)
