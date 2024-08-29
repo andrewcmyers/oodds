@@ -338,6 +338,12 @@ double z = y;
 <p class="cont">
 then the variable <code>z</code> is initialized to the value 2.0, the closest approximation to
 the integer 2 that the type <code>double</code> supports.
+<span class=footnote>
+Java supports various <b>implicit conversions</b> like this one, but they
+should be used with care. In particular, the implicit conversion from
+<code>int</code> to <code>float</code> (single-precision floating point) is
+allowed but can silently lose information.
+</span>
 </p>
 
 <h2>Defining and calling methods</h2>
