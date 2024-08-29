@@ -325,21 +325,18 @@ Based on the discussion of strings above, it is natural to think that strings
 are very special objects in Java. But they aren't: the only truly special thing
 about strings is that string objects can be created using the convenient
 quotation mark syntax. The object diagram above is a bit of a white lie,
-because strings are actually implemented using arrays of characters. For
-example, the string <code>"Hello"</code> is really implemented as <em>two</em>
-objects as shown in the object diagram on right. The <code>String</code> object
-contains an instance variable <code>value</code> that refers to the array of
-characters making up the string.
+because strings are actually implemented using arrays. Exactly how they are
+implemented has changed between different releases of the Java language.
+For example, in some previous releases, strings were implemented using
+arrays of characters as, shown in the figure on the right. However, the
+current implementation is more complex.
 </p>
 <p>
-Since the entries in the character array never change, you have to work pretty
-hard to figure out what a string in Java really is, because you can
-only access strings through the operations of the <code>String</code> class.
-And that is a Good Thing, because it means that the designers of Java can
-change the way strings work in future versions of Java without breaking all the
-existing programs. In fact, the implementation of the <code>String</code> class
-has changed significantly in the past few versions of Java, so even <em>this</em>
-object diagram is a white lie.
+Since a string can only be accessed through the operations of the
+<code>String</code> class, the internal representation of a string  is hidden.
+And that is a Good Thing, because it means that the designers of Java can keep
+changing the way strings work in future versions of Java without breaking any
+existing programs.
 </p>
 
 <h2>Autoboxing</h2>
