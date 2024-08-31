@@ -420,7 +420,6 @@ activation record of the calling code to the returned result.
 <script type="application/javascript" class=graphics>
     with (new CFigure("triple-call-canvas", true)) {
         const f1 = addFrame(), f2 = addFrame().setLength(500), f3 = addFrame(), f4 = addFrame().setLength(500)
-        setFontName("consolas")
         let v = varBoxes("y=1000", "z"),
             v2 = varBoxes("n", "r"),
             l1001 = label("1001").at(smooth(f2, point(plus(v.x1(), 30), v.y()),
@@ -487,7 +486,6 @@ diagram for the above code shows that we have two distinct values in play:
 <script class="graphics">
     with (new CFigure("two-points-fig", true)) {
         let f1 = addFrame(), f2 = addFrame(), f3 = addFrame()
-        setFontName("consolas, fixed")
         let a = varBoxes("a"), b = varBoxes("b"), ab = group(a,b)
             pa = varBoxes("=Point", "x=0", "y=0"),
             pb = varBoxes("=Point", "x", "y")
@@ -558,7 +556,6 @@ affect what rectangle <code>r</code> represents.
         equal(a.y0(), 2)
         equal(minus(r.y1(), a.y0()), 90)
 
-        setFontName("consolas")
         let pa = varBoxes("class=Point", "x", "y=0"), pb = varBoxes("class=Point", "x=2", "y=3"),
                  l0 = label("0").at(pa.getVar(1)), l1 = label("1").at(l0)
         align("right", "none", pa, pb)
@@ -720,20 +717,21 @@ class Point {
 Point z = Point.zero()
 </pre>
 
-<h2>The main method</h2>
+<h2>Running programs: the method <code>main</code></h2>
 <p>
-A Java program is simply a class with a static <code>main</code> method with
-exactly the following signature:
+A Java program is simply a class with a static method <code>main</code> that
+has exactly the following signature:
 </p>
 
 <pre>
-public static void main(String[] args);
+public static void main(String[] args)
 </pre>
 
 <p>
-Because it is static, <code>main</code> can be called when no object of its class is
-available. Extra arguments supplied to the program by the operating
-system are made available in the array <code>args</code>.
+Because it is static, <code>main</code> can be called when no object of its
+class is available, including when the program starts running.  Extra arguments
+supplied to the program by the operating system, if any, are made available in
+the array <code>args</code>.
 </p>
 <p>
 For example, we can write a program that prints &ldquo;Hello world!&rdquo;:
@@ -752,23 +750,33 @@ $ java Hello          # Run the program, naming the main class of the program.
 Hello World!
 </pre>
 
+<p>
+    The keyword <code>public</code> in this code is a
+    <b>visibility modifier</b> that makes the class <code>Hello</code>
+    and its method <code>main</code> visible to the entire program.
+    We cover visibility modifiers in more detail soon.
+</p>
+
 <h2>Names and scope</h2>
 <p>
 Names can refer to a variety of things: local variables (including the formal
-parameters of methods), instance fields, methods, types, classes, and
-packages. The basic rule for deciding what kind of thing a name refers to is
-to find the definition of the name with the smallest <em>scope</em> that includes
-the use of the name. Different kinds of names have different rule for scope.
-Local variables are in scope from the point of declaration until the end of the
-block in which they are declared. Method and field names are in scope
-throughout their class. Class and interface names are in scope throughout the
-program unless they are nested inside another class, in which case they are in
-scope throughout the containing class.
+parameters of methods), instance fields, methods, types, classes, and packages.
+The basic rule for deciding what kind of thing a name refers to is to find the
+definition of the name with the smallest <em>scope</em> that includes the use
+of the name. Different kinds of names have different rule for scope.  Local
+variables are in scope from the point of declaration until the end of the block
+in which they are declared. Names of instance methods and instance variables
+names are in scope in non-static contexts throughout their class, but are out
+of scope in static contexts such as static methods.  Class and interface names
+are in scope throughout the program unless they are nested inside another
+class, in which case they are in scope throughout the containing class. (In
+addition, their scope is controlled by visibility modifiers such as
+<code>public</code>.)
 </p>
 <p>
 If a name is in the scope of two different declarations at once, the outer declaration
 is said to be <em>shadowed</em> by the inner one. The scope of the outer declaration has
-a ``hole'' in it where the inner scope exists. Java considers some shadowing to be
+a “hole” in it where the inner scope exists. Java considers some shadowing to be
 illegal. For example, this code will not compile because the variable <code>x</code>
 is shadowed inside the <code>while</code> loop:
 </p>
@@ -781,10 +789,11 @@ while (x != 0) {
 // only outer x in scope here.
 </pre>
 <p>
-Local variables cannot have a hole in scope, but 
-one place where shadowing <em>is</em> allowed, often getting programmers into trouble, is when a local
-variable shadows an instance variable. Shadowing is especially common with constructors, because it is
-convenient to name formal parameters in the same way as the corresponding instance variables:
+Local variables cannot have a hole in scope, but one place where shadowing
+<em>is</em> allowed, often getting programmers into trouble, is when a local
+variable shadows an instance variable. Shadowing is especially common with
+constructors, because it is convenient to name formal parameters in the same
+way as corresponding instance variables:
 </p>
 <pre>
 class Point {
@@ -803,5 +812,5 @@ variables, using the object reference <code>this</code>. The expression
 and refers to the current object: in this case, the object being
 constructed. Alternatively, you can give the formal parameters different names
 (for example, by appending an underscore), and then the instance variables can
-be used directly, without the "<code>this</code>".
+be used directly, without using "<code>this</code>".
 </p>
