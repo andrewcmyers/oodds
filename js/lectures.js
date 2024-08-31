@@ -19,29 +19,40 @@ function basename(url) {
 
 var base_url = basename(window.location.origin + window.location.pathname)
 
+var DEBUG_RELATIVIZE = true;
+
+// URLs need to be rewritten to be relative to the
+// to the top of the repo rather than to the top of
+// the lecture directory.
 function relativize(url, lecture_base, base) {
-    // console.log("relativizing " + url + " : "  + lecture_base + " : " + base)
+    if (DEBUG_RELATIVIZE)
+      console.log("relativizing " + url + " : "  + lecture_base + " : " + base)
     if (url == "") return url
     for (;;) {
         if (url.match('^' + base)) {
             url = url.replace(base, lecture_base)
-            // console.log("result -> " + url)
+            if (DEBUG_RELATIVIZE)
+              console.log("result -> " + url)
             return url
         }
         const base_match = base.match('^(.*)/')
         if (!base_match) { 
-            // console.log("base didn't match -> " + url)
+            if (DEBUG_RELATIVIZE)
+              console.log("base didn't match -> " + url)
             return url
         }
         base = base_match[1] 
         const lec_base_match = lecture_base.match('^(.*)/')
         if (!lec_base_match) {
-            // console.log("lecture_base didn't match -> " + url)
+            if (DEBUG_RELATIVIZE)
+               console.log("lecture_base didn't match -> " + url)
             return url
         }
         lecture_base = lec_base_match[1]
-        // console.log("  base = " + base)
-        // console.log("  lecture_base = " + lecture_base)
+        if (DEBUG_RELATIVIZE) {
+          console.log("  base = " + base)
+          console.log("  lecture_base = " + lecture_base)
+        }
     }
 }
 
