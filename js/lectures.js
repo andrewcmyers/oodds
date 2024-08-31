@@ -32,10 +32,10 @@ function relativize(url, lecture_base, base) {
         if (url.match('^' + base)) {
             url = url.replace(base, lecture_base)
             if (DEBUG_RELATIVIZE)
-              console.log("result -> " + url)
+              console.log("  result -> " + url)
             return url
         }
-        const base_match = base.match('^(.*)/')
+        const base_match = base.match('^(.*)/') && !base.match('^https?:/')
         if (!base_match) { 
             if (DEBUG_RELATIVIZE)
               console.log("base didn't match -> " + url)
