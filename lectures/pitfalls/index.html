@@ -241,7 +241,7 @@ not an example of good code!
 Strings in Java are also objects, which leads to some surprises. The evaluation of
 a <em>string literal</em> like <code>"Hello"</code> actually causes a call to a
 constructor of the class <code>String</code>, resulting in an object that is an
-instance of the class. For example, the code on the left has the effect on the right:
+instance of the class. For example, the code on the left has the effect shown on the right (the boxes for variables <code>x</code>, <code>y</code>, <code>z</code>, <code>w</code> are omitted for simplicity):
 </p>
 <div class="floatfigure">
     <canvas id=string_lit_new style="width: 200px; height: 310px"></canvas>
@@ -291,13 +291,13 @@ For example, the expression <code>z.charAt(1)</code> evaluates to the character
 </p>
 <p>Although the objects referenced by <code>z</code> and <code>w</code> represent the
 same string literal <code>"HelloWorld"</code>, they are different objects and
-can be distinguished using the <code>==</code> operator; that is, the
+therefore can be distinguished using the <code>==</code> operator; that is, the
 result of <code>z == w</code> is <code>false</code>. This is because the
 <code>==</code> operator on reference types simply returns whether the operands
 reference the same object. This is almost never what we want when comparing two strings.
 We almost always want to test whether the two string literals
-are the same. For this, one should use the <code>String</code>
-object's <code>equals</code> method. For example, the expression <code>z.equals(w)</code> would
+are the same. For this, one should use the method <code>equals()</code> of <code>String</code>
+objects. For example, the expression <code>z.equals(w)</code> would
 evaluate to <code>true</code>.</p>
 
 <p>This also applies to other object values. A comparison using <code>equals</code>
@@ -323,7 +323,7 @@ with (new CFigure("string_lit_impl_new")) {
 Based on the discussion of strings above, it is natural to think that strings
 are very special objects in Java. But they aren't: the only truly special thing
 about strings is that string objects can be created using the convenient
-quotation mark syntax. The object diagram above is a bit of a white lie,
+quotation-mark syntax. The object diagram above is a bit of a white lie,
 because strings are actually implemented using arrays. Exactly how they are
 implemented has changed between different releases of the Java language.
 For example, in some previous releases, strings were implemented using
@@ -333,8 +333,8 @@ current implementation is actually more complex.
 <p>
 Since a string can only be accessed through the operations of the
 <code>String</code> class, the internal representation of a string  is hidden.
-And that is a Good Thing, because it means that the designers of Java can keep
-changing the way strings work in future versions of Java without breaking any
+And that is a Good Thing, because it means that the designers of Java can
+improve the way strings work in future versions of Java without breaking any
 existing programs.
 </p>
 
@@ -346,8 +346,11 @@ type <code>Object</code> can refer to any object, but cannot refer directly to a
 </p>
 <p>To address this issue, Java introduced a set of eight classes corresponding to the
 eight primitive types, as shown in the following table.</p>
+<style>
+ table.side-by-side { padding-left: 1em; border-spacing: 1em 0 }
+</style>
 
-<table>
+<table class="side-by-side">
 <tr>
 <th>primitive type</th> <th>corresponding reference type</th></tr>
 <tr>
@@ -360,9 +363,11 @@ eight primitive types, as shown in the following table.</p>
 <td><code>double</code></td> <td><code>Double</code></tr>
 <td><code>long</code></td> <td><code>Long</code></tr>
 </table>
+<p>
 Each of these classes defines objects that
-contain a value of the appropriate primitive type, and define an
-<code>equals</code> method to compare them.
+contain a value of the appropriate primitive type, and defines an
+<code>equals</code> method to compare them by
+comparing those primitive values.
 </p>
 <p>In addition, Java will automatically &quot;box&quot; primitive values into the corresponding
 reference type when necessary, and will automatically unbox them in the other direction,
@@ -382,9 +387,9 @@ System.out.println(l.equals(k)); // true
 </pre>
 <p>
 There are a couple of surprises here. First, the compiler does not let us compare
-j and k. Autoboxing causes j to be boxed into an <code>Integer</code> object, but
-the <em>static</em> type of k is <code>Object</code>, so the Java compiler does not
-know that k can be unboxed into an <code>int</code>.
+<code>j</code> and <code>k</code>. Autoboxing causes <code>j</code> to be boxed into an <code>Integer</code> object, but
+the <em>static</em> type of <code>k</code> is <code>Object</code>, so the Java compiler does not
+know that <code>k</code> can be unboxed into an <code>int</code>.
 </p>
 <p>
 Another surprise is the test <code>l == k</code>.
@@ -395,7 +400,7 @@ same number, they compare as unequal. As with strings, we should use the
 <p>
 Curiously, changing the number 200 to anything between
 -128 and 127 will cause the code above to report <code>true</code> for <code>l
-== k</code>. This happens because there is a table of <code>Integer</code>
+== k</code>. This change happens because there is a table of <code>Integer</code>
 objects that is used only for small integers. Autoboxing is performed by the
 method <code>Integer.valueOf</code>, which uses this table when it can and only
 resorts to <code>new</code> for larger integers.
