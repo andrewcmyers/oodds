@@ -164,9 +164,9 @@ way. Working on a team of programmers is difficult in the procedural
 model because the different parts of the code tend to be <b>tightly coupled</b>.
 A bug in one software component can corrupt program data and look like a bug in
 a different component. Code is hard to maintain and to evolve without
-breaking it, and changes to way data is represented in the program tend to
+breaking it, and changes to the way data is represented in the program tend to
 affect all of the program code rather than being isolated to a small part 
-of the code. It was difficult to divide a large programming tasks into pieces
+of the code. It was difficult to divide a large programming task into pieces
 that developers could work on somewhat independently. Procedural programming
 lacked <b>modularity</b>.
 </p>
@@ -203,7 +203,7 @@ data is <b>mediated</b> by this public code.
 </p>
 <p>
 By <b>client code</b> we mean code outside the module that is using the
-module through a set of publicly exposed operations. These operations we
+module through a set of publicly exposed operations. These operations were
 called the <b>interface</b> of the module, which should not be confused
 with the Java language feature <code>interface</code> (which is, however, an
 example of the more general interface idea, and one we will return to).
@@ -401,7 +401,7 @@ that it is not called using a receiver object. Unlike in a static method, the va
 refer to the instance variables of the object currently being constructed. Notice that the
 constructor does not simply accept the numerator and denominator
 directly, but instead computes a new numerator and denominator that
-represent the same number while satisfying the invariant. This ensures that at
+represent the same number while satisfying the invariant. This computation ensures that at
 the end of the constructor, the invariant holds.
 </p><p>
 Because of the invariant, the method <code>equals</code> can be implemented very
