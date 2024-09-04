@@ -168,18 +168,18 @@ breaking it, and changes to way data is represented in the program tend to
 affect all of the program code rather than being isolated to a small part 
 of the code. It was difficult to divide a large programming tasks into pieces
 that developers could work on somewhat independently. Procedural programming
-lacked <b>modularity</b>.
+lacked sufficient <b>modularity</b>.
 </p>
 
 <h2>Modular programming</h2>
 <p>
 To address these problems, <b>modular programming</b> was developed.
 (Object-oriented programming is a form of modular programming, but adds more
-ideas that we will discuss soon.) The idea of modular programming is that the
+ideas.) The idea of modular programming is that the
 software should be broken up into distinct <b>modules</b> that can be
 developed separately. A good modular design respects the
 principle of <b>separation of concerns</b>, which says that different aspects
-of the design should be designed separately. With a good modular design,
+of the design should be kept separate in the code. With a good modular design,
 changes can be made to one module without changing other modules, and it is
 relatively easy for programmers to know whether their changes will affect other
 modules that are perhaps owned by other programmers. Separation of concerns
@@ -225,9 +225,8 @@ exactly how that data is represented. All they have to know is what operations
 to the client code, which means that the module implementer is free to change
 how the data is represented because no client code can depend on the precise
 representation.  This powerful form of information hiding is called <b>data abstraction</b>.
-The word <b>abstraction</b> refers to the idea of hiding inessential detail.
-In this case, the inessential detail is, for the client code, the precise
-way that information is represented inside the module.
+In this case, the inessential detail being abstracted away is, for the client
+code, the precise way that information is represented inside the module.
 </p>
 
 <h2>An example: rational numbers</h2>
@@ -474,9 +473,12 @@ You should always have them turned on when developing code. This is achieved by
 giving the Java VM the <tt>-ea</tt> flag. We recommend setting this
 flag by default for your projects.  If you are using Eclipse, you can find this setting in
 Preferences→Java→Installed JREs→Edit, where you set &ldquo;Default VM arguments&rdquo;
-to <tt>-ea</tt>. Other IDEs like IntelliJ allow VM arguments to be set similarly.
+to <tt>-ea</tt>. In IntelliJ, you can find it in the run configuration
+at Run→Edit Configurations→(select or add configuration)→Modify options→Add VM Options.
+Other IDEs allow VM arguments to be set similarly.
 </p>
-<p>You might be worried that checking preconditions is very expensive. Fortunately, assertion checking can be turned on and off by providing options to the JVM:
+<p>You might be worried that checking preconditions is very expensive. Fortunately, assertion checking can be turned on and off selectively
+by providing options to the JVM:
 <ul>
 <li><tt>-ea</tt> : enable assertions everywhere except in system libraries
 <li><tt>-esa</tt> : enable assertions in system libraries

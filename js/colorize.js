@@ -10,11 +10,15 @@
 // 
 // author: Andrew Myers
 
-var keyword_list = new Array( "abstract", "assert", "class", "else", "enum", "for", "function",
-    "if", "new", "private", "public", "protected", "static", "throw", "throws", "try",
-    "catch", "while", "return", "break", "continue", "case", "default", "switch", "do",
-    "interface", "implements", "synchronized", "extends", "finally", "except", "void",
-    "int", "boolean", "long", "short", "float", "double", "byte", "char", "instanceof", "this", "super" );
+var keyword_list = new Array( "abstract", "assert", "class", "else",
+    "enum", "for", "function", "if", "new", "private", "public",
+    "protected", "static", "throw", "throws", "try", "catch", "while",
+    "return", "break", "continue", "case", "default", "switch", "do",
+    "interface", "implements", "synchronized", "extends", "finally",
+    "except", "instanceof", "this", "super" );
+
+var reserved_words = new Array("void", "int", "boolean", "long",
+    "short", "float", "double", "byte", "char");
 
 var keywords = new Object;
 
