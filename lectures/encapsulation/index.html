@@ -340,16 +340,19 @@ can be useful if they are made <code>final</code>.</td></tr>
 the argument <code>den</code> must be non-zero. This clause is a form of
 <b>precondition</b> that must be satisfied by any correct client implementation.
 It is a mistake for client code to call the constructor without satisfying
-the precondition: in particular, it is a mistake by the programmer writing the client code.
+the precondition: in particular, it is a mistake by the programmer writing the client code. The module implementer is allowed to assume that all calls
+satisfy the precondition.
 Thus, when mistakes are made, preconditions help us figure out whose fault they are.
 </p>
 <p>
-Similarly, <b>postconditions</b> (sometimes called Returns clauses) specify what
-a method is supposed to do. If a method doesn't satisfy its postcondition, the mistake
-is not the client's; it's the implementer's.
+Similarly, <b>postconditions</b> (sometimes called Returns clauses) specify
+what a method is supposed to do. If a method doesn't satisfy its postcondition,
+the mistake is not the client's; it's the implementer's. Client code can be
+written with the assumption that the precondition of the method is satisfied,
+the method result correspondingly satisfies the postcondition.
 </p>
 <p>
-Clear preconditions and postconditions means the public interface of the class
+With Clear preconditions and postconditions means the public interface of the class
 forms a clear contract between the client and the implementer. Like legal
 contracts in law, clear contracts allow blame to be assigned when someone makes
 a mistake. For large software projects, this clear assignment of responsibility
@@ -358,58 +361,78 @@ is extremely valuable.
 
 <h2>Class invariants</h2>
 <p>
-An early comment in the <code>Rational</code> example expresses an <b>invariant</b> regarding the instance
-variables <code>p</code> and
+An early comment in the <code>Rational</code> example expresses an
+<b>invariant</b> regarding the instance variables <code>p</code> and
 <code>q</code>:</p>
 <pre class=code>
  // class invariant: q &gt; 0, gcd(p, q) = 1
 </pre>
+<p>
+In other words, this invariant states that <code>q</code> is
+positive and that the rational number is always stored in the reduced form
+where <code>p</code> and <code>q</code> are relatively prime.
+</p>
+<p>
 An invariant is something that is always true at certain points in the program,
 though in programming, invariants can be violated temporarily. This particular invariant is an
 invariant about the state of objects of the class, and is variously called a
 <b>class invariant</b>, <b>data structure invariant</b>, or
 <b>representation invariant</b>.
-The invariant states that <code>q</code> is
-positive and that the rational number is always stored in the reduced form
-where <code>p</code> and <code>q</code> are relatively prime. A class invariant is expected
+A class invariant is expected
 to hold at the beginning and end of every public method, but may be temporarily violated
-in the middle of a method. Knowing that the class invariant is true
-is very helpful because when writing the code for the methods of the class, you
-can ignore the possibility of a zero denominator. 
-</p>
-<p>Having invariants that you can rely on is critical to being able to easily
-write working code. It is much easier to make sure you can rely on invariants
-if the code that enforces the invariant is localized to one class, as a class
-invariant (or, at least, to a small number of classes in a package).
+in the middle of a method.
 </p>
 <p>
-Encapsulation aids with this goal of localization.
-Because the instance variables <code>p</code> and <code>q</code>
-are private, the code of the class can enforce this invariant. Code
-outside the current class has no way to, say, modify <code>q</code> to be zero.
-Conversely, we can see that making any assignable
-field public completely destroys the ability to enforce class invariants involving
-that field: client code can assign an arbitrary value to the field.
+Knowing that the class invariant is true is very helpful because when writing
+the code for the methods of the class, you can assume that the invariant holds.
+For example, in the implementation of the method <code>Rational.plus</code>, we
+may safely ignore the possibility of a zero denominator. 
+Having invariants that you can rely on makes it much simpler to
+write working code!
 </p>
 <p>
-Like the method <code>plus</code>,
-the class constructor, which must also be named <code>Rational</code> like its class,
-is also static in the sense
-that it is not called using a receiver object. Unlike in a static method, the variable
-<code>this</code> and its instance variables <em>are</em> in scope inside the constructor. They
-refer to the instance variables of the object currently being constructed. Notice that the
+Conversely, a class invariant creates an
+<i>obligation</i> for the programmer:
+the class invariant must hold for all objects of the class when
+methods and constructors return. In particular, the constructor
+for <code>Rational</code> must only create objects that satisfy
+the invariant.
+</p>
+<p>
+It is much easier to establish and reason about invariants if the code that
+enforces the invariant is localized to one class, as a class invariant (or, at
+least, to a small number of classes in a package).
+</p>
+<p>
+Encapsulation aids with this goal of localization.  Because the instance
+variables <code>p</code> and <code>q</code> are private, the code of the class
+can enforce this invariant. Code outside the current class has no way to, say,
+modify <code>q</code> to be zero.  Conversely, we can see that making any
+assignable field public completely destroys the ability to enforce class
+invariants involving that field: client code might assign an arbitrary value to
+the field.
+</p>
+<p>
+Like the method <code>plus</code>, the class constructor, which must
+also be named <code>Rational</code> like its class, is also static in
+the sense that it is not called using a receiver object. Unlike in a
+static method, the variable <code>this</code> and its instance variables
+<em>are</em> in scope inside the constructor. They refer to the instance
+variables of the object currently being constructed. Notice that the
 constructor does not simply accept the numerator and denominator
 directly, but instead computes a new numerator and denominator that
-represent the same number while satisfying the invariant. This computation ensures that at
-the end of the constructor, the invariant holds.
+represent the same number while satisfying the invariant. This
+computation ensures that at the end of the constructor, the invariant
+holds.
 </p><p>
-Because of the invariant, the method <code>equals</code> can be implemented very
-simply and efficiently, by comparing the corresponding instance variables of
-<code>this</code> and <code>r</code>. This implementation relies on the fact that the
-invariant we chose ensures there is only
-one way to represent a given rational number. In general, it is not required that there be
-a unique representation for any rational number, but it's handy here.  Without the invariant,
-we would have to write something more expensive like the following:
+Because of the invariant, the method <code>equals</code> can be
+implemented very simply and efficiently, by comparing the corresponding
+instance variables of <code>this</code> and <code>r</code>. This
+implementation relies on the fact that the invariant we chose ensures
+there is only one way to represent a given rational number. In general,
+it is not required that there be a unique representation for any
+rational number, but it's handy here.  Without the invariant, we would
+have to write something more expensive like the following:
 </p><pre>
   public boolean equals(Object o) {
     ...
@@ -468,14 +491,16 @@ m() {
 </pre>
 
 <p>
-One thing to watch out for with assertions is that they are turned off by default!
-You should always have them turned on when developing code. This is achieved by
-giving the Java VM the <tt>-ea</tt> flag. We recommend setting this
-flag by default for your projects.  If you are using Eclipse, you can find this setting in
-Preferences→Java→Installed JREs→Edit, where you set &ldquo;Default VM arguments&rdquo;
-to <tt>-ea</tt>. In IntelliJ, you can find it in the run configuration
-at Run→Edit Configurations→(select or add configuration)→Modify options→Add VM Options.
-Other IDEs allow VM arguments to be set similarly.
+One thing to watch out for with assertions is that they are
+turned off by default!  You should always have them turned on
+when developing code. This is achieved by giving the Java VM the
+<tt>-ea</tt> flag. We recommend setting this flag by default for your
+projects.  If you are using Eclipse, you can find this setting in
+Preferences→Java→Installed JREs→Edit, where you set &ldquo;Default
+VM arguments&rdquo; to <tt>-ea</tt>. In IntelliJ, you can find it in
+the run configuration at Run→Edit Configurations→(select or add
+configuration)→Modify options→Add VM Options.  Other IDEs allow VM
+arguments to be set similarly.
 </p>
 <p>You might be worried that checking preconditions is very expensive. Fortunately, assertion checking can be turned on and off selectively
 by providing options to the JVM:
@@ -490,11 +515,13 @@ by providing options to the JVM:
 
 <h3>Adding assertions to <code>Rational</code></h3>
 
-<p>Checking preconditions and postconditions is very useful, but one important
-and unused technique for building working code is to check class invariants
-using assertions. Class invariants can be checked at the beginning of every public method
-and also at the end of the method, to make sure that any violation of the invariant is
-caught as soon as possible.
+<p>
+Checking preconditions and postconditions is very useful, but one
+important and unused technique for building working code is to check
+class invariants using assertions. Class invariants can be checked at
+the beginning of every public method and also at the end of the method,
+to make sure that any violation of the invariant is caught as soon as
+possible.
 </p>
 <p>
 If the code of our example class <code>Rational</code>, is augmented with
@@ -512,17 +539,18 @@ Example: class <code>Rational</code> with assertions added to check class invari
 </div>
 
 <p>
-The purpose of <code>classInv()</code> is to check the class invariant. Writing the
-code for this method can also help clarify your thinking about what belongs in
-the class invariant. The purpose of the class invariant is to defend against
-incorrect implementation of methods in the class. A good thought experiment is to
-imagine that some of the code in the class is written by a malicious
-member of your project group who is trying to make you look bad. This evil
-coder has full access to the private instance variables of the class and 
-puts whatever data they want into them to in order to create malformed
-objects that will make <em>your</em> method implementations look wrong. The job of the
-class invariant, and by extension of <code>classInv()</code>,
-is to catch these malformed objects before any of your code tries to use them.
+The purpose of <code>classInv()</code> is to check the class
+invariant. Writing the code for this method can also help clarify your
+thinking about what belongs in the class invariant. The purpose of the
+class invariant is to defend against incorrect implementation of methods
+in the class. A good thought experiment is to imagine that some of the
+code in the class is written by a malicious member of your project group
+who is trying to make you look bad. This evil coder has full access to
+the private instance variables of the class and puts whatever data they
+want into them to in order to create malformed objects that will make
+<em>your</em> method implementations look wrong. The job of the class
+invariant, and by extension of <code>classInv()</code>, is to catch
+these malformed objects before any of your code tries to use them.
 </p>
 
 <h2>Names and packages</h2>
