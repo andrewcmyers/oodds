@@ -1,6 +1,9 @@
 class SBoard implements Board {
-   
-   private String tiles; // a 16-character string
+   /** Representation: the character values in the string give the
+    *    values of the corresponding tiles.
+    *  Invariant: tiles.length() is 16
+    */
+   private String tiles;
    private int score;
 
    public SBoard() {
