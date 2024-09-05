@@ -69,7 +69,7 @@ modules.
 </p>
 <p>
 When a module's interface is wide and there doesn't seem to be a way to avoid
-this by writing convenience functions or by separating the module into multiple
+this by writing convenience methods or by separating the module into multiple
 modules, it is often a sign that you haven't managed to separate program
 concerns into different modules. When concerns are not sufficiently separated,
 there are <em>inherently</em> too many interactions between the different parts
@@ -327,7 +327,7 @@ in the Java Collections Framework, rely on the ability to compare whether two
 objects are equal. However, implementing the <b>equals()</b> method is
 surprisingly tricky, because the notion of equality itself is more complex than
 it might appear at first glance. Java objects inherit a built-in implementation
-of the <code>equals</code> based on <b>reference equality</b>: two objects are
+of the <code>equals()</code> method based on <b>reference equality</b>: two objects are
 equal if and only if they have the same reference. Reference equality is what the
 built-in operator <code>==</code> implements.
 For mutable abstractions, reference equality is usually the right
@@ -402,10 +402,10 @@ not need to be stated explicitly. A good example of such a precondition is an
 expectation that no argument values to a method are <code>null</code>.  If a
 method might be able to handle a null argument, the method spec should
 explicitly say so. Otherwise, clients should assume that null is an invalid
-argument. In the absence of such a default preconditions, most method preconditions
-will have rule about the possibility that various arguments are null, creating
-tedious clutter that distracts from the main point of the precondition. Similarly,
-it is useful to assume that results returned from methods are null unless the
+argument. In the absence of such a default precondition, most method preconditions
+will have rules about the possibility that various arguments are null, creating
+tedious clutter that distracts from the main point of the preconditions. Similarly,
+it is useful to assume that results returned from methods are not null unless the
 method spec explicitly states that the result can be null.
 </p>
 
@@ -441,7 +441,7 @@ observations and mutations that make sense for the object.
 <p>
 Pragmatically, if an instance variable has both a getter and a setter, it becomes
 hard to enforce any kind of abstraction barrier, since clients can modify it
-arbitrarily. It is not much better than making the instance variable public.
+arbitrarily. Doing so is not much better than making the instance variable public.
 Of course, we can define setters with preconditions, but it is
 better to think of such setters as mutators.
 </p>
@@ -467,7 +467,7 @@ coefficients of a polynomial as an array in the instance variable
 Now a client can get access to the internal array of coefficients and
 change the polynomial in an unconstrained way, possibly breaking its class invariant.
 Even worse, the client may have no idea that it is causing damage by changing the 
-array. To avoid this damage, a information in the array should be returned to the client
+array. To avoid this damage, information in the array should be returned to the client
 in a way that does not expose the internal state, perhaps by returning a copy the array or
 an iterator over the array elements.
 </p>
@@ -526,7 +526,7 @@ same objects.
 True Leibniz equality means that equal objects should be indistinguishable now
 and forever, whereas state equality only guarantees that objects remain
 indistinguishable until one of them is mutated. For example, two Java
-collections that that are considered equal might stop being “equal” later on
+collections that are considered equal might stop being “equal” later on
 when elements are added to or removed from one of them. A notion of equality
 that can change is error-prone, because it can lead to invariants being broken.
 For example, objects used as keys in Java collections need to satisfy
@@ -684,7 +684,7 @@ This method does not try to answer whether two objects are truly equal; it only
 answers whether they are “polynomial-equal”. It is obviously reflexive,
 transitive, and symmetric, and simpler to implement. Unfortunately, the
 standard Java libraries are not designed to work with this notion of equality,
-and it is not implement Leibniz equality, because it may consider
+and it does not implement Leibniz equality, because it may consider
 distinguishable objects to be equal. On the other hand, both notions of
 equality can coexist, and an advantage of this approach is that it is
 compatible with the way we later suggest writing generic code.
