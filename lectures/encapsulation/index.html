@@ -446,17 +446,21 @@ invariant elsewhere in the code.
 <p>
 What conditions are part of the class invariant?  A rule of thumb is that the
 class invariant should enforce everything that is assumed by the method
-implementations of the class. We might imagine that there is an adversary
-arbitrarily changing the instance variables of objects, but only in ways that
-the class invariant permits. A fully correct class invariant should prevent
-such an adversary from causing method implementations to malfunction.
+implementations of the class. We might imagine that we are writing the code of
+the class in collaboration with another not-very-competent programmer who tries
+to make our method implementations break by writing code that changes the
+instance variables of class objects.  The only constraint on this adversarial
+collaborator is that they can change instance variables only in ways that the
+class invariant permits. Therefore, a fully correct class invariant should
+prevent instance variables from being changed in a way that causes any method
+implementations to malfunction.
 </p>
 <h2>Assertions</h2>
 <p>
 Preconditions and postconditions define a contract between the client and the
 implementer, and class invariants are an internal contract between the module
-implementation and itself.  If everyone is obeying the contract, the program
-will work.  But if someone doesn't follow their part of a contract, the program
+implementation and itself.  If everyone is obeying their contracts, the program
+works.  But if someone doesn't follow their part of a contract, the program
 may fail in a way that is hard to debug.  How can we gain confidence that these
 contracts are all being obeyed?
 </p><p>
