@@ -471,28 +471,14 @@ false. Assertions can be used to double-check that anything the programmer
 believes ought to be true, actually is. While this has some performance impact,
 assertions can be turned off for production code.
 </p>
-<p>Assertions (that is, <tt>assert</tt>) are extremely useful:</p>
+<p>Assertions (using <code>assert</code>) are extremely useful:</p>
 <ol>
 <li>They put useful tests into the code itself where you don't have to remember to run them.</li>
 <li>They also add useful documentation about things the implementer expected to be true, so they
 don't clutter the code in the process.</li>
 </ol>
-<p>But what to use <code>assert</code> on? One obvious target is preconditions and postconditions.
-On entry to a method, use an <code>assert</code> to check that the requires clause holds. On
-every exit from a method, check that the returns clause is satisfied. If a method fails to live
-up to its spec, you'll know immediately and be able to debug the right code.
-</p>
-<pre>
-/* Requires/Checks: X
- * Returns: Y
- */
-m() {
-    assert X;
-    ...// method impl here
-    assert Y;
-    return;
-}
-</pre>
+
+<h3>Controlling assertions</h3>
 
 <p>
 One thing to watch out for with assertions is that they are
@@ -517,16 +503,50 @@ by providing options to the JVM:
 
 <p>Corresponding <tt>-da</tt> options can be used to turn off assertion checking selectively.</p>
 
-<h3>Adding assertions to <code>Rational</code></h3>
-
-<p>
-Checking preconditions and postconditions is very useful, but one
-important and unused technique for building working code is to check
-class invariants using assertions. Class invariants can be checked at
-the beginning of every public method and also at the end of the method,
-to make sure that any violation of the invariant is caught as soon as
-possible.
+<h3>Checking preconditions and postconditions</h3>
+<p>But what to use <code>assert</code> on? One obvious target is preconditions and postconditions.
+On entry to a method, use an <code>assert</code> to check that the requires clause holds. On
+every exit from a method, check that the returns clause is satisfied. If a method fails to live
+up to its spec, you'll know immediately and be able to debug the right code.
 </p>
+<pre>
+/* Requires/Checks: X
+ * Returns: Y
+ */
+m() {
+    assert X;
+    ...// method impl here
+    assert Y;
+    return;
+}
+</pre>
+<h3>Checking class invariants</h3>
+<p>
+Checking preconditions and postconditions is very useful, but a further
+important technique for building working code is to also check
+class invariants using assertions. Class invariants can be checked at
+the beginning of each public method and also at the end of each method,
+to make sure that any violation of the invariant is caught as soon as
+possible. Further, constructors should check the class invariant to make
+sure that newly constructed objects already satisfy it.
+</p>
+<p>
+To make it convenient to check the class invariant, we write a method
+<code>classInv</code> to do the checking. Such a method has the added benefit
+that it precisely describes what the class invariant, as executable code.
+Writing the code for this method can also help clarify your thinking about what
+belongs in the class invariant.
+</p>
+<p>For example, in the <code>Rational</code> our class invariant
+was that the denominator must be positive and the numerator and
+denominator are relatively prime. These conditions can be
+expressed as a <code>classInv()</code> method:
+<pre class="load">
+<a href="src/withAssertions/classInv.java">withAssertions.classInv</a>
+</pre>
+
+<h3>Example: Adding assertions to <code>Rational</code></h3>
+
 <p>
 If the code of our example class <code>Rational</code>, is augmented with
 assertions to check preconditions, postconditions, and the class invariant, we
@@ -541,21 +561,6 @@ arrive at an implementation that uses assertions as follows:
 Example: class <code>Rational</code> with assertions added to check class invariants and preconditions
 </span>
 </div>
-
-<p>
-The purpose of <code>classInv()</code> is to check the class
-invariant. Writing the code for this method can also help clarify your
-thinking about what belongs in the class invariant. The purpose of the
-class invariant is to defend against incorrect implementation of methods
-in the class. A good thought experiment is to imagine that some of the
-code in the class is written by a malicious member of your project group
-who is trying to make you look bad. This evil coder has full access to
-the private instance variables of the class and puts whatever data they
-want into them to in order to create malformed objects that will make
-<em>your</em> method implementations look wrong. The job of the class
-invariant, and by extension of <code>classInv()</code>, is to catch
-these malformed objects before any of your code tries to use them.
-</p>
 
 <h2>Names and packages</h2>
 <p>
