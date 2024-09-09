@@ -14,10 +14,11 @@ specifications for those methods.
 </p>
 <h2>Example</h2>
 <p>
-For example, suppose that we want to implement the <a href="http://2048game.com">2048 game</a>,
-a popular game for cell phones consisting of movable numbered tiles in a 4&times;4 grid.
-We want to keep track of the state of the game at any given point and allow the user
-to make moves in the game.</p>
+For example, suppose that we want to implement the <a
+href="http://2048game.com">2048 game</a>, a popular game for cell phones
+consisting of movable numbered tiles in a 4&times;4 grid.  We want to
+keep track of the state of the game at any given point and allow the
+user to make moves in the game.</p>
 
 <p>
 Let's define an interface to the game. We'll call it <code>Board</code>:
@@ -27,17 +28,19 @@ Let's define an interface to the game. We'll call it <code>Board</code>:
 </pre>
 
 <p>
-Notice that this interface says nothing about how the various methods are implemented
-or about how the game information is represented inside objects. The interface doesn't
-say that the methods are public, because interface methods are always public.
+Notice that this interface says nothing about how the various methods
+are implemented or about how the game information is represented inside
+objects. The interface doesn't say that the methods are public, because
+interface methods are always public.
 </p>
 
 <h3>An implementation</h3>
 <p>
-The <code>Board</code> interface can be implemented by defining a class that
-is declared to implement it using the <code>implements</code> keyword. Now we get to make some implementation choices, such as
-how to represent the tiles of the game. One obvious representation is as a two-dimensional
-array of integers, with 0 representing blank tiles:
+The <code>Board</code> interface can be implemented by defining a class
+that is declared to implement it using the <code>implements</code>
+keyword. Now we get to make some implementation choices, such as how
+to represent the tiles of the game. One obvious representation is as a
+two-dimensional array of integers, with 0 representing blank tiles:
 </p>
 <pre class="load">
 <a href="ABoard.java">ABoard.java</a>
