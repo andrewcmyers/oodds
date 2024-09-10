@@ -27,7 +27,7 @@ Two kinds of information are essential:
 </ol>
 </p>
 <p>
-Example of instance variable specifications, including class invariants:
+Examples of instance variable specifications, including class invariants:
 </p><p>
 <pre>
 class LinkedList<T> {
@@ -228,7 +228,7 @@ A good design tends to lead to a clean-looking MDD, because the dependencies of
 different modules are easy to understand. A good design in which modules are
 loosely coupled tends to look like a tree or an acyclic graph (a graph without cycles). Cycles in
 the graph are a danger sign. For example, two modules that
-depend on each other are intimately tied to one other, because changes
+depend on each other are intimately tied to one another, because changes
 to either one will tend to propagate to the other, and perhaps back! A messy
 MDD that looks like spaghetti probably means we should
 rethink how we have divided up the tasks among modules. Often the problem is that modules
@@ -361,7 +361,7 @@ fixes introduce new bugs.
 suite</b> containing tests that cover the functionality of the program is
 developed; these tests can then be run to make sure that working features of
 the code have not "regressed". For regression testing to be effective, it
-should be as automatic and easy to invoke as possible—a ”pushbutton“ process.
+should be as automatic and easy to invoke as possible—a "push-button" process.
 Many software organizations even
 include regression testing as a standard part of the software build process,
 preventing developers from pushing changes to the code repository if regression
@@ -466,7 +466,7 @@ challenging. Often, higher assurance can be obtained by generating test cases
 randomly, either by generating random inputs or, in the case that the module
 has internal state, sequences of random inputs. This approach is often called
 <b>fuzzing</b>. If enough test cases are
-generated, the coverage may be excellent. In general, some care made be needed
+generated, the coverage may be excellent. In general, some care may be needed
 in generating test cases if the corner cases are unlikely to be hit by chance.
 </p>
 <p>
