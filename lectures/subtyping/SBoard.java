@@ -21,7 +21,6 @@ class SBoard implements Board {
 
    public boolean move(Direction d) {
       //code to move the tiles in direction d
-      return true;
    }
 
    public int score() {

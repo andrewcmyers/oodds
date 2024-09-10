@@ -36,19 +36,26 @@ interface methods are always public.
 
 <p>
 The method <code>move()</code> uses a feature we haven't seen yet:
-<code>enum</code> types. The type <code>Direction</code>, declared
-before the method, has just four values named <code>UP</code>,
+<code>enum</code> (enumeration) types.
+The type <code>Direction</code> is declared
+as follows:
+<pre class="load">
+<a href="Direction.java">Direction.java</a>
+</pre>
+
+<p>
+This type has exactly the four specified values <code>UP</code>,
 <code>DOWN</code>, <code>LEFT</code>, and <code>RIGHT</code>. Of course,
 we could encode the four directions using a another type such as
-numbers or characters, but when used appropriately, <code>enum</code>s
-make code easier to read and less error-prone.
+numbers or characters, but when used appropriately, using an <code>enum</code>
+makes code easier to read and less error-prone.
 </p>
 
-<h3>An implementation</h3>
+<h3>Smoe implementations</h3>
 <p>
 The <code>Board</code> interface can be implemented by defining a class
 that is declared to implement it using the <code>implements</code>
-keyword. Now we get to make some implementation choices, such as how
+keyword. Now we must make some implementation choices, such as how
 to represent the tiles of the game. One obvious representation is as a
 two-dimensional array of integers, with 0 representing blank tiles:
 </p>
@@ -90,10 +97,17 @@ rather than what tile is located at each position.
 <pre class="load">
 <a href="TBoard.java">TBoard.java</a>
 </pre>
+<p>
+The method <code>tile()</code> becomes more complicated because the
+code has to search for a title at the specified location. When it finds
+such a tile, the method returns immediately. If no matching tile is
+found, it returns zero.
+</p>
 
 <p>
 And here is a third implementation 
-which the tiles are represented as characters in a string:
+which the tiles are represented as characters in a string, aiming for
+efficient use of the computer's memory:
 </p>
 
 <pre class="load">
