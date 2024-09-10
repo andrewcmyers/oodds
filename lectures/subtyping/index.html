@@ -34,6 +34,16 @@ objects. The interface doesn't say that the methods are public, because
 interface methods are always public.
 </p>
 
+<p>
+The method <code>move()</code> uses a feature we haven't seen yet:
+<code>enum</code> types. The type <code>Direction</code>, declared
+before the method, has just four values named <code>UP</code>,
+<code>DOWN</code>, <code>LEFT</code>, and <code>RIGHT</code>. Of course,
+we could encode the four directions using a another type such as
+numbers or characters, but when used appropriately, <code>enum</code>s
+make code easier to read and less error-prone.
+</p>
+
 <h3>An implementation</h3>
 <p>
 The <code>Board</code> interface can be implemented by defining a class
@@ -61,6 +71,19 @@ declaring which of its methods are public, or by declaring a Java interface
 as above. One advantage of using the interface mechanism is that it allows
 <em>multiple</em> implementations of the interface.
 </p>
+<p>
+The code also shows how to use a <code>switch</code> statement to
+execute different code based on the value of an expression. These
+statements are particularly useful in combination with <code>enum</code>
+types, because they make it easy to check that all possible values have
+been covered by some <code>case</code>. Notice that each <code>case</code>
+should be terminated by a <code>break</code> statement; Java unfortunately
+inherits the C semantics of <code>switch</code>, in which each case
+falls through into the code of the next case unless some statement,
+such as a <code>break</code> or <code>return</code>,
+stops the execution of the <code>switch</code>.
+</p>
+<p>
 For example,  here is a sketch of a second implementation of the <code>Board</code> in which the <code>Board</code> keeps track of the positions of the tiles
 rather than what tile is located at each position.
 

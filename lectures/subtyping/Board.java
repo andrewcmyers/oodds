@@ -10,13 +10,17 @@ interface Board {
    /** Current score */
    int score();
 
+   /** A direction on the board */
+   enum Direction {
+       UP, DOWN, LEFT, RIGHT
+   }
+
    /**
     * Effect: performs a game move in the specified direction.
     * Returns: true if the move is legal; that is, tiles can be slid in the
     *   specified direction.
-    * Requires: {@code d} is one of 'N', 'S', 'E', or 'W'.
     */
-   boolean move(char d);
+   boolean move(Direction d);
 
    /** Effect: Reset the game to the initial state, with all tiles blank. */
    void reset();

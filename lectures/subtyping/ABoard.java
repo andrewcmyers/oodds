@@ -21,12 +21,18 @@ class ABoard implements Board {
 
    public boolean move(char d) {
       switch (d) {
-        case 'N': // code to move north
-        case 'S': // code to move south
-        case 'E': // code to move east
-        case 'W': // code to move west
-        default:
-            assert false;
+        case UP:
+          // code to move up
+          break;
+        case DOWN:
+          // code to move down
+          break;
+        case RIGHT:
+          // code to move right
+          break;
+        case LEFT:
+          // code to move left
+          break;
       }
       return true;
    }

@@ -19,7 +19,7 @@ class SBoard implements Board {
       return tiles.charAt(r * 4 + c);
    }
 
-   public boolean move(char d) {
+   public boolean move(Direction d) {
       //code to move the tiles in direction d
       return true;
    }
