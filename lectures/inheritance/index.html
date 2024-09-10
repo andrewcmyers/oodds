@@ -263,28 +263,29 @@ x.g();
 </pre>
 
 <p>
-Classes <code>A</code> and <code>B</code> both have static methods <code>f()</code>.
-When the method <code>g()</code> is called, the call to <code>f()</code> inside
-<code>g()</code> invokes the <code>A</code>
-version of <code>f</code> rather than the <code>B</code> version. Because <code>f</code> is a static
-method, the call to <code>f()</code> is exactly the same as if it were written
+Classes <code>A</code> and <code>B</code> both have static methods
+<code>f()</code>.  When the method <code>g()</code> is called,
+the call to <code>f()</code> inside <code>g()</code> invokes
+the <code>A</code> version of <code>f</code> rather than the
+<code>B</code> version. Because <code>f</code> is a static method, the
+call to <code>f()</code> is exactly the same as if it were written
 <code>A.f()</code>. It does not change in meaning when it is inherited
-by <code>B</code>.
-</p><p>
-The special syntax <code>super.f()</code> is also a static call that always
-invokes the parent class's version of <code>f</code>.
+by <code>B</code>. </p><p> The special syntax <code>super.f()</code> is
+also a static call that always invokes the parent class's version of
+<code>f</code>.
 </p>
 
 <h2>Constructors</h2>
 
 <p>
-<em>Constructors</em> are special static methods that are called with <code>new</code>
-to create and initialize new instances of the class. If the programmer does not specify
-a constructor, there is an implicit one with no arguments that just creates the object
-but doesn't do anything else. If the programmer specifies an explicit constructor,
-the implicit constructor with no arguments is no longer available.
-In that case, the constructors of a subclass must call a
-superclass constructor explicitly, as in the following example:
+<em>Constructors</em> are special static methods that are called with
+<code>new</code> to create and initialize new instances of the class. If
+the programmer does not specify a constructor, there is an implicit one
+with no arguments that just creates the object but doesn't do anything
+else. If the programmer specifies an explicit constructor, the implicit
+constructor with no arguments is no longer available.  In that case,
+the constructors of a subclass must call a superclass constructor
+explicitly, as in the following example:
 </p>
 
 <pre>
@@ -296,10 +297,10 @@ class ABoard {
 }
 
 class LogBoard extends ABoard {
-   private int numMoves;
+   private int numMoves = 0;
    public LogBoard() {
       super(4);
-      numMoves = 0;
+      System.out.println("LogBoard constructed");
    }
 }
 </pre>
@@ -308,6 +309,36 @@ class LogBoard extends ABoard {
 Here, the constructor <code>LogBoard</code> always creates boards of
 size 4×4, which is accomplished by calling the superclass constructor
 with <code>super(4)</code>. The call to the superclass constructor is static.
+</p>
+
+<p>
+Object construction is performed using the <code>new</code> operator, with an
+expression like <code>new A(...)</code> that identifies the class to be
+constructed. The first step of object construction is to initialize all
+instance variables of the object, including the instance variables of all of
+A's superclasses, to the default values for their static types.
+The <code>new</code> operator then invokes the named constructor.
+</p>
+<p>
+When a constructor for a class starts executing, it is working on an object in
+its initial default state. It then performs the following steps:
+</p>
+<ol>
+<li>Calls the superclass constructor, possibly implicitly. On return, all instance variables of the superclass should be initialized.
+<li>For instance variables of the current class that have initializer
+     expressions, performs those initializations in program order.
+<li>Runs the rest of the constructor body.
+</ol>
+<p>
+For example, consider a call to the constructor <code>LogBoard()</code>.  At
+the beginning of the method the instance variables <code>tiles</code> has the
+value <code>null</code>, and <code>score</code> and <code>numMoves</code> are
+0. The <code>LogBoard</code> constructor first calls the <code>ABoard</code>
+constructor, causing <code>tiles</code> to be initialized to reference an
+array. The next step would be to perform instance variable initializers,
+so <code>numMoves</code> is (redundantly) assigned the value 0. Finally,
+the rest of the constructor executes, causing a side effect: printing
+a message.
 </p>
 
 <h2>Protected visibility</h2>
