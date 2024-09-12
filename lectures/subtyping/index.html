@@ -455,53 +455,57 @@ becomes more accessible in the subtype.
     the signatures of methods. Subtyping should govern the behavior of 
     the subtype as well. If it is safe to use a subtype \(S\) of type \(T\)
     wherever \(T\) is expected, then the specification of the subtype operations
-    must also conform to the specification of the \(T\) operations; otherwise,
-    client code expecting the behavior specified by \(T\) will be unpleasantly
-    surprised by the behavior of \(S\).
+    must <em>also</em> conform to the specification of the \(T\) operations;
+    otherwise, client code expecting the behavior specified by \(T\) will be
+    unpleasantly surprised by the behavior of \(S\).
 </p>
 <p>
-    In other words, subtyping used correctly is <b>behavioral subtyping</b>;
-    it ensures not only that types are compatible but also that <em>behavior</em> is.
-    The principle that objects of a subtype can always be safely substituted for
-    supertypes without surprising clients of those supertypes is called the
-    <b>Liskov substitution principle</b>, after Barbara Liskov.
+    In other words, subtyping used correctly is <b>behavioral subtyping</b>; it
+    ensures not only that types are compatible but also that <em>behavior</em>
+    is.  The principle that objects of a subtype can always be safely
+    substituted for supertypes without surprising clients of those supertypes
+    is called the <b>Liskov substitution principle</b>, after Barbara Liskov.
 </p>
 <p>
-    With respect to the components of the specification,
-    the implication of this conformance is that the postcondition of an \(S\) operations
-    must be at least as strong as (that is, imply) the postcondition of the
-    corresponding \(T\) operation. Conversely, the caller using the
-    \(S\) object as if it is a \(T\) would call the operations of the object
-    while only satisfying the preconditions specified by \(T\). Therefore,
-    the preconditions of \(S\) must be <em>implied by</em> the preconditions of
+    With respect to the components of the specification, the implication of
+    this conformance is that the postcondition of an \(S\) operations must be
+    at least as strong as (that is, imply) the postcondition of the
+    corresponding \(T\) operation. Conversely, the caller using the \(S\)
+    object as if it is a \(T\) would call the operations of the object while
+    only satisfying the preconditions specified by \(T\). Therefore, the
+    preconditions of \(S\) must be <em>implied by</em> the preconditions of
     \(T\).
 </p>
 
 <h2>Factory methods</h2>
 
-<p> The use of interfaces allows us to write code that is independent of the
-choice of implementation—except when the objects are actually created. At some point
-an actual implementing class must be provided to <code>new</code>. This might seem to
-break the principle of separating interfaces from implementations.
-</p>
-<p>When this stronger separation is desired, a common solution is to use <b>factory methods</b>
-to build objects. A factory method is one that creates objects, typically with an interface type.
-For example, we could (in some class) declare a method that creates <code>Board</code> objects:
+<p>
+The use of interfaces allows us to write code that is independent of the choice
+of implementation—except when the objects are actually created. At some point
+an actual implementing class must be provided to <code>new</code>. This might
+seem to break the principle of separating interfaces from implementations.
+</p> <p>When this stronger separation is desired, a common solution is to use
+<b>factory methods</b> to build objects. A factory method is one that creates
+objects, typically with an interface type.  For example, we could (in some
+class) declare a method that creates <code>Board</code> objects:
 </p>
 <pre>
 static Board createBoard();
 </pre>
 <p>
-This method can be used to create <code>Board</code> objects without
-committing to using any particular implementation of the <code>Board</code> interface.
+This method can be used to create <code>Board</code> objects without committing
+to using any particular implementation of the <code>Board</code> interface. A 
+factory method need not be static; it may also be a method of some object that
+determines which implementation to create.
 </p>
 
 <h2>Summary</h2>
 
 <p>
-Java interfaces are a very useful mechanism for writing code in which module clients
-and module implementations are strongly separated.  In addition,
-Java's support for subtyping means that it is possible to write multiple implementations of
-the same interface. These different implementations can even coexist and operate
-within the same program. This is a valuable feature for building large software systems.
+Java interfaces are a useful mechanism for writing code in which module
+clients and module implementations are strongly separated.  In addition, Java's
+support for subtyping means that it is possible to write multiple
+implementations of the same interface. These different implementations can even
+coexist and operate within the same program. This is a valuable feature for
+building large software systems.
 </p>
