@@ -219,8 +219,8 @@ is recorded at <code>m[i][j]</code>.
 </p>
 <p>
 The graph structure, ignoring the weights, can be represented by storing a boolean value at
-each array index. A directed edge from i to j is represented by a true (T) value in location m[i][j].
-If there is no edge there, the value is false.
+each array index. A directed edge from <code>i</code> to <code>j</code> is represented by a true (T) value in location <code>m[i][j]</code>.
+If there is no such edge, the value is false.
 For example, the edges in the graph above are represented by this matrix:
 </p>
 <div class=figure>
@@ -284,7 +284,7 @@ of vertices, even for sparse graphs.
 </p>
 <p>
 Undirected graphs can also be represented with an adjacency matrix. The
-matrix will be symmetric around its main diagonal; that is, m[i][j]=m[j][i].
+matrix will be symmetric around its main diagonal; that is, <code>m[i][j]</code> equals <code>m[j][i]</code>.
 </p>
 
 <h3>Adjacency list representation</h3>
