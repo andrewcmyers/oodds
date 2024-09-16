@@ -2,14 +2,64 @@
 
 <h2>Good code is an iceberg</h2>
 <p>
-Good modular design has the property that clients don't need to see much of the code they are using. They
-can rely on the specification. Good code is like an iceberg, with most of the code hidden below the water,
-where only implementers need to look. In an OO language, there are actually two kinds of implementers,
-with two different views of the code: the implementers of the class, and the implementers of subclasses,
-who we will call specializers.
+Good modular design has the property that clients don't need to see much of the
+code they are using. They can rely on the specification. Good code is like an
+iceberg, with most of the code hidden below the water, where only implementers
+need to look. In an OO language, there are actually two kinds of implementers,
+with two different views of the code: the implementers of the class, and the
+implementers of subclasses, who we will call specializers. Class implementers
+see the whole of the iceberg (all of the code), whereas specializers see only
+the public and protected parts.
 </p>
 
-<img src="codeberg.png"/>
+<div class=figure>
+<canvas id=codeberg style="width: 300px; height: 300px">
+</canvas>
+<script class=graphics>
+with (new CFigure("codeberg")) {
+    const client_view = label("client\nview"),
+          specializer_view = label("specializer\nview"),
+          implementer_view = label("implementer\nview")
+    const m = margin(),
+          views = group(client_view, specializer_view, implementer_view)
+    const public_ = label("public"), protected_ = label("protected"),
+          private_ = label("private")
+    const hline1 = horzLine(), hline2 = horzLine()
+    const visibilities = group(public_, protected_, private_)
+    const ice = ctx.createLinearGradient(0, 0, 0, 250)
+    ice.addColorStop(0, "white")
+    ice.addColorStop(1, "#0ef")
+    const iceberg = closedCurve(public_.uc().toTop(30),
+        public_.ur().toRight(40),
+        protected_.cr().toRight(50),
+        private_.lr().toRight(80),
+        private_.lc().toBottom(40),
+        private_.ll().toLeft(80),
+        protected_.cl().toLeft(50),
+        public_.ul().toLeft(40)
+        )
+
+    iceberg.placeUnder(public_)
+    iceberg.setFillStyle(ice)
+
+    align("LR", "none", hline1, hline2, m)
+    views.align("center", "none")
+    leq(client_view.y(), specializer_view.y(), implementer_view.y())
+    visibilities.align("center", "none")
+    align("none", "center", visibilities.children()[0], client_view)
+    align("none", "center", visibilities.children()[1], specializer_view)
+    align("none", "center", visibilities.children()[2], implementer_view)
+    align("right", "none", views, m)
+    align("none", "TB", views, m.inset(30))
+    align("none", "center", specializer_view, average(hline1, hline2))
+    align("none", "center", implementer_view, average(hline2, iceberg.lc()))
+    align("none", "center", hline2, m)
+    align("none", "center", hline1, average(hline2, m.uc()))
+    geq(implementer_view.y(), client_view.y())
+
+}
+</script>
+</div>
 
 <h2>Documenting implementations: The implementer's view</h2>
 <div class="figure">

@@ -127,7 +127,7 @@ documentation and code require programmers' attention to stay fresh!
 <canvas id="design-process" style="width: 400px; height: 280px"></canvas>
 </div>
 <script type="application/javascript" class=graphics>
-with (new CFigure("design-process", false)) {
+with (new CFigure("design-process")) {
     let l1, l2, l3, l4, l5
     function design_step(name) {
         const r = rectangle().addText(name).setFontSize(10)
@@ -563,10 +563,13 @@ it on immutable abstractions except in special situations.
 
 <p>
 The Java specification for <code>Object.equals()</code> does not require
-Leibniz equality, but it does require that it satisfy some basic properties
-of an equivalence relation: it should be reflexive, symmetric, and transitive.
-Further, it should return <code>false</code> when a comparison is made to
-the special value <code>null</code>. Meeting this specification is
+Leibniz equality, but it does require that it satisfy some properties that
+Leibniz equality implies. It must be an equivalence relation: reflexive,
+symmetric, and transitive.  Further, it should return <code>false</code> when a
+comparison is made between an object and the special value <code>null</code>.
+And its result should remain the same as long as no modifications are made to
+“information used in equals comparisons on the objects” (a rather circular
+definition!) There is some flexibility in this spec, but meeting this is
 surprisingly difficult in the presence of subtyping.
 </p>
 <p>
@@ -576,10 +579,10 @@ requires the ability to compare against values of any object type:
    boolean equals(Object o);
 </pre>
 <p>
-Before the method can test equality of the object <code>this</code> and the object
-<code>o</code>,  it must first determine if object <code>o</code> is the right kind
-of object, and in that case obtain a reference to the object with a static type
-that permits checking it.
+Before the method can test equality of the object <code>this</code> and the
+object <code>o</code>,  it must first determine if object <code>o</code> is the
+right kind of object, and in that case obtain a reference to the object with a
+static type that permits checking it.
 <p>
 Since our <code>Polynomial</code> class is immutable, we should override the
 <code>equals()</code> method to implement state equality. For example, the
@@ -601,7 +604,6 @@ Using the new Java 17 syntax for <code>instanceof</code> with <b>pattern matchin
 we can avoid the clunky explicit cast operation:
 <pre>
     boolean equals(Object o) {
-        if (o == null) return false;
         if (o instanceof Polynomial p) {
             return Arrays.equal(coefficients, p.coefficients);
         } else {
@@ -624,7 +626,6 @@ Symmetry can be restored by using the Java feature of <b>reflection</b>,
 </p>
 <pre>
     boolean equals(Object o) {
-        if (o == null) return false;
         if (getClass() != o.getClass()) return false;
         if (o instanceof Polynomial p) {
             return Arrays.equal(coefficients, p.coefficients);
