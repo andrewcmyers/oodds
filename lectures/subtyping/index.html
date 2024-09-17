@@ -224,8 +224,8 @@ The subtyping relationships among the various types form a <b>type hierarchy</b>
 <script class=graphics>
   with (new CFigure("subtype_hierarchy")) {
     setFontName("Menlo, consolas, fixed")
-    setFontSize(11)
-    addFrame()
+    setFontSize(12)
+    setArrowSize(8)
     let l_int, l_obj = label("Object")
     align("distribute", "bottom", l_obj, hspace().setW(0), label("char"), label("boolean"), l_int = label("int"))
     align("right", "top", l_int, canvasRect())
@@ -245,11 +245,12 @@ The subtyping relationships among the various types form a <b>type hierarchy</b>
     [l_Integer, l_String, l_intarray, l_collection, l_Board].forEach(o =>
         connector(l_obj.lc().toBottom(4), o.uc()).setEndArrow("arrow")
     )
-    let lA = label("ABoard"), lS = label("SBoard")
-    let tier3 = group(lA, hspace().setW(40), lS).align("abut", "bottom").setX(l_Board.x())
+    let lA = label("ABoard"), lS = label("SBoard"), lT = label("TBoard")
+    let tier3 = group(lA, hspace(40), lS, hspace(40), lT)
+                  .align("abut", "bottom").setX(l_Board.x())
     align("none", "bottom", tier3, canvasRect());
 
-    [lA, lS].forEach(o =>
+    [lA, lS, lT].forEach(o =>
         connector(l_Board.lc().toBottom(4), o.uc()).setEndArrow("arrow"))
   }
 </script>
@@ -268,7 +269,7 @@ collection of trees (a <b>forest</b>). However, a class is allowed to implement 
 one interface, as in the following definition:
 </p>
 <pre>
-class SBoard implements Board, Collection&lt;Integer&gt; {
+class TBoard implements Board, Collection&lt;Integer&gt; {
     ...
 }
 </pre>
