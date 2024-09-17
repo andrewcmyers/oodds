@@ -13,18 +13,47 @@
 </ul>
 
 <p>
-A <b>graph</b> is a highly useful mathematical abstraction. A graph consists of
-a set of <b>nodes</b> (also called <b>nodes</b>) and a set of <b>edges</b>
-connecting those vertices. There are two main kinds
-of graphs: <b>undirected graphs</b> and <b>directed graphs</b>. In a directed graph
-(sometimes abbreviated as <b>digraph</b>), the edges are
-directed: that is, they have a direction, proceeding from a
+A <b>graph</b> is a highly useful mathematical abstraction. A graph
+consists of a set of <b>nodes</b> (also called <b>nodes</b>) and a set
+of <b>edges</b> connecting those vertices. There are two main kinds
+of graphs: <b>undirected graphs</b> and <b>directed graphs</b>. In a
+directed graph (sometimes abbreviated as <b>digraph</b>), the edges
+are directed: that is, they have a direction, proceeding from a
 <b>source</b> vertex to a <b>sink</b> (or <b>destination</b>) vertex.
-The sink vertex is a <b>successor</b> of the source, and the the source is
-a <b>predecessor</b> of the sink.  In undirected graphs, the edges are symmetrical.
+The sink vertex is a <b>successor</b> of the source, and the the source
+is a <b>predecessor</b> of the sink.  In undirected graphs, the edges
+are symmetrical.
 </p>
 <div class=figure>
-<img src="graph_examples.png">
+<canvas id=graph_examples style="width: 400px; height: 140px"></canvas>
+<script class=graphics>
+with (new CFigure("graph_examples")) {
+    function c(x, y) {
+        const result = circle().setW(4).setFillStyle("black").at(point(x,y))
+        return result
+    }
+    const c0 = c(20, 50), c1 = c(65, 30), c2 = c(70, 80), c3 = c(110, 70)
+    line(c0, c1)
+    line(c1, c2)
+    line(c0, c2)
+
+    align("center", "abut", group(c0, c1, c2, c3),
+      vspace(15), label("undirected graph"))
+
+    setArrowSize(8)
+
+    const u0 = c(220, 50), u1 = c(265, 30), u2 = c(270, 80), u3 = c(310, 70)
+    const u4 = c(300, 35), u5 = c(340,40)
+    arrow(u0, u1)
+    arrow(u1, u2)
+    arrow(u0, u2)
+    arrow(u4, u3)
+
+    align("center", "abut", group(u0, u1, u2, u3, u4, u5),
+      vspace(15), label("directed graph"))
+
+}
+</script>
 </div>
 
 <h2>Uses of graphs</h2>
@@ -52,9 +81,9 @@ road maps, where the vertices are intersections or points along the road and edg
 are roads connecting those points,
 </li>
 <li>
-scheduling problems, where vertices represent events to be scheduled and edges might
-represent events that cannot be scheduled together, or, depending on the problem,
-edges that <em>must</em> be scheduled together,
+scheduling problems, where vertices represent events to be scheduled and edges
+might represent events that cannot be scheduled together, or, depending on the
+problem, edges that <em>must</em> be scheduled together,
 </li>
 <li>
 and in fact, any binary relation \(ρ\) can be viewed as a directed graph in which
@@ -141,7 +170,6 @@ with (new CFigure("cities_graph")) {
     connector(ithaca, binghamton).addLabel("48", .5, 0)
     connector(ithaca, syracuse).addLabel("57", .5, 0)
     connector(binghamton, syracuse).addLabel("73", .5, 0)
-
 }
 </script>
 </div>
