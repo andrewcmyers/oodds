@@ -13,7 +13,7 @@ the public and protected parts.
 </p>
 
 <div class=figure>
-<canvas id=codeberg style="width: 300px; height: 300px">
+<canvas id=codeberg style="width: 300px; height: 280px">
 </canvas>
 <script class=graphics>
 with (new CFigure("codeberg")) {
@@ -32,7 +32,7 @@ with (new CFigure("codeberg")) {
     const ice = ctx.createLinearGradient(0, 0, 0, 250)
     ice.addColorStop(0, "white")
     ice.addColorStop(1, "#0ef")
-    const iceberg = closedCurve(public_.uc().toTop(30),
+    const iceberg = closedCurve(public_.uc().toTop(20),
         public_.ur().toRight(40),
         protected_.cr().toRight(50).toTop(30),
         protected_.cr().toRight(55),
@@ -59,7 +59,7 @@ with (new CFigure("codeberg")) {
     align("none", "TB", views, m.inset(30))
     align("none", "center", specializer_view, average(hline1, hline2))
     align("none", "center", implementer_view, average(hline2, iceberg.lc()))
-    align("none", "center", hline2, m)
+    equal(hline2.y(), times(m.h(), 0.3))
     align("none", "center", hline1, average(hline2, m.uc()))
     geq(implementer_view.y(), client_view.y())
 
@@ -234,7 +234,7 @@ keeping these two different kinds of specification separate.
     Subclasses can rely on the stronger spec provided by specialization interface,
     but most clients can only rely on the weaker public specification. The
     specialization interface of a class can only be used safely by code that
-    ``knows'' the exact class it is using. But this knowledge implies tighter
+    “knows” the exact class it is using. But this knowledge implies tighter
     coupling than is usually desirable.
 </p>
 
@@ -372,298 +372,4 @@ more work in the long run. When you feel the need to copy code, try instead to
 introduce an abstraction (a class, a method) that captures the functionality
 that you are copying. You might have to think a little harder, but your code
 will typically be shorter and better, and you'll save time in the end.
-</p>
-
-<h1 id="Testing">Testing</h1>
-
-<h2>Testing in software development</h2>
-<p>
-It is tempting to defer testing, like documentation, to fairly late in the
-software development process. For example, in the <b>waterfall model</b>
-of development, testing is used for the validation step
-occurring late in the process:
-
-<div class=figure>
-<img src="waterfall.png">
-</div>
-
-<p>
-While the steps of the waterfall model are all real tasks that must be done, in
-practice each phase cannot be complete before the next one begins. Each phase can
-influence the ones that come before it in the model. The waterfall model was
-actually originally proposed as a straw man that developers should not follow, but
-it has had serious proponents. At this point it is generally understood as an example
-of how <em>not</em> to do development.</p>
-
-<p>
-Perhaps the most problematic aspect of the waterfall model is that it appears
-to defer all validation to the end. However, code that hasn't been tested should be
-assumed to be broken; waiting until development is finished to start testing is
-a recipe for disaster. Note that by validation, we mean any process that
-increases our confidence in the correctness of the system; it can include both
-testing and formal verification. Testing is the validation process used most
-in practice. In our discussion of loop invariants, we've also gotten a taste
-of formal verification, where the goal is a rigorous mathematical argument that
-code works correctly on all inputs.
-</p>
-
-<h3>When to test?</h3>
-<p>
-The time to test is before, during, and after implementation. We can even start
-working on testing before we have started implementing code. This helps because
-the process of designing tests for the system already identifies design flaws. 
-Early testing not only tests the code, it tests the specifications and even the
-tests themselves. Failed tests may fail because the tests themselves are
-wrong! When you're debugging your code, it's very useful to be able to rely on
-the tests being right.
-</p>
-<p>
-The key to success is <b>continuous testing</b> throughout the development
-process. As each feature is added or module is implemented, test cases should
-be developed to validate the implementation work done. With continuous testing,
-new bugs that are discovered will tend to be found in recently written code,
-helping you localize the error. Continuous testing works particularly well when
-code contains assertions to check preconditions, postconditions, and
-invariants.
-</p>
-
-<h3>Regression testing</h3>
-<p>
-Code modifications often introduce new bugs, even breaking working
-functionality.  And it's not just modifications that add new functionality.  In
-fact, studies of software development have shown that roughly 1/3 of all bug
-fixes introduce new bugs.
-</p>
-<p>
-<b>Regression testing</b> helps address this problem. A <b>test
-suite</b> containing tests that cover the functionality of the program is
-developed; these tests can then be run to make sure that working features of
-the code have not "regressed". For regression testing to be effective, it
-should be as automatic and easy to invoke as possible—a "push-button" process.
-Many software organizations even
-include regression testing as a standard part of the software build process,
-preventing developers from pushing changes to the code repository if regression
-tests fails. The time invested in automating regression tests is time well spent
-for even moderate-sized projects.
-</p>
-<p>
-The test suites associated with a software project are tremendously valuable.
-Like code documentation, they are part of the code of the project and should be
-curated and maintained with equal care. It is tempting to take shortcuts with
-testing code because it isn't shipped to the customer; this would be a mistake.
-</p>
-
-
-<h2>Strategies for test design</h2>
-<p>
-For most programs, the number of possible inputs is staggeringly huge. For
-example, a program that accepts two ints as its inputs already has \(2^{64}\)
-possible inputs.  We won't be able to test the program on all these inputs in a
-reasonable amount of time.  Exhaustive testing is infeasible.  Therefore,
-testing is by nature a finite approximation of exhaustive testing. How can we
-perform a relatively small, finite number of tests, and nevertheless gain
-confidence that the program works in all situations?  This is the problem of
-achieving <b>coverage</b>. There are several good strategies for achieving meaningful
-coverage.
-</p>
-<h3>Black-box testing</h3>
-<p>
-In <b>black-box testing</b>, we design test cases by looking at the spec rather than
-the code. We design test cases that not only include "typical cases" but also
-edge and corner cases that (from the spec) we can see are atypical in one way
-or another. Because we are designing test cases without looking at the
-implementation, we can even design black-box test cases before the
-implementation is written. In fact, writing black-box test cases also helps get the
-specs right, because thinking about testing helps us realize when specs are incomplete
-or ambiguous. Developing tests early also leads to a better implementation because it
-causes us to think more deeply about what will happen in corner cases.
-</p>
-<p>
-Let's consider an example of developing black-box tests.
-Suppose we are testing the <code>remove</code> operation of
-a linked list implementation. We would want to test some "typical" cases
-in which the element is in the list, but also some corner cases:
-<ul>
-<li>when the element is not in the list;
-<li>when the list is empty;
-<li>when the element is the first in the list;
-<li>when the element is the last in the list;
-<li>when the list contains only the element to be removed.
-</ul>
-<p>
-Black-box testing requires the programmer to define input/output pairs,
-in which the correct output corresponding to each input is defined. This
-can be a time-consuming process.
-</p>
-
-<h3>Glass-box testing</h3>
-<p>
-In <b>glass-box testing</b> we design test cases based on the implementation code.
-The goal is achieve coverage of all the ways the code can behave, under the reasonable
-assumption that any untested functionality in the code could hide a bug.
-</p>
-<p>
-At a minimum, glass-box testing requires that we test every method. But
-we should go even further to obtain higher assurance:
-<ul>
-<li>Every line of code should be exercised.
-<li>Every path through the code should be taken.
-<li>Every data structure that the code can build should be built.
-</ul>
-<p>
-In general it is infeasible to take every path through the code in a finite set
-of test cases, because even a single loop defines an infinite number of paths
-depending on how many times the loop repeats. Here we can fall back on the strategy
-of sampling the space intelligently. We test both the "typical" case in which the
-loop does a few iterations and the boundary cases of 0 or 1 iterations. This approach is
-especially effective for catching "off-by-one" errors.
-</p>
-
-<h3>Randomized testing</h3>
-<p>
-Designing test cases that exercise all parts of the code and specification is
-challenging. Often, higher assurance can be obtained by generating test cases
-randomly, either by generating random inputs or, in the case that the module
-has internal state, sequences of random inputs. This approach is often called
-<b>fuzzing</b>. If enough test cases are
-generated, the coverage may be excellent. In general, some care may be needed
-in generating test cases if the corner cases are unlikely to be hit by chance.
-</p>
-<p>
-With black-box and glass-box testing, input/output pairs must be designed. Where
-do we get these when doing randomized testing? In general we are not going to be
-able to fully test that the outputs of the code agree with the specification,
-so we must settle for weaker properties of the code being tested, such as not
-throwing unexpected assertions or failing assertions. Therefore, adding useful
-assertions to code helps with testing. By capturing programmer knowledge and
-intent, as discussed earlier. Test cases that cause assertions to fail reveal
-discrepancies between the code and the intent of the programmer
-even if the final output of the test is not checked.
-</p>
-<p>
-One way that we can use randomized testing to test against the spec is with
-a <b>reference implementation</b> of the same specification&mdash;perhaps a less
-efficient, simpler implementation of the same abstraction. In this case, the
-two implementations can be compared on random test cases to ensure they agree.
-This approach is especially useful in large software projects that start with
-a prototype implementation to establish feasibility. The prototype can be used
-as a reference implementation during the development of the final product. 
-</p>
-<p>
-Another approach that can be used to find bugs in the absence of a reference implementation
-or spec is to generate <em>pairs</em> of inputs that are expected to yield the same
-result. The test is then to check whether they do indeed produce the same result.
-Such pairs of inputs can be generated by starting from a random test case and then
-doing a local behavior-preserving mutation to it to produce the other element of the pair.
-</p>
-<p>
-Randomized testing requires a <b>test case generator</b>. Writing a test case
-generator manually can be particularly challenging when the test cases must
-satisfy a complex precondition that is unlikely to be satisfied by most
-randomly generated inputs. One way to solve that problem is to generate random
-inputs, then "fix" them into inputs that satisfy the precondition. Another is
-to generate each input by perturbing a previous input randomly in a way that
-preserves the precondition.
-</p>
-<p>
-Modern <b>coverage-guided fuzzers</b> like <a
-href="https://lcamtuf.coredump.cx/afl/">AFL</a>, <a
-href="https://people.csail.mit.edu/akiezun/jfuzz/">jFuzz</a>, and <a
-href="https://github.com/rohanpadhye/JQF">JQF</a> automatically generate test
-cases to increase code coverage. They generate new random test cases by
-mutating existing ones, keeping track of which code paths are explored during
-execution. Test cases are deemed interesting if they cause new paths to be
-explored.
-</p>
-<p>
-While automatic test case generation is not always easy, tool support is
-steadily improving. JUnit Theories and Haskell QuickCheck are examples of
-tools that support this style of testing.
-</p>
-
-<h3>Bounded exhaustive testing</h3>
-<p>
-An alternative to randomized testing is to generate exhaustive test cases that
-completely cover the space tested. Full exhaustive testing is not feasible, of
-course. However, for most program bugs, there is some "small" (in some sense)
-test case on which the bug is exhibited. This is the <b>small counterexample
-hypothesis</b>. Therefore, we design test cases so that all test cases (or
-input sequences) of up to a certain maximum size are tested. For example, if we
-want to test a method that operates on a tree data structure, we might generate
-all possible trees of up to height 5. A buggy algorithm that manipulates trees
-is unlikely to work perfectly on all trees of size 5 or less. As with randomized
-testing, the challenge is to generate the test cases, but tool support continues
-to improve.
-</p>
-
-<h3>Symbolic execution</h3>
-<p>
-Testing on particular inputs leaves open the possibility that the bug is exhibited
-only on the inputs not chosen. Another idea for how to obtain coverage is to
-use <b>symbolic execution</b> in which the code is run on symbolic inputs rather
-than actual values. This approach requires special tool support to be able to
-run programs in this alternate (and expensive) mode. 
-</p>
-<p>
-The idea is that rather than giving each variable a concrete value, the
-execution carries around a logical formula describing constraints on the
-possible values that variables can take on. The initial constraints for
-the code of a method would come from the precondition of the method, but
-new constraints are obtained from the flow of control within the program.
-For example, consider the following code. It is not immediately obvious
-whether this code can crash:
-</p>
-
-<pre>
-/** Requires: y ≥ 0. */
-int f(int x, int y) {
-  if (y > 0) {
-    d = x/y;
-  } else {
-	assert y == 0;
-	d = y + 1;
-  }
-  x = x/d;
-}
-</pre>
-
-<p>A symbolic executor proceeds by starting with the preconditions and
-propagating them through the program. Where a conditional cannot be
-unambiguously evaluated, execution splits and two executions proceed
-with different information. For example, in the following execution,
-we don't know whether y&gt;0 or not, so both paths are followed. In
-each path, we use the result of the comparison of y&gt;0 to strengthen
-the information we have available:
-<pre>
-/** Requires: y ≥ 0. */
-int f(int x, int y) {
-  // x can be anything, y ≥ 0
-  if (y > 0) {
-	// x can be anything, y > 0
-    d = x/y;
-	// d can be anything, y > 0
-  } else {
-	// x can be anything, y == 0
-	assert y == 0; // cannot fail
-	d = y + 1;
-	// y == 0 and d == 1
-  }
-  // (y == 0 and d == 1) or (d can be anything, y > 0)
-  x = x/d;
-}
-</pre>
-
-<p>The path of execution when y&gt;0 has no information about the
-value of d, which means that when we get to the statement <code>x = x/d</code>,
-we cannot show that <code>d != 0</code>. We have found a potential bug. By representing
-the values of variables logically, symbolic
-execution effectively runs a very large number of test cases at the same time.
-</p>
-<p>There are a couple weaknesses of symbolic execution. One is that, just
-because it reveals a potential bug, it does not mean that there is one.
-There may be paths in the program that will never be taken, and the potential
-bug may only show up on one such path. Thus there can be false positives.
-But a more critical weakness is that it is cumbersome and does not scale to large programs.
-However, it can be very effective on smaller implementations. Tools for symbolic
-execution are still not mainstream but are maturing.
 </p>
