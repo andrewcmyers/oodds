@@ -18,6 +18,47 @@ span.link {
     font-weight: bold;
     color: #000080;
 }
+
+table.sidebysidecode {
+    border: none; font-size: 90%;
+    width: 80%;
+    margin: 0 auto;
+    margin-bottom: 2ex;
+}
+table.sidebysidecode td {
+    width: 50%;
+    border-top: none;
+    background-color: #e8e4dc;
+    vertical-align: middle;
+    margin: 0.5ex;
+    padding: 0.5ex;
+}
+table.sidebysidecode td pre {
+    margin: 0.5ex;
+}
+table.sidebysidecode td:first-child {
+    border-top: none;
+    border-right: 2px solid gray;
+    background-color: #e8e4dc;
+}
+table.sidebysidecode tr {
+    border: none
+}
+table.adjacency {
+    border-collapse: collapse;
+    border-spacing: 5px
+}
+table.adjacency td {
+    padding: 1ex;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black
+}
+table.adjacency th {
+    padding: 1ex;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+}
+
 div.hidden {display:none}
 div.tab {display: none}
 div.figure, canvas.figure {margin: 1em auto; text-align: center}
@@ -25,7 +66,7 @@ div.figure pre {text-align: left}
 div.figure img {display: float; margin: 0 auto; padding: 0}
 div.equation {text-align: center; font-size: 110%; padding-bottom: 1em }
 div.figure table { margin: 0 auto; padding: 0; border: none}
-div.figure table td {border: none}
+/*div.figure table td {border: none} */
 div.floatfigure { display: float;
                   float: right;
                   clear: right;
@@ -59,32 +100,6 @@ div.figure .caption, div.floatfigure .caption {
     text-align: center;
     margin: 0 auto;
     padding: 0
-}
-
-table.sidebysidecode {
-    border: none; font-size: 90%;
-    width: 80%;
-    margin: 0 auto;
-    margin-bottom: 2ex;
-}
-table.sidebysidecode td {
-    width: 50%;
-    border-top: none;
-    background-color: #e8e4dc;
-    vertical-align: middle;
-    margin: 0.5ex;
-    padding: 0.5ex;
-}
-table.sidebysidecode td pre {
-    margin: 0.5ex;
-}
-table.sidebysidecode td:first-child {
-    border-top: none;
-    border-right: 2px solid gray;
-    background-color: #e8e4dc;
-}
-table.sidebysidecode tr {
-    border: none
 }
 a.pre {
 	color: black;

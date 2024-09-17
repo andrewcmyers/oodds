@@ -22,6 +22,7 @@
         'exceptions',
         'inheritance',
         'mod_design',
+        'testing',
         'recursion_lists',
         'generics',
         'complexity',
