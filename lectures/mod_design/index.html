@@ -260,6 +260,7 @@ We can illustrate these two kinds of relationships with arrows:
 <div class=figure>
   <img src="dep-arrows.png">
 </div>
+<!--
 <p>
 For example, consider Assignment 2. The MDD of one reasonable implementation
 of this assignment is something like the following:
@@ -271,6 +272,7 @@ Notice that the subclass hierarchies appear as parts of the MDD, albeit
 upside-down from the usual way that we draw them, so that superclasses and
 interfaces appear at the bottom of the diagram rather than the top.
 </p>
+-->
 <p>
 Drawing the MDD can help us diagnose the quality of a design and plan its
 implementation.  We can tell which modules are important to the overall design,
@@ -352,6 +354,26 @@ design and clear specs are especially important at the boundaries where
 different programmers will interact.
 </p>
 
+<h2>How to add bugs</h2>
+<p>
+Why do programmers write code with so many bugs? One important reason is the
+excessive use of copying and pasting code. Copying and pasting buggy code
+automatically duplicates all the bugs. Furthermore, programmers
+frequently fail to completely adapt the copied code to the new setting where it
+is being pasted, creating entire fresh new bugs.
+In fact, one effective way to find bugs in programs is
+to automatically search for code that appears to be copied and pasted,
+but where the pasted version has not been consistently adapted to its new
+context.
+</p>
+<p>
+Copying and pasting code is one of those “lazy shortcuts” that creates
+more work in the long run. When you feel the need to copy code, try instead to
+introduce an abstraction (a class, a method) that captures the functionality
+that you are copying. You might have to think a little harder, but your code
+will typically be shorter and better, and you'll save time in the end.
+</p>
+
 <h1 id="Testing">Testing</h1>
 
 <h2>Testing in software development</h2>
@@ -431,24 +453,6 @@ curated and maintained with equal care. It is tempting to take shortcuts with
 testing code because it isn't shipped to the customer; this would be a mistake.
 </p>
 
-<h3>How to add bugs</h3>
-<p>
-Why do programmers write code with so many bugs? One important reason is the
-excessive use of copying and pasting code. Copying and pasting buggy code
-automatically duplicates all the bugs. Furthermore, programmers
-frequently fail to completely adapt the copied code to the new setting where it
-is being pasted. In fact, one recently popular way to find bugs in programs is
-to automatically search for code that appears to be copied and pasted,
-but where the pasted version has not been consistently adapted to its new
-context.
-</p>
-<p>
-Copying and pasting code is one of those “lazy shortcuts” that creates
-more work in the long run. When you feel the need to copy code, try instead to
-introduce an abstraction (a class, a method) that captures the functionality
-that you are copying. You might have to think a little harder, but your code
-will typically be shorter and better, and you'll save time in the end.
-</p>
 
 <h2>Strategies for test design</h2>
 <p>
