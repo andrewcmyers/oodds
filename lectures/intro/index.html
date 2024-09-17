@@ -445,16 +445,16 @@ blue arrows representing all legal moves again connecting states.
                 rotate(tiles, true)
                 states.push(p)
                 if (i > 0) {
-                    saveStyle()
-                    setStrokeStyle("#25f")
-                    arrow(states[i-1], states[i]).setStartArrow("arrow")
-                    restoreStyle()
+                    withStyle({ strokeStyle: '#25f'},
+                        () => arrow(states[i-1], states[i])
+                                .setStartArrow("arrow")
+                    )
                 }
                 if (i == 11) {
-                    saveStyle()
-                    setStrokeStyle("#25f")
-                    arrow(states[11], states[0]).setStartArrow("arrow")
-                    restoreStyle()
+                    withStyle({ strokeStyle: '#25f'} ,
+                        () => arrow(states[11], states[0])
+                                .setStartArrow("arrow")
+                    )
                 }
             }
             align("distribute", "TB", ...states.slice(0, 6))
