@@ -125,9 +125,10 @@ with (new CFigure("cities_graph")) {
           ithaca_l = label('("Ithaca", 100,000)'),
           binghamton_l = label('("Binghamton", 50,000)')
     const m = margin()
+    setLineLabelInset(2)
     align("left", "top", syracuse_l, m)
     align("none", "bottom", binghamton_l, m)
-    function c(lb) {
+    function c() {
         const result = circle().setW(7).setFillStyle("black")
         return result
     }
@@ -137,9 +138,9 @@ with (new CFigure("cities_graph")) {
     align("abut", "center", ithaca, hspace(3), ithaca_l)
     align("right", "center", ithaca_l, m)
 
-    connector(ithaca, binghamton).addLabel(lineLabel("48", .5, 0))
-    connector(ithaca, syracuse).addLabel(lineLabel("57", .5, 0))
-    connector(binghamton, syracuse).addLabel(lineLabel("73", .5, 0))
+    connector(ithaca, binghamton).addLabel("48", .5, 0)
+    connector(ithaca, syracuse).addLabel("57", .5, 0)
+    connector(binghamton, syracuse).addLabel("73", .5, 0)
 
 }
 </script>
@@ -164,7 +165,48 @@ and directed edges with edge weights shown:
 </p>
 
 <div class=figure>
-<img src="rep_graph.png">
+<canvas id=weighted_digraph style="width: 240px; height: 160px"></canvas>
+<script class=graphics>
+with (new CFigure("weighted_digraph")) {
+    const m = margin()
+    setLineLabelInset(2)
+    function c(lb, dx, dy) {
+        const result = circle().setW(7).setFillStyle("black")
+        if (lb) {
+            setFontStyle('italic')
+            setTextStyle('blue')
+            label(lb).at(plus(result.x(), dx), plus(result.y(), dy))
+        }
+        return result
+    }
+    const p0 = c("0", 10, -10),
+          p1 = c("1", -10, 10),
+          p2 = c("2", 10, 10),
+          p3 = c("3", 10, -10)
+    align("none", "center", p0, p3)
+    align("right", "top", p3, m.toRight(-20))
+    align("left", "bottom", p1.toLeft(15).toBottom(30), m)
+    align("center", "bottom", p2.toBottom(15), m)
+    align("none", "top", p0.toTop(10), m)
+    align("center", "none", p0, average(p1, p2).toLeft(20))
+
+    setFontStyle('normal')
+    setTextStyle('black')
+    setFontSize(10)
+
+    arrow(p0, average(p0, p1).toLeft(20), p1)
+      .addLabel("10", 0.3, 0)
+    arrow(p0, average(p0, p2).toRight(20), p2)
+      .addLabel("40", 0.3, 0)
+    arrow(p2, average(p1, p2).toBottom(20), p1)
+      .addLabel("25", 0.5, -8)
+    arrow(p1, p1.toRight(50), p3.toLeft(50), p3)
+      .addLabel("-5", 0.6, -2)
+    arrow(p2, average(p2, p3).toRight(20), p3)
+      .addLabel("20", 0.5, 3)
+
+}
+</script>
 </div>
 
 <h3>Adjacency matrix</h3>
@@ -177,9 +219,9 @@ is recorded at <code>m[i][j]</code>.
 </p>
 <p>
 The graph structure, ignoring the weights, can be represented by storing a boolean value at
-each array index. A directed edge from i to j is represented by a true (T) value in location m[i][j].
-If there is no edge there, the value is false.
-For example, the edges in the example above are represented this matrix:
+each array index. A directed edge from <code>i</code> to <code>j</code> is represented by a true (T) value in location <code>m[i][j]</code>.
+If there is no such edge, the value is false.
+For example, the edges in the graph above are represented by this matrix:
 </p>
 <div class=figure>
 <table style="margin: 0 auto">
@@ -218,7 +260,7 @@ we store that information in the corresponding array entry:</p>
 <th>1</th> <td>—</td> <td>—</td> <td>—</td> <td>–5</td>
 </tr>
 <tr>
-<th>2</th> <td>—</td> <td>25</td> <td>20</td> <td>—</td>
+<th>2</th> <td>—</td> <td>25</td>  <td>—</td><td>20</td>
 </tr>
 <tr>
 <th>3</th> <td>—</td> <td>—</td> <td>—</td> <td>—</td>
@@ -242,7 +284,7 @@ of vertices, even for sparse graphs.
 </p>
 <p>
 Undirected graphs can also be represented with an adjacency matrix. The
-matrix will be symmetric around its main diagonal; that is, m[i][j]=m[j][i].
+matrix will be symmetric around its main diagonal; that is, <code>m[i][j]</code> equals <code>m[j][i]</code>.
 </p>
 
 <h3>Adjacency list representation</h3>
