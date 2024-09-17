@@ -22,8 +22,11 @@ with (new CFigure("codeberg")) {
           implementer_view = label("implementer\nview")
     const m = margin(),
           views = group(client_view, specializer_view, implementer_view)
+    saveStyle()
+    setFontName("Monaco, Geneva, Courier")
     const public_ = label("public"), protected_ = label("protected"),
           private_ = label("private")
+    restoreStyle()
     const hline1 = horzLine(), hline2 = horzLine()
     const visibilities = group(public_, protected_, private_)
     const ice = ctx.createLinearGradient(0, 0, 0, 250)
@@ -31,11 +34,14 @@ with (new CFigure("codeberg")) {
     ice.addColorStop(1, "#0ef")
     const iceberg = closedCurve(public_.uc().toTop(30),
         public_.ur().toRight(40),
-        protected_.cr().toRight(50),
-        private_.lr().toRight(80),
+        protected_.cr().toRight(50).toTop(30),
+        protected_.cr().toRight(55),
+        private_.lr().toRight(70),
         private_.lc().toBottom(40),
         private_.ll().toLeft(80),
         protected_.cl().toLeft(50),
+        protected_.cl().toLeft(50),
+        protected_.cl().toLeft(30).toTop(30),
         public_.ul().toLeft(40)
         )
 
