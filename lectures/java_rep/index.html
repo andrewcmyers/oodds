@@ -75,19 +75,19 @@ need a way to represent the sign of a number.
     <p>
     Adding these together as binary numbers in the usual way, we get 11111111,
     which represents &minus;1, just as we'd expect when we add &minus;128 and 127. Adding one more to this—and dropping the
-    final carry—we have 00000000, the representation of 0, also as we would like. Some other representations for
-    bytes are as follows:
+    final carry—we have 00000000, the representation of 0, also as we would like. Some other representations of numbers as bytes are as follows:
     </p>
-    <table class=rowlines>
-    <tr><td>&minus;7</td><td>11111001</td></tr>
-    <tr><td>&minus;4</td><td>11111100</td></tr>
-    <tr><td>&minus;2</td><td>11111110</td></tr>
-    <tr><td>&minus;1</td><td>11111111</td></tr>
-    <tr><td>0</td><td>00000000</td></tr>
-    <tr><td>1</td><td>00000001</td></tr>
-    <tr><td>2</td><td>00000010</td></tr>
-    <tr><td>4</td><td>00000100</td></tr>
-    <tr><td>7</td><td>00000111</td></tr>
+    <table class=rowlines >
+    <tr><th>Decimal</th><th>Bits</th></tr>
+    <tr><td>&minus;7</td><td><code>11111001</code></td></tr>
+    <tr><td>&minus;4</td><td><code>11111100</code></td></tr>
+    <tr><td>&minus;2</td><td><code>11111110</code></td></tr>
+    <tr><td>&minus;1</td><td><code>11111111</code></td></tr>
+    <tr><td>0</td><td><code>00000000</code></td></tr>
+    <tr><td>1</td><td><code>00000001</code></td></tr>
+    <tr><td>2</td><td><code>00000010</code></td></tr>
+    <tr><td>4</td><td><code>00000100</code></td></tr>
+    <tr><td>7</td><td><code>00000111</code></td></tr>
     </table>
     <p>
     In effect, going from an unsigned representation to a two's-complement
