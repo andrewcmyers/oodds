@@ -276,7 +276,7 @@ threads is tricky. We need some kind of <b>synchronization</b> between the
 different threads to prevent race conditions. For example, we saw that the following two methods
 on a <code>BankAccount</code> object got us into trouble:
 </p>
-<table class="sidebysidecode"><tr><td>
+<table class=sidebysidecode><tr><td>
 <pre>
 void withdraw(int n) {
   balance -= n;
@@ -407,7 +407,7 @@ Using mutexes, we can protect the <code>withdraw()</code> and <code>deposit()</c
 from themselves and from each other. Here we use the receiver object as a mutex:
 </p>
 
-<table class="sidebysidecode" cellspacing=0 cellpadding=0>
+<table class=sidebysidecode cellspacing=0 cellpadding=0>
 <tr>
 <td>
 <pre>
@@ -432,7 +432,7 @@ void deposit(int n) {
 Because the pattern of wrapping entire method bodies in
 <code>synchronized(this)</code> is so common, Java has syntactic sugar for it:
 </p>
-<table class="sidebysidecode">
+<table class=sidebysidecode>
 <tr><td><pre>
 synchronized void withdraw(int n) {
    balance -= n;
@@ -513,7 +513,7 @@ may not propagate immediately to main memory or to other processors. For example
 two threads executing the following code in parallel. Say the values of <code>x</code> and <code>y</code>
 are initially 0.
 </p>
-<table class="sidebysidecode"><tr><td>
+<table class=sidebysidecode><tr><td>
 Thread 1:
 <pre>
 y = 1;

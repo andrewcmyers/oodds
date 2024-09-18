@@ -169,13 +169,13 @@ C(n, n) = C(n, 0) = 1
 other than the top row and the diagonal is determined by adding the numbers directly
 above and diagonally to the left. This gives us Pascal's triangle:
 </p>
-<table>
-<tr><td>&nbsp;</td><td>\(n\)</td><td>0 </td><td>1 </td><td> 2 </td><td>3 </td><td> 4 </td><td>...</td></tr>
-<tr><td>\(r\)</td><td>0</td><td>1 </td><td>1 </td><td> 1 </td><td>1 </td><td> 1 </td><td></td></tr>
-<tr><td>&nbsp;</td><td>1</td><td> </td><td>1 </td><td> 2 </td><td>3 </td><td> 4 </td><td></td></tr>
-<tr><td>&nbsp;</td><td>2</td><td> </td><td> </td><td> 1 </td><td>3 </td><td> 6 </td><td></td></tr>
-<tr><td>&nbsp;</td><td>3</td><td> </td><td> </td><td>  </td><td>1 </td><td> 4 </td><td></td></tr>
-<tr><td>&nbsp;</td><td>4</td><td> </td><td> </td><td>  </td><td> </td><td> 1 </td><td></td></tr>
+<table class=adjacency>
+<tr><th>\(r\) \ \(n\)</th><th>0 </th><th>1 </th><th> 2 </th><th>3 </th><th> 4 </th><th>...</th></tr>
+<tr><th>0</th><td>1 </td><td>1 </td><td> 1 </td><td>1 </td><td> 1 </td><td></td></tr>
+<tr><th>1</th><td> </td><td>1 </td><td> 2 </td><td>3 </td><td> 4 </td><td></td></tr>
+<tr><th>2</th><td> </td><td> </td><td> 1 </td><td>3 </td><td> 6 </td><td></td></tr>
+<tr><th>3</th><td> </td><td> </td><td>  </td><td>1 </td><td> 4 </td><td></td></tr>
+<tr><th>4</th><td> </td><td> </td><td>  </td><td> </td><td> 1 </td><td></td></tr>
 </table>
 <p>
 As a decrementing function, we can use the value \(\min(n-r, r)\), which measures the closest
@@ -423,20 +423,21 @@ to the previous node, or contains <code>null</code> if <code>n</code> is the fir
 <!-- this section was not covered during lecture -->
 <img style="float: right; padding: 2em" src="listimpls.png" alt="abstraction barrier" />
 <p>
-A key observation is that singly or doubly
-linked lists are concrete data structures. They are implementations of a particular
-set of operations. The operations are usually specified in Java by an interface.
-The collection of operations and their specifications is called an <b>abstract data type</b> (ADT).
+It is useful to distinguish between singly and doubly
+linked lists as concrete data structures, versus various possible
+operations they can be used to implement.
+The collection of operations along with their specifications is
+an <b>abstract data type</b> (ADT).
 For example, immutable lists and mutable lists are abstract data types, because they
 are merely specifications of a collection of operations. These abstract data types can
 be implemented by linked lists, but as we will see later on, linked lists are only one of the ways
 to implement list abstractions.
 </p>
 <p>
-We can also use data
-structures such as linked lists to implement other abstractions.
-For example, one useful abstract data type we will see many times over is the <b>stack</b>.
-A stack is a list that supports two operations:
+We can also use linked-list data
+structures to implement other abstractions.
+For example, another useful abstract data type that often arises is the <b>stack</b>,
+a list that supports two operations:
 </p>
 
 <ul>

@@ -437,7 +437,7 @@ where the parentheses are being used as a grouping construct (they are
 </p>
 <p>The point of rewriting the productions in this way is that parsing a use of Kleene star
 naturally lends itself to an implementation as a loop. Within that loop, the AST can be
-built bottom-up, so that the operator associates to the left:
+built bottom-up, so that the operator correctly associates to the left:
 </p>
 <pre>
 void parseE() throws SyntaxError {
