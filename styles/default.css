@@ -2,6 +2,7 @@ body {
     background-color: #eee;
     font-size: 12pt;
     font-family: Palatino, Times, serif;
+    line-height: 1.3em;
 }
 #content {
     margin: 0 auto;
@@ -181,7 +182,7 @@ p.definition { font-weight: bold; padding: 1em; background-color: #ddd; border: 
 	}
 	p {
 		font-size: 100%;
-		line-height: 1.2em;
+		line-height: 1.3em;
 		text-align: justify;
 		-webkit-hyphens: auto;
 		-moz-hyphens: auto;

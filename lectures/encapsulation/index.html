@@ -224,9 +224,10 @@ exactly how that data is represented. All they have to know is what operations
 (from the public interface) can be performed on the data. The data is opaque
 to the client code, which means that the module implementer is free to change
 how the data is represented because no client code can depend on the precise
-representation.  This powerful form of information hiding is called <b>data abstraction</b>.
-In this case, the inessential detail being abstracted away is, for the client
-code, the precise way that information is represented inside the module.
+representation.  This powerful form of information hiding is called <b>data
+abstraction</b>.  In this case, the inessential detail being abstracted away
+is, for the client code, the precise way that information is represented inside
+the module.
 </p>
 
 <h2>An example: rational numbers</h2>
@@ -245,6 +246,13 @@ following, using a class <code>Rational</code>:
 </pre>
 
 <p>
+Such a class provides operations that allow us to think of its
+values as simply rational numbers, because only the operations
+of rationals are exposed. The internal representation can be hidden.
+Thus, a class like <code>Rational</code> is said to implement an
+<b>abstract data type</b> (<b>ADT</b>).
+</p>
+<p>
 A class implementing rational numbers is shown here (you can click on code examples to
 download them).
 </p>
@@ -259,8 +267,9 @@ download them).
 </div>
 
 <p>
-There are many interesting things going on in this implementation. We start out with a very
-important comment, which we call the <b>class overview</b>. This describes how client
+Several interesting things are going on in this implementation. We start out
+with a very important comment, called the <b>class overview</b>. This
+describes how client
 code programmers should think about the values of class <code>Rational</code>. 
 To the client, the objects are simply rational numbers, with a numerator \(p\) and a denominator \(q\).
 The overview also gives the client a notation for talking about these objects abstractly, as a fraction \(p/q\).
@@ -277,12 +286,15 @@ nonnegative numbers. The point is that the client <em>doesn't</em> and
 <em>shouldn't</em> need to know how the number is represented internally. The
 client should think of the objects of class <code>Rational</code> as simply
 rational numbers.
-</p>
-<p>The fields of the class are marked <code>private</code> to ensure that they
-are encapsulated inside the class. The keywords <code>public</code> and
-<code>private</code> are known as <b>visibility modifiers</b>, because they
-control which parts of the class are visible outside the class, and hence can
-be accessed.
+</p><p>
+The instance variables of the class are marked <code>private</code>
+to ensure that they are encapsulated inside the class. The keywords
+<code>public</code> and <code>private</code> are known as <b>visibility
+modifiers</b>, because they control which parts of the class are visible
+outside the class, and hence can be accessed. Marking instance variables
+as <code>private</code> enforces the abstraction barrier between
+the implementation of the ADT <code>Rational</code> and the client code that
+uses it.
 </p><p>
 The methods <code>add</code> and <code>equals</code> and the constructor
 <code>Rational</code> are marked <code>public</code> and hence can be used by
@@ -352,17 +364,17 @@ written with the assumption that the precondition of the method is satisfied,
 the method result correspondingly satisfies the postcondition.
 </p>
 <p>
-With Clear preconditions and postconditions means the public interface of the class
-forms a clear contract between the client and the implementer. Like legal
-contracts in law, clear contracts allow blame to be assigned when someone makes
-a mistake. For large software projects, this clear assignment of responsibility
-is extremely valuable.
+WIth clear preconditions and postconditions, the public interface of the class
+forms a contract between the client and the implementer. Like legal
+contracts in law, contracts allow blame to be assigned when someone makes
+a mistake. For large software projects with multiple developers,
+clear assignment of responsibility is extremely valuable!
 </p>
 
 <h2>Class invariants</h2>
 <p>
 An early comment in the <code>Rational</code> example expresses an
-<b>invariant</b> regarding the instance variables <code>p</code> and
+<b>invariant</b> regarding instance variables <code>p</code> and
 <code>q</code>:</p>
 <pre class=code>
  // class invariant: q &gt; 0, gcd(p, q) = 1
