@@ -46,6 +46,7 @@ table.sidebysidecode tr {
     border: none
 }
 table.adjacency {
+    margin: 0 auto;
     border-collapse: collapse;
     border-spacing: 5px
 }
@@ -58,6 +59,17 @@ table.adjacency th {
     padding: 1ex;
     border-bottom: 1px solid black;
     border-right: 1px solid black;
+}
+table.rowlines {
+    margin: 0 auto
+}
+table.rowlines td {
+    border-bottom: 1px solid #bbb;
+    padding-right: 1ex;
+    border-collapse: collapse
+}
+table.rowlines tr:last-child td {
+    border-bottom: none
 }
 
 div.hidden {display:none}
