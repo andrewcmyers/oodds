@@ -143,15 +143,17 @@ every loop iteration, something must get smaller on every recursive call, until
 the base case is reached.
 </p>
 <p>
-For example, consider the problem of determining the number of ways to select
-r items from a set of n items. We write this as C(n,r), where C stands for either
-<b>choose</b> or <b>combinations</b>. To write the code, we break the problem into
-deciding what to do with the first element of the set, and then solving the problem
-recursively for the rest of the set. If we choose the first element of the set of n elements,
-then there are C(n&minus;1, r&minus;1) ways to pick the remaining elements we need from the rest of
-the set. If we don't choose the first element of the set, then there are C(n&minus;1, r) ways
-to pick all the r elements from the rest of the set. Therefore, we have the following
-equation:
+For example, consider the problem of determining the number of
+ways to select \(r\) items from a set of \(n\) items. We write
+this as \(C(n,r)\), where C stands for either <b>choose</b> or
+<b>combinations</b>. To write the code, we break the problem into
+deciding what to do with the first element of the set, and then solving
+the problem recursively for the rest of the set. If we choose the
+first element of the set of \(n\) elements, then there are \(C(n&minus;1,
+r&minus;1)\) ways to pick the remaining elements we need from the rest
+of the set. If we don't choose the first element of the set, then there
+are \(C(n&minus;1, r)\) ways to pick all the \(r\) elements from the rest of
+the set. Therefore, we have the following equation:
 </p>
 <div class="figure">
 \(
@@ -169,7 +171,7 @@ C(n, n) = C(n, 0) = 1
 other than the top row and the diagonal is determined by adding the numbers directly
 above and diagonally to the left. This gives us Pascal's triangle:
 </p>
-<table>
+<table class=adjacency>
 <tr><td>&nbsp;</td><td>\(n\)</td><td>0 </td><td>1 </td><td> 2 </td><td>3 </td><td> 4 </td><td>...</td></tr>
 <tr><td>\(r\)</td><td>0</td><td>1 </td><td>1 </td><td> 1 </td><td>1 </td><td> 1 </td><td></td></tr>
 <tr><td>&nbsp;</td><td>1</td><td> </td><td>1 </td><td> 2 </td><td>3 </td><td> 4 </td><td></td></tr>
