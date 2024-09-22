@@ -329,11 +329,11 @@ we cannot show that <code>d != 0</code>. We have found a potential bug. By repre
 the values of variables logically, symbolic
 execution effectively runs a very large number of test cases at the same time.
 </p>
-<p>There are a couple weaknesses of symbolic execution. One is that, just
-because it reveals a potential bug, it does not mean that there is one.
+<p>Symbolic execution has some weaknesses. One is that
+a potential bug may not be a real bug.
 There may be paths in the program that will never be taken, and the potential
 bug may only show up on one such path. Thus there can be false positives.
-But a more critical weakness is that it is cumbersome and does not scale to large programs.
+A more serious weakness is that it is cumbersome and does not scale to large programs.
 However, it can be very effective on smaller implementations. Tools for symbolic
 execution are still not mainstream but are maturing.
 </p>
