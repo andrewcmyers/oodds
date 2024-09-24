@@ -304,8 +304,8 @@ permutations of the array, it must have at least \(n!\) leaves:
   <script class=graphics>
     with (new CFigure("decision-tree")) {
         function node(l) {
-            let r = circle().setW(10)
-            if (l) label(l).at(r)
+            let r = circle().setW(11)
+            if (l) label(l).at(r.center().toBottom(1))
             return r
         }
         function drawSubTree(n, w) {
