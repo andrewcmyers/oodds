@@ -343,15 +343,15 @@ proportional to the number of comparisons it makes, which can be as large as
 the longest path in this decision tree: that is, the height \(h\) of the decision tree. To express such a <em>lower bound</em>
 on running time, we cannot use big-O, because it talks about upper bounds.
 To express lower bounds we use big-<b>omega</b>. In this case, the
-running time of the sorting algorithm is \(Ω(h)\).
+running time of the sorting algorithm is \(Ω(h)\). But what do we know about \(h\)?
 <p>
 In general, we say that a function \(f(n)\)
 is \(Ω(g(n))\) if
 there exists some constant factor \(k\) and value
 \(n_0\) such that for large values of
 \(n\) (that is, where \(n &gt; n_0\), the inequality
-\(f(n) &ge; k·g(n)\) always holds. We say that
-\(g(n)\) is an asymptotic lower bound for \(f(n)\) in this case.
+\(f(n) &ge; k·g(n)\) always holds. In this case,
+\(g(n)\) is an <b>asymptotic lower bound</b> for \(f(n)\).
 </p>
 
 </p>
@@ -363,7 +363,7 @@ Now, a ternary tree of height \(h\) can have at <em>most</em>
 From
 <a href="https://en.wikipedia.org/wiki/Stirling%27s_approximation">Stirling's formula</a>, we learn that
 \(\ln n!\) is \(O(n \ln n)\).
-Ignoring the constant factor of \(1/\ln(3)\), as we do with asymptotic complexity, this result means
+Ignoring the constant factor of \(1/\ln(3)\), this result means
 that \(Ω(h) = Ω(n \lg n)\), as claimed. Hence, generic sorting
 algorithms cannot be faster in the worst case, even if they can be faster
 for particular inputs, such as the linear-time performance of
