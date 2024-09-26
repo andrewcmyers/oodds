@@ -1,37 +1,64 @@
 <h1>Synchronization</h1>
 
 <h2>Synchronization and happens-before</h2>
+
 <p>
 As we have seen, a write to memory by one thread (e.g., an assignment to
-an instance variable) is not necessarily seen by a later
-read from the same location by another thread. Java, like most
-programming languages, offers only a <b>weak consistency</b> model that does
-not guarantee that every write is seen by every later read. When the consistency
-model considers two events to be causally related in this way, we say that
-one operation has a <b>happens-before</b> relationship to the other. A write
-that happens-before a read is guaranteed to be seen by the read (though it is
-also possible that the read will return the result of an even later write).
-Conversely, a read that happens-before a write is guarantee <em>not</em> to see
-the value written by that write.
+an instance variable) is not necessarily seen by a later read from the
+same location by another thread. Java, like most programming languages,
+offers only a <b>weak consistency</b> model that does not guarantee that
+every write is seen by every later read.
 </p>
+<p>
+When a consistency model considers that one event happens before another in the
+view of every thread, we say that the operations have a <b>happens-before</b>
+relationship.  A write that happens-before a read is guaranteed to be seen by
+the read (though it is also possible that the read will return the result of an
+even later write).  Conversely, a read that happens-before a write is guarantee
+<em>not</em> to see the value written by that write. And two writes with a
+happens-before relationship will appear to happen in that order.
+</p>
+<p>
+Happens-before relationships are not necessarily totally ordered.  An event may
+happen-before two operations done by concurrent threads, yet there need not be
+a happens-before relationship between those two operations.  However,
+happens-before is transitive: if event X happens-before event Y and Y
+happens-before Z, then X happens-before Z.
+</p>
+
+<p>
+Locks are the starting point for establishing happens-before relationships.
+Locks automatically establish happens-before on their operations. A
+mutex can only be held by a single thread at a time, so acquire and release
+operations on a mutex automatically have happens-before relationships. In
+particular, if one thread releases a mutex and another thread then acquires it,
+the release of the mutex happens-before the acquire.
+</p>
+
 <h3>Release consistency</h3>
+
 <p>
-Different weak consistency models make different guarantees about happens-before
-relationships. However, a useful least common denominator is <b>release consistency</b>.
-It guarantees that any operation performed by a thread to a location before releasing a lock
-will happen-before any operation by another thread to the same location after a later
-acquisition of the same lock. Any release and acquire operations on the same lock are always
-related by the happens-before relation. 
+Different weak consistency models make different guarantees about when
+happens-before relationships exist. A useful least common denominator
+is <b>release consistency</b>.  It guarantees that any operation
+performed by one thread to a location before the thread releases a lock will
+happen-before any operation by another thread to the same location after
+a later acquisition of the same lock. Any release and acquire operations
+on the same lock are always related by the happens-before relation.
 </p>
+
 <p>
-For example, suppose we have two threads, T1 and T2, as depicted in the timelines below.
-Thread T1 performs some set of updates during period A, then releases a mutex m, and then
-performs some updates during period B. Thread T2 executes and at some point tries to acquire
-the mutex m, forcing it to wait until T1 has released it. In this case, period A happens-before
-T2's execution after acquiring the mutex. Therefore, before acquiring the
-mutex, T2 is not guaranteed to see <em>any</em> of the updates by T1, but <em>may</em> see some arbitrary 
-subset of them. After acquiring the mutex, T2 is guaranteed to see <em>all</em> of T1's updates during
-period A, and <em>may</em> see some arbitrary subset of the updates during period B.
+For example, suppose we have two threads, T1 and T2, as depicted in the
+timelines below.  Thread T1 performs some set of updates during period
+A, then releases a mutex m, and then performs some updates during period
+B. Thread T2 executes and at some point tries to acquire the mutex m,
+forcing it to wait until T1 has released it. In this case, period A
+happens-before T2's execution after acquiring the mutex. Therefore,
+before acquiring the mutex, T2 is not guaranteed to see <em>any</em>
+of the updates by T1, but <em>may</em> see some arbitrary subset of
+them. After acquiring the mutex, T2 is guaranteed to see <em>all</em> of
+T1's updates during period A, and <em>may</em> see some arbitrary subset
+of the updates during period B.
 </p>
 
 <div class=figure>
@@ -134,14 +161,15 @@ synchronized (m) {
     print (y);
 }</pre></td></tr></table>
 <p>
-But this won't work either: if thread 2 gets a head start, it will acquire the mutex and then spin forever in the <code>while</code>
-loop, preventing thread 1 from making any progress.
+But this won't work either: if thread 2 gets a head start, it will
+acquire the mutex and then spin forever in the <code>while</code> loop,
+preventing thread 1 from making any progress.
 </p>
 <p>
-To allow one thread to wait for updates from another, we need a <b>condition
-variable</b>, a mechanism for blocking a thread until some condition becomes
-true. A condition variable is always associated with a mutex that guards the condition and
-any mutable state used in it.
+To allow one thread to wait for updates from another, we need a
+<b>condition variable</b>, a mechanism for blocking a thread until some
+condition becomes true. A condition variable is always associated with a
+mutex that guards the condition and any mutable state used in it.
 </p>
 <p>
 Every Java object implicitly has not only a mutex but also a single condition

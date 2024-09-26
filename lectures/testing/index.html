@@ -8,7 +8,33 @@ of development, testing is used for the validation step
 occurring late in the process:
 
 <div class=figure>
-<img src="waterfall.png">
+<canvas id=waterfall style="width: 700px; height: 200px"></canvas>
+<script class=graphics>
+  with (new CFigure("waterfall")) {
+    setFontSize(10)
+    setConnectionStyle("intersection")
+    function r(txt) {
+        return rectangle().setW(120).setH(25).addText(txt)
+    }
+    function s() {
+        return hspace().setW(8).setH(8);
+    }
+    let req, maintenance
+    const nodes = [
+        req = r("Requirements"),
+        r("Design"),
+        r("Implementation"),
+        r("Validation"),
+        maintenance = r("Maintenance")
+    ];
+    align("distribute", "distribute", ...nodes)
+    align("left", "top", req, margin(5))
+    align("right", "bottom", maintenance, margin())
+    for (let i = 0; i < nodes.length - 1; i++) {
+        arrow(nodes[i], nodes[i].toBottom(30), nodes[i+1])
+    }
+  }
+</script>
 </div>
 
 <p>
@@ -220,6 +246,26 @@ testing, the challenge is to generate the test cases, but tool support continues
 to improve.
 </p>
 
+<h3>Limitations of testing</h3>
+<p>
+Testing aims to achieve coverage, but even intelligent exploration of the input
+space may fail to hit specific values on which buggy behavior manifests. For
+example, the famous Intel Pentium FDIV bug discovered in 1994 caused a very
+small fraction of division calculations (something like 1 in 9 billion) to be
+done with a small error. 
+</p>
+<p>
+To achieve truly high confidence that software works correctly, we should
+develop machine-checked proofs that the code is correct. This has been done
+for a range of complex software. For example, the CompCert C compiler was
+proved to correctly compile legal C programs, and no bugs have ever been
+found in the part of the compiler that was proved correct. However,
+producing such proofs requires specialist knowledge that lies outside the
+scope of this course. While techniques for producing such proofs have been
+improving steadily, they still add significant effort. As a result,
+formal proofs are not used frequently in the software industry.
+</p>
+
 <h3>Symbolic execution</h3>
 <p>
 Testing on particular inputs leaves open the possibility that the bug is exhibited
@@ -283,11 +329,11 @@ we cannot show that <code>d != 0</code>. We have found a potential bug. By repre
 the values of variables logically, symbolic
 execution effectively runs a very large number of test cases at the same time.
 </p>
-<p>There are a couple weaknesses of symbolic execution. One is that, just
-because it reveals a potential bug, it does not mean that there is one.
+<p>Symbolic execution has some weaknesses. One is that
+a potential bug may not be a real bug.
 There may be paths in the program that will never be taken, and the potential
 bug may only show up on one such path. Thus there can be false positives.
-But a more critical weakness is that it is cumbersome and does not scale to large programs.
+A more serious weakness is that it is cumbersome and does not scale to large programs.
 However, it can be very effective on smaller implementations. Tools for symbolic
 execution are still not mainstream but are maturing.
 </p>
