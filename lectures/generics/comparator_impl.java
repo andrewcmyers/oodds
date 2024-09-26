@@ -1,6 +1,6 @@
 class SCmp implements Comparator<String> {
     @Override
-    public int compareTo(String x, String y) {
+    public int compare(String x, String y) {
         return x.compareTo(y);
     }
 }

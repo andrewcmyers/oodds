@@ -1,8 +1,8 @@
 /** Sort the array a in ascending order using cmp to define the ordering on the
  * elements. */
-<T> sort(T[] a, Comparator<T> cmp) {
+<T> void sort(T[] a, Comparator<T> cmp) {
     ...
-    if (cmp.compareTo(a[i], a[j]) > 0) {
+    if (cmp.compare(a[i], a[j]) > 0) {
         ...
     }
     ...
