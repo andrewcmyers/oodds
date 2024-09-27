@@ -16,11 +16,7 @@
         hr.endChapter { display: block; }
     }
     @media print {
-        .booktitle {
-            font-weight: bold;
-            font-size: 200%;
-            font-family: Palatino, "Palatino Linotype";
-        }
+        .booktitle { font-weight: bold; font-size: 200%; font-family: Palatino, "Palatino Linotype"; }
     }
     div.toc {
         background-color: #ddd;
@@ -61,23 +57,19 @@ function sentence_case(s) {
 // Add all h1 elements in a node to the table of contents, appropriately
 // linked and converted to sentence case.
 function add_to_toc(node, name) {
-    var headers = node.getElementsByTagName("h1");
+    var headers = node.getElementsByTagName("h1")
     for (let i = 0; i < headers.length; i++) {
-        var h = headers[i];
-        var link = name;
-        if (i > 0) link = link + i;
-        var par = h.parentNode;
-        par.insertBefore(EZDom.a({name: link, className: "chapter"}), h);
-        par.insertBefore(EZDom.p({className: 'noprint'}, '[', EZDom.a({href: '#toc'},
-                'back to table of contents'), ']'), h.nextSibling);
-        var undefined;
+        const h = headers[i]
+        let link = name
+        if (i > 0) link = link + i
         if (toc == undefined) {
-            toc = EZDom.ol();
-            var tocDiv = document.getElementById("toc");
-            tocDiv.appendChild(toc);
+            toc = EZDom.ol()
+            var tocDiv = document.getElementById("toc")
+            tocDiv.appendChild(toc)
         }
-        var tocline = sentence_case(h.childNodes[0].textContent);
-        toc.appendChild(EZDom.li(EZDom.a({href: "#"+link}, tocline)));
+        const tocline = sentence_case(h.childNodes[0].textContent),
+              href = EZDom.a({href: "lecture.html?id=" + link}, tocline)
+        toc.appendChild(EZDom.li(href))
     }
 }
 
@@ -91,15 +83,13 @@ function append_content(id, url, name, cont) {
       read_from_url(url,
         responseText => {
             var content = div({className: "content"});
-            content.innerHTML = responseText;
-            node.appendChild(content);
+            content.innerHTML = responseText
+            redactContent(content)
             add_to_toc(content, name);
-            var undefined;
             if (cont != undefined) cont(content);
         },
         errmsg => {
             node.appendChild(div(errmsg, a({href: url}, url)));
-
             if (cont != undefined) cont();
         }, "text/html");
     }
@@ -108,13 +98,11 @@ function append_content(id, url, name, cont) {
 // Load all lectures starting from index i
 function load_from_i(i) {
     var url = "lectures/" + lectures[i] + "/index.html";
+    console.log("loading " + url)
     append_content("content", url, lectures[i],
-        (div) => {
-            content_node.appendChild(EZDom.div({className: "pagebreak"},
-                                     EZDom.hr({className: "endChapter"})));
+        div => {
             i++
             if (i < lectures.length) load_from_i(i);
-            localizeContent(div, url)
         });
 }
 
@@ -122,7 +110,6 @@ function load_from_i(i) {
 function load_all_lectures() {
     load_from_i(0);
 }
-
 </script>
 
 </head>
