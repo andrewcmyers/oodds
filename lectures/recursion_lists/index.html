@@ -171,8 +171,26 @@ C(n, n) = C(n, 0) = 1
 other than the top row and the diagonal is determined by adding the numbers directly
 above and diagonally to the left. This gives us Pascal's triangle:
 </p>
+<style>
+.diagonal-cell {
+    position: relative;
+    width: 40px; /* Adjust as needed */
+    height: 40px; /* Adjust as needed */
+}
+.diagonal-cell::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 141%;
+    height: 141%;
+    border-top: 1px solid black;
+    transform: rotate(45deg);
+    transform-origin: 0 0;
+}
+</style>
 <table class=adjacency>
-<tr><th>\(r\) \ \(n\)</th><th>0 </th><th>1 </th><th> 2 </th><th>3 </th><th> 4 </th><th>...</th></tr>
+<tr><th class="diagonal-cell"><span class=lower>\(r\)</span>     <span class=higher>\(n\)</span></th><th>0 </th><th>1 </th><th> 2 </th><th>3 </th><th> 4 </th><th>...</th></tr>
 <tr><th>0</th><td>1 </td><td>1 </td><td> 1 </td><td>1 </td><td> 1 </td><td></td></tr>
 <tr><th>1</th><td> </td><td>1 </td><td> 2 </td><td>3 </td><td> 4 </td><td></td></tr>
 <tr><th>2</th><td> </td><td> </td><td> 1 </td><td>3 </td><td> 6 </td><td></td></tr>
