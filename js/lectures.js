@@ -19,7 +19,7 @@ function basename(url) {
 
 var base_url = basename(window.location.origin + window.location.pathname)
 
-var DEBUG_RELATIVIZE = true;
+var DEBUG_RELATIVIZE = false;
 
 // URLs need to be rewritten to be relative to the
 // to the top of the repo rather than to the top of
@@ -28,6 +28,7 @@ function relativize(url, lecture_base, base) {
     if (DEBUG_RELATIVIZE)
       console.log("relativizing " + url + " : "  + lecture_base + " : " + base)
     if (url == "") return url
+    const basebase = base.replace(/\/[^\/]*$/, "")
     for (;;) {
         if (url.match('^' + base)) {
             url = url.replace(base, lecture_base)
@@ -38,7 +39,12 @@ function relativize(url, lecture_base, base) {
         const base_match = base.match('^(.*)/') && !base.match('^https?:/')
         if (!base_match) { 
             if (DEBUG_RELATIVIZE)
-              console.log("base didn't match -> " + url)
+              console.log("base didn't match -> " + url + " basebase = " + basebase)
+            if (url.substring(0, basebase.length) == basebase) {
+                const rest = url.substring(basebase.length)
+                if (DEBUG_RELATIVIZE) console.log(".. relativizing: " + base+rest)
+                return base + rest;
+            }
             return url
         }
         base = base_match[1] 
