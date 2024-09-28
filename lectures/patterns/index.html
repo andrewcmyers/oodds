@@ -71,12 +71,15 @@ is helpful for avoiding bugs.
 For example, a traditional linked list node would be implemented using <code>null</code>
 to indicate that the node is the last in the list:
 <pre class=load>
-<a href="../generics/Node.java">Node.java</a>
+<a href="NodeNull.java">Node.java</a>
 </pre>
 <p>
-Instead, we can show clearly that the next node in the list might be absent by using a Maybe:
+By instead using <code>Maybe</code>,
+we can indicate clearly that the next node in the list might be absent,
+get compiler support for checking that we are handling absence
+correctly, and type less overall:
 <pre class=load>
-<a href="NodeMaybe.java">Node.java</a>
+<a href="NodeMaybe.java">NodeMaybe.java</a>
 </pre>
 <p>
 Two basic operations on both <code>Maybe&lt;T&gt;</code> and
@@ -126,10 +129,9 @@ to have a side effect when there is no string, we can put the side effect inside
 <p>Notice that this <code>return</code> statement only returns from the lambda expression.
 </p>
 <p><code>Optional</code> supports the same style of programming, but the
-methods have somewhat less intuitive names; for example, <code>then</code> is
-named <code>map</code>.  These names are chosen to make <code>Optional</code>
-compatible with Java Streams.
-</code>
+methods have somewhat less intuitive names; for example, the method
+<code>then()</code> is named <code>map()</code>.  These less intuitive names
+are chosen to make <code>Optional</code> compatible with Java Streams.
 
 <h2>Iterator pattern</h2>
 <p>

@@ -19,7 +19,7 @@ function basename(url) {
 
 var base_url = basename(window.location.origin + window.location.pathname)
 
-var DEBUG_RELATIVIZE = false;
+var DEBUG_RELATIVIZE = true;
 
 // URLs need to be rewritten to be relative to the
 // to the top of the repo rather than to the top of
