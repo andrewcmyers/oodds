@@ -655,9 +655,9 @@ key can be found in time \(O(h)\) by walking down from the root.
 </p>
 <h3>N-ary search trees</h3>
 <p>
-It is possible to define search trees with more than two children per node. A
-higher branching factor means paths through the tree are shorter, but considerably
-complicates all of the algorithms involved. B-trees are an example of an N-ary
+It is possible to define search trees with more than two children per node. With a
+higher branching factor, paths through the tree are shorter, but
+the algorithms and invariants involved become considerably more complex. B-trees are an example of an N-ary
 search tree structure. In an N-ary search tree, each node contains up to \(N-1\) elements
 \(e_1,...,e_{N-1}\)
 and has up to \(N\) children \(c_0,...,c_{N-1}\) arranged so that the subtrees of the children contain only
