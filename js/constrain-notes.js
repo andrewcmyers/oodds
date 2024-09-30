@@ -158,3 +158,5 @@ class CFigure extends Constrain.Figure {
         return new LightStyle(this, specialEdges, specialNodes)
     }
 }
+
+Constrain.autoResize()

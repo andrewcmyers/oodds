@@ -566,11 +566,10 @@ immediate next element, it must occur in the right subtree of node \(x\).
 To find the immediate next element
 \(y\) from \(x\), we walk one step down the tree to the right, then walk down
 to the left as far as possible. The last node we
-encounter holds \(y\), a node that
-cannot possibly have a left child.  
+encounter is a node \(y\) that cannot possibly have a left child.  
 </p>
 <p>
-Having found \(y\), we remove its node from the tree, either by <em>pruning</em>
+Having found node \(y\), we remove it from the tree, either by <em>pruning</em>
 it (if it is a leaf) or by
 <em>splicing it out</em> (if it is not). Then, we overwrite the data in node \(x\) with
 the data from node \(y\).
