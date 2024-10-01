@@ -6,7 +6,6 @@ body {
 #content {
     margin: 0 auto;
     max-width: 100ex;
-    line-height: 1.3em; 
 }
 	
 td.lectnum {
@@ -174,6 +173,10 @@ div#unit-signature-links a { color: white }
     display: inline-block;
     vertical-align: top;
     width: 40%;
+}
+
+p, li {
+    line-height: 1.3em; 
 }
 
 p.definition { font-weight: bold; padding: 1em; background-color: #ddd; border: 1px solid black }
