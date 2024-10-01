@@ -2,11 +2,11 @@ body {
     background-color: #eee;
     font-size: 12pt;
     font-family: Palatino, Times, serif;
-    line-height: 1.3em;
 }
 #content {
     margin: 0 auto;
     max-width: 100ex;
+    line-height: 1.3em; 
 }
 	
 td.lectnum {
