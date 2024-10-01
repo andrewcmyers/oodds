@@ -311,8 +311,36 @@ in which the whole system is being tested at once, and modulo any functionality
 not yet implemented in stubs, we can test as we develop.
 </p>
 <div class=figure>
-<img src="top-down-stub.png"><br>
-top-down development
+<canvas id="top-down-stub" style="width: 230px; height: 140px"></canvas>
+<script class=graphics>
+with (new CFigure("top-down-stub")) {
+    function module_box() {
+        return rectangle().setCornerRadius(12).setW(60).setH(40).setLineWidth(1.5)
+    }
+    setLineWidth(1.5)
+    function mb() { return module_box() }
+    const a = mb(), b = mb(), c = mb(), m = margin(), bc = group(b,c)
+    setConnectionStyle("intersection")
+    align("abut", "TB", b, hspace(50), c)
+    align("none", "top", m, a.toTop(10))
+    align("none", "bottom", m, b, c)
+    arrow(a, b)
+    arrow(a, c)
+    let dir_arrow = vertLine(point(), point(), "gray", 5).setEndArrow("arrow").setArrowSize(20)
+    saveStyle()
+    setFillStyle("#fea")
+    setFontSize(10)
+    let stub = rectangle().setW(40).setH(20).addText("stub").setCornerRadius(8)
+    restoreStyle()
+    align("none", "TB", m, dir_arrow)
+    align("abut", "none", dir_arrow, hspace(30), b)
+    align("right", "none", c, m)
+    align("center", "none", a, bc)
+    align("center", "center", stub, c.cl().toLeft(5))
+    arrow(a, average(a, c), stub.uc()).setLineDash([5, 5])
+}
+</script>
+<span class=caption>top-down development</span>
 </div>
 
 <p>
@@ -327,8 +355,36 @@ particularly effective when it is not clear whether key parts of the
 system can be implemented with acceptable performance.
 </p>
 <div class=figure>
-<img src="bottom-up.png"><br>
-bottom-up development
+<canvas id="bottom-up-harness" style="width: 230px; height: 140px"></canvas>
+<script class=graphics>
+with (new CFigure("bottom-up-harness")) {
+    function module_box() {
+        return rectangle().setCornerRadius(12).setW(60).setH(40).setLineWidth(1.5)
+    }
+    setLineWidth(1.5)
+    function mb() { return module_box() }
+    const a = mb(), b = mb(), c = mb(), m = margin(), bc = group(b,c)
+    setConnectionStyle("intersection")
+    align("abut", "TB", b, hspace(50), c)
+    align("none", "top", m, a.toTop(10))
+    align("none", "bottom", m, b, c)
+    arrow(a, b)
+    arrow(a, c)
+    let dir_arrow = vertLine(point(), point(), "gray", 5).setStartArrow("arrow").setArrowSize(20)
+    saveStyle()
+    setFillStyle("#fea")
+    setFontSize(10)
+    let harness = rectangle().setW(60).setH(20).addText("harness").setCornerRadius(8)
+    restoreStyle()
+    align("none", "TB", m, dir_arrow)
+    align("abut", "none", dir_arrow, hspace(30), b)
+    align("right", "none", harness, m)
+    align("center", "none", a, bc)
+    align("center", "center", harness, c.uc().toTop(35).toRight(10))
+    arrow(harness, c).setLineDash([5, 5])
+}
+</script>
+<span class=caption>bottom-up development</span>
 </div>
 
 <p>
