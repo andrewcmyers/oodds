@@ -680,15 +680,30 @@ comparisons to these elements, in conjunction with the invariant, indicates
 which child subtree to search.
 </p>
 
-<h3>Random balancing</h3>
+<h3>Toward balanced trees</h3>
 <p>
 As observed above, binary search tree operations take \(O(h)\) time, which
-could be as bad as \(O(n)\) time.  One simple-minded way to obtain search trees
-that are usually balanced is to insert elements into the tree in a random
-order. This turns out to result in a tree whose expected height is \(O(log n)\)
-(Proving this is outside the scope of this course, but see [<a
+could be as bad as \(O(n)\) time. What are our options for ensuring that trees
+are balanced?
+</p>
+<p>
+There are algorithms for efficiently rebalancing trees, relying on adding
+additional bookkeeping information to the tree data structure. For example,
+AVL trees and Red–Black trees are two commonly used augmented versions of
+binary search trees, with accompanying algorithms for rebalancing them.
+However, they add significant complexity.
+</p>
+<p>
+A simple way to obtain usually balanced search trees
+is to insert elements into the tree in a random
+order.
+Random insertion turns out to create trees whose expected height is \(O(\log n)\)
+(Proving this is outside the present scope, but see [<a
 href="#references">1, Chapter 12.4</a>] or [<a href="#references">2, Lecture
-13</a>] for a proof).  However, if elements are not arriving in a random order already,
+13</a>] for a proof).
+Of course, to be able to shuffle the elements randomly requires that the elements are
+avaiable ahead of time. 
+And if elements are not arriving in a random order already,
 we need to know how to shuffle a collection of elements into a random order,
 which involves a small digression to learn a useful algorithm.
 </p>
@@ -759,12 +774,12 @@ from the root down to the node currently being visited.
 Note that an in-order traversal of a binary search tree visits the elements in sorted order.
 This observation gives us an asymptotically efficient sorting
 algorithm. Given a collection of elements to sort, we first shuffle them
-into a random order, then add them one at a time into a BST, taking O(hn) time.
-Because the elements are in random order, the expected height h is O(log n),
-so adding all the elements takes O(n log n) time.
-Then we can use an in-order traversal, taking O(n) time, to extract all the
+into a random order, then add them one at a time into a BST, taking \(O(hn)\) time.
+Because the elements are in random order, the expected height h is \(O(\log n)\),
+so adding all the elements takes \(O(n \log n)\) time.
+Then we can use an in-order traversal, taking \(O(n)\) time, to extract all the
 elements in their proper order. While no general sorting algorithm is more efficient
-asymptotically than O(n log n), we will later see some other sorting algorithms
+asymptotically than \(O(n \log n)\), we will later see some other sorting algorithms
 that are just as asymptotically efficient but have lower constant factors.
 </p>
 <p> Since it is easy to visit elements in sorted order, search trees also
