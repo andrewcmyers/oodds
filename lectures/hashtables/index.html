@@ -143,11 +143,11 @@ than random choice.
 <p>
 There are two main ideas for how to deal with collisions. The best way is
 usually <strong>chaining</strong>: each array entry corresponds to a <strong>bucket</strong>
-containing a mutable set of elements. (Confusingly, this approach is sometimes known
-as <strong>closed addressing</strong> or <strong>open hashing</strong>.) Typically, the bucket is
-implemented as a linked list, and each array entry (if nonempty) contains a
+containing a mutable set of elements. (Confusingly, this approach is sometimes called
+<strong>closed addressing</strong> or <strong>open hashing</strong>.) Typically, the bucket is
+implemented as a linked list, and each nonempty array entry contains a
 pointer to the head of the list. The list contains all keys that have been added to
-the hash table that hash to that array index.
+the hash table which hash to that array index.
 </p>
 <p>To check whether an element is in the hash table, the key is first
 hashed to find the correct bucket to look in, then the linked list is scanned
@@ -158,6 +158,8 @@ An element is added or removed by hashing it to find the correct bucket. Then,
 the bucket is checked to see if the element is there, and finally the element
 is added or removed appropriately from the bucket in the usual way for linked
 lists.
+</p>
+<p>
 </p>
 <h3>Probing</h3>
 <div class="floatfigure">
@@ -323,7 +325,7 @@ pick a hash function that defeats the adversary: that makes it unlikely that the
 adversary will generate collisions. Of course, often this “adversary” is not
 really an adversary at all; it's the program generating keys in a way that relates
 to the computation being done. But in other settings, there really is an adversary
-choosing keys.
+influencing the choice of keys.
 </p>
 <p>
 There are relatively inexpensive hash functions that work well for less
@@ -354,10 +356,10 @@ used in practice.
 With <strong>modular hashing</strong>, the hash function is simply \(h(k) = k \mod m\)
 for some modulus \(m\), which is typically the number of buckets. This hash
 function is easy to compute quickly when we have an integer hash code.
-Some values of \(m\) tend to produce poor results though; in particular, if
+Some values of \(m\) tend to produce poor results, though; in particular, if
 m is a power of two (that is, \(m=2^{j}\) for some \(j\)), then \(h(k)\) is
 just the \(j\) lowest-order bits of \(k\):
-the function \(h(k)\) will discard all the higher-order bits!
+the function \(h(k)\) would discard all the higher-order bits!
 Throwing away these bits
 works particularly poorly when the hash code of an object is its memory
 address, as is the case for Java. At least two of the lower-order bits of an
@@ -376,14 +378,14 @@ sizes from a predefined table of appropriately sized primes.
 An alternative to modular hashing is <strong>multiplicative hashing</strong>, which is defined as
 \(\newcommand\ffrac{\mathit{frac}}\)
 \(h(k) = \lfloor m * \ffrac(k·A)\rfloor\), where \(A\) is a constant between 0 and 1
-(e.g., Knuth recommends \(φ&minus;1 = 0.618033...\)), and the function \(\ffrac\)
-gives the fractional part of a number (that is, \(\ffrac(x) = x - &lfloor;x&rfloor;)\).
-This formula uses the fractional part of the product \(k·A\)
+(e.g., Knuth recommends \(A = φ&minus;1 = 0.618033...\)), and the function \(\ffrac\)
+gives the fractional part of a number: \(\ffrac(x) = x - &lfloor;x&rfloor;\).
+Thus, the formula for \(h(k)\) uses the fractional part of the product \(k·A\)
 to choose the bucket.
 </p>
 <p>
 However, the formula above is not the best way to evaluate this hash function.
-If \(m\) is some power of two (\(m = 2^{j}\)), we can scale up the
+If \(m\) is some power of two (that is, \(m = 2^{j}\)), we can scale up the
 multiplier \(A\) by \(2^{32}\) to obtain a 32-bit integer.
 For example, Knuth's multiplier becomes \(A = 2^{32}·(φ-1) &equiv; &minus;1640531527 \mod 2^{32}\).
 We can then evaluate the hash function cheaply as follows,
@@ -530,16 +532,18 @@ having a method <code>hashCode()</code> that is used to compute
 the hash of an object.  The <code>hashCode()</code> method as
 defined by Java is not a hash function.  As shown in the figure,
 it generates the <em>input</em> to an internal integer hash function,
-denoted as <code>h()</code>, which is provided by the hash table.
+denoted as <code>h(m)</code>, which is provided by the hash table.
+The internal hash function depends on the number of buckets <code>m</code>,
+whereas <code>hashCode()</code> does not.
 Therefore, the actual hash function used by the hash
 table is the <em>composition</em> of the two methods:
-<code>h</code> ○ <code>hashCode</code>.
+<code>h(m)</code> ○ <code>hashCode</code>.
 </p>
 <p>
-The job of <code>hashCode()</code> is to hash a key object to
-an <code>int</code> rather than to a number in \([0,m)\).
-We discuss the properties of a good integer hash
-function and ways to obtain it below, but for now, assume that we have one.
+In this arrangement, the job of <code>hashCode()</code> is to hash a key object
+to the domain of the internal hash function (<code>int</code>) rather than to a
+number in \([0,m)\).  We discuss the properties of a good integer hash function
+and ways to obtain it below, but for now, assume that we have one.
 </p>
 
 <h2>Generating hash codes</h2>
@@ -786,11 +790,11 @@ class Point3D {
 </ul>
 
 <p>One Java pitfall to watch out for arises because Java's collection classes
-also override <code>hashCode()</code> to compute the hash from the current
+override <code>hashCode()</code> to compute the hash from the current
 contents of the collection, as if Java collections were immutable.  This way of
 computing the hash code is dangerous, precisely because collections are
-<em>not</em> immutable.  Mutating the collection used as the key will change
-its hash code, breaking the class invariant of the hash table.  Any collection
+<em>not</em> immutable.  Mutating a collection used as a key will change
+its hash code, breaking the class invariant of the hash table. Therefore, any collection
 being used as a key must not be mutated.
 </p>
 
@@ -841,7 +845,7 @@ is higher than that, it indicates the hash function is doing worse than random.
 If lower, it is better than random, which can happen when the data being hashed
 has structure that interacts in a felicitous way with the hash function being used.
 For example, if the keys are sequential integers, and the hash function
-is just "mod \(m\)", the keys will be distributed as evenly as possible among
+is just “mod \(m\)”, the keys will be distributed as evenly as possible among
 the buckets, more evenly than if they were mapped randomly onto buckets.
 In general, you should not count on this happening!
 </p>
@@ -874,7 +878,7 @@ C = {
 \]
 
 <p>
-Appealingly, this measure is not affected by the load factor of the hash table.
+Appealingly, this measure is not affected much by the load factor of the hash table.
 A uniform hash function produces clustering \(C\) near 1.0 with high probability.
 A clustering measure \(C\) that is
 greater than one means that clustering slows down the performance of the hash table by
