@@ -86,6 +86,10 @@ div.floatfigure { display: float;
                   text-align: center;
 		  page-break-inside: avoid; }
 div.floatfigure pre {text-align: left }
+div.figure canvas, div.floatfigure canvas {
+    width: 300px;
+    height: 200px
+}
 img.whitebg {background-color: white}
 pre {
     padding: 1ex 2em;

@@ -17,7 +17,7 @@ can be used to represent a set of keys.
 </p>
 <p>
 Here are the data structures we've seen so far, with the asymptotic complexities
-for each of their operations:
+for each of their main operations:
 </p>
 <center>
 <table class=rowlines>
@@ -37,7 +37,7 @@ for each of their operations:
 <p>
 Naturally, we might wonder if there is a data structure that can do better.
 And it turns out that there is: the <strong>hash table</strong>, one of the best and
-most useful data structures there is—when used correctly.
+most useful data structures—when used correctly.
 </p>
 <p>
 Many variations on hash tables have been developed. We'll explore the most
@@ -45,16 +45,37 @@ common ones, building up in steps.
 </p>
 <h2>Step 1: Direct address tables</h2>
 <p>
-While arrays make a slow data structure when you don't know what index to look
-at, all of their operations are very fast when you do. This is the insight
-behind the <strong>direct address table</strong>. Suppose that for each element that
+While arrays are a slow implementation of maps and sets when you don't know the right index to
+look at, all of their operations are very fast when you do. This insight underlies
+the <strong>direct address table</strong>. Suppose that for each element that
 we want to store in the data structure, we can determine a unique integer index
 in the range \(0\dots m-1\). That is, we need an <strong>injective</strong> function that maps
 elements (or keys) to integers in the range. Then we can use the indices produced
 by the function to decide at which index to store the elements in an array of size \(m\).
 </p>
 <div class="floatfigure">
-<img src="dat.png" alt="direct address table" />
+<canvas id="dat-figure" style="width:350px"></canvas>
+<script class=graphics>
+with (new CFigure("dat-figure")) {
+    const arr = rectangle().setW(55).setFillStyle(null), m = margin()
+    align("none", "TB", arr, m)
+    const key = label("key: 29 Pine St")
+    const cell29 = rectangle()
+    const obj = varBoxes("=House", "address=29", "street=Pine", "color=blue")
+    align("LR", "none", cell29, arr)
+    arrow(key.toRight(5), cell29.toLeft(20))
+    align("distribute", "none", key, arr, obj.getVar(0))
+    align("none", "TB", cell29, obj.getVar(0))
+    align("left", "none", key, m)
+    align("right", "none", obj, m)
+    align("none", "center", key, cell29)
+    align("left", "abut", label("28"),
+        group(label("29"), hspace(4).setH(0), cell29).align("abut", "center"),
+        label("30")
+    )
+    pointer(cell29, obj.getVar(0))
+}
+</script>
 </div>
 <p>
 For example, suppose we are maintaining a collection of objects representing
@@ -93,6 +114,7 @@ is performed by a <strong>hash function</strong>;
 it maps the key in a reproducible way to a <strong>hash value</strong> that
 is a legal array index.
 </p>
+<p>
 If the hash function is good, it will distribute
 the values fairly evenly, so that collisions occur infrequently, as if at random.
 In particular, what we want from the hash function is that for any two
