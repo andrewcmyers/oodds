@@ -82,8 +82,8 @@ For example, suppose we are maintaining a collection of objects representing
 houses on the same street. We can use the street address as the index into a
 direct address table. For example, to find the house at 29 Pine St, we might
 use the index 29, as shown in the figure on the right. Not every possible
-street address will be used, so some array entries will be empty. This is not a
-problem as long as there are not too many empty entries.
+street address will be used, so some array entries will be empty. Empty entries
+are not a problem as long as there are not too many of them.
 </p>
 <p>
 However, it is often hard to come up with an injective function that
@@ -276,41 +276,51 @@ all the elements in the hash table to be rehashed. We have to search
 the array for the nonempty buckets, hash all the elements, and add
 them to the new table. This will take time \(O(n)\)
 (provided \(n\) is at least a constant fraction of the
-size of the array). For a large hash table, this may take enough time
-that it causes problems for the program. Perhaps surprisingly, however,
+size of the array). For a large hash table, rehashing may take enough time
+that it causes problems for programs that cannot tolerate the pause.
+Perhaps surprisingly, however,
 the expected cost per operation is still \(O(1)\). In
 particular, any sequence of \(n\) operations on the hash table always takes
 expected time \(O(n)\), or \(O(1)\)
 per operation. Therefore we say that the <strong>amortized</strong> asymptotic
 complexity of hash table operations is \(O(1)\). </p>
 <p>
-To see why this is true, consider a hash table with \(α_{max} = 1\). Starting
-with a table of size 1, say we add a sequence of \( n = 2^{j} \) elements.
-The hash table resizes after 1 add, then again after 2 more adds, then again after 4 more adds, etc.
-Not counting the array resizing, the cost of adding the \(n\) elements is \(O(n)\) on average.
+To see why this is true, consider the worst case: inserting a series of elements
+into a hash table in a way that maximizes the number of rehashes. Suppose we have
+a hash table with \(α_{max} = 1\). To maximize rehashes, we start
+with a table of size 1, and add a sequence of \( n = 2^{j} \) elements, causing
+rehashes at every power of 2, including the final add. Adding \(2^j\) elements
+requires \(n = 2^j\) initial hashes. In addition,
+the hash table resizes after 1 add, then again after 2 more adds, then again after 4 more adds, etc.
 The cost of all the resizings is (a constant multiple of)
-\(1 + 2 + 4 + 8 + ⋅⋅⋅ + 2^{j} = 2^{j+1}&minus;1 = 2n&minus;1\), which is
-\(O(n)\).
+\(1 + 2 + 4 + 8 + ⋅⋅⋅ + 2^{j} = 2^{j+1}&minus;1 = 2n&minus;1\). Putting the initial
+hashes and the rehashes together, there are \(3n-1\) hashes in total, which is
+still \(O(n)\)!
 </p>
 <p>
-Notice that it is crucial that the array size grow geometrically
-(doubling).  It may be tempting to grow the array by a fixed increment
-(e.g., 100 elements at time), but this causes \(n\)
-elements to be rehashed \(O(n)\) times on average,
-resulting in \(O(n^{2})\) total insertion time,
-or amortized complexity of \(O(n)\).
+Notice that it is crucial that the array size grow geometrically (doubling).
+It may be tempting to grow the array by a fixed increment (e.g., 100 elements
+at time), but this causes \(n\) elements to be rehashed \(O(n)\) times on
+average, resulting in \(O(n^{2})\) total insertion time, or amortized
+complexity of \(O(n)\).
+</p>
+<p>
+One way to think about this amortized analysis is that adding an element actually takes
+3 times as long it seems to. Most adds only cause a single hash to be done, but then
+“prepay” for two later hashes so that the total number of hashes is never more than 3 times
+the number of elements added.
 </p>
 
 <h2>Hash functions</h2>
 
-<p>A good hash function is one that avoids collisions. If we know
-what all the keys are in advance, we can in principle design a <em>perfect hash
-function</em> that hashes each key to a distinct bucket. In general, we
+<p>A good hash function avoids collisions. If we know
+all the keys are in advance, we may be able to design a <em>perfect hash
+function</em> that hashes each key to a distinct bucket. In that case,
+our hash table becomes a direct address table. But in general, we
 can't design a perfect hash function.
 </p>
 <p>
-If we don't know something about what the keys will be in advance, the best
-we do is to have a hash function that seems random. An idealized hash function
+An idealized hash function
 is one that satisfies the <strong>simple uniform hashing assumption</strong>: it behaves
 as if it generates each bucket index randomly with equal probability whenever
 it sees a new key; whenever it is given the key later, it returns the same
@@ -320,11 +330,11 @@ bucket index. Such an idealized hash function is called a <strong>random oracle<
 It would be impractical to implement a hash function that behaves in exactly this way,
 but we can implement a hash function that is close enough. One way to think about
 the problem of designing hash functions is that there is an adversary generating
-keys and trying to cause collisions. Our job as a hash function designer is to
+keys and trying to cause collisions. The job of the hash function designer is to
 pick a hash function that defeats the adversary: that makes it unlikely that the
 adversary will generate collisions. Of course, often this “adversary” is not
-really an adversary at all; it's the program generating keys in a way that relates
-to the computation being done. But in other settings, there really is an adversary
+really an adversary at all; it's the rest of the program generating keys in a way that relates
+to the computation being done. But some settings, there really is an adversary
 influencing the choice of keys.
 </p>
 <p>
