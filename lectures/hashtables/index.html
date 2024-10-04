@@ -137,16 +137,14 @@ function hashfn(f, txt) {
         .addText(txt)
     return p
 }
-function small_word(fig, i) {
-    with (fig) {
-    const result = rectangle().setW(45).setH(15)
-    label(`${i}`).at(result.cl().toLeft(10)).setFontSize(10)
+function small_word(fig, i, nolabel) {
+    const result = fig.rectangle().setW(45).setH(15)
+    if (!nolabel) fig.label(`${i}`).at(result.cl().toLeft(10)).setFontSize(10)
     return result
-    }
 }
-function small_words(fig, n) {
+function small_words(fig, n, nolabel) {
     const arr = []
-    for (let i = 0; i < n; i++) arr[i] = small_word(fig, i)
+    for (let i = 0; i < n; i++) arr[i] = small_word(fig, i, nolabel)
     return arr
 }
 const hashfn_fig = new CFigure("hashfn")
@@ -417,10 +415,31 @@ To avoid trying to predict how big to make the bucket array ahead of time,
 we can use a <strong>resizable array</strong> to dynamically adjust the size when necessary.
 Instead of representing the hash table as a bucket array, we introduce a hash table
 object that maintains a pointer to the current bucket array and the
-number of elements that are currently in the hash table.
+number of elements that are currently in the hash table. This <strong>header object</strong>
+is depicted in the figure on the right.
 </p>
 <div class="floatfigure">
-<img src="resizing.png" alt="resizable array" />
+<canvas id="resizing_fig" style="width: 250px; height:120px"></canvas>
+<script class=graphics>
+let resizing_fig
+with (resizing_fig = new CFigure("resizing_fig")) {
+    const m = margin()
+    setConnectionStyle("intersection")
+    const header_label = label("header object").setFontStyle("bold")
+    const header = varBoxes("size=n", "buckets=")
+    const arr = small_words(resizing_fig, 7, true)
+    vertLine(arr[0].ur().toRight(7),
+        arr[arr.length-1].lr().toRight(7)).setEndArrow("curved").setStartArrow("curved")
+        .addLabel('m', 0.5, 7, 2)
+    pointer(header.getVar(1), arr[0].toLeft(30), arr[0])
+
+    group(arr).align("center", "abut")
+    align("left", "abut", header_label, vspace(5), header)
+    align("none", "top", arr[0], m)
+    align("left", "top", header_label, m)
+    align("abut", "none", header, hspace(40), arr[0])
+}
+</script>
 </div>
 <p>
 If adding an element would cause \(α\) to exceed \(α_{max}\),
@@ -527,7 +546,71 @@ but it should be avoided; the <code>HashMap</code> class is faster and better
 designed.
 </p>
 <div class="floatfigure">
-<img src="hashcode.png" alt="hashCode()" />
+<canvas id="hashcode_fig"></canvas>
+<script class=graphics>
+const hashcode_fig = new CFigure("hashcode_fig")
+with (hashcode_fig) {
+    const hm_bkgd = rectangle().setCornerRadius(6).setFillStyle('white').setOpacity(0.5)
+    const key = label("key"), m = margin(3)
+    const h1 = hashfn(hashcode_fig, "hashCode()").setW(100).setH(30)
+    const h2 = hashfn(hashcode_fig, "h(m)").setH(30)
+    equal(key.x(), h1.x())
+    equal(key.y0(), margin().y0())
+    align("abut", "abut", h1, box().setW(10).setH(25), h2)
+    const arr = small_words(hashcode_fig, 7, true)
+    vertLine(arr[0].ur().toRight(7),
+        arr[arr.length-1].lr().toRight(7)).setEndArrow("curved").setStartArrow("curved")
+        .addLabel('m', 0.5, 7, 2)
+
+    let g = group(arr).align("center", "abut")
+
+    const hm_frame = rectangle().setCornerRadius(6).setFillStyle(null).setLineWidth(3)
+    pin(hm_frame, hm_bkgd)
+    sameSize(hm_frame, hm_bkgd)
+    hm_frame.addText("HashMap").setVerticalAlign("top")
+    equal(hm_frame.x0(), plus(h2.x0(), -10), plus(h1.x1(), 10))
+    equal(hm_frame.y1(), m.y1())
+    equal(hm_frame.y0(), m.y0())
+    equal(hm_frame.x1(), m.x1())
+    equal(g.x1(), minus(hm_frame.x1(), 22))
+
+    // arrows
+    saveStyle()
+        setLineDash([4,4])
+        arrow(key, h1)
+        const p4 = point(h1.x(), plus(h1.y1(), 5))
+        const p5 = point(h2.x(), p4.y())
+        arrow(h1, p4, p4, p5, p5, h2)
+        const p6 = point(h2.x(), plus(h2.y1(), 10))
+        const p7 = point(variable("x7"), p6.y())
+        const p8 = point(p7.x(), arr[4].y())
+        arrow(h2, p6, p6, p7, p7, p8, p8, arr[4].cl())
+        align("distribute", "none", h2.lc(), p7, arr[4].cl())
+    restoreStyle()
+
+    label("int").at(p4.toBottom(10).toRight(30))
+
+    saveStyle()
+    const note_color = '#468'
+      setStrokeStyle(note_color)
+      setTextStyle(note_color)
+      setFontStyle("italic")
+    const note1 = textFrame().addText("provided by client")
+        .setW(70).setH(40).setVerticalAlign("top").setJustification("left")
+
+
+    align("left", "none", note1, m)
+    align("none", "abut", h1, vspace(20), note1)
+    line(note1.ul().toRight(10), h1.center().toBottom(15).toLeft(15)).setEndArrow("bullet")
+
+    const note2 = textFrame().setW(100).setH(40).addText("provided by implementer")
+        .setVerticalAlign("top").setJustification("left").setInset(2)
+    align("left", "bottom", note2.expand(2), hm_frame)
+    line(note2.ul().toRight(10), h2.center().toBottom(10)).setEndArrow("bullet")
+    restoreStyle()
+}
+</script>
+<p class=caption>Hashing as a composition of hash functions</p>
 </div>
 <p>
 All three of these hash table implementations rely on objects
