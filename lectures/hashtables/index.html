@@ -756,16 +756,7 @@ h(k) = (k*A) &gt;&gt;&gt; (32&minus;j)
 when integers are multiplied, only the low 32 bits of the result are retained. We
 only want bits from the low 32 bits of the product anyway.
 </p>
-<p>
-Implemented properly, multiplicative hashing is faster and offers better diffusion
-than modular hashing. Intuitively, multiplying together two
-large numbers diffuses information from each of them into the product,
-especially around the middle bits of the product. The formula above picks out
-<code>j</code> bits from the middle of the product \(k·A\).
-If we visualize what happens when we multiply two 32-bit numbers, we can see that
-every bit of <code>k</code> can potentially affect those <code>j</code> bits:
-</p>
-<div class=figure><canvas id="multiplication" style="width: 300px; height: 200px"></canvas></div>
+<div class=floatfigure><canvas id="multiplication" style="width: 200px; height: 200px"></canvas></div>
 <script class=graphics>
 with (new CFigure("multiplication")) {
     function word() {
@@ -807,6 +798,16 @@ with (new CFigure("multiplication")) {
     label("j").setX(average(lr.x(), ll.x())).setY(sum.y()).setFontSize(9)
 }
 </script>
+<p>
+Implemented properly, multiplicative hashing is faster and offers better diffusion
+than modular hashing. Intuitively, multiplying together two
+large numbers diffuses information from each of them into the product,
+especially around the middle bits of the product. The formula above picks out
+<code>j</code> bits from the middle of the product \(k·A\).
+If we visualize what happens when we multiply two 32-bit numbers, we can see that
+every bit of <code>k</code> can potentially affect those <code>j</code> bits,
+as shown on the right.
+</p>
 
 <p>Unfortunately, multiplicative hashing is often implemented incorrectly
 and has unfairly acquired a bad reputation in some quarters because of it.
