@@ -267,9 +267,9 @@ setConnectionStyle("intersection")
     equal(node1.x1(), empl1.x0())
     equal(node2.x1(), empl2.x0())
     equal(node1.y0(), plus(empl1.y1(), 30))
-
 }
 </script>
+<p class=caption>Hash table with chaining</p>
 </div>
 <p>To check whether an element is in the hash table, the key is first
 hashed to find the correct bucket to look in, then the linked list is scanned
@@ -285,7 +285,51 @@ lists.
 </p>
 <h3>Probing</h3>
 <div class="floatfigure">
-<img src="probing.png" alt="open addressing" />
+<canvas id="probing_fig" style="width: 450px"></canvas>
+<script class=graphics>
+const probing_fig = new CFigure("probing_fig")
+with (probing_fig) {
+    setConnectionStyle("intersection")
+    const lb10 = label("130000010")
+    const ssn = label("452321776")
+    const h = hashfn(probing_fig, "key % 13")
+    const m = margin()
+    const arr = small_words(probing_fig, 13)
+    const mem = group(...arr).align("LR", "abut")
+    const p4 = point(h.x(), arr[10].y())
+    saveStyle()
+        setLineDash([4,4])
+        arrow(h.lc(), p4, p4, p4, point(minus(arr[10].x0(), 18), arr[10].y()))
+        arrow(lb10, h)
+        arrow(ssn, h)
+    restoreStyle()
+    align("none", "top", lb10, ssn, margin())
+    align("abut", "none", lb10, hspace(40), ssn)
+    align("center", "none", average(lb10, ssn), h)
+    align("none", "TB", mem, m)
+    align("none", "top", arr[0], m)
+    align("none", "bottom", arr[arr.length - 1], m)
+    align("abut", "none", ssn, hspace(40), mem)
+    align("left", "none", lb10, m)
+
+    setFontSize(10)
+    const empl1 = varBoxes("=Employee", "ssn=130000010", "salary=53k"),
+          empl2 = varBoxes("=Employee", "ssn=452321776", "salary=86k")
+
+
+    align("right", "abut", empl1, vspace(30), empl2)
+    align("right", "none", empl1, m)
+    pointer(arr[10], empl1.getVar(0).toLeft(50), empl1.getVar(0))
+    pointer(arr[11], empl2.getVar(0).toLeft(50), empl2.getVar(0))
+    setStrokeStyle("#68c")
+    arrow(arr[10].cr(), arr[10].cr().toRight(30), arr[11].cr().toRight(30), arr[11].cr())
+        .setLineDash([2,2])
+        .setEndArrow("curved")
+
+setConnectionStyle("intersection")
+}
+</script>
+<p class=caption>Hash table with linear probing (stride 1)</p>
 </div>
 <p>
 Another approach to collision resolution is
@@ -299,8 +343,8 @@ through the array indices with a fixed stride (usually 1) for the next unused ar
 entry, wrapping modulo the length of the array if necessary. This strategy
 is called <strong>linear probing</strong>. It tends to produce a lot of
 clustering of elements, leading to poor performance. A better
-strategy is to use a second hash function to compute the probing interval;
-this strategy is called <strong>double hashing</strong>. Removing an element
+strategy is <strong>double hashing</strong>, in which a second hash function
+is used to determine the probing interval.  Removing an element
 from a hash table is not as straightforward because simply removing the array
 element could mislead a probe for a different element. Instead, the element
 must remain but be marked as deleted, perhaps by changing the array entry to
