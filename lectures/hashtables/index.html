@@ -351,13 +351,8 @@ the problem of designing hash functions is that there is an adversary generating
 keys and trying to cause collisions. The job of the hash function designer is to
 pick a hash function that defeats the adversary: that makes it unlikely that the
 adversary will generate collisions. Of course, often this “adversary” is not
-<<<<<<< HEAD
-really an adversary at all; it's the rest of the program generating keys in a way that relates
+really an adversary at all; it is the rest of the program generating keys in a way that relates
 to the computation being done. But some settings, there really is an adversary
-=======
-really an adversary at all; it is the program generating keys in a way that relates
-to the computation being done. But in other settings, there really is an adversary
->>>>>>> c78820252e48aedca6fd46573f48afc5f4a8a603
 influencing the choice of keys.
 </p>
 <p>
@@ -391,7 +386,8 @@ All three of these hash table implementations rely on objects
 having a method <code>hashCode()</code> that computes
 the hash of an object as an <code>int</code> value. In fact,
 all Java objects have such a method, inheriting it from
-the base implementation <code>Object.equals()</code>.
+the base implementation <code>Object.equals()</code> unless
+overridden.
 </p>
 <p>
 The
@@ -408,9 +404,9 @@ table is the <em>composition</em> of the two methods:
 </p>
 <p>
 In this arrangement, the job of <code>hashCode()</code> is to hash a key object
-to the full domain of the internal hash function (<code>int</code>) rather than to a
-number in \([0,m)\). The job of the internal hash function is to convert an
-arbitary <code>int</code> into a number in \([0,m)\).
+to the full domain of the internal hash function (<code>int</code>) rather than just
+to an integer in \([0,m)\). The job of the internal hash function is to convert an
+arbitary <code>int</code> into an integer in \([0,m)\).
 As long as at least one of these two methods provides adequate diffusion, their
 composition will too.
 In the current
@@ -431,24 +427,23 @@ is used by the hash table to determine when it has found the right element or ke
 Otherwise the hash table might look in the wrong bucket.
 </p>
 
-<p>In fact, it is a general class invariant of Java classes that if two objects
-are equal according to <code>equals()</code>, then their <code>hashCode()</code> values
-must be the same. Many classes in the Java system library do a quick check for equality
-of objects by comparing their hash values and returning <code>false</code> if they
-are not equal. If the invariant did not hold, there would be false negatives.
-If you ever override the <code>equals()</code> method, this invariant requires
-you to correspondingly update the <code>hashCode()</code> method.
+<p>In fact, it is a general requirement for Java types that if two objects
+are equal according to the method <code>equals()</code>, then the values of <code>hashCode()</code>
+must be equal too.
+Therefore, if you ever override the <code>equals()</code> method,
+you must correspondingly update <code>hashCode()</code>.
 </p>
 </li>
 <li>
 <p>
-The <code>hashCode()</code> function should also be as injective as possible. That
-is, hashing two unequal keys should be unlikely to produce the same hash code.
-This goal implies that the hash
-code should be computed using all of the information in the object that
-determines equality. If some of the information that distinguishes two objects
-does not affect the hash code, objects will always collide when they differ
-only with respect to that ignored information.
+The <code>hashCode()</code> function should also be collision-resistant.  Part
+of avoiding collisions is that it should be as injective as possible. That is,
+hashing two unequal keys should be unlikely to produce the same hash code.
+This goal implies that the hash code should be computed using <em>all</em>
+information in the object that affects its equality to other objects. If some
+information that distinguishes two objects does not affect the hash code,
+objects that differ only with respect to that ignored information will always
+collide.
 </p></li>
 </ol>
 <p>
@@ -752,28 +747,24 @@ is implemented as multiplication by \(x\), and addition is substituted for
 exclusive or. (In fact, the polynomial can be evaluated using exclusive or
 as well.) For example, if we wanted to hash all the values in an array of integers,
 code like the following efficiently performs the necessary polynomial
-evaluation (mod \(2^{32}\)), assuming an appropriate constant \(x\):
+evaluation (mod \(2^{32}\)), assuming an appropriate constant \(x\) and
+initialization vector <code>IV</code>:
 </p>
 <pre>
 int[] data;
-int result = 0;
+int result = IV;
 for (int i = 0; i < data.length; i++) {
     result = result * x + data[i];
 }
 return result;
 </pre>
-<p>For added variability, the initial value of <code>result</code> can be
-set to a random initialization vector.
-</p>
 
-
-<h3>Java tips</h3>
+<h3>Java hashing tips</h3>
 <p>
-If writing a loop to implement the diagram above seems like too much work, a
-useful trick for constructing a good <code>hashCode()</code> method is to
-leverage the fact that Java <code>String</code> objects implement
-<code>hashCode()</code> in this way, using the characters of the string as the
-data values. If your class defines a <code>toString()</code> method in such a
+Fortunately, the above methods for combining data to construct a hash are
+provided by existing Java libraries.  One useful trick for constructing a good
+<code>hashCode()</code> method is to lean on the <code>hashCode()</code> method
+of strings.  If your class defines a <code>toString()</code> method in such a
 way that it returns the same strings when two objects are equal, then
 <code>hashCode()</code> can simply return the hash of that string!
 </p>
@@ -785,14 +776,15 @@ way that it returns the same strings when two objects are equal, then
 </pre>
 <p>However, note that if two unequal objects have the same
 <code>toString()</code> output, they will <em>always</em> collide in the hash
-table if this <code>hashCode()</code> function is used. For the best
-performance, we would want <code>toString()</code> to return the same string
+table. For the best
+performance, <code>toString()</code> should return the same string
 <em>exactly</em> when the two objects are equal.
 </p>
 <p>
-Converting to a string is probably unnecessary overhead; Java also offers
+Converting to a string is simple but adds usually unnecessary overhead; Java also offers
 two standard methods for constructing high-quality hash codes from a sequence
 of data:
+</p>
 
 <ul>
 <li><code>Arrays.hashCode(Object[])</code>: Given an array containing a
@@ -831,7 +823,7 @@ override <code>hashCode()</code> to compute the hash from the current
 contents of the collection, as if Java collections were immutable.  This way of
 computing the hash code is dangerous, precisely because collections are
 <em>not</em> immutable.  Mutating a collection used as a key will change
-its hash code, breaking the class invariant of the hash table. Therefore, any collection
+its hash, breaking the class invariant of the hash table. Therefore, any collection
 being used as a key must not be mutated.
 </p>
 
@@ -841,7 +833,7 @@ being used as a key must not be mutated.
 High-quality hash functions can be expensive. If the same values are
 being hashed repeatedly, one trick is to precompute their hash codes
 and store them with the value. Hash tables can also store the full hash
-codes of values, which makes scanning down one bucket fast; there is no
+codes of values, which speeds up scanning a bucket: there is no
 need to do a full equality test on the keys if their hash codes don't
 match. In fact, if the hash code is long and the hash function is
 cryptographically strong (e.g., 64+ bits of a properly constructed MD5
@@ -897,38 +889,32 @@ sizes than one would expect from a random hash function.
 <p>
 In particular, if bucket \(i\) contains \(x_i\) elements, clustering can be
 measured by computing the sum of the squares of the sizes of the buckets \(\left(\sum {x_i}^2\right)\) and
-comparing it to the expected value. If the hash function satisfies the uniform
-hashing assumption and \(M\) buckets are summed over, this expected value is:
+comparing it to the expected value.
+
+Therefore, a reasonable way to measure clustering \(C\) is the following:
 \[
-    M α (1 - 1/m + α)
-\]
-</p>
-<p>
-Therefore, a reasonable way to measure clustering \(C\) is as the ratio of the
-sum of squares and this quantity:
-\[
-C = {
-        \sum {x_i}^2
-        \over
-        {M α (1 - 1/m + α)}
-    }
+C = 
+        \left({1\over n}\sum {x_i}^2\right) - \alpha
 \]
 
 <p>
-Appealingly, this measure is not affected much by the load factor of the hash table.
-A uniform hash function produces clustering \(C\) near 1.0 with high probability.
-A clustering measure \(C\) that is
-greater than one means that clustering slows down the performance of the hash table by
-approximately a factor of \(C\).
-For example, if \(m = n\) and all elements are hashed into one bucket, the
-clustering measure is approximately \(n/2\). If the hash function is
-perfect and every element lands in its own bucket, the clustering measure
-will be 0. If the clustering measure is less than 1.0, the hash
+Appealingly, this measure is not affected much by the load factor of the hash
+table.  A uniform hash function produces clustering \(C\) near 1.0 with high
+probability.  A clustering measure \(C\) that is greater than one means that
+clustering slows down the performance of the hash table by approximately a
+factor of \(C\).  For example, if \(m = n\) and all elements are hashed into
+one bucket, the clustering measure is approximately \(n/2\). If the hash
+function is perfect and every element lands in its own bucket, the clustering
+measure will be 0. If the clustering measure is less than 1.0, the hash
 function is spreading elements out more evenly than a random hash function
 would.
 </p>
 <p>
 Note that it is not necessary to compute the sum of squares of <i>all</i> bucket
-lengths; picking enough buckets—at random—so that enough keys are counted (say,
-at least \(M = 100\)) is probably good enough.
+lengths; picking \(N\) buckets—at random—so that enough keys are counted (say,
+at least \(N = 100\)) is probably good enough. In that case we adjust
+the formula for \(C\) accordingly:
+\[
+C = \left({1\over N}\sum{x_i}^2\right) - \alpha
+\]
 </p>
