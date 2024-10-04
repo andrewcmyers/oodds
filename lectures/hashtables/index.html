@@ -564,7 +564,7 @@ with (hashcode_fig) {
 
     let g = group(arr).align("center", "abut")
 
-    const hm_frame = rectangle().setCornerRadius(6).setFillStyle(null).setLineWidth(3)
+    const hm_frame = rectangle().setCornerRadius(6).setFillStyle(null).setLineWidth(2)
     pin(hm_frame, hm_bkgd)
     sameSize(hm_frame, hm_bkgd)
     hm_frame.addText("HashMap").setVerticalAlign("top")
@@ -965,6 +965,7 @@ an initialization vector: \( H_1 = h(d_1 ⊕ IV) \), where
 the initialization vector \(IV\) is chosen at the start
 of the application.
 </p>
+<!--
 <p>
 A related way to generate hash codes is to think of them as involving
 the evaluation of a polynomial whose coefficients are the data going into
@@ -989,12 +990,13 @@ for (int i = 0; i < data.length; i++) {
 }
 return result;
 </pre>
+-->
 
 <h3>Java hashing tips</h3>
 <p>
-Fortunately, the above methods for combining data to construct a hash are
-provided by existing Java libraries.  One useful trick for constructing a good
-<code>hashCode()</code> method is to lean on the <code>hashCode()</code> method
+Fortunately, methods for combining data to construct a hash are already
+provided by existing Java libraries.  One trick for constructing a good
+<code>hashCode()</code> is to lean on the <code>hashCode()</code> method
 of strings.  If your class defines a <code>toString()</code> method in such a
 way that it returns the same strings when two objects are equal, then
 <code>hashCode()</code> can simply return the hash of that string!
@@ -1012,9 +1014,9 @@ performance, <code>toString()</code> should return the same string
 <em>exactly</em> when the two objects are equal.
 </p>
 <p>
-Converting to a string is simple but adds usually unnecessary overhead; Java also offers
-two standard methods for constructing high-quality hash codes from a sequence
-of data:
+Converting to a string is simple but often adds unnecessary overhead; for
+better performance, Java offers two standard methods for constructing
+high-quality hash codes from a sequence of data:
 </p>
 
 <ul>
