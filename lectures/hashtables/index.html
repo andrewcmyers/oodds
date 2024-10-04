@@ -959,40 +959,39 @@ they should, and some will have fewer. Bucket
 sizes will vary more than one would expect from a random hash function.
 </p>
 <p>
-In particular, if bucket \(i\) contains \(x_i\) elements, clustering can be
-measured by computing the sum of the squares of the sizes of the buckets \(\left(\sum {x_i}^2\right)\) and
-comparing it to the expected value. If the hash function satisfies the uniform
+The average size of a bucket is the load factor \(α\). A given
+if bucket \(i\) contains \(x_i\) elements, which deviates from
+the expected size by \(x_i - α\). Clustering can be
+measured by computing the sum of the squares of these deviations:
+\(\sum \left({x_i} - α\right)^2\). This sum can then be
+compared to its expected value. If the hash function satisfies the uniform
 hashing assumption and \(M\) buckets are summed over, this expected value is:
 \[
-    Mα(1 - 1/m + α)
+    Mα(1 - 1/m)
 \]
 </p>
 <p>
 Therefore, a reasonable way to measure clustering \(C\) is as the ratio of the
-sum of squares and this quantity:
+sum of square deviations taken over \(M\) buckets and this quantity:
 \[
 C = {
-        \sum {x_i}^2
+        \sum^M {(x_i - α)}^2
         \over
-        {Mα(1 - 1/m + α)}
+        {Mα(1 - 1/m)}
     }
 \]
 
 <p>
 Appealingly, this measure is not affected much by the load factor of the hash table.
-A uniform hash function produces clustering \(C\) near 1.0 with high probability.
+A uniform hash function produces clustering \(C\) near 1.0 with high probability when
+\(n\) is large.
 A clustering measure \(C\) that is
 greater than one means that clustering slows down the performance of the hash table by
 approximately a factor of \(C\).
 For example, if \(m = n\) and all elements are hashed into one bucket, the
-clustering measure is approximately \(n/2\). If the hash function is
+clustering measure is approximately \(n\). If the hash function is
 perfect and every element lands in its own bucket, the clustering measure
 will be 0. If the clustering measure is less than 1.0, the hash
 function is spreading elements out more evenly than a random hash function
 would.
-</p>
-<p>
-Note that it is not necessary to compute the sum of squares of <i>all</i> bucket
-lengths; picking enough buckets?at random?so that enough keys are counted (say,
-at least \(M = 100\)) is probably good enough.
 </p>
