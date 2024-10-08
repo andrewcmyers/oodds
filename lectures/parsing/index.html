@@ -12,7 +12,23 @@ Our brains are remarkably good at parsing. When we hear a sentence like
 following diagram:
 </p>
 <div class="figure">
-<img src="simple-sentence.png" alt="parse tree of a simple sentence" />
+<canvas id="simple-sentence" style="width: 350px"></canvas>
+<script class=graphics>
+with (new CFigure("simple-sentence")) {
+    setFontStyle("italic")
+    setStyle('drawNode', function(f, v) {
+        if (v == null) return point()
+        if (v[0] == "*") return f.label(v.substring(1)).setFontStyle("bold")
+        return f.label(v)
+    })
+    setConnectionStyle("intersection")
+    const t = tree(null, "sentence", [ "noun phrase", ["article", "*the"], ["noun", "*rat" ]],
+                                     [ "verb phrase", ["verb", "*ate"] ],
+                                     [ "noun phrase", ["noun", "*cheese"]]
+                                     )
+    align("LR", "TB", t, margin(25))
+}
+</script>
 </div>
 <p>Notice that the leaves of the tree, in left-to-right order, spell
 out the sentence, but there are also some other nodes higher up in
@@ -26,10 +42,13 @@ a sentence at all, because it has no parse tree. This sequence of words
 is, in fact, a <strong>syntax error</strong>. 
 </p>
 <p>
-Parsing is performed by computers as well. Your Java programs are parsed
+Parsing is performed by computers as well. Java programs are parsed
 by the Java compiler. Even more mundane devices such as calculators
-use parsing to interpret mathematical expressions.
+use parsing to interpret mathematical expressions. Parsing complex input
+is a common need in computing systems, so it is important to know how to do it
+well.
 </p>
+<h2>Grammars</h2>
 <p>
 For programming languages, legal syntax is defined by a <strong>grammar</strong>,
 which specifies which input sequences have a parse tree.  While the
@@ -40,21 +59,33 @@ subtree of the parse tree (say, the possible subtrees of a “noun phrase”
 node, above) depends only on the node at the root of the subtree and not
 on the rest of the tree. 
 </p>
+<h3>Symbols</h3>
 <p>
-The grammar is defined in terms of <strong>terminal symbols</strong> (also
+The grammar is defined in terms of <strong>symbols</strong>.  There are two kinds of symbols:
+<strong>terminal symbols</strong> (also
 called <strong>tokens</strong>) and <strong>nonterminal symbols</strong>. The terminal symbols
 can appear as part of the input (e.g., “rat”) and appear in the parse
 tree only at its leaves. The nonterminal symbols (e.g., “noun phrase”)
 appear at all other nodes in the tree.
-There is usually a low-level preprocessing step called <strong>tokenization</strong>
-that reads a stream of raw input symbols and organizes them into a sequence of tokens
+</p>
+<p>
+There is usually a low-level preprocessing step called <strong>tokenization</strong>,
+<strong>scanning</strong>, or <strong>lexing</strong>,
+which reads a raw input stream (often a stream of bytes or characters)
+and organizes that data into a sequence of tokens
 to be presented to the parser. For example, when parsing the arithmetic expression
 <code>(42 + foo) * 2112</code>, a tokenizer might break the input up into a
-sequence of tokens (, 42, +, foo, ), *, and 2112.
+sequence of tokens: <code>(</code>, <code>42</code>, <code>+</code>, <code>foo</code>, <code>)</code>,
+<code>*</code>, and <code>2112</code>.
 </p>
-<h2>Productions</h2>
 <p>
-A context-free grammar is defined by a set of <strong>productions</strong> that
+<p>
+One of the nonterminal symbols is the <strong>start symbol</strong>.  The root of the parse tree is always
+the start symbol, although the start symbol may also occur elsewhere in the tree.
+</p>
+<h3>Productions</h3>
+<p>
+A context-free grammar also includes a set of <strong>productions</strong> that
 define how a single nonterminal can be expanded out into a longer
 series of symbols. A given nonterminal can have multiple
 different productions specifying alternative ways to expand it. For
@@ -76,13 +107,6 @@ parse tree above:
 As an abbreviation, when a single nonterminal has multiple productions,
 we write them all together on the right side separated by a vertical
 bar.
-</p>
-<p>
-One of the nonterminals in a context-free grammar is designated as
-the <strong>start symbol</strong>; it is the root of every possible parse tree.
-The leaves of the parse tree are terminals, and every other node
-is a nonterminal whose children correspond to one of the productions
-in the grammar.
 </p>
 <p>
 The <strong>language</strong> of a grammar is the set of strings of terminal symbols that
