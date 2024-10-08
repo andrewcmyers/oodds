@@ -105,8 +105,10 @@ parse tree above:
 </pre>
 <p>
 As an abbreviation, when a single nonterminal has multiple productions,
-we write them all together on the right side separated by a vertical
-bar.
+we can write them all together on the right side separated by a vertical
+bar. For example, the two productions for the nonterminal <i>noun-phrase</i>
+could have been expressed more compactly as
+<code><i>noun-phrase</i> → <i>noun</i> | <i>article</i> <i>noun</i></code>.
 </p>
 <p>
 The <strong>language</strong> of a grammar is the set of strings of terminal symbols that
@@ -138,12 +140,12 @@ terminals; the only nonterminal is the start symbol <i>E</i>.
 The symbol <b>n</b> stands for all possible numeric literals: 1, 2, 3, etc.
 </p>
 <p>
-With this grammar, a string like “2 + 3 × 5” has two possible parse trees, as shown:
+With this grammar, a string like “<code>2 + 3 × 5</code>” has two possible parse trees, as shown:
 </p>
 <div class="figure">
 <img src="two-parses.png" alt="parse trees of ambiguous expression" />
 <p class="caption">
-Two parse trees for “2+3×5”
+Two parse trees for “<code>2+3×5</code>”
 </p>
 </div>
 <p>
@@ -176,7 +178,7 @@ parse tree unless shielded by parentheses:
 <i>F</i> → <b>n</b> | ( <i>E</i> )
 </pre>
 <p>This grammar has exactly the same language as the above grammar but is unambiguous. For example,
-the example string parses uniquely as follows:
+the string “<code>2+3×5</code>” parses uniquely with this new grammar:
 </p>
 
 <div class="figure">
