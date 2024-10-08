@@ -159,7 +159,7 @@ with (new CFigure("loopinv_reasoning")) {
     align("none", "center", average(guard.lc(), p4), hspace(5), li3 = label("loop invariant"))
     align("center", "none", li3, average(p6, guard))
     arrow(guard, p4).setLineWidth(2)
-    align("left", "top", p1.toRight(8), label("precondition"))
+    align("left", "top", p1.toRight(8).toBottom(5), label("precondition"))
     let post = label("postcondition")
     align("left", "bottom", p6.toRight(8), post)
     align("right", "bottom", post, c)
