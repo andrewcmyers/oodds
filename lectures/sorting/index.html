@@ -343,10 +343,10 @@ proportional to the number of comparisons it makes, which can be as large as
 the longest path in this decision tree: that is, the height \(h\) of the decision tree. To express such a <em>lower bound</em>
 on running time, we cannot use big-O, because it talks about upper bounds.
 To express lower bounds we use big-<b>omega</b>. In this case, the
-running time of the sorting algorithm is \(Ω(h)\). But what do we know about \(h\)?
+running time of the sorting algorithm is \(\Omega(h)\). But what do we know about \(h\)?
 <p>
 In general, we say that a function \(f(n)\)
-is \(Ω(g(n))\) if
+is \(\Omega(g(n))\) if
 there exists some constant factor \(k\) and value
 \(n_0\) such that for large values of
 \(n\) (that is, where \(n &gt; n_0\), the inequality
@@ -364,13 +364,13 @@ From
 <a href="https://en.wikipedia.org/wiki/Stirling%27s_approximation">Stirling's formula</a>, we learn that
 \(\ln n!\) is \(O(n \ln n)\).
 Ignoring the constant factor of \(1/\ln(3)\), this result means
-that \(Ω(h) = Ω(n \lg n)\), as claimed. Hence, generic sorting
+that \(\Omega(h) = \Omega(n \lg n)\), as claimed. Hence, generic sorting
 algorithms cannot be faster in the worst case, even if they can be faster
 for particular inputs, such as the linear-time performance of
 insertion sort on an already-sorted array.
 </p>
 <p>
-Now we know that any sorting algorithm must take at least \(Ω(n \lg n)\) time. But that doesn't mean
+Now we know that any sorting algorithm must take at least \(\Omega(n \lg n)\) time. But that doesn't mean
 there is actually any algorithm with that running time. In fact, there <em>are</em> such asymptotically efficient
 sorting algorithms, such as merge sort and quicksort.
 </p>

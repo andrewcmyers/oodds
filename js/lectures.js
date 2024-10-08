@@ -65,12 +65,14 @@ function relativize(url, lecture_base, base) {
 function hide_answers() {
     const answers = document.getElementsByClassName("answer")
     for (const a of answers) {
-        a.style.display = 'none'
-        const show = EZDom.p({className: 'showAnswer'}, "(Show answer)")
-        a.parentNode.insertBefore(show, a)
-        show.onclick = (e) => {
-            a.style.display = 'block'
-            show.style.display = 'none'
+        if (a.style.display != 'none') {
+            a.style.display = 'none'
+            const show = EZDom.p({className: 'showAnswer'}, "(Show answer)")
+            a.parentNode.insertBefore(show, a)
+            show.onclick = (e) => {
+                a.style.display = 'block'
+                show.style.display = 'none'
+            }
         }
     }
 }

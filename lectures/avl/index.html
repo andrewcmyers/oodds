@@ -141,10 +141,11 @@ It turns out that the Fibonacci number can be computed with an exact, nonrecursi
 where \(φ\) is the <b>golden ratio</b> \((1+\sqrt{5})/2 ~~(≈ 1.618)\) and 
 \(\phib\) is its negative reciprocal \((1-\sqrt{5})/2 ~~(≈ -0.618)\).
 The golden ratio and its negative reciprocal share an interesting property:
-\(φ^2 = φ+1\) and \(\phib^2 = \phib+1\). This is true because they are
-the two roots of the quadratic polynomial \(x^2 - x - 1\).
-Multiplying both sides of the former equation by \(φ^{n-2}\)
-and both sides of the latter equation by \(\phib^{n–2}\), we can conclude
+\(φ^2 = φ+1\) and \(\phib^2 = \phib+1\). They are both numbers \(x\) such that
+\(x^2 = x + 1\), because they are
+the two solutions to the quadratic equation \(x^2 - x - 1 = 0\).
+Multiplying both sides of the equation on \(φ\) by \(φ^{n-2}\)
+and both sides of the equation on \(\phib\) by \(\phib^{n–2}\), we can conclude
 that for <em>any</em> exponent n,
 </p>
 \begin{align}
@@ -166,20 +167,20 @@ but not necessarily including \(F_n\). (This assumption is called the
 <em>induction hypothesis</em>). In particular, the formula is assumed correct for \(F_{n-1}\) and \(F_{n-2}\). Then:
 
 \begin{align}
-F_n & = F_{n-1} + F_{n-2} & \text{(by the recurrence)} \\
+F_n & = F_{n-1} + F_{n-2} & \text{(definition of \(F_n\))} \\
     & = (φ^{n-1} - \phib^{n-2})/\sqrt{5} + (φ^{n-2} - \phib^{n–2})/\sqrt{5} & \text{  (by the induction hypothesis)} \\
     & = (φ^{n-1} + φ^{n-2} - (\phib^{n–1} + \phib^{n–2}))/\sqrt{5} &        \text{(by arithmetic)} \\
     & = (φ^n - \phib^n)/\sqrt{5}                       & \text{(by property (2))}
 \end{align}
 <p>
-Since we know the formula (1) works for 0 and 1, and we know that for any \(n\), if
-it works for \(n-1\) and \(n-2\) then it works for \(n\), we can conclude by
+Since we know the formula (1) works for 0 and 1, and we know that it works for any \(n\) if
+it works for \(n-1\) and \(n-2\), we can conclude by
 induction that it works for all nonnegative values of \(n\).
 </p>
 <p>
-Now observe that since \(|\phib| &lt; 1\), the term \(\phib^n\) becomes
+Observe that since \(|\phib| &lt; 1\), the term \(\phib^n\) becomes
 vanishingly small for large \(n\). Asymptotically, the Fibonacci numbers grow as
-\(φ^n\). Technically, they are \(Θ(φ^n)\), meaning that
+\(φ^n\). Technically, they are \(\Theta(φ^n)\), meaning that
 \(φ^n\) is both an asymptotic upper <em>and lower</em> bound on \(F_n\).
 </p>
 </div>
