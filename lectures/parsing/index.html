@@ -161,31 +161,38 @@ the example string parses uniquely as follows:
 
 <h2>Recursive-descent parsing</h2>
 <p>
-Tstronge idea of <sstrongrong>recursive-descent parsing</strong>, also known as <strong>top-down parsing</strong>, is to parse input while exploring the corresponding parse tree
-recursively, starting from the top. 
+The idea of <sstrongrong>recursive-descent parsing</strong>, also known as
+<strong>top-down parsing</strong>, is to parse input while exploring the
+corresponding parse tree recursively, starting from the top. 
+Let's build a recursive-descent parser!
 </p>
-<p>Let's build a parser using the following methods.
+<p>
 For simplicity, we assume that the input arrives
 as tokens of type <code>String</code>. We assume
 there is a special token <code>EOF</code> at the end of the stream.
+We assume that tokens can be obtained and tested using
+the following methods. As the token stream is read, there is always
+a current position which moves from left to right during parsing.
 </p>
 <pre>
-/** Returns the next token in the input stream. */
+/** Returns: the next token in the input stream. */
 String peek();
 
-/** Consumes the next token from the input stream and returns it. */
+/** Returns: the next token from the input stream.
+    Effects: advances the input stream position to the following token. */
 String consume();
 </pre>
 <p>
 Using these two methods, we can build two more methods that are useful for parsing:
 </p>
 <pre>
-/** Returns whether the next token is {@code s}. */
+/** Returns: whether the next token is {@code s}. */
 boolean peek(String s) {
     return peek().equals(s);
 }
 
-/** Consume the next token if it is {@code s}.
+/** Effect: Consumes the next token if it is {@code s},
+ *  and advances to the following token.
  *  Throw {@code SyntaxError} otherwise.
  */
 void consume(String s) throws SyntaxError {
@@ -195,7 +202,9 @@ void consume(String s) throws SyntaxError {
 </pre>
 
 <p>The idea of recursive-descent parsing is that we implement a separate method
-for each nonterminal.  The content of each method corresponds exactly to the
+for each nonterminal. Its job is to read all of the tokens from the input stream
+that lie under the nonterminal symbol in the parse tree, and usually to produce a
+computed result. The content of each method corresponds exactly to the
 productions for that nonterminal. The key is that it must be possible to
 <em>predict</em> from the tokens seen on the input stream which production
 is being used. Recursive-descent parsing is therefore also known as
