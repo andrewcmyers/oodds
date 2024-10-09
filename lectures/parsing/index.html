@@ -521,11 +521,29 @@ void parseE() throws SyntaxError {
     }
 }
 </pre>
-<p>Given input &ldquo;t<sub>0</sub> + t<sub>1</sub> + t<sub>2</sub> + t<sub>3</sub> + ...&rdquo;,
-the corresponding abstract syntax tree built by this code looks as follows:
+<p>Given input &ldquo;\(t_0 + t_1 + t_2 + t_3 + \dots\)&rdquo;,
+where each of the \(t_i\) stands for a term,
+the corresponding abstract syntax tree built by this code looks as follows.
+Notice that this AST describes left-to-right-evaluation of the sum.
 </p>
 <div class="figure">
-<img src="reassociation.png" alt="reassociation of a production" />
+<canvas id=reassociation-fig style="width: 200px; height: 180px"></canvas>
+<script class=graphics>
+with (new CFigure("reassociation-fig")) {
+    setFontSize(13)
+    setStyle('drawNode', function(f, v) {
+        if (v.match(/^t/)) {
+            return label(text(italic("t"), subscript(v[1]))).expand(5)
+        } else {
+            return f.label(v).expand(3)
+        }
+    })
+    setConnectionStyle("intersection")
+    const t = tree(null, "...", ["+", ["+", ["+", "t0", "t1"], "t2"], "t3"], "...")
+    align("LR", "TB", t, margin(25))
+}
+</script>
+<p class=caption>Reassociated AST</p>
 </div>
 <p>
 Because it allows parsing of left-associative operators, reassociation via
