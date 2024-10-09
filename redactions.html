@@ -20,18 +20,21 @@
   </center>
 </div>
 <div id=content>
+<h1>Manage Redactions</h1>
 <p>
-A specialized view of this book can be constructed by specifying
+A customized view of this online book can be constructed by specifying
 <em>redactions</em>. The text of any heading in the text can be
 used to name a section or subsection that should not appear in the
 reader's view. In addition, marked sections in the book can also
 be redacted. Redactions are remembered by the browser on a given
 computer; using this page, an active link can be created that will cause
-any browser to remember the specified redactions.
+any browser to remember the specified redactions so that future visits
+to the book still redact information as originally specified.
 </p>
-<p>Note that the capitalization used to name the redaction section
+<p>Note that the capitalization used to name the redacted section
 must be exactly the same as in the document file. The table of contents
-puts chapter titles in lower case, which sometimes differs.
+puts chapter titles in lower case, which sometimes differs from the way
+it is presented in the chapter.
 </p>
 <p>
 Your current list of redactions follows:
@@ -51,7 +54,6 @@ Remove  </th><th>Name</th>
     for (const t of list) {
         app(current_redactions,
           tr(td(input({type: "checkbox"})), td(t)))
-
     }
   }
   function check_all() {

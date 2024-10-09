@@ -968,7 +968,6 @@ an initialization vector: \( H_1 = h(d_1 ⊕ IV) \), where
 the initialization vector \(IV\) is chosen at the start
 of the application.
 </p>
-<!--
 <p>
 A related way to generate hash codes is to think of them as involving
 the evaluation of a polynomial whose coefficients are the data going into
@@ -993,11 +992,10 @@ for (int i = 0; i < data.length; i++) {
 }
 return result;
 </pre>
--->
 
 <h3>Java hashing tips</h3>
 <p>
-Fortunately, methods for combining data to construct a hash are already
+Methods for combining data to construct a hash are already
 provided by existing Java libraries.  One trick for constructing a good
 <code>hashCode()</code> is to lean on the <code>hashCode()</code> method
 of strings.  If your class defines a <code>toString()</code> method in such a
@@ -1019,13 +1017,13 @@ performance, <code>toString()</code> should return the same string
 <p>
 Converting to a string is simple but often adds unnecessary overhead; for
 better performance, Java offers two standard methods for constructing
-high-quality hash codes from a sequence of data:
+high-quality hash codes from a sequence of data.
 </p>
 
 <ul>
 <li><code>Arrays.hashCode(Object[])</code>: Given an array containing a
 sequence of objects, this method combines their hash codes into a
-single high-quality hash code. For example, suppose we have a class
+single hash code. For example, suppose we have a class
 <code>Point3D</code> representing an immutable three-dimensional point with
 fields <code>x</code>, <code>y</code>, and <code>z</code> for its coordinates.
 We might implement the <code>hashCode</code> method of the class as follows:
@@ -1038,17 +1036,23 @@ class Point3D {
     }
 }
 </pre>
-<li><code>Objects.hashCode(Object... values)</code>: This method takes
+<p>
+The current implementation of <code>Arrays.hashCode</code> produces a hash of
+only moderate quality.  It uses the polynomial technique above, in which the
+individual hash codes are treated as coefficients of a polynomial evaluated at
+31. This approach is good enough for many applications.
+</p>
+<li><code>Objects.hash(Object... values)</code>: This method takes
 a variable-length argument list and computes a hash code from its
 elements in the same way that <code>Arrays.hashCode</code> does on an
-array containing those elements. Our <code>Point3D</code> hash code could
+array containing those elements. Thus, ther <code>Point3D</code> hash code could
 be implemented as follows:
 <pre>
 import java.util.Objects;
 class Point3D {
     private int x, y, z;
     public int hashCode() {
-        return Objects.hashCode(x, y, z);
+        return Objects.hash(x, y, z);
     }
 }
 </pre>
