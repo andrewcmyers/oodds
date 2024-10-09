@@ -21,6 +21,21 @@ var base_url = basename(window.location.origin + window.location.pathname)
 
 var DEBUG_RELATIVIZE = false;
 
+function jump_to_position() {
+    if (location.hasOwnProperty('hash')) {
+        function poll() {
+            const id = location.hash.substring(1)
+            const elem = document.getElementById(id)
+            if (elem) {
+                elem.scrollIntoView()
+            } else {
+                setTimeout(poll, 100)
+            }
+        }
+        setTimeout(poll, 100)
+    }
+}
+
 // URLs need to be rewritten to be relative to the
 // to the top of the repo rather than to the top of
 // the lecture directory.
