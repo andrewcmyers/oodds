@@ -346,8 +346,8 @@ interface AutoCloseable {
 <p>
 The try-with-resources statement will ensure that the <code>close()</code> is
 invoked on all of the named resources. For example, if we wanted to read some
-data from a file, we might create a <code>FIleReader</code> to read from the
-file and a <code>BufferedReader</code> to buffer the input for efficiency:
+data from a file, we might create a <code>FileReader</code> to read from the
+file and also a <code>BufferedReader</code> to buffer the input for efficiency:
 <pre>
 try (Reader fr = new FileReader(filename);
      Reader br = new BufferedReader(fr)) {
@@ -360,5 +360,5 @@ try (Reader fr = new FileReader(filename);
 At the end of a try-with-resources, the methods <code>fr.close()</code> and
 <code>br.close()</code> will be called, freeing up the corresponding resources
 in the operating system, even if an exception (either caught or uncaught) is
-raised. 
+thrown. 
 </p>
