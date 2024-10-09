@@ -143,25 +143,42 @@ The symbol <b>n</b> stands for all possible numeric literals: 1, 2, 3, etc.
 With this grammar, a string like “<code>2 + 3 × 5</code>” has two possible parse trees, as shown:
 </p>
 <div class="figure">
-<img src="two-parses.png" alt="parse trees of ambiguous expression" />
+<canvas id="two-parses" style="height: 170px"></canvas>
+<script class=graphics>
+with (new CFigure("two-parses")) {
+    setStyle('drawNode', function(f, v) {
+        if (v[0] == "*") return f.label(v.substring(1)).setFontStyle("bold")
+        return f.label(v).setFontStyle("italic")
+    })
+    setConnectionStyle("intersection")
+    const t1 = tree(null, "E", ["E", "*2"], "*+", ["E", ["E", "*3"], "*×", ["E", "*5"]])
+    const t2 = tree(null, "E", ["E", ["E", "*2"], "*+", ["E", "*3"]], "*×", ["E", "*5"])
+    align("L", "TB", t1, margin(25))
+    align("R", "TB", t2, margin(25))
+    align("abut", "TB", t1, hspace(40), t2)
+    equal(t1.w(), t2.w())
+}
+</script>
 <p class="caption">
 Two parse trees for “<code>2+3×5</code>”
 </p>
 </div>
 <p>
 Only one of these parse trees corresponds to our usual understanding of the
-meaning of the expression as arithmetic, namely the one on the left. Usually, we
+meaning of the expression as arithmetic: the one on the left.
+The problem with the parse tree on the right is that it violates our
+expectations about <strong>precedence</strong>. By convention, multiplicative operations
+have higher precedence than additive operations, but the parse tree on the
+right violates this custom, because the addition is performed first.
+</p>
+
+<p>
+Usually, we
 want the grammars we write to be unambiguous so that we obtain a unique parse
 tree corresponding to the meaning of the expression. Unfortunately, there is
 no algorithm that can determine in general whether a given grammar is ambiguous
 (the problem is said to be <strong>undecidable</strong>). However,
 in practice it is possible to design grammars in a way that avoids ambiguity.
-</p>
-<p>
-The problem with the parse tree on the right is that it violates our
-expectations about <strong>precedence</strong>. By convention, multiplicative operations
-have higher precedence than additive operations, but the parse tree on the
-right violates this custom, because the addition is performed first.
 </p>
 
 <p>To remove the ambiguity and obtain the expected precedence, the
@@ -182,7 +199,18 @@ the string “<code>2+3×5</code>” parses uniquely with this new grammar:
 </p>
 
 <div class="figure">
-<img src="unambiguous.png" alt="parse tree of unambiguous expression" />
+<canvas id=unambiguous-parse style="width: 250px; height: 180px"></canvas>
+<script class=graphics>
+with (new CFigure("unambiguous-parse")) {
+    setStyle('drawNode', function(f, v) {
+        if (v[0] == "*") return f.label(v.substring(1)).setFontStyle("bold").expand(3)
+        return f.label(v).setFontStyle("italic").expand(3)
+    })
+    setConnectionStyle("intersection")
+    const t = tree(null, "E", ["E", ["T", ["F", "*2"]]], "*+", ["T", ["T", ["F", "*3"]], "*×", ["F", "*5"]])
+    align("LR", "TB", t, margin(25))
+}
+</script>
 </div>
 
 <h2>Recursive-descent parsing</h2>
@@ -239,8 +267,8 @@ is being used. Recursive-descent parsing is therefore also known as
 
 <p>
 The grammar above ensures that the operators + and × are <i>left-associative</i> (operations of
-equal precedence are performed left-to-right). For the purpose of the exposition, let us temporarily
-change the grammar to make them right-associative:
+equal precedence are performed left-to-right). To simplify exposition, let us temporarily
+change the grammar to make them <em>right</em>-associative instead:
 </p>
 <pre>
 <i>E</i> → <i>T</i> + <i>E</i> | <i>T</i>
@@ -340,10 +368,21 @@ Now we can parse the previous example input and get a result of 17.
 The output of a parser is usually an <strong>abstract syntax tree</strong> (AST), which
 differs from a parse tree in that it contains no noninformative terminal
 symbols. For example, if we parse the input 2+(3×5), we expect to get a tree
-like the following,
+like the following.
 </p>
 <div class="figure">
-<img src="ast.png" alt="abstract syntax tree" />
+<canvas id=ast-example style="width: 200px; height: 150px"></canvas>
+<script class=graphics>
+with (new CFigure("ast-example")) {
+    setFontSize(15)
+    setStyle('drawNode', function(f, v) {
+        return f.label(v).expand(3)
+    })
+    setConnectionStyle("intersection")
+    const t = tree(null, "+", "2", ["×", "3", "5"])
+    align("LR", "TB", t, margin(25))
+}
+</script>
 <p class="caption">
 Abstract syntax tree
 </p>
