@@ -24,8 +24,8 @@ var DEBUG_RELATIVIZE = false;
 function jump_to_position() {
     if (location.hasOwnProperty('hash')) {
         function poll() {
-            const id = location.hash.substring(1)
-            const elem = document.getElementById(id)
+            const id = decodeURIComponent(location.hash.substring(1))
+            const elem = document.getElementById(id) || header_index.get(id)
             if (elem) {
                 elem.scrollIntoView()
             } else {
@@ -136,6 +136,8 @@ function check_redaction_parameters() {
     }
 }
 
+var header_index = new Map()
+
 function localizeContent(node, lecture_url) {
     const lecture_base = basename(lecture_url),
           lec_name = lecture_base.replace(/^.*\//, '')
@@ -163,6 +165,10 @@ function localizeContent(node, lecture_url) {
     for (const anchor of node.getElementsByTagName('a')) {
         anchor.href = relativize(anchor.href, lecture_base, base_url)
     }
+    for (const h of node.getElementsByTagName('h1')) header_index.set(h.textContent, h)
+    for (const h of node.getElementsByTagName('h2')) header_index.set(h.textContent, h)
+    for (const h of node.getElementsByTagName('h3')) header_index.set(h.textContent, h)
+    for (const h of node.getElementsByTagName('h4')) header_index.set(h.textContent, h)
     colorize_all(node)
     italicize_document_math()
     hide_answers()
