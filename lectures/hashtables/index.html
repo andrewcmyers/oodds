@@ -1021,12 +1021,13 @@ high-quality hash codes from a sequence of data.
 </p>
 
 <ul>
-<li><code>Arrays.hashCode(Object[])</code>: Given an array containing a
+<li><p><code>Arrays.hashCode(Object[])</code>: Given an array containing a
 sequence of objects, this method combines their hash codes into a
 single hash code. For example, suppose we have a class
 <code>Point3D</code> representing an immutable three-dimensional point with
 fields <code>x</code>, <code>y</code>, and <code>z</code> for its coordinates.
 We might implement the <code>hashCode</code> method of the class as follows:
+</p>
 <pre>
 import java.util.Arrays;
 class Point3D {
@@ -1040,13 +1041,17 @@ class Point3D {
 The current implementation of <code>Arrays.hashCode</code> produces a hash of
 only moderate quality.  It uses the polynomial technique above, in which the
 individual hash codes are treated as coefficients of a polynomial evaluated at
-31. This approach is good enough for many applications.
+31, with an initialization vector of 31. For example, in Java 21 the above
+<code>hashCode()</code> method on <code>Point3D</code> returns <code>((31 +
+x)*31 + y)*31 + z</code>, or <code>31<sup>3</sup> + x·31<sup>2</sup> + y·31 +
+z</code>.  This simple approach may be good enough for your application.
 </p>
-<li><code>Objects.hash(Object... values)</code>: This method takes
+<li><p><code>Objects.hash(Object... values)</code>: This method takes
 a variable-length argument list and computes a hash code from its
 elements in the same way that <code>Arrays.hashCode</code> does on an
-array containing those elements. Thus, ther <code>Point3D</code> hash code could
-be implemented as follows:
+array containing those elements. Thus, the <code>Point3D</code> hash code could
+instead be implemented as follows:
+</p>
 <pre>
 import java.util.Objects;
 class Point3D {
