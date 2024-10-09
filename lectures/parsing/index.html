@@ -367,7 +367,7 @@ Now we can parse the previous example input and get a result of 17.
 <p>
 The output of a parser is usually an <strong>abstract syntax tree</strong> (AST), which
 differs from a parse tree in that it contains no noninformative terminal
-symbols. For example, if we parse the input 2+(3×5), we expect to get a tree
+symbols. For example, if we parse the input “2+(3×5)”, we expect to get a tree
 like the following.
 </p>
 <div class="figure">
@@ -391,9 +391,10 @@ Abstract syntax tree
 Note that the parentheses are no longer there! Parentheses are only needed in the input string
 to disambiguate parsing. Once the expression is parsed, they are
 no longer needed, because the tree structure determines the 
-evaluation order. In fact, the expressions 2+(3×5) and 2+3×5 should produce
+evaluation order. In fact, the expressions “2+(3×5)” and “2+3×5” should produce
 exactly the same AST. Note also that the tree does not need to keep track of
-nonterminals like <i>T</i> and <i>F</i>.
+nonterminals like <i>T</i> and <i>F</i>; they help get the parse right
+but add no useful information to the AST.
 </p>
 <p>The abstract syntax tree is implemented as a data structure. However, unlike the
 tree structures we have seen up until this point, the nodes are of different types.
@@ -540,7 +541,7 @@ with (new CFigure("reassociation-fig")) {
     })
     setConnectionStyle("intersection")
     const t = tree(null, "...", ["+", ["+", ["+", "t0", "t1"], "t2"], "t3"], "...")
-    align("LR", "TB", t, margin(25))
+    align("LR", "TB", t, margin(5))
 }
 </script>
 <p class=caption>Reassociated AST</p>
