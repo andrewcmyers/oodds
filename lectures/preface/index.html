@@ -34,14 +34,31 @@
     Michael Clarkson? Keshav Pingali? ... -->
 </p>
 <p>
-    If any of the material seems too advanced or esoteric, it is easy to
-    create a customized version that removes chapters or sections.
-    To manage such redactions, use
-    <a href="../redactions.html">this web page</a>.
-</p>
-<p>
-    This material is a work in progress, and the <a
+    This text is a work in progress, and the <a
     href="https://github.com/andrewcmyers/oodds">source code</a> is available
     on GitHub. Future planned improvements include more introductory material
     on programming in Java, and integration of exercises for the reader.
+</p>
+<h2>Additional functionality</h2>
+<p> Since this is an online book, some functionality is available that you don't
+    get with conventional books. For example, there are some exercises inline (though
+    there should be more).
+</p>
+<p>
+    It is possible to link to any heading in any chapter by using a URL with
+    a fragment specifier. The fragment may be the text of the heading or its
+    HTML id attribute, if any. For example, this section can be referenced as
+    <a id=example_link href="">
+    <tt style="font-size: 12px">https://andrewcmyers.github.io/oodds/lecture.html&#63;id=preface#Additional%20functionality</tt>
+    </a>.
+    <script class=graphics>
+      let a = document.getElementById("example_link")
+      a.href = location.protocol + "//" + location.host + location.pathname
+        + "?id=preface#Additional%20functionality"
+    </script>
+</p>
+<p>
+    If any of the material in this online text seems too advanced or esoteric,
+    it is easy to create a customized version that removes chapters or
+    sections.  <a href="../redactions.html">A page to manage such redactions</a> exists.
 </p>

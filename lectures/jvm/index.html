@@ -263,7 +263,8 @@ with (new CFigure("method-disp-fig-new")) {
     pointer(Animal.getVar(2), ADV.getVar(0))
     align("center", "none", RDV, ADV)
 
-    let bytecode = rectangle().setW(60).setCornerRadius(10).addText("Animal.eat bytecode").setLineWidth(2)
+    let bytecode = rectangle().addText("Animal.eat bytecode")
+        .setW(60).setCornerRadius(10).setLineWidth(2)
     geq(bytecode.x0(), plus(50, RDV.x1()))
     geq(bytecode.w(), 60)
     align("right", "center", bytecode, canvasRect().inset(4))
