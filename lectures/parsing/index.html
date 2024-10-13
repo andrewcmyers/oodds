@@ -213,6 +213,26 @@ with (new CFigure("unambiguous-parse")) {
 }
 </script>
 </div>
+<div class=exercise>
+Using this grammar, can you draw the parse tree for the string “<code>(2+3)×5</code>”?
+<p class=answer>
+<canvas id="unambiguous-parse2" style="width: 250px; height: 280px"></canvas>
+<script class=graphics>
+const fig = new CFigure("unambiguous-parse2")
+with (fig) {
+    console.log("setting up answer figure")
+    setStyle('drawNode', function(f, v) {
+        if (v[0] == "*") return f.label(v.substring(1)).setFontStyle("bold").expand(3)
+        return f.label(v).setFontStyle("italic").expand(3)
+    })
+    setConnectionStyle("intersection")
+    const t = tree(null, "E", ["T", ["F", "*(", ["E", ["T", ["F", "*2"]], "*+", ["E", ["T", ["F", "*3"]]]], "*)"]], "*×", ["E", ["T", ["F", "*5"]]])
+    align("LR", "TB", t, margin(25))
+}
+onVisible(document.getElementById("unambiguous-parse2"), canvas => fig.delayedRender() )
+</script>
+</p>
+</div>
 
 <h2>Recursive-descent parsing</h2>
 <p>
