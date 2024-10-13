@@ -64,38 +64,44 @@ Some loops are hard to write correctly without thinking about loop invariants.
 For example, suppose we want to find an element in a sorted
 array. We can do much better than scanning from left to right, which would take linear
 time: we can use <b>binary search</b> to find it in logarithmic time.
-Here is the binary search algorithm, written as a loop.
+Here is the binary search algorithm, with the core of the algorithm expressed
+as a loop:
 </p>
 <pre class="load">
 <a href="binary_search.java">binary_search.java</a>
 </pre>
 <p>
-Conceptually, this algorithm is simple. But it is deceptively tricky to get
-exactly right. How do we know we got the computation of <code>m</code> right?
-Why is it <tt>x &lt;= a[m]</tt> and not <tt>x &lt; a[m]</tt>? Why
-<code>m</code> and <code>m+1</code> in the two updates to <code>r</code> and
-<code>l</code> respectively? If we change any of these decisions, the algorithm is
-incorrect and will sometimes fail to find the correct element.
+Conceptually, this algorithm is simple and makes intuitive sense when you hear
+it explained: the algorithm keeps cutting the part of the array where it is
+looking for <code>x</code> in half.  But it is surprisingly tricky to get this
+code exactly right if you have to write it yourself; there are multiple opportunities
+to make a mistake. How do we know we got the
+computation of <code>m</code> right?  Why is it <tt>x &lt;= a[m]</tt> and not
+<tt>x &lt; a[m]</tt>? Why <code>m</code> and <code>m+1</code> in the two
+updates to <code>r</code> and <code>l</code> respectively? If we change any of
+these decisions, the algorithm is incorrect and will sometimes fail to find the
+correct element.
 </p>
 <p>
-The key question is whether the loop code is correct. To say what it
-means to be correct, we must identify the precondition and the postcondition
-of the loop itself. The precondition describes the possible states of the
-program just as the loop begins executing; the postcondition describes the
+The key question is whether the loop code is correct. We have discussed
+preconditions and postconditions of methods, but to say what it
+means for the loop to be correct, we must identify the precondition and the postcondition
+of the loop itself. Its precondition describes the possible states of the
+program just as the loop begins executing; its postcondition describes the
 desired states when the loop stops. In this case, the precondition consists
-of the precondition of <code>search()</code> itself, plus the facts that
+of the precondition of <code>search()</code> itself, plus the facts established
+by the first line of code:
 <code>l = 0</code> and <code>r = a.length - 1</code>. The desired
-postcondition is that <code>x = a[l]</code>. To show that the loop
-is correct, we use a loop invariant to convince ourselves that we have
-transformed the state of
-the program from one satisfying the precondition to one satisfying
-the postcondition.
+postcondition of the loop is that <code>x = a[l]</code>. To show that the loop
+is correct, we use a loop invariant to convince ourselves that the loop
+transforms the state of the running program from one satisfying the
+precondition to one satisfying the postcondition.
 </p>
 <h2>Binary search loop invariant</h2>
 <p>
-We need a <b>loop invariant</b>
-that describes the conditions that we want the loop body to preserve. For this
-example, we can write a useful loop invariant using three clauses:
+A <b>loop invariant</b> describes the conditions that the loop body must
+preserve in order to be correct. For this example, such a loop
+invariant can be expressed using three clauses:
 </p>
 <ol>
 <li> The array <code>a</code> is sorted in ascending order.
