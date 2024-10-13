@@ -72,7 +72,7 @@ Here is the binary search algorithm, written as a loop.
 <p>
 Conceptually, this algorithm is simple. But it is deceptively tricky to get
 exactly right. How do we know we got the computation of <code>m</code> right?
-Why is it <tt>k &lt;= a[m]</tt> and not <tt>k &lt; a[m]</tt>? Why
+Why is it <tt>x &lt;= a[m]</tt> and not <tt>x &lt; a[m]</tt>? Why
 <code>m</code> and <code>m+1</code> in the two updates to <code>r</code> and
 <code>l</code> respectively? If we change any of these decisions, the algorithm is
 incorrect and will sometimes fail to find the correct element.
@@ -85,7 +85,7 @@ program just as the loop begins executing; the postcondition describes the
 desired states when the loop stops. In this case, the precondition consists
 of the precondition of <code>search()</code> itself, plus the facts that
 <code>l = 0</code> and <code>r = a.length - 1</code>. The desired
-postcondition is that <code>k = a[l]</code>. To show that the loop
+postcondition is that <code>x = a[l]</code>. To show that the loop
 is correct, we use a loop invariant to convince ourselves that we have
 transformed the state of
 the program from one satisfying the precondition to one satisfying
@@ -100,7 +100,7 @@ example, we can write a useful loop invariant using three clauses:
 <ol>
 <li> The array <code>a</code> is sorted in ascending order.
 <li> <code>0 ≤ l ≤ r ≤ a.length-1</code></li>
-<li> <code>k ∈ a[l..r]</code></li>
+<li> <code>x ∈ a[l..r]</code></li>
 </ol>
 <p>
 We use the notation <code>i..j</code> to denote the set or sequence <code>{x |
@@ -292,26 +292,26 @@ Let's try these four steps on the binary search algorithm.
   <ol>
 <li>That array <code>a</code> is sorted is in the precondition of <code>search</code>.
 
-<li>Since <code>a.length</code> is at least 1 by the precondition that <code>k</code> is in the array, and since initially <code>l = 0</code> and <code>r = a.length-1</code>, we have <code>0 ≤ l ≤ r ≤ a.length-1</code>.</li>
-<li> <code>k ∈ a[l..r]</code> because that is the whole array and the precondition
-       guarantees that <code>k</code> is there.</li>
+<li>Since <code>a.length</code> is at least 1 by the precondition that <code>x</code> is in the array, and since initially <code>l = 0</code> and <code>r = a.length-1</code>, we have <code>0 ≤ l ≤ r ≤ a.length-1</code>.</li>
+<li> <code>x ∈ a[l..r]</code> because that is the whole array and the precondition
+       guarantees that <code>x</code> is there.</li>
   </ol></p>
   </li>
   <li><b>Postcondition.</b> <p>For the algorithm to be correct, we need
-  <code>a[l] = k</code>. If the loop guard is false, we know <code>l ≥
+  <code>a[l] = x</code>. If the loop guard is false, we know <code>l ≥
   r</code>. But the invariant (2) guarantees <code>l ≤ r</code>, so we must
-  have <code>l = r</code>. We know from the invariant (3) that <code>k ∈
+  have <code>l = r</code>. We know from the invariant (3) that <code>x ∈
   a[l..r]</code>, which has been reduced to a single element, so that must be
-  where <code>k</code> is.</p></li>
+  where <code>x</code> is.</p></li>
 
   <li><b>Preservation.</b>
   <p>Since the loop doesn't change the array, clearly the first clause of the invariant
    is preserved. Arguing the remaining clauses is a bit trickier.</p>
   <p>We use <code>l'</code> and <code>r'</code> to represent the values of <code>l</code> and <code>r</code> at the end of the loop.
   We want to show that if the invariant is true at the beginning of the loop body,
-  that is, if <code>0 ≤ l ≤ r ≤ a.length-1</code> and <code>k ∈ a[l..r]</code>,
+  that is, if <code>0 ≤ l ≤ r ≤ a.length-1</code> and <code>x ∈ a[l..r]</code>,
   then clauses 2 and 3 are true at the end of the loop body, that is,
-  <code>0 ≤ l' ≤ r' ≤ a.length-1</code> and <code>k ∈ a[l'..r']</code>.</p>
+  <code>0 ≤ l' ≤ r' ≤ a.length-1</code> and <code>x ∈ a[l'..r']</code>.</p>
 
   <p>
   Note that <code>m</code> is the average of <code>l</code> and <code>r</code>, rounded down. So we
@@ -319,12 +319,12 @@ Let's try these four steps on the binary search algorithm.
   and the value of <code>m</code> is rounded down, we know something stronger: <code>l ≤ m &lt; r</code>.
   </p>
   <p>
-  How the loop body executes depends on the outcome of the test <code>k &lt;= a[m]</code>. There
-  are two cases to consider: either <code>k &lt;= a[m]</code> or <code>k &gt; a[m]</code>.
+  How the loop body executes depends on the outcome of the test <code>x &lt;= a[m]</code>. There
+  are two cases to consider: either <code>x &lt;= a[m]</code> or <code>x &gt; a[m]</code>.
   We analyze the two cases separately.
   </p>
   <ul>
-	<li><p><b>Case</b> <code>k &lt;= a[m]</code>:</p>
+	<li><p><b>Case</b> <code>x &lt;= a[m]</code>:</p>
 	<p>
           In this case we have <code>l' = l</code> and <code>r' = m</code>.
           Since we have <code>0 ≤ l ≤ m < r ≤ a.length-1</code> as just argued,
@@ -333,20 +333,20 @@ Let's try these four steps on the binary search algorithm.
 
         <p>
           How about clause 3? By the loop invariant, we know that <code>k</code> occurs at
-          least once in <code>a[l..r]</code>. Since <code>k &lt;= a[m]</code>,
+          least once in <code>a[l..r]</code>. Since <code>x &lt;= a[m]</code>,
           it must occur at or before index <code>m</code>. Therefore we have
-          <code>k∈a[l..m] = a[l'..r']</code>, as required.
+          <code>x∈a[l..m] = a[l'..r']</code>, as required.
 	</p>
 	</li>
-	<li><p><b>Case</b> <code>k &gt; a[m]</code>:</p>
+	<li><p><b>Case</b> <code>x &gt; a[m]</code>:</p>
 	<p>
           Clause 2. In this case, the loop body sets <code>r' = r</code> and <code>l' = m+1</code>. We know <code>m &lt; r</code>, so <code>l' = m + 1 ≤ r = r'</code>.
           Therefore, we have <code>0 ≤ l' ≤ r' ≤ a.length-1</code>.
           </p>
           <p>
-          Clause 3.  Since the array is sorted, <code>k</code> cannot be
+          Clause 3.  Since the array is sorted, <code>x</code> cannot be
           located in <code>a[l..m]</code>. But according to the invariant, it
-          is in <code>a[l..r]</code>. Therefore, <code>k</code> is in
+          is in <code>a[l..r]</code>. Therefore, <code>x</code> is in
           <code>a[m+1..r]</code> = <code>a[l'..r']</code>,
           as required.
 	  </p>
@@ -356,7 +356,7 @@ Let's try these four steps on the binary search algorithm.
   <li><b>Termination.</b>
   <p>The value DF = <code>r &minus; l</code> is guaranteed by the invariant
   (1) to be nonnegative: we can choose DF<sub>0</sub> = 0.
-  In the case where <code>k ∈ a[l..m]</code>, we know <code>m &lt; r</code>, so
+  In the case where <code>x ∈ a[l..m]</code>, we know <code>m &lt; r</code>, so
   <code>r' &minus; l' &lt; r &minus; l</code>. In the other case, we know <code>l &lt; m+1</code>, so again,
   <code>r' &minus; l' &lt; r &minus; l</code>. Thus the quantity <code>r &minus; l</code> gets strictly
   smaller on every loop iteration as long as <code>l &lt; r</code>. Therefore,
@@ -378,7 +378,7 @@ the binary search loop invariant:
 
 <ol>
 <li>
-If we didn't know the array was sorted, our reasoning about where the element <code>k</code> was
+If we didn't know the array was sorted, our reasoning about where the element <code>x</code> was
 would fail.
 </li>
 <li><p><code>l ≤ r</code><br>
@@ -386,7 +386,7 @@ Without this clause, we don't know that we are going to the correct side when we
 on <code>m</code>. The Termination argument also fails because the decrementing
 function is no longer guaranteed to be nonnegative.
 </p>
-<li><p><code>k ∈ a[l..r]</code><br>
+<li><p><code>x ∈ a[l..r]</code><br>
 Without this clause, we don't know that the loop has found anything when it terminates,
 so Postcondition fails.
 </p>
