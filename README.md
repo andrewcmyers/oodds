@@ -1,5 +1,5 @@
-# oodds
-Object-Oriented Design and Data Structures
+## oodds
+# Object-Oriented Design and Data Structures
 Andrew C. Myers and Dexter Kozen
 
 This online text is intended for a second-semester university-level computer
