@@ -87,12 +87,11 @@ the start symbol, although the start symbol may also occur elsewhere in the tree
 </p>
 <h3>Productions</h3>
 <p>
-A context-free grammar also includes a set of <strong>productions</strong> that
-define how a single nonterminal can be expanded out into a longer
-series of symbols. A given nonterminal can have multiple
-different productions specifying alternative ways to expand it. For
-example, we can write a pseudo-English grammar corresponding to the
-parse tree above:
+A context-free grammar also includes a set of <strong>productions</strong>,
+which are rules that define how a single nonterminal can be expanded out into a
+longer series of symbols. A given nonterminal can have multiple different
+productions specifying alternative ways to expand it. For example, we can write
+a pseudo-English grammar corresponding to the parse tree above:
 </p>
 <pre>
 <i>sentence</i> → <i>noun-phrase verb-phrase noun-phrase</i>
@@ -109,15 +108,18 @@ parse tree above:
 As an abbreviation, when a single nonterminal has multiple productions,
 we can write them all together on the right side separated by a vertical
 bar. For example, the two productions for the nonterminal <i>noun-phrase</i>
-could have been expressed more compactly as
+could have been expressed more concisely:
 <code><i>noun-phrase</i> → <i>noun</i> | <i>article</i> <i>noun</i></code>.
+This notation is just an abbreviation for writing out multiple productions
+in full.
 </p>
 <p>
-The <strong>language</strong> of a grammar is the set of strings of terminal symbols that
-can be produced by constructing a parse tree with that grammar: the possible
-strings that can be <strong>derived</strong> from the start symbol. The job of a parser
-is to figure out whether an input string is part of the language of the grammar
-and to construct a parse tree if so.
+The <strong>language</strong> of a grammar is the set of strings of terminal
+symbols that can be produced by constructing a parse tree with that grammar.
+Each such string strings is said to be <strong>derived</strong> from the start
+symbol using the productions of the grammar. The job of a parser is to figure
+out whether an input string is part of the language of the grammar and to
+construct a parse tree if so.
 </p>
 <p>The language of a grammar can be infinite in size if the grammar is
 <strong>recursive</strong>. For example, the productions <i>noun-phrase → article
