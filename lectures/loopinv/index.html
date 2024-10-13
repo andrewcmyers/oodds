@@ -126,6 +126,36 @@ way by using an <code>assert</code> statement that is executed on every loop
 iteration.
 </p>
 
+<h2>Loop invariants and tail-recursive functions</h2>
+<p>
+We observed earlier that tail-recursive functions can be converted into
+loops. Conversely, loops can be converted into tail-recursive functions.
+What is the relationship of this tail-recursive function to the loop
+invariant?
+</p>
+<p>
+For example, the loop in the binary search algorithm can be converted to
+a tail-recursive function <code>search_rec</code>:
+</p>
+<pre class="load">
+<a href="binary_search_recursive.java">binary_search.java</a>
+</pre>
+<p>
+Notice that the precondition of the tail-recursive function
+<code>search_rec</code> is exactly the loop invariant!
+Further, the postcondition of the loop is just the postcondition of the function.
+This correspondence is no accident: a loop
+invariant is simply the precondition of the corresponding tail-recursive
+function.  The loop preserves the loop invariant <em>exactly</em> when the precondition
+is satisfied for any tail-recursive calls it makes.
+</p>
+<p>
+Often it can help us to identify the loop invariant
+if we think of a loop as a function whose precondition must be satisfied and
+whose postcondition must ensure the loop's postcondition is satisfied. If
+the loop invariant is not a strong enough precondition to ensure that the
+tail-recursive function works correctly, then something is missing from it.
+</p>
 <h2>Using loop invariants to show code is correct</h2>
 <p>
 Loop invariants can help us convince ourselves that our code,
@@ -455,34 +485,6 @@ at the beginning.  The statement <code>k ∈ a[l..r]</code>
 generalizes both of these assertions.
 </p>
 
-<h2>Loop invariants and tail-recursive functions</h2>
-<p>
-We observed earlier that tail-recursive functions can be converted into
-loops. Conversely, loops can be converted into tail-recursive functions.
-What is the relationship of this tail-recursive function to the loop
-invariant?
-</p>
-<p>
-For example, binary search can be converted to use a tail-recursive
-function rather than a loop:
-</p>
-<pre class="load">
-<a href="binary_search_recursive.java">binary_search.java</a>
-</pre>
-<p>
-Notice that the precondition of the tail-recursive function
-<code>search_rec</code> is exactly the loop invariant, and the postcondition of
-the loop is just the postcondition of the function. This is no accident: a loop
-invariant is simply the precondition of the corresponding tail-recursive
-function.  The loop preserves the loop invariant exactly when the precondition
-is satisfied for all recursive calls made in the recursive version. In this
-example there are two recursive calls.
-</p>
-<p>
-If we think of a loop as a function whose precondition must be satisfied and
-whose postcondition must ensure the loop's postcondition is satisfied, that can
-help us identify the loop invariant.
-</p>
 <h2>Loop invariants in software engineering</h2>
 <p>
 Loop invariants capture key facts that explain why code works.

@@ -1,6 +1,6 @@
- /**
-  * Effect: put array a into ascending sorted order
-  */
+/**
+ * Effect: put array a into ascending sorted order
+ */
 void sort(int[] a) {
     // loop invariant:
     //     1 ≤ i ≤ a.length
