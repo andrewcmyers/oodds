@@ -1,7 +1,8 @@
 # oodds
 Object-Oriented Design and Data Structures
+Andrew C. Myers and Dexter Kozen
 
-This text contains material for a second-semester university-level computer
+This online text is intended for a second-semester university-level computer
 science course focusing on object-oriented programming, software engineering,
 algorithms and data structures.
 
