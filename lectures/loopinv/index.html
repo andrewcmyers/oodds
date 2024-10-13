@@ -213,7 +213,7 @@ To use a loop invariant to argue that code does what we want, we
 use the following steps, depicted in the figure:
 </p>
 <ol>
-<li><b>Establishment (aka Initialization).</b> Show that the loop invariant is
+<li><p><b>Establishment (aka Initialization).</b> Show that the loop invariant is
 true just after loop initialization. That is, the loop invariant must be
 implied by the loop precondition.
 For while-loops of the form <code>while
@@ -221,19 +221,35 @@ For while-loops of the form <code>while
 beginning the loop.  For for-loops <code>for (<i>init</i>; <i>guard</i>;
 <i>incr</i>) { body }</code>, the invariant must be true just after executing
 the code <code><i>init</i></code>, which is not properly part of the loop because
-it is executed only once.</li>
+it is executed only once.</p>
+<p>
+Viewing the loop as a tail-recursive function, Establishment is about showing that
+the function's precondition holds when it is first called.
+</p>
+</li>
 
-<li><b>Postcondition.</b> Show that if the <code>guard</code> is false (so the loop exits)
+<li><p><b>Postcondition.</b> Show that if the <code>guard</code> is false (so the loop exits)
 and the loop invariant holds, then the desired result of the loop
-has been achieved: the loop postcondition holds.</li>
+has been achieved: the loop postcondition holds.
+</p>
+<p>
+Viewing the loop as a tail-recursive function, Postcondition is about showing that
+the function's postcondition holds in the base case.
+</p>
+</li>
 
-<li><b>Preservation (aka Maintenance).</b> Show that whenever both the loop invariant and the
+<li><p><b>Preservation (aka Maintenance).</b> Show that whenever both the loop invariant and the
 <code>guard</code> are true just before executing the loop body, then the loop
 invariant is true just <em>after</em> executing the loop body. Note that the
 loop invariant may fail to be true at intermediate steps during the execution
 of the loop body, as long as it is reestablished by the end.  (For
 <code>for</code> loops, the loop body also includes the increment
 <code>incr</code>.)
+</p>
+<p>
+Viewing the loop as a tail-recursive function, Preservation is about showing
+that the function's precondition holds when it calls itself tail-recursively.
+</p>
 </li>
 
 </ol>
@@ -261,6 +277,10 @@ Further, we need to come up with some minimal value DF<sub>0</sub> such that if 
 then either the loop guard or the loop invariant is false. Since DF decreases on every step, it will
 eventually be less than DF<sub>0</sub>, and in that case the loop cannot still be running.
 </li>
+<p>
+Viewing the loop as a tail-recursive function, Termination is about showing
+that the arguments to the function decrease in its tail-recursive call or calls.
+</p>
 </ol>
 
 <p>
@@ -494,7 +514,8 @@ understand the code, and helps keep them (and you!) from accidentally breaking
 the invariant with future changes.
 </p>
 <p>
-It also makes sense to add <code>assert</code> statements that for every iteration check
+Just as it makes sense to add assertions to check function preconditions,
+it also makes sense to add assertions that check for each iteration 
 the parts of the loop invariant that are easy to check. Such assertions will catch errors
 early and expose problems with your understanding of why the code works.
 </p>
