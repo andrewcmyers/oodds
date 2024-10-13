@@ -193,11 +193,9 @@ p.definition { font-weight: bold; padding: 1em; background-color: #ddd; border: 
 		color: black;
 		background: white;	/* footer background color */
                 width: 6.5in;
-                margin: 1in;
 	}
 	@page {
-                width: 8.5in;
-		height: 11in;
+                margin: 1in;
 	}
 	p {
 		font-size: 100%;
@@ -207,6 +205,7 @@ p.definition { font-weight: bold; padding: 1em; background-color: #ddd; border: 
 		-moz-hyphens: auto;
 		-ms-hyphens: auto;
 		hyphens: auto;
+                width: 100%;
 	}
         .MathJax {
             font-size: 1em !important;
