@@ -129,15 +129,16 @@ With some grammars, it is possible for a string to have more than one parse
 tree. Such a grammar is said to be <strong>ambiguous</strong>.
 </p>
 <p>
-An example of an ambiguous grammar is the following grammar for arithmetic expressions:
+An example of an ambiguous grammar is the following grammar for arithmetic expressions,
+with a single nonterminal symbol <i>E</i> and four productions:
 </p>
 <pre>
 <i>E</i> → <b>n</b> | <i>E</i> + <i>E</i> | <i>E</i> × <i>E</i> | ( <i>E</i> )
 </pre>
 <p>
 The symbols <b>n</b>, <b>+</b>, <b>×</b>, <b>(</b>, and <b>)</b> are all
-terminals; the only nonterminal is the start symbol <i>E</i>.
-The symbol <b>n</b> stands for all possible numeric literals: 1, 2, 3, etc.
+terminals, where
+the symbol <b>n</b> stands for all possible numeric literals: 1, 2, 3, etc.
 </p>
 <p>
 With this grammar, a string like “<code>2 + 3 × 5</code>” has two possible parse trees, as shown:
