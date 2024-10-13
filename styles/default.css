@@ -90,6 +90,21 @@ div.figure canvas, div.floatfigure canvas {
     width: 300px;
     height: 200px
 }
+div.figure .caption, div.floatfigure .caption {
+    display: block;
+    color: #644;
+    text-align: center;
+    margin: 0 auto;
+    padding: 0
+}
+div.exercise::before {
+    content: "Exercise: ";
+    font-weight: bold
+}
+.answer::before {
+    content: "Answer: ";
+    font-weight: bold
+}
 img.whitebg {background-color: white}
 pre {
     padding: 1ex 2em;
@@ -110,13 +125,6 @@ span.nobreak span {white-space: nowrap}
 span.superscript {font-size:smaller; vertical-align:super;}
 span.subscript {font-size:smaller; vertical-align:sub;}
 .cont {text-indent: 0}
-div.figure .caption, div.floatfigure .caption {
-    display: block;
-    color: #644;
-    text-align: center;
-    margin: 0 auto;
-    padding: 0
-}
 a.pre {
 	color: black;
 	text-decoration: none;

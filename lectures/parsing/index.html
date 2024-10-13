@@ -216,10 +216,11 @@ with (new CFigure("unambiguous-parse")) {
     align("LR", "TB", t, margin(25))
 }
 </script>
+<span class=caption>The only way to parse “<code>2+3×5</code>”</span>
 </div>
 <div class=exercise>
-Using this grammar, can you draw the parse tree for the string “<code>(2+3)×5</code>”?
-<p class=answer>
+Using the same grammar, can you draw the parse tree for the string “<code>(2+3)×5</code>”?
+<p class=answer><br>
 <canvas id="unambiguous-parse2" style="width: 250px; height: 280px"></canvas>
 <script class=graphics>
 const fig = new CFigure("unambiguous-parse2")
@@ -488,32 +489,78 @@ that we might naturally want to write. Particularly problematic are grammars
 that contain <strong>left-recursive</strong> productions, where the nonterminal being
 expanded appears on the left-hand side of its own production. We saw these
 in the original grammar specifying the left-associative operators + and ×. The production
-<i>E</i> → <i>E</i> + <i>T</i> is left-recursive, whereas the production used
-above, <i>E</i> → <i>T</i> + <i>E</i>, is right-recursive. A left-recursive
+\(E → E + T\) is left-recursive, whereas the production used
+above, \(E → T + E\), is right-recursive.
+<p>
+A left-recursive
 production doesn't lend itself to predictive parsing, because top-down
 construction of the AST means the parser needs
 to be able to choose which production to use based on the first symbol seen.
+Consider what the method <code>parseE()</code> would look like if we had
+been trying to implement the productions \(E → E + T \mid T\) instead:
+</p>
+<pre>
+Expr parseE() throws SyntaxError {
+    Expr e = parseE();
+    if (peek("+")) {
+        consume();
+        e = new Binary(BinaryOp.PLUS, e, parseT());
+    }
+    return e;
+}
+</pre>
+<p class=cont>
+But this method won't work: it will cause infinite recursion! The core problem with top-down
+parsing of left-recursive grammars that in general an arbitrary number of recursive calls
+would be required to build the right parse tree, but the parser has no way to predict how many
+from just seeing the beginning of the input.
 </p>
 <p>
-Grammars with left-recursive productions are very useful, because they create
+On the other hand,
+grammars with left-recursive productions are very useful, because they create
 parse trees that describe left-associative (left-to-right) computation. With the right-recursive
-production used above, the string “1 + 2 + 3” creates an AST in which evaluation
-proceeds right-to-left. Programmers normally expect left-to-right evaluation,
-and this is even more of a problem if the operator in question
-is not associative (for example, subtraction).
+production used above, the input “<code>1 + 2 + 3</code>” is parsed as an AST in which evaluation
+proceeds right-to-left:
+
+<div class="figure">
+<canvas id=bad-association-fig style="width: 150px; height: 100px"></canvas>
+<script class=graphics>
+with (new CFigure("bad-association-fig")) {
+    setFontSize(13)
+    setStyle('drawNode', function(f, v) {
+        if (v.match(/^t/)) {
+            return label(text(italic("t"), subscript(v[1]))).expand(5)
+        } else {
+            return f.label(v).expand(3)
+        }
+    })
+    setConnectionStyle("intersection")
+    const t = tree(null, "+", "1", ["+", "2", "3"])
+    align("LR", "TB", t, margin(5))
+}
+</script>
+<span class=caption>Undesirable right-associativity</span>
+</div>
+Programmers normally expect left-to-right evaluation—and this is even more of a
+problem if the operator in question is not associative (for example,
+subtraction).
 </p>
 <h3>Reassociation</h3>
 <p>
 To fix this, we can <i>reassociate</i> after parsing. To see how this works, note
-that the two productions <i>E</i> → <i>T</i> + <i>E</i> | <i>T</i> can be viewed as
+that the two productions \(E → T + E \mid T \) can be viewed as
 shorthand for an infinite list of productions:
 </p>
 <p>
-<i>E</i> → <i>T</i><br />
-<i>E</i> → <i>T</i> + <i>T</i><br />
-<i>E</i> → <i>T</i> + <i>T</i> + <i>T</i><br />
-<i>E</i> → <i>T</i> + <i>T</i> + <i>T</i> + <i>T</i><br />
-...
+\[
+\begin{align*}
+E &→  T \\
+E &→  T + T\\
+E &→  T + T + T\\
+E &→  T + T + T + T \\
+& \dots
+\end{align*}
+\]
 </p>
 <p>
 Another way to express all these productions is to adapt the <b>Kleene star</b>
@@ -526,9 +573,9 @@ has an infinite number of elements, including "a", "aa", "aaa", "bb", "bbbb", "a
 Using the Kleene star
 notation, we can rewrite the infinite list of productions:
 </p>
-<blockquote>
-<i>E</i> → <i>T</i> ( + <i>T</i> )<sup>*</sup>
-</blockquote>
+\[
+E → T~(~+~T~)^*
+\]
 <p class="cont">
 where the parentheses are being used as a grouping construct (they are
 <strong>metasyntax</strong> rather than syntax).
