@@ -16,19 +16,61 @@ to have a model of how computers really work.
 <p>
 The computer memory is actually a big grid in which a bit is stored at every
 intersection. But the hardware itself offers a more abstract view of memory as
-a big array. The memory can be accessed using <b>memory addresses</b> that
+a big array. The memory can be accessed using <strong>memory addresses</strong> that
 start at 0 and go up to some large number (usually 2<sup>32</sup> or
 2<sup>64</sup>, depending on whether the computer is 32-bit or 64-bit).
-Each address names a group of 8 bits (a <b>byte</b>). However, usually
+Each address names a group of 8 bits (a <strong>byte</strong>). However, usually
 computer memories give back multiple bytes at once. When given an address
 divisible by four, the computer memory can read the four bytes beginning
-at that address, containing 32 bits. These four bytes are called a <b>word</b>.
+at that address, containing 32 bits. These four bytes are called a <strong>word</strong>.
 On 64-bit machines, the memory can fetch 64 bits at a time; for simplicity
-we'll call a set of eight bytes a <b>double word</b>.
+we'll call a set of eight bytes a <strong>double word</strong>.
 </p>
 
 <div class="figure">
-<img src="memory.png" alt="memory layout" />
+<canvas id="memory-layout" style="width: 200px; height:250px"><span aria-hidden=true>Layout of computer memory</span></canvas>
+<script class=graphics>
+with (new CFigure("memory-layout")) {
+    function cell() {
+        return square().setW(25)
+    }
+    function memcell(t) {
+        return cell().addText(t + "").setFontSize(10)
+    }
+    function memrow(n) {
+        return group(memcell(n+3), memcell(n+2), memcell(n+1), memcell(n)).align("abut", "TB")
+    }
+    function blankrow() {
+        return group(cell(), cell(), cell(), cell()).align("abut", "TB")
+    }
+    let mrg = margin()
+    let rows = group(memrow(0), memrow(4), memrow(8), blankrow(), blankrow()).align("LR", "abut", )
+    align("abut", "center", label('0'), hspace(5), rows.child(0))
+    align("abut", "center", label('4'), hspace(5), rows.child(1))
+    align("abut", "center", label('8'), hspace(5), rows.child(2))
+    align("abut", "center", label('12'), hspace(5), rows.child(3))
+    align("abut", "center", label('16'), hspace(5), rows.child(4))
+    const restmem = rectangle().addText("...").setFontSize(20)
+    align("LR", "abut", rows, restmem)
+    let p0 = point(), p1 = point()
+    let leftarrow = arrow(p0, p1).addLabel("addresses", 0.45, -20).setLabelInset(4)
+    align("none", "top", p0, rows)
+    align("none", "bottom", p1, restmem)
+    equal(p1.x(), p0.x(), 50)
+    let p2 = point(), p3 = point()
+    equal(rows.child(0).y0(), plus(10, p2.y()))
+    let toparrow = arrow(p2, p3).addLabel("4 bytes = 32 bits", 0.5, 25).setStartArrow("arrow")
+    align("none", "top", toparrow.toTop(30), mrg)
+    equal(p2.y(), p3.y())
+    equal(rows.x0(), p2.x())
+    equal(rows.x1(), p3.x())
+    let maxaddr = label(text("2", superscript("32"), whitespace(), "or", whitespace(), "2", superscript("64")))
+    align("abut", "center", maxaddr, hspace(10), restmem.ll())
+    align("none", "bottom", maxaddr, mrg)
+    equal(p1, maxaddr.uc().toTop(10))
+    align("left", "none", leftarrow, mrg)
+}
+</script>
 </div>
 
 <h2>Integral types (<code>int</code>, <code>short</code>, <code>byte</code>) and signed (two's-complement) representations.</h2>
@@ -67,7 +109,7 @@ need a way to represent the sign of a number.
 	<li>Unsigned: <code>char</code> (16 bits, 0&ndash;65535)</li>
     </ol>
 
-    <p><b>Two's complement representation</b>: in a signed n-bit representation, the most
+    <p><strong>Two's complement representation</strong>: in a signed n-bit representation, the most
     significant bit stands for -2<sup>n-1</sup> instead of 2<sup>n&minus;1</sup>,
     which would be its value in the unsigned representation we have been discussing above.
     For Java's type <code>byte</code>, the bits 01111111 represent 127 but 10000000 is &minus;128.
@@ -382,7 +424,7 @@ compact representation for large arrays.
 <p>
 Objects take up space in memory, so if the program allocates enough objects, the computer
 could potentially run out of space to store objects in memory. To help with this problem,
-Java has the feature of <b>garbage collection</b>. Objects that the Java runtime system
+Java has the feature of <strong>garbage collection</strong>. Objects that the Java runtime system
 can figure out will never be used again are automatically garbage-collected and their space
 is reclaimed for use by other objects. The runtime may also move objects around in memory
 to create large contiguous chunks of memory.
@@ -390,7 +432,7 @@ to create large contiguous chunks of memory.
 <p>
 How does the runtime system know which objects will never be used again? In
 general, it can't know that precisely. As a safe approximation, an object is
-considered to be <b>garbage</b> if the running program has no way to ever reach
+considered to be <strong>garbage</strong> if the running program has no way to ever reach
 the object again by following a chain of pointers.
 </p>
 <p>
@@ -401,12 +443,12 @@ long-running programs with complex data structures.
 </p>
 <h2>Floating point representations</h2>
 
-<p>Java supports <b>floating-point</b> numbers that act a lot like real
+<p>Java supports <strong>floating-point</strong> numbers that act a lot like real
 numbers. But it would take an unbounded amount of memory to store a real
 number, in general, so floating-point numbers are only an approximation to real
 numbers. There are two floating-point types in Java. The type
-<code>float</code> is a <b>single-precision</b> floating point number taking up
-one word, and the type <code>double</code> is a <b>double-precision</b>
+<code>float</code> is a <strong>single-precision</strong> floating point number taking up
+one word, and the type <code>double</code> is a <strong>double-precision</strong>
 floating point number taking up two words.</p>
 
 <p>Because floating point numbers have limited precision, computations using them
@@ -428,7 +470,28 @@ explore how floating point numbers are represented.</p>
 According to the IEEE 754 specification, which is almost universally followed at this point,
 a single-precision floating point number has the following representation:</p>
 
-<div class="figure"><img src="float.png" alt="floating-point representation" /></div>
+<div class="figure">
+<canvas id=floating-point-rep style="height: 95px">
+  <span aria-hidden="true">Single-precision floating-point representation</span>
+</canvas>
+<script class=graphics>
+  with (new CFigure("floating-point-rep")) {
+    let s = rectangle().addText("s"),
+        bexp = rectangle().addText("bexp"),
+        m = rectangle().addText("m")
+        let sign = label("sign"), biased_exp = textFrame("biased\nexponent").setInset(0).setH(40).setVerticalAlign("top"),
+            mantissa = label("mantissa")
+        align("abut", "TB", s, bexp, m, vspace(30))
+        align("center", "abut", s, vspace(5), label("1"), vspace(5), sign)
+        align("center", "abut", bexp, vspace(5), label("8"), vspace(5), biased_exp)
+        align("center", "abut", m, vspace(5), label("23"), vspace(5), mantissa)
+        align("left", "none", sign, margin(), s)
+        align("right", "top", m, margin())
+        align("none", "top", sign, biased_exp)
+        align("none", "bottom", biased_exp, margin())
+  }
+</script>
+</div>
 
 <p>A floating point number is represented using three components, the sign, the exponent, and the mantissa,
 respectively taking up 1, 8, and 23 bits of the 32-bit word.
@@ -448,13 +511,15 @@ To represent numbers outside the interval [1,2), an exponent is needed. To
 represent 2, we use \(s = 0\), exp = \(1\), \(m=0000\dots\), since \(1·2^1 = 2\).
 To represent 3, we choose \(s=0\), \(exp=1\), \(m=10000\dots\), since
 1.1 in base 2 represents 3/2, and 3/2·2<sup>1</sup> = 3. And so on.</p>
-<p>The exponent is stored with a <b>bias</b> of 127, so the actual
+<p>The exponent is stored with a <strong>bias</strong> of 127; that is, the <strong>biased exponent</strong>
+\(bexp\) equals \(exp + 127\).
+The actual
 bit-level representation of the number 1.0 has \(s = 0,\) \(bexp = 01111111\), and
 \(m = 00000000000000000000000\), and the whole word contains exactly the 32 bits
 \(00111111100000000000000000000000\).</p>
 
 <p>Some special exponents follow different rules. If the exponent is \(&minus;127\)
-(and hence the biased exponent is 0), the <b>denormalized</b> representation is used.
+(and hence the biased exponent is 0), the <strong>denormalized</strong> representation is used.
 The represented number is instead:
 :</p>
 \[
@@ -466,7 +531,7 @@ floating-point number 0.0, since \(0.m = 0\) in that case.  It is
 also possible to represent the floating point number \(-0.0\),      
 which behaves slightly differently, such as when its reciprocal is    
 computed.
-In the <b>denormalized</b> representation, some or many of the mantissa
+In the <strong>denormalized</strong> representation, some or many of the mantissa
 bits are zero, so the relative precision of the number is reduced.</p>
 
 <p>The largest number representable using <code>float</code> is
@@ -504,7 +569,7 @@ the numbers are added.  As a result, we have to be very careful about comparing
 two floating-point numbers for equality. They will be equal if they were
 produced by exactly the same computation, but otherwise round-off error will
 make them differ somewhat. Rather than check for equality, often we instead
-check that their difference lies within some <b>tolerance</b> corresponding to
+check that their difference lies within some <strong>tolerance</strong> corresponding to
 the largest expected round-off error.
 </p>
 
