@@ -566,9 +566,10 @@ E &→  T + T + T + T \\
 Another way to express all these productions is to adapt the <b>Kleene star</b>
 notation used in regular expressions: the expression <i>A</i><sup>*</sup> means
 0 or more concatenated strings, each chosen
-from the language of <i>A</i>. For example, if the language of
-<i>A</i> is {"a", "bb"}, then the language of A<sup>*</sup>
-has an infinite number of elements, including "a", "aa", "aaa", "bb", "bbbb", "abba", "bbabbbb", and many more.
+from the language of \(A\). For example, if the language of
+\(A\) is {“a”, ”bb”}, then the language of \(A^*\)
+has an infinite number of elements, including ”a”, ”aa”, ”aaa”, ”bb”, ”bbbb”, ”abba”, ”bbabbbb”, and many more,
+including the empty string.
 <p>
 Using the Kleene star
 notation, we can rewrite the infinite list of productions:
@@ -576,7 +577,7 @@ notation, we can rewrite the infinite list of productions:
 \[
 E → T~(~+~T~)^*
 \]
-<p class="cont">
+<p class=cont>
 where the parentheses are being used as a grouping construct (they are
 <strong>metasyntax</strong> rather than syntax).
 </p>
