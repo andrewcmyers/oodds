@@ -452,8 +452,11 @@ To represent 3, we choose \(s=0\), \(exp=1\), \(m=10000\dots\), since
 bit-level representation of the number 1.0 has \(s = 0,\) \(bexp = 01111111\), and
 \(m = 00000000000000000000000\), and the whole word contains exactly the 32 bits
 \(00111111100000000000000000000000\).</p>
+
 <p>Some special exponents follow different rules. If the exponent is \(&minus;127\)
-(and hence the biased exponent is 0), the represented number is instead:</p>
+(and hence the biased exponent is 0), the <b>denormalized</b> representation is used.
+The represented number is instead:
+:</p>
 \[
 (-1)^s·2^{-126}·(0.m)
 \]
@@ -462,21 +465,28 @@ bit-level representation of the number 1.0 has \(s = 0,\) \(bexp = 01111111\), a
 floating-point number 0.0, since \(0.m = 0\) in that case.  It is         
 also possible to represent the floating point number \(-0.0\),      
 which behaves slightly differently, such as when its reciprocal is    
-computed.</p>                                                         
+computed.
+In the <b>denormalized</b> representation, some or many of the mantissa
+bits are zero, so the relative precision of the number is reduced.</p>
 
-<p>An exponent of 128 is represented by a biased exponent of 255      
-(all 1's). &ldquo;Numbers&rdquo; represented with this exponent       
-include positive and negative infinity, with a mantissa of 0 and      
+<p>The largest number representable using <code>float</code> is
+<code>Float.MAX_VALUE</code>, which is about 3.0·10<sup>38</sup>. And the smallest positive
+number representable with full precision is about 10<sup>&minus;38</sup>. It is
+possible to represent smaller numbers down to about 10<sup>&minus;45</sup>
+
+<p>A biased exponent of 255 (all 1's in binary) is not used to represent
+ordinary numbers. Instead, it is used to represent various other kinds of
+values, such as  positive and negative infinity, which use a mantissa of 0 and      
 the appropriate sign bit. If the mantissa is anything other than 0,   
-the represented &ldquo;number&rdquo; is called NaN, for &ldquo;not    
+the represented value is called NaN, for &ldquo;not    
 a number&rdquo;.  The value NaN arises when there is no reasonable    
 answer to the computation, such as when adding positive and negative  
-infinity.  Any computation performed using NaN produces NaN, so a     
-final result of NaN indicates that something went wrong during the    
-computation. </p>                                                     
+infinity or when dividing zero by zero.  Any numeric computation performed
+using NaN produces NaN, so a     final result of NaN indicates that something
+went wrong during the    computation.</p>
 
 <p>A single decimal digit corresponds to log<sub>2</sub> 10 = 3.32
-bits, so the number of decimal digits represented by 23 bits of mantissa
+binary digits, so the number of decimal digits represented by 23 mantissa bits
 is 23/3.32 = 6.93.  You can therefore think of floating point numbers
 as representing numbers to about 7 digits of precision. However, errors
 tend to accumulate with each computation, so a long computation often has
@@ -485,23 +495,21 @@ fewer digits of precision. For example, if you subtract 1000000.0 from
 In fact, as the <a href="src/dumpFloat.java">attached code</a> shows,
 the result is reported to be 0.125, a relative error of 25%. Oops!</p>
 
-<p>The other thing to watch out for is that the order of operations may affect
-what you compute, because rounding gets done at different places. Just because two
-formulas produce the same real number doesn't mean they will produce the same floating-point
-number. As a result, it is usually necessary when comparing two floating-point numbers
-for equality to instead check that their difference lies within some <b>tolerance</b>
-corresponding to the largest expected round-off error.
+<p>Another thing to watch out for is that the order of operations may affect
+what you compute, because rounding gets done at different places. Just because
+two formulas produce the same real number in mathematics doesn't mean they will
+produce the same floating-point number. Even an operation as simple as summing
+a set of numbers can produce different results depending on the order in which
+the numbers are added.  As a result, we have to be very careful about comparing
+two floating-point numbers for equality. They will be equal if they were
+produced by exactly the same computation, but otherwise round-off error will
+make them differ somewhat. Rather than check for equality, often we instead
+check that their difference lies within some <b>tolerance</b> corresponding to
+the largest expected round-off error.
 </p>
 
-<p>The largest number representable using <code>float</code> is
-<code>Float.MAX_VALUE</code>, which is about 3.0·10<sup>38</sup>. And the smallest positive
-number representable with full precision is about 10<sup>&minus;38</sup>. It is
-possible to represent smaller numbers down to about 10<sup>&minus;45</sup>
-using the <b>denormalized</b> representation in which the exponent is
-&minus;127, but in this case the precision of the number is reduced.</p>
-
-<p>Because single-precision floating point has limited precision, it's
-usually better to use the more precise type <code>double</code> instead.
+<p>Because single-precision floating point has limited precision, it is
+usually better to use the more precise type <code>double</code>.
 A double-precision number has 11 exponent bits with a bias of
 1023 and 53 mantissa bits (52 explicitly stored), so it has about 16 decimal digits
 of precision. The number represented with sign bit \(s\), biased exponent \(\mathit{bexp}\), and
@@ -512,7 +520,7 @@ of precision. The number represented with sign bit \(s\), biased exponent \(\mat
 \]
 
 <p>
-For most applications, that's plenty of precision and range. Neither <code>float</code> nor <code>double</code>
+For most applications, that's plenty of precision and range, with base-10 exponents all the way from &minus;308 to 308. Neither <code>float</code> nor <code>double</code>
 is actually the same thing as a real number in mathematics, but if you stick to <code>double</code>, you are much
 less likely to get into trouble pretending that it is.
 </p>
