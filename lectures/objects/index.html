@@ -793,7 +793,7 @@ is shadowed inside the <code>while</code> loop:
 int x = 2;
 while (x != 0) {
     int x = 5;
-    // both x's in scope here.
+    // shadowing of outer x by inner x is illegal here
 }
 // only outer x in scope here.
 </pre>
