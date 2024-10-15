@@ -6,7 +6,10 @@ express both algorithms and data structures.
 Recursion allows us to solve a problem
 by using solutions to “smaller” versions of the same problem.
 </p>
-<h3>Example: Fibonacci numbers</h3>
+<h2>Examples</h3>
+<p>Let's start by looking at some simple examples of using recursion to
+solve problems.</p>
+<h3>Recursively computing Fibonacci numbers</h3>
 <p>
 The nth Fibonacci number is the sum of the previous two Fibonacci numbers. This is a recursive
 definition of a function f(n):
@@ -44,7 +47,7 @@ it can be implemented in a direct way as Java code:
 This is very concise code, but not very efficient, as we'll see.
 </p>
 
-<h3>Example: Exponentiation</h3>
+<h3>Recursive exponentiation</h3>
 <p>
 An efficient algorithm for exponentiation known as “squaring and multiplication” 
 can be implemented recursively in an elegant way.  Algorithms like this one are used
@@ -71,7 +74,7 @@ desired. If e is odd, then \(\lfloor e/2\rfloor = (e-1)/2\), so
 in either case.
 </p>
 
-<h3>Execution of recursive methods</h3>
+<h2>Execution of recursive methods</h2>
 <p>
 Every time a method is invoked, a structure called an <strong>activation record</strong> is
 created in the computer's memory, containing all its local variables, including its
@@ -110,7 +113,7 @@ own variables.
     retval(sf4, sf3, "1")
     retval(sf3, sf2, "2")
     retval(sf2, sf1, "4")
-    retval(sf1, sf1.ur().toTop(20), "32")
+    retval(sf1, sf1.ur().toTop(35), "32")
 
   }
 
@@ -133,7 +136,7 @@ return from a method causes the current activation record to be popped from the
 stack. Therefore, activation records are also known as <b>stack frames</b>.
 </p>
 
-<h3>Termination and the base case</h3>
+<h2>Termination and the base case</h2>
 
 <p>
 For recursive code to be correct, the base case of the recursion must
@@ -207,22 +210,40 @@ of recursive calls.
 
 <h1>Linked lists</h1>
 <p>
-We are now going to start talking about <b>data structures</b>, objects
-used primarily to store and look up information. Data structures often involve
+<b>Data structures</b> are collections of objects connected by references,
+typically used to store and look up information. Data structures often involve
 another kind of recursion: <b>recursion on types</b>.
 </p>
 <p>
 A classic and very useful example of a data structure is the <b>linked list</b>.
 A linked list consists of a sequence of <b>node</b> objects in which each node
 points to the next node in the list. Some data is stored along with each node.
-This data structure can be depicted graphically as shown in this figure, where
-the first three prime numbers are stored in the list.
+The following figure depicts an example of this 
+data structure, a list containing the first three prime numbers in sequence.
 </p>
 <div class="figure">
-<img src="llist.png" alt="linked list" />
+<canvas id="linked-list" style="height:100px">
+<span aria-hidden=true>A linked list</span>
+</canvas>
+<script class=graphics>
+with (new CFigure("linked-list")) {
+    function llNode(t) {
+        return group(square().addText(t + ""), square()).align("abut", "TB")
+    }
+    const list = group(llNode(2), llNode(3), llNode(5)).align("distribute", "TB")
+    align("right", "center", list, margin())
+    align("abut", "none", margin().cl(), hspace(30), list)
+    equal(list.h(), 30)
+    arrow(margin().cl().toTop(30), list.child(0).ul())
+    arrow(list.child(0).child(1).center(), list.child(1)).setStartArrow("bullet")
+    arrow(list.child(1).child(1).center(), list.child(2)).setStartArrow("bullet")
+    line(list.child(2).child(1).ll(), list.child(2).child(1).ur())
+}
+</script>
 </div>
 <p>
-The last node in the list does not point to another node; instead, it refers to
+As indicated by a slash through the appropriate node cell,
+the last node in the list does not point to another node; instead, it refers to
 the special value <code>null</code> or, alternatively, to a <b>sentinel
 object</b> that is used to mark the end of the list.
 </p>
