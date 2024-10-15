@@ -462,9 +462,9 @@ floating point numbers are represented in Java by using the methods
 <code>Float.floatToRawIntBits</code> and
 <code>Double.doubleToRawLongBits(double)</code>, which return an
 <code>int</code> and a <code>long</code> containing the same bits as the
-respective <code>float</code> and <code>double</code>. <a
-href="src/dumpFloat.java">Here</a> is some Java code that uses these methods to
-explore how floating point numbers are represented.</p>
+respective <code>float</code> and <code>double</code>.
+You can explore how floating point numbers are represented using
+<a id="dumpFloat" href="src/dumpFloat.java">this Java program, <code>dumpFloat</code></a>.
 
 <p>
 According to the IEEE 754 specification, which is almost universally followed at this point,
@@ -557,8 +557,8 @@ as representing numbers to about 7 digits of precision. However, errors
 tend to accumulate with each computation, so a long computation often has
 fewer digits of precision. For example, if you subtract 1000000.0 from
 1000000.1, the true result will be 0.1, but it is computed with only 1 digit of precision.
-In fact, as the <a href="src/dumpFloat.java">attached code</a> shows,
-the result is reported to be 0.125, a relative error of 25%. Oops!</p>
+In fact, as <a href="#dumpFloat">the program linked above</a> shows,
+the result is reported to be 0.125, a very large relative error of 25%. Oops!</p>
 
 <p>Another thing to watch out for is that the order of operations may affect
 what you compute, because rounding gets done at different places. Just because
