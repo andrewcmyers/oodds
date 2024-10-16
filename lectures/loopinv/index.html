@@ -60,22 +60,24 @@ tricky algorithms.
 </p>
 <h2>Binary search via iteration</h2>
 <p>
-Some loops are hard to write correctly without thinking about loop invariants. 
-For example, suppose we want to find an element in a sorted
-array. We can do much better than scanning from left to right, which would take linear
-time: we can use <b>binary search</b> to find it in logarithmic time.
-Here is the binary search algorithm, with the core of the algorithm expressed
-as a loop:
+Some loops are hard to write correctly without thinking about loop invariants.
+For example, suppose we want to find an element in a sorted array. We can do
+much better than scanning from left to right, which would take linear time: as
+we saw earlier, <b>binary search</b> can find an element in logarithmic time.
+We can use loop invariants to take a more careful look at this algorithm.
+</p>
+<p>
+The core of binary search can be expressed as a loop:
 </p>
 <pre class="load">
 <a href="binary_search.java">binary_search.java</a>
 </pre>
 <p>
-Conceptually, this algorithm is simple and makes intuitive sense when you hear
-it explained: the algorithm keeps cutting the part of the array where it is
+Conceptually, the algorithm is simple and makes intuitive sense:
+the algorithm keeps cutting the part of the array where it is
 looking for <code>x</code> in half.  But it is surprisingly tricky to get this
-code exactly right if you have to write it yourself; there are multiple opportunities
-to make a mistake. How do we know we got the
+code exactly right if you have to write it yourself, because there are multiple
+opportunities to make mistakes. How do we know we got the
 computation of <code>m</code> right?  Why is it <tt>x &lt;= a[m]</tt> and not
 <tt>x &lt; a[m]</tt>? Why <code>m</code> and <code>m+1</code> in the two
 updates to <code>r</code> and <code>l</code> respectively? If we change any of
@@ -83,7 +85,7 @@ these decisions, the algorithm is incorrect and will sometimes fail to find the
 correct element.
 </p>
 <p>
-The key question is whether the loop code is correct. We have discussed
+The key question is whether the code of the loop is correct. We have discussed
 preconditions and postconditions of methods, but to say what it
 means for the loop to be correct, we must identify the precondition and the postcondition
 of the loop itself. Its precondition describes the possible states of the
