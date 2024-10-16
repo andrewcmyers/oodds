@@ -1,10 +1,10 @@
-int search(int[] a, int k, int fst, int lst) {
+int search(int[] a, int x, int first, int last) {
    while (true) {
-      if (fst == lst) return fst; // base case
-      int m = (fst + lst)/2;
-      if (k <= a[m])
-         lst = m; // recursive call 1
+      if (first == last) return first; // base case
+      int m = (first + last)/2; // recursive case
+      if (x <= a[m])
+         last = m; 
       else
-         fst = m + 1; // recursive call 2
-    }
+         first = m + 1;
+   }
 }

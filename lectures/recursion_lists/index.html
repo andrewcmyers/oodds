@@ -47,6 +47,25 @@ it can be implemented in a direct way as Java code:
 This is very concise code, but not very efficient, as we'll see.
 </p>
 
+<h3>Binary search</h3>
+
+<p>
+Suppose we want to find an element in an array that is sorted. We can implement
+this algorithm quite simply using recursion:
+</p>
+<pre class="load">
+<a href="BinarySearch.java">BinarySearch.java</a>
+</pre>
+<p>
+Why does the algorithm work? First, consider the base case, which is when
+<code>first</code>=<code>last</code>. Since we are assuming that the element k is between fst and lst, it
+must be at index lst. Otherwise, the code determines whether the element is
+to the left of m (inclusive) or to the right (exclusive), ensuring both that the
+precondition of the method is satisfied for the recursive call and that the
+distance between fst and lst strictly decreases. It can never decrease below zero,
+so the base case is reached eventually.
+</p>
+
 <h3>Recursive exponentiation</h3>
 <p>
 An efficient algorithm for exponentiation known as “squaring and multiplication” 
@@ -285,8 +304,7 @@ immediately accessible. This is sometimes called the <b>cons</b> operation, a
 name inherited from the programming language Lisp:
 </p>
 <pre>
-/** Create a new list node whose value is x and whose
- *  next node is n
+/** Creates: a new list node whose value is x and whose next node is n
  */
 Node cons(Object x, Node n) {
    Node ret = new Node();
@@ -301,6 +319,14 @@ the existing nodes. In a sense, we now have two linked lists that happen to shar
 most of their nodes. As long as we don't make changes to the nodes of either linked
 list, this sharing is perfectly okay and something we can exploit for efficiency.
 </p>
+<p>It is also handy to have the cons operation as a constructor:</p>
+<pre>
+/** Creates: a new list node whose value is x and whose next node is n */
+Node(Object x, Node n) {
+   data = x;
+   next = n;
+}
+</pre>
 <h2>Recursion on lists</h2>
 <p>
 The tail of a list is another, smaller list. That means we can write recursive
@@ -330,22 +356,17 @@ int sum(Node n) {
 </pre>
 <p>
 
-It is also possible to implement these methods iteratively, as a loop, but the
-recursive code is shorter and simpler than the iterative code. However, it's
-likely to be a little bit slower, at least in Java. The reason is that the
-recursive version creates one activation record for each list node, but the
-/iterative version uses only one activation record total.
-</p>
-
 <h2>Iterating through lists</h2>
 <p>
-It is also possible to write code that uses iteration (loops) 
-to build many interesting algorithms. Usually we keep some
+It is also possible to use iteration (loops)
+to build many interesting algorithms over lists. The pattern is that we keep some
 small number of variables pointing into the list, and follow the pointers
-between nodes to get around. For example, we can iteratively check whether a
-list contains an object equal to a particular object <code>x</code>:
+between nodes to get around. For example, we can implement the same method
+<code>contains()</code> iteratively by using a variable <code>n</code> to keep
+track of the current list node:
 </p>
 <pre>
+/** Returns: whether the list beginning at n contains x. */
 boolean contains(Node n, Object x) {
    while (n != null) {
       if (x.equals(n.data)) return true;
@@ -382,8 +403,8 @@ We can find the last node by scanning down the list until we find it. Or we
 can keep track of the last node of the list explicitly.
 </p>
 <pre>
-/** Update the list starting at n to add a node containing x at the end.
- * Requires: n is not null.
+/** Effect: Update the list starting at n to add a node containing x at the end.
+ *  Requires: n is not null.
  */
 void append(Object x, Node n) {
    while (n.next != null)
@@ -396,64 +417,44 @@ void append(Object x, Node n) {
 <h2>Tail recursion elimination</h2>
 
 <p>
-Earlier we saw that we could code up binary search as an iterative algorithm.
-We can also implement it recursively, in a way that makes it more obvious why
-it works.
+The recursive and iterative implementations of <code>contains()</code> might
+seem quite different, but it turns out that we can automatically convert the
+recursive implementation to similar iterative code. The insight is that
+the <code>contains()</code> method uses a restricted form of recursion that makes
+this transformation possible.
 </p>
-<pre class="load">
-<a href="BinarySearch.java">BinarySearch.java</a>
+<p>
+Any time that a function (method) returns its result by immediately returning
+the result of another function call, we say that call is a <strong>tail
+call</strong>. If a the recursive calls in a recursive function are all tail
+calls, we say that the function is <strong>tail-recursive</strong>.
+</p>
+<p>
+For example, the recursive implementation of <code>contains()</code> contains
+a recursive tail call:
+</p>
+<pre>
+   return contains(x, n.next);
 </pre>
 <p>
-Why does the algorithm work? First, consider the base case, which is when
-<code>fst</code>=<code>lst</code>. Since we are assuming that the element k is between fst and lst, it
-must be at index lst. Otherwise, the code determines whether the element is
-to the left of m (inclusive) or to the right (exclusive), ensuring both that the
-precondition of the method is satisfied for the recursive call and that the
-distance between fst and lst strictly decreases. It can never decrease below zero,
-so the base case is reached eventually.
-</p>
-<p>
-The recursive version of <code>search()</code> above is
-a particularly interesting kind of recursive method in that it calls itself as
-the very last action. It does not do any computation after the call, but simply
-returns the result of the recursive call. Such a call is called a <b>tail call</b>.
-A recursive method with only tail calls is said to be <b>tail-recursive</b>.
-</p>
-<p>
-Tail-recursive methods have an interesting property: they are equivalent to
+Since <code>contains()</code> is tail-recursive, we can mechanically
+transform it into iterative, non-recursive code, because
+tail-recursive methods are equivalent to
 <code>while</code> loops. Any tail-recursive method can be converted to a
 <code>while</code> loop and vice versa. The reason this works is that the
 activation record for a tail-recursive method is not needed after the call is
-made. So the same activation record can be reused for the recursive call. We do not
+made, so the same activation record can be reused for the recursive call. We do not
 need a stack of activation records, but can do with just one.
 </p>
-
-<p>To convert a tail-recursive method to a <code>while</code> loop, we
-wrap the method body in a big <code>while</code> loop with guard <code>true</code>,
-then replace each recursive call with assignment statements that reassign
-to the method's formal parameters the new values that would have been passed in the recursive call.
-Here is what the binary search code looks like after this transformation:
-</p>
-<pre class="load">
-<a href="BinarySearchIterative.java">BinarySearchIterative.java</a>
-</pre>
 <p>
-Of course, we can make further simplifications such as folding the base case
-into the loop guard.
-</p>
-<p>
-In Java, the iterative version is likely to run more efficiently than the recursive
-version, because it requires only one activation record. In some languages, such as
-OCaml, the compiler recognizes tail recursion automatically and generates code that
-is just as efficient as a loop. Since the transformation to a loop is straightforward,
-we can write code using tail recursion when that helps us to get the algorithm right,
-and convert it into an efficient loop when necessary for good performance.
+To make the transformation, simply wrap the entire method body in a
+<code>while</code>-loop with a guard of <code>true</code> and on each iteration
+update the method parameters to the new values that would have been passed
+in the recursive call.
 </p>
 
 <p>
-Another example of a tail-recursive method is the <code>contains</code> method above.
-It is tail-recursive because all recursive calls are tail calls. Here is the result
-of the transformation to a <code>while</code> loop.
+For the method <code>contains</code>, this transformation yields the following code:
 </p>
 <pre>
 boolean contains(Object x, Node n) {
@@ -464,10 +465,11 @@ boolean contains(Object x, Node n) {
    }
 }
 </pre>
-<p>
-As an optimization, we then move the (negated) test <code>n == null</code> into
-the loop guard, and put the <code>return false</code> after the loop, to
-get exactly the iterative code above!
+<p class=cont>
+From this point, it is easy to simplify the code a little to get the above iterative version.
+We move the (negated) test <code>n == null</code> into
+the loop guard, and put the base-case “<code>return false</code>” after the loop, to
+obtain exactly the iterative code above!
 </p>
 <pre>
 boolean contains(Object x, Node n) {
@@ -478,11 +480,34 @@ boolean contains(Object x, Node n) {
    return false;
 }
 </pre>
+</p>
+
+<p>
+Earlier we saw that we could code up binary search as a recursive algorithm. In
+fact, we can see that it is <em>tail</em>-recursive, which means that it too can be converted
+to iterative code.
+Here is what the binary search code looks like after this transformation:
+</p>
+<pre class="load">
+<a href="BinarySearchIterative.java">BinarySearchIterative.java</a>
+</pre>
+<p>
+Just as for <code>contains()</code>, we can make further simplifications such
+as folding the base case into the loop guard.
+</p>
+<p>
+In Java, the iterative version is likely to run more efficiently than the recursive
+version, because it requires only one activation record. In some languages, such as
+OCaml, the compiler recognizes tail recursion automatically and generates code that
+is just as efficient as a loop. Since the transformation to a loop is straightforward,
+we can write code using tail recursion when that helps us to get the algorithm right,
+and convert it into an efficient loop when necessary for good performance.
+</p>
 <p>
 The moral is that we can often write short, clear, recursive code and convert it to an
 efficient loop when efficiency is paramount.
 </p>
-<h3>Doubly linked lists</h3>
+<h2>Doubly linked lists</h2>
 <p>
 The list shown above is considered <em>singly</em> linked because each
 list node has one outgoing link. A singly linked list can only be traversed in one direction,
@@ -607,23 +632,23 @@ to the previous node, or contains <code>null</code> if <code>n</code> is the fir
 <p>
 It is useful to distinguish between singly and doubly
 linked lists as concrete data structures, versus various possible
-operations they can be used to implement.
-The collection of operations along with their specifications is
-an abstract data type (ADT).
+abstract data types (ADTs) they can be used to implement.
 For example, immutable lists and mutable lists are ADTs, because they
 merely specify a set of operations. These abstract data types can
-be implemented by linked lists, but as we will see later on, linked lists are only one of the ways
-to implement list abstractions.
+be implemented by linked lists, but linked lists are only one of the ways
+to implement list abstractions. For example, Java's <code>ArrayList</code> class
+implements a mutable list abstraction using underlying array data structures rather than
+linked lists.
 </p>
 <p>
-We can also use linked-list data
+Conversely, we can use linked-list data
 structures to implement other abstractions.
-For example, another useful abstract data type that often arises is the <b>stack</b>,
-a list that supports two operations:
+Another useful abstract data type is the <b>stack</b>,
+a mutable abstraction that supports two key operations:
 </p>
 
 <ul>
-<li><code>void push(Object x)</code>: Insert the element x at the beginning of the list.</li>
+<li><code>void push(Object x)</code>: Insert element <code>x</code> at the beginning of the list.</li>
 <li><code>Object pop()</code>: Remove and return the first element in the list. Requires that the stack is nonempty.</li>
 </ul>
 
@@ -641,6 +666,5 @@ list. And to pop the top of the stack, we undo this action by changing
 
 <p>Keep in mind that data structures are ways to implement
 abstract data types, and using them through an abstraction barrier is preferable
-to using the data structure directly. This allows you to change the data structure
-without breaking client code.</p>
-
+to using the data structure directly. This layer of abstraction changing the underlying
+data structure without breaking client code.</p>

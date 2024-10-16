@@ -1,12 +1,12 @@
-/** Returns: an index i between indices fst and lst, inclusive, where
-    a[i] == k. Requires: that such an index exists, and that a is
-	sorted in ascending order.
+/** Returns: an index i between indices first and last, inclusive, such that a[i] = x.
+    Requires: such an index exists, and a is sorted in ascending order.
  */
-int search(int[] a, int k, int fst, int lst) {
-   if (fst == lst) return fst; // base case
-   int m = (fst + lst)/2;
-   if (k <= a[m])
-      return search(a, k, fst, m);
+int search(int[] a, int x, int first, int last) {
+   if (first == last) return first; // base case
+   int m = (first + last)/2;
+   if (x <= a[m])
+      last = m;
    else
-      return search(a, k, m+1, lst);
+      first = m+1;
+   return search(a, x, first, last);
 }
