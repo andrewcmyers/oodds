@@ -45,8 +45,10 @@ given variable in a Java bugs might take on a null value under some circumstance
 The Option pattern offers an alternative to programming with <code>null</code>. The
 idea is to wrap up possibly absent values in an object. The standard Java libraries
 offer a parameterized class <code>Optional&lt;T&gt;</code> that realizes this pattern. We have also
-made available a similar class <code>Maybe&lt;T&gt;</code> that has advantages and disadvantages
-by comparison. Both classes have the virtue that by using them, it is clear to anyone
+made available a similar class
+<a href="https://github.com/andrewcmyers/maybe">
+<code>Maybe&lt;T&gt;</code></a> that has some advantages.
+Both classes have the virtue that by using them, it is clear to anyone
 reading the code that the absence of a value is a possibility to be considered.
 </p>
 <p>
