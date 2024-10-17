@@ -35,8 +35,8 @@ with (new CFigure("method_reasoning")) {
     align("none", "bottom", post, c)
     arrow(pre, t1)
     arrow(b1, post)
-    let v  = 70, w = 100
-    connector(b2, b2.toBottom(v), code.toRight(w).toBottom(v), code.toRight(w).toTop(v), t2.toTop(v), t2)
+    let v  = 60, w = 100
+    connector(b2, b2.toBottom(v), code.lr().toRight(w).toBottom(v), code.ur().toRight(w).toTop(v), t2.toTop(v), t2)
       .setEndArrow("arrow")
     align("left", "top", label("class invariant"), b2.toRight(8).toBottom(5))
     align("left", "bottom", label("class invariant"), t2.toRight(8).toTop(5))
