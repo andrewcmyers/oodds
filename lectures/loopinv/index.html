@@ -57,8 +57,8 @@ can be executed multiple times. How do we know what is true about the program
 as loops execute?
 </p>
 <p>
-A <b>loop invariant</b> is a condition that is true at the beginning and end of
-every iteration of a loop, somewhat like a class invariant,
+A <b>loop invariant</b> is a condition that is true at both the beginning and end of
+every iteration of the loop, somewhat like a class invariant,
 which must be true at the beginning and end of every public method. When you
 write a loop that works correctly, you are at least implicitly relying on a
 loop invariant.  Knowing what a loop invariant is and thinking explicitly about
@@ -144,7 +144,8 @@ invariant is a <b>predicate</b>—a logical formula—over the program state.
 If we know what the loop invariant is for a loop, and it is not blindingly
 obvious to the reader, it is often a good idea to document it. Further, we can
 document the loop invariant in a <em>checkable</em> way by including an <code>assert</code>
-statement to be executed on every loop iteration.
+statement to be executed on every loop iteration. Of course, some loop invariants may
+be too expensive to check, so we might only check cheap parts of the invariant.
 </p>
 
 <h2>Loop invariants and tail-recursive functions</h2>
