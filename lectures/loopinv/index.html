@@ -57,7 +57,7 @@ can be executed multiple times. How do we know what is true about the program
 as loops execute?
 </p>
 <p>
-A <b>loop invariant</b> is a condition that is true at both the beginning and end of
+A <strong>loop invariant</strong> is a condition that is true at both the beginning and end of
 every iteration of the loop, somewhat like a class invariant,
 which must be true at the beginning and end of every public method. When you
 write a loop that works correctly, you are at least implicitly relying on a
@@ -70,7 +70,7 @@ tricky algorithms.
 Some loops are hard to write correctly without thinking about loop invariants.
 For example, suppose we want to find an element in a sorted array. We can do
 much better than scanning from left to right, which would take linear time: as
-we saw earlier, <b>binary search</b> can find an element in logarithmic time.
+we saw earlier, <strong>binary search</strong> can find an element in logarithmic time.
 We can use loop invariants to take a more careful look at this algorithm.
 </p>
 <p>
@@ -108,7 +108,7 @@ precondition to one satisfying the postcondition.
 </p>
 <h2>Binary search loop invariant</h2>
 <p>
-A <b>loop invariant</b> describes the conditions that the loop body must
+A <strong>loop invariant</strong> describes the conditions that the loop body must
 preserve in order to be correct. For this example, such a loop
 invariant can be expressed using three clauses:
 </p>
@@ -138,7 +138,7 @@ makes as it runs.
 The loop invariant is not actually exactly the same on every loop iteration,
 because it depends on the state of the program, such as the values of the
 mutable variables <code>l</code> and <code>r</code> in the example. The loop
-invariant is a <b>predicate</b>—a logical formula—over the program state.
+invariant is a <strong>predicate</strong>—a logical formula—over the program state.
 </p>
 <p>
 If we know what the loop invariant is for a loop, and it is not blindingly
@@ -235,7 +235,7 @@ To use a loop invariant to argue that code does what we want, we
 use the following steps, depicted in the figure:
 </p>
 <ol>
-<li><p><b>Establishment (aka Initialization).</b> Show that the loop invariant is
+<li><p><strong>Establishment (aka Initialization).</strong> Show that the loop invariant is
 true just after loop initialization. That is, the loop invariant must be
 implied by the loop precondition.
 For while-loops of the form <code>while
@@ -250,7 +250,7 @@ the function's precondition holds when it is first called.
 </p>
 </li>
 
-<li><p><b>Postcondition.</b> Show that if the <code>guard</code> is false (so the loop exits)
+<li><p><strong>Postcondition.</strong> Show that if the <code>guard</code> is false (so the loop exits)
 and the loop invariant holds, then the desired result of the loop
 has been achieved: the loop postcondition holds.
 </p>
@@ -260,7 +260,7 @@ the function's postcondition holds in the base case.
 </p>
 </li>
 
-<li><p><b>Preservation (aka Maintenance).</b> Show that whenever both the loop invariant and the
+<li><p><strong>Preservation (aka Maintenance).</strong> Show that whenever both the loop invariant and the
 <code>guard</code> are true just before executing the loop body, then the loop
 invariant is true just <em>after</em> executing the loop body. Note that the
 loop invariant may fail to be true at intermediate steps during the execution
@@ -270,10 +270,10 @@ of the loop body, as long as it is reestablished by the end.  (For
 </p>
 <p>
 Viewing the loop as a tail-recursive function, Preservation is about showing
-that the function's precondition holds when it calls itself tail-recursively.
+that the tail-recursive function's precondition holds at the points where it
+calls itself.
 </p>
 </li>
-
 </ol>
 
 <p>Other than coming up with the loop invariant in the first place, the Preservation
@@ -283,16 +283,21 @@ too-weak invariant is a common mistake, so it is good to try the Postcondition s
 
 <p>
 These three steps allow us to conclude that the loop satisfies
-<b>partial correctness</b>, which means that if the loop terminates, it
-will succeed. To show <b>total correctness</b>, we must show in addition
+<strong>partial correctness</strong>, which means that if the loop terminates, it
+will succeed. In fact, these three steps constitute a proof of partial
+correctness by induction on the number of loop iterations. However, they
+do not imply that the loop terminates in the first place.
+</p>
+<p>
+To show <strong>total correctness</strong>, we must show in addition
 that the loop eventually terminates. To show this, there is a fourth step:
 </p>
 <ol>
-<li value="4"><b>Termination.</b> Assuming the loop invariant holds at the start of
+<li value="4"><strong>Termination.</strong> Assuming the loop invariant holds at the start of
 each iteration, show that some quantity strictly decreases, and that it cannot
 decrease indefinitely.
-This quantity is called the <b>decrementing function</b>, <b>decreasing function</b>, or 
-<b>loop variant</b>, and it is a function of the program state: that is, the variables
+This quantity is called the <strong>decrementing function</strong>, <strong>decreasing function</strong>, or 
+<strong>loop variant</strong>, and it is a function of the program state: that is, the variables
 appearing in the loop. Call the decrementing function DF,
 we need to show that if the loop guard is true, then the value of DF after
 the loop body (call it DF') is strictly less than it was at the beginning: DF' &lt; DF.
@@ -312,7 +317,7 @@ that the arguments to the function decrease in its tail-recursive call or calls.
 Let's try these four steps on the binary search algorithm.
 </p>
 <ol>
-  <li><b>Establishment.</b>
+  <li><strong>Establishment.</strong>
   <p>The loop invariant has three clauses; we can argue that each one holds:
   <ol>
 <li>That array <code>a</code> is sorted is in the precondition of <code>search</code>.
@@ -322,14 +327,14 @@ Let's try these four steps on the binary search algorithm.
        guarantees that <code>x</code> is there.</li>
   </ol></p>
   </li>
-  <li><b>Postcondition.</b> <p>For the algorithm to be correct, we need
+  <li><strong>Postcondition.</strong> <p>For the algorithm to be correct, we need
   <code>a[l] = x</code>. If the loop guard is false, we know <code>l ≥
   r</code>. But the invariant (2) guarantees <code>l ≤ r</code>, so we must
   have <code>l = r</code>. We know from the invariant (3) that <code>x ∈
   a[l..r]</code>, which has been reduced to a single element, so that must be
   where <code>x</code> is.</p></li>
 
-  <li><b>Preservation.</b>
+  <li><strong>Preservation.</strong>
   <p>Since the loop doesn't change the array, clearly the first clause of the invariant
    is preserved. Arguing the remaining clauses is a bit trickier.</p>
   <p>We use <code>l'</code> and <code>r'</code> to represent the values of <code>l</code> and <code>r</code> at the end of the loop.
@@ -378,7 +383,7 @@ Let's try these four steps on the binary search algorithm.
 	</li>
   </ul>
   </li>
-  <li><b>Termination.</b>
+  <li><strong>Termination.</strong>
   <p>The value DF = <code>r &minus; l</code> is guaranteed by the invariant
   (1) to be nonnegative: we can choose DF<sub>0</sub> = 0.
   In the case where <code>x ∈ a[l..m]</code>, we know <code>m &lt; r</code>, so
@@ -418,7 +423,6 @@ so Postcondition fails.
 </li>
 </ol>
 
-
 <h2>Example: Exponentiation by squaring and multiplication</h2>
 <p>
 Here is a second example of using a loop invariant to show that an inobvious algorithm works correctly.
@@ -455,15 +459,15 @@ is \(b^y\). As we can see in the code, the loop invariant is:
 <p>Let's consider the four steps outlined above.</p>
 
 <ol>
-<li><b>Establishment.</b> <p>Initially, \(r=1\), \(b=x\) and \(y=e\),
+<li><strong>Establishment.</strong> <p>Initially, \(r=1\), \(b=x\) and \(y=e\),
 so trivially we have \(r·b^y = x^e\). Also, we know \(y &ge; 0\) since initially \(y = e\), and
 \(e &ge; 0\) is a precondition of the loop.</p></li>
 
-<li><b>Postcondition.</b>
+<li><strong>Postcondition.</strong>
 <p>If the loop guard is false, then \(y = 0\), since \(y &ge; 0\) and not \(y &gt; 0\).
 But if \(y = 0\), then \(r = r·b^y = x^e\), and that is the desired return value.</p></li>
 
-<li><b>Preservation.</b> <p>Let us use \(y'\), \(b'\), and \(r'\) to refer to the values of these variables
+<li><strong>Preservation.</strong> <p>Let us use \(y'\), \(b'\), and \(r'\) to refer to the values of these variables
 at the end of the loop body.
 We need to show that if \(y &gt; 0\) and \(x^e = r·b^y\) at the beginning of
 the loop body, then \(y'≥0\) and \(x^e = r'·b'^{y'}\) at the end
@@ -482,7 +486,7 @@ Therefore, \(r'·b'^{y'} = r·b·(b^2)^{(y-1)/2}
 since halving a positive number cannot make it negative.</p>
 </ul>
 </li>
-<li><b>Termination.</b>
+<li><strong>Termination.</strong>
 <p>Dividing by two makes the quantity \(y\) strictly smaller on every loop iteration,
 because it is always positive when the guard is true.
 When the value of \(y\) is 0, the loop guard is false, so
