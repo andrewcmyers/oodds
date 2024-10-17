@@ -1,12 +1,19 @@
 <h1>Loop invariants</h1>
-
 <p>
-Given a piece of code that executes during a program, such as a method
-definition, how do we know that the code is correct? When writing the code
+Writing correct loops can be a challenging part of programming. To make it
+manageable to be able to convince ourselves that our code is correct, we want
+to use <strong>local reasoning</strong>, in which we consider one small piece
+of code at a time. Loops make reasoning challenging because they can
+do a lot of complex work.  To obtain local reasoning for loops, we want to
+be able to reason about loops one iteration at a time.
+</p>
+<p>
+We have already seen a related challenge for local reasoning that gives
+some insight about how to solve the problem of reasoning about loops. When writing the code
 for a method, we are allowed to assume that the method's precondition is
 true, and it is our job as implementers to write code that makes the method's
-postcondition true. In addition, we are allowed to assume that initially
-the class invariant holds, but there is an obligation to ensure that at the
+postcondition true. But <em>in addition</em>, we are allowed to rely on
+a class invariant. Of course, also we have an obligation to ensure that at the
 end, the class invariant is still true. We can visualize this
 reasoning process in the following diagram:
 </p>
@@ -284,12 +291,15 @@ that the loop eventually terminates. To show this, there is a fourth step:
 each iteration, show that some quantity strictly decreases, and that it cannot
 decrease indefinitely.
 This quantity is called the <b>decrementing function</b>, <b>decreasing function</b>, or 
-<b>loop variant</b>.  If we call the decrementing function DF, we need to show that if the loop guard is
-true, then the value of DF after
+<b>loop variant</b>, and it is a function of the program state: that is, the variables
+appearing in the loop. Call the decrementing function DF,
+we need to show that if the loop guard is true, then the value of DF after
 the loop body (call it DF') is strictly less than it was at the beginning: DF' &lt; DF.
-Further, we need to come up with some minimal value DF<sub>0</sub> such that if DF &lt; DF<sub>0</sub>,
-then either the loop guard or the loop invariant is false. Since DF decreases on every step, it will
-eventually be less than DF<sub>0</sub>, and in that case the loop cannot still be running.
+Further, there must be some minimal value DF<sub>0</sub> such that if DF &lt; DF<sub>0</sub>,
+then either the loop guard or the loop invariant is false. That is, the result of DF must
+be an element of a well-founded set in which it is not possible to decrease forever.
+Since <em>every</em> interation decreases DF, it will eventually reach a point where it cannot
+decrease, so the loop cannot run forver.
 </li>
 <p>
 Viewing the loop as a tail-recursive function, Termination is about showing
@@ -495,35 +505,40 @@ The most typical error is to define a loop invariant that is too weak. This
 error is usually detected when trying to take the Postcondition step. All we
 know when arguing the Postcondition step is that the loop invariant holds and
 the guard does not. If the loop invariant is too weak, we can't argue that from
-those two facts that the loop achieves its postcondition.
+those two facts that the loop achieves its postcondition. In essence, the
+loop invariant has forgotten too much about what past loop iterations accomplished.
 A too-weak invariant may also be detected in the
 Preservation step, when the weak loop invariant does not restrict the
 state enough to show that even it is preserved by the loop.
 </p>
 <p>
-The other common error is to define a loop invariant that is too strong. That
-error typically shows up when one tries to prove Preservation, because the
-strong loop invariant simply isn't preserved by executing the loop body. It is
-less common for this error to show up in the Establishment step, when the
-putative loop invariant doesn't even hold at the start of the loop.
+The other common error is to define a loop invariant that is too strong. This
+mistake can happen when we try to define invariant that is strong enough to
+prove Postcondition, but don't leave room for the rest of the loop to finish
+its job. This error typically shows up when one tries to prove Preservation,
+because the overly strong loop invariant simply isn't preserved by executing the loop
+body. This error might also show up in the Establishment step,
+if the putative loop invariant doesn't even hold at the start of the loop.
 </p>
 <p>
 Choosing loop invariants is a bit of an art, but becomes easier with practice.
 The key is that a loop invariant really does capture the core reason why the
 loop works. So imagine trying to explain to someone why the loop works, and
-write down conditions that capture the essence of that explanation.
+write down conditions that capture the essence of that explanation. Thinking
+about the loop invariant as the precondition of a tail-recursive function may
+also help.
 </p>
 <p>
 Recall that the loop invariant must be implied by the loop precondition and it
-must imply the loop postcondition; another way to think about the loop
-invariant is that it interpolates between the precondition and postcondition.
+must imply the loop postcondition; in a sense, the loop invariant
+interpolates between the precondition and postcondition.
 It can be helpful to write down both the precondition and the postcondition
 together, and then to try to come up with a logical statement that captures
 both of them. It should generalize both the precondition and the postcondition,
 but be close to the precondition as the loop starts and close to the
 postcondition when it ends. For example, in the binary search algorithm,
 we want <code>k = a[l]</code> at the end and we have <code>k ∈ a[0..a.length-1]</code>
-at the beginning.  The statement <code>k ∈ a[l..r]</code>
+at the beginning.  The loop-invariant statement <code>k ∈ a[l..r]</code>
 generalizes both of these assertions.
 </p>
 
