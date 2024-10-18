@@ -3,9 +3,9 @@
 <h2>Interpreters vs. compilers</h2>
 
 There are two strategies for obtaining runnable code from a program
-written in some programming language that we will call the <b>source
-language</b>. The first is <b>compilation</b>, or <b>translation</b>, in which the
-program is translated into a second, <b>target</b> language.
+written in some programming language that we will call the <strong>source
+language</strong>. The first is <strong>compilation</strong>, or <strong>translation</strong>, in which the
+program is translated into a second, <strong>target</strong> language.
 </p><p>
 <div class=figure>
 <img src="compilation.png" />
@@ -15,9 +15,9 @@ program is translated into a second, <b>target</b> language.
 Compilation can be slow because it is not simple to translate from a
 high-level source language to low-level languages. But once this
 translation is done, it can result in fast code.  Traditionally, the
-target language of compilers is <b>machine code</b>, which the computer's
+target language of compilers is <strong>machine code</strong>, which the computer's
 processor knows how to execute. This is an instance of the second
-method for running code: <b>interpretation</b>, in which an interpreter
+method for running code: <strong>interpretation</strong>, in which an interpreter
 reads the program and does whatever computation it describes.
 </p><p>
 <div class=figure>
@@ -29,7 +29,7 @@ Ultimately all programs have to be interpreted by either hardware or software,
 since compilers only translate them. One advantage that a software interpreter
 offers over a compiler is that, given a program, it can quickly start running
 it without spending time to compile it. A second advantage is that the code is
-more <b>portable</b> to different hardware architectures; it can run on any
+more <strong>portable</strong> to different hardware architectures; it can run on any
 hardware architecture that the interpreter itself can run on.
 </p><p>
 The disadvantage of software interpretation is that it is orders of
@@ -38,7 +38,8 @@ is because for each program operation (say, adding two numbers), a software
 interpreter has to execute many machine instructions to figure out what it is
 supposed to be doing. But the hardware usually can do the operation much
 faster. Adding two numbers can be done in a single machine instruction
-requiring just one machine cycle.
+requiring just one machine cycle, or even less in <strong>superscalar</strong>
+hardware architectures, which can execute multiple machine instructions per cycle.
 </p>
 <h2>Interpreter designs</h2>
 <p>
@@ -51,14 +52,14 @@ as a recursive traversal of the AST. However, traversing
 the AST makes AST interpreters typically hundreds of times slower than the
 equivalent machine code.
 </p><p>
-A faster and very common interpreter design is a <b>bytecode
-interpreter</b>, in which the program is compiled to bytecode
+A faster and very common interpreter design is a <strong>bytecode interpreter</strong>,
+in which the program is compiled to bytecode
 instructions somewhat similar to machine code, but these instructions
 are interpreted. Language implementations based on a
 bytecode interpreter include Java, Smalltalk, OCaml, Python, and C#.
 The bytecode language of Java is the Java Virtual Machine.
 </p><p>
-A third interpreter design often used is a <b>threaded interpreter</b>.
+A third interpreter design often used is a <strong>threaded interpreter</strong>.
 Here the word &ldquo;threaded&rdquo; has nothing to do with the threads related
 to concurrency. The code is represented as a data structure in which
 the leaf nodes are machine code and the non-leaf nodes are arrays of
@@ -83,8 +84,8 @@ depicted in Figure 3.
 </p><p>
 Source code is compiled to JVM bytecode. This bytecode can immediately
 be interpreted by the JVM interpreter. The interpreter also monitors
-how much each piece of bytecode is executed (<b>run-time profiling</b>) and
-hands off frequently executed code (the <b>hot spots</b>) to the
+how much each piece of bytecode is executed (<strong>run-time profiling</strong>) and
+hands off frequently executed code (the <strong>hot spots</strong>) to the
 just-in-time (JIT) compiler. The JIT compiler converts the bytecode
 into corresponding machine code to be used instead. Because the JIT
 knows what code is frequently executed, and which classes are actually
@@ -103,9 +104,8 @@ code optimization effort is reserved for the hot spots in the code.
 
 <h2>The Java Virtual Machine</h2>
 <p>
-JVM bytecode is stored in <b>class files</b> (.class) containing the
-bytecode for each of the methods of the class, along with a <b>constant
-pool</b> defining the values of string constants and other constants used
+JVM bytecode is stored in <strong>class files</strong> (.class) containing the
+bytecode for each of the methods of the class, along with a <strong>constant pool</strong> defining the values of string constants and other constants used
 in the code. Other information is found in a .class file as well,
 such as attributes that describe the code.
 Consult the
@@ -207,16 +207,16 @@ overloading has been fully resolved by the Java compiler. Unlike the
 Java compiler, the JVM doesn't have to make any decisions about what
 method to call based on the arguments to the call.
 </p><p>
-At run time, <b>method dispatch</b> must be done to find the right bytecode
+At run time, <strong>method dispatch</strong> must be done to find the right bytecode
 to run. For example, suppose that the actual class of the object that
 <code>x</code> refers to is <code>Rhino</code>, a subclass of its static type <code>Animal</code>, but that
 <code>Rhino</code> inherits its implementation of <code>eat()</code> from <code>Animal</code>. The situation
 inside the JVM is shown in Figure 5.
 </p><p>
-Each object contains a pointer to its <b>class object</b>, an object
+Each object contains a pointer to its <strong>class object</strong>, an object
 representing its class. The class object in turn points to the
-<b>dispatch vector</b>, an array of pointers to its method bytecode
-(In C++ implementations, this array is known as the <b>vtable</b>,
+<strong>dispatch vector</strong>, an array of pointers to its method bytecode
+(In C++ implementations, this array is known as the <strong>vtable</strong>,
 and objects point directly to their vtables rather than to an
 intervening class object.) In the depicted example, the JVM has
 decided to put method <code>eat()</code> at position 2 within the dispatch vector.  To
@@ -276,7 +276,7 @@ with (new CFigure("method-disp-fig-new")) {
 
 <p>
 The JIT compiler converts bytecode into machine code. In doing so,
-it may create <b>specialized</b> versions of inherited methods such as <code>f</code>,
+it may create <strong>specialized</strong> versions of inherited methods such as <code>f</code>,
 so that different code ends up being executed for <code>Animal.eat()</code> and <code>Rhino.eat()</code>.
 Specialization of code allows the compiler to generate more efficient
 code, at the cost of greater space usage.
@@ -345,7 +345,7 @@ used to dynamically generate bytecode. Using a classloader
 (also obtainable from <code>ToolProvider</code>), this bytecode can be loaded
 into the running program as a new class or classes. The new classes
 are represented as objects of class <code>java.lang.Class</code>. To run their
-code, the <b>reflection</b> capabilities of Java are used. In particular,
+code, the <strong>reflection</strong> capabilities of Java are used. In particular,
 from a <code>Class</code> object one can obtain a <code>Method</code> object for each of
 its methods. The <code>Method</code> object can be used to run the code of the
 method, using the method <code>Method.invoke</code>. At this point the code
@@ -354,7 +354,7 @@ the JIT compiler will be invoked to convert it into machine code.
 
 </p><p>
 Another strategy for generating code is to generate bytecode directly,
-possibly using one of the several JVM <b>bytecode assemblers</b> that are
+possibly using one of the several JVM <strong>bytecode assemblers</strong> that are
 available. This bytecode can be loaded using a classloader as above.
 Unfortunately JVM bytecode does not expose many capabilities that
 aren't available in Java already, so it is usually easier just to

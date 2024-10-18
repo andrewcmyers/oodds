@@ -36,13 +36,13 @@
         'ssp',
         'heaps',
         'avl',
-        'undecidability',
         'patterns',
-        gui,
-        guievents,
+        'gui',
+        'guievents',
         'uidesign',
         'concurrency',
         'synchronization',
-        'jvm'
+        'jvm',
+        'undecidability'
     ]
 })()
