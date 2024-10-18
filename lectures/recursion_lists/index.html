@@ -58,20 +58,20 @@ this algorithm quite simply using recursion:
 </pre>
 <p>
 Why does the algorithm work? First, consider the base case, which is when
-<code>first</code>=<code>last</code>. Since we are assuming that the element k is between fst and lst, it
-must be at index lst. Otherwise, the code determines whether the element is
-to the left of m (inclusive) or to the right (exclusive), ensuring both that the
+<code>first</code>=<code>last</code>. Since we are assuming that the element k is between <code>first</code> and <code>last</code>, it
+must be at index <code>last</code>. Otherwise, the code determines whether the element is
+to the left of <code>m</code> (inclusive) or to the right (exclusive), ensuring both that the
 precondition of the method is satisfied for the recursive call and that the
-distance between fst and lst strictly decreases. It can never decrease below zero,
+distance between <code>first</code> and <code>last</code> strictly decreases. It can never decrease below zero,
 so the base case is reached eventually.
 </p>
 
 <h3>Recursive exponentiation</h3>
 <p>
-An efficient algorithm for exponentiation known as “squaring and multiplication” 
-can be implemented recursively in an elegant way.  Algorithms like this one are used
-to implement the exponentiation needed by modern cryptography, because the exponents
-are too large for the obvious, simple exponentiation algorithm to be practical.
+An efficient algorithm for exponentiation known as <strong>exponentiation by
+squaring</strong> can be implemented recursively in an elegant way.  Algorithms
+like this one are used by modern cryptography, because there the exponents are
+far too large for the obvious, simple exponentiation algorithm to be practical.
 </p>
 <pre class="load">
 <a href="Exponentiation.java">Exponentiation.java</a>
