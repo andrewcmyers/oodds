@@ -37,6 +37,7 @@ with (new CFigure("graph_examples")) {
     line(c1, c2)
     line(c0, c2)
 
+    setFontSize(14)
     align("center", "abut", group(c0, c1, c2, c3),
       vspace(15), label("undirected graph"))
 
@@ -324,7 +325,43 @@ be represented with the following data structure:
 </p>
 
 <div class=figure>
-<img src="adjacency_list.png">
+<canvas id=adjacency_list style="width: 400px; height: 150px"></canvas>
+<script class=graphics>
+with (new CFigure("adjacency_list")) {
+    function box(t) {
+        return rectangle().setW(30).setH(20).addText(t + "")
+    }
+    const a = varBoxes("0=","1=", "2=", "3=")
+    line(a.getVar(3).ll(), a.getVar(3).ur())
+    function node(...elems) {
+        return group(...elems.map(x => {
+            if (x && x != "/") return box(x)
+            const b = box()
+            if (x == "/") { return group(b, line(b.ll(), b.ur())) }
+            return b
+        }
+        )).align("abut", "TB")
+    }
+    const n0 = node(1, 10, ""), n0b = node(2, 40, "/"),
+          n1 = node(3, -5, "/"), n2 = node(1, 25, ""), n2b = node(3, 20, "/")
+
+    pointer(a.getVar(0), n0)
+    pointer(a.getVar(1), n1)
+    pointer(a.getVar(2), n2)
+    pointer(n0, n0b)
+    pointer(n2, n2b)
+    // const n1 = group(box(3), box(-5), box()).align("abut", "TB")
+    align("LR", "distribute", n0, n1, n2)
+    align("LR", "none", n0b, n2b)
+    align("right", "none", n2b, margin())
+    align("distribute", "top", a, n0, n0b)
+    align("none", "center", a.getVar(3), n2.lc())
+    align("none", "TB", n0, n0b)
+    align("none", "TB", n2, n2b)
+    align("left", "center", a, margin())
+
+}
+</script>
 </div>
 
 <p>
@@ -413,7 +450,36 @@ example, consider the following DAG expressing what we might call the
 “men's informal dressing problem”:
 </p>
 <div class=figure>
-<img src="dressing_dag.png">
+<canvas id=dressing_dag></canvas>
+<script class=graphics>
+with (new CFigure("dressing_dag")) {
+    setFontSize(14)
+    function lb(t) { return label(t).expand(5) }
+    const tie = label("tie"),
+          shirt = lb("shirt"),
+          jacket = lb("jacket"),
+          belt = lb("belt"),
+          pants =  lb("pants"),
+          shoes =  lb("shoes"),
+          socks =  lb("socks")
+    const m = margin()
+    align("left", "none", shirt, pants, socks, m)
+    align("right", "none", jacket, m)
+    align("center", "top", tie, m)
+    align("none", "bottom", socks, m)
+    align("center", "distribute", tie, belt, shoes)
+    align("none", "distribute", tie, group(shirt, jacket), belt, pants, shoes, socks)
+
+    setConnectionStyle("intersection")
+    arrow(shirt, tie)
+    arrow(shirt, belt)
+    arrow(tie, jacket)
+    arrow(belt, jacket)
+    arrow(pants, belt)
+    arrow(pants, shoes)
+    arrow(socks, shoes)
+}
+</script>
 </div>
 <p>
 A valid plan for getting dressed is a topological sort of this graph. In
