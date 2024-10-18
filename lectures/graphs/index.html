@@ -455,7 +455,7 @@ example, consider the following DAG expressing what we might call the
 with (new CFigure("dressing_dag")) {
     setFontSize(14)
     function lb(t) { return label(t).expand(5) }
-    const tie = label("tie"),
+    const tie = lb("tie"),
           shirt = lb("shirt"),
           jacket = lb("jacket"),
           belt = lb("belt"),
