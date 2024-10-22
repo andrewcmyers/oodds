@@ -420,6 +420,7 @@ from each array as the following diagram suggests:
     with (new CFigure("merge-inv-constrain")) {
         function r() { return rectangle().setH(20).setLineWidth(1) }
         setFontSize(13)
+        setFontName("Menlo, Courier, fixed")
         var before1 = r(), before2 = r(), before3 = r(), before4=r(),
             a = label("a")
         var after1 = r(), after2 = r()
@@ -514,6 +515,7 @@ The first <code>arraycopy</code> does nothing, and the second
   <script type="application/javascript" class=graphics>
     with (new CFigure("merge-sort-analysis")) {
         var sep = 8, h = 20, hs = h + sep
+        setFontName("STIX General, MathJax TeX, Palatino, Times")
         function level(x, p1, p2) {
             if (x < 4) {
                 let r = rectangle()
@@ -611,7 +613,8 @@ State of the array after partitioning
     with (new CFigure("final-qsort-state")) {
         var left, right
         function invRect() { return rectangle().setH(30).setLineWidth(1) }
-        setFontSize(11)
+        setFontSize(13)
+        setFontName("Menlo, Courier, fixed")
         align("abut", "top bottom",
             left = invRect().setW(150).addText("≤ p"),
             right = invRect().setW(180).addText("≥ p"))
@@ -673,7 +676,8 @@ first element and the rest of the array in an unknown state:
     function iRect(f) { return f.rectangle().setH(30).setLineWidth(1) }
     with (f) {
         var left, right
-        setFontSize(11)
+        setFontSize(13)
+        setFontName("Menlo, Courier, fixed")
         align("abut", "top bottom",
             left = iRect(f).setW(30).addText("p"),
             right = iRect(f).addText("?"))
@@ -694,12 +698,12 @@ As the following diagram suggests, the invariant
 says that all elements strictly to the left of <code>i</code> are at
 most <code>p</code>, and all elements strictly to the right of
 <code>j</code> are at least <code>p</code>.
-In addition, the inequalities <tt>l</tt> ≤ <code>i</code> ≤ <code>j</code>+1 ≤ <code>r</code> hold,
+In addition, the inequalities <code>l</code> ≤ <code>i</code> ≤ <code>j</code>+1 ≤ <code>r</code> hold,
 so both <code>i</code> and <code>j</code> are in bounds and can go past each other by at most a single index.  Therefore, if <code>i</code> and <code>j</code> do go past each other,
 the values they index will be on the correct side of the array and the 
 array can be partitioned between them. Finally, there is at least one
-value v to the right of i such that <code>v ≥ p</code> and at least one value to the left
-of <code>j</code> such that <code>v≤p</code>. These values serve as <b>sentinel values</b> that
+value <code>v</code> to the right of <code>i</code> such that <code>v ≥ p</code> and at least one value <code>v</code> to the left
+of <code>j</code> such that <code>v ≤ p</code>. These values serve as <b>sentinel values</b> that
 stop iteration from walking off either end of the array.
 </p>
 <div class=figure>
@@ -715,15 +719,16 @@ stop iteration from walking off either end of the array.
         var rects = [ iRect(f), iRect(f), iRect(f) ]
         align("abut", "top bottom", rects[0], rects[1], rects[2])
         setFontSize(14)
-        rects[0].addText("≤p")
+        setFontName("Menlo, Courier, fixed")
+        rects[0].addText("≤ p")
         rects[1].addText("?")
-        rects[2].addText("≥p")
+        rects[2].addText("≥ p")
         align("left", "top", rects[0], canvasRect().inset(2))
         align("right", "top", rects[2], canvasRect().inset(2))
         equal(rects[0].w(), rects[1].w())
         equal(rects[1].w(), rects[2].w())
-        align("left", "abut", rects[0].lr(), vspace(5), label(" i"))
-        align("right", "abut", rects[2].ll(), vspace(5), label("j "))
+        align("right", "abut", rects[0].lr(), vspace(5), label("i"))
+        align("left", "abut", rects[2].ll(), vspace(5), label("j"))
     }
   </script>
 </div>
@@ -744,8 +749,9 @@ rather than at the beginning.
 <p>
 Interestingly, these inner loops do not need to do any bounds checking on
 <code>i</code> and <code>j</code>, which makes them significantly more efficient.
-The reason bounds checks are not needed is that the sentinel values in the array
-will stop the inner loops before they walk off the ends of the array.
+The reason bounds checks are not needed is that the sentinel values in the array,
+maintained by the loop invariant, stop the inner loops before they walk off
+the ends of the array.
 </p>
 <p>
 An example of partitioning will probably help understand what is going
@@ -764,16 +770,16 @@ to the next swappable values, and they are swapped:
   i           j
 </pre>
 <p>
-In the second iteration, i and j move inward again  for a second swap.
-Notice that everything to the right of j is at least the pivot value 5,
-and everything to the left of i is no more than 5.
+In the second iteration, <code>i</code> and <code>j</code> move inward again  for a second swap.
+Notice that everything to the right of <code>j</code>, inclusive, is at least the pivot value 5,
+and everything to the left of <code>i</code> is no more than 5.
 </p>
 <pre>
 3 2 1 7 6 9 5 8
     i   j     
 </pre>
 <p>
-On the third iteration, i and j cross over each other, so no swap occurs:
+On the third iteration, <code>i</code> and <code>j</code> cross over each other, so no swap occurs:
 <pre>
 3 2 1 7 6 9 5 8
     j i
@@ -785,7 +791,7 @@ Since <code>i &gt; j</code>, the loop halts and the result is <code>j+1</code>
 </p>
 <p>Because of the loop invariant, the loop can either stop with <code>i</code>
 = <code>j</code>+1 or with <code>i</code> = <code>j</code> where
-<code>a[i]</code> = <code>a[j]</code> = <code>p</code>. Since j must be
+<code>a[i]</code> = <code>a[j]</code> = <code>p</code>. Since <code>j</code></code> must be
 decremented at least twice, either by the initial loop or by the first
 iteration of the main loop, the value <code>j+1</code> is a valid array index
 at the point of return, satisfying <code>l &lt; j+1 &lt; r</code>.
@@ -804,7 +810,7 @@ sufficiently small subarrays.
 Finding the maximum and minimum elements in an array is a straightforward
 \(O(n)\)
 algorithm.  But what if we want to find the <em>median</em> element? Or the
-10th largest element? The problem of finding the nth largest element in an
+10th largest element? The problem of finding the \(n\)th largest element in an
 array is called the <b>order statistics</b> problem.  Clearly, we can solve
 this problem by sorting the array and then indexing to the appropriate
 position, but that does a lot of unnecessary sorting work.
