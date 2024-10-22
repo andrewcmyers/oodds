@@ -56,8 +56,8 @@ order. The code can be written as a loop with a loop invariant depicted as follo
     with (new CFigure("insert-sort-inv1")) {
         var left, right
         align("abut", "top bottom",
-            left = rectangle().setH(30).setW(150).addText("sorted").setFontSize(11),
-            right = rectangle().setW(180).addText("unsorted").setFontSize(11))
+            left = rectangle().setH(30).setW(150).addText("sorted").setFontSize(14),
+            right = rectangle().setW(180).addText("unsorted").setFontSize(14))
         align("center", "none", right.cl(), canvasRect())
         align("left", "abut", right, vspace(10), label(" i").setFontSize(12))
         align("none", "top", left, canvasRect().inset(10))
@@ -100,15 +100,16 @@ inserted into the right place.
     with (new CFigure("insert-sort-inv2")) {
         function invRect() { return rectangle().setH(30).setLineWidth(1) }
         function addLabel(r, t) {
-            r.addText(t)
+            r.addText(t).setFontSize(14)
             return r
         }
+        const cr = canvasRect()
         var r1 = invRect(), r2 = invRect(), r3 = invRect(), r4 = invRect()
         align("abut", "top bottom", r1, r2, r3, r4)
-        align("none", "center", r1, canvasRect().inset(2))
+        align("none", "center", r1, cr.inset(2))
 
-        align("left", "center", r1, canvasRect().inset(2))
-        align("right", "center", r4, canvasRect().inset(2))
+        align("left", "center", r1, cr.inset(2))
+        align("right", "center", r4, cr.inset(2))
         equal(times(5, r2.width()), r1.width())
         equal(r1.width(), r3.width())
         equal(times(15, r2.width(), r4.width()))
@@ -266,22 +267,24 @@ shortly, there are better algorithms for sorting large collections,
 but there is also a limit on how good a sorting algorithm of this kind can be.
 Recall that we are concerned with algorithms that work no matter what kind of data
 they are sorting. The only observation these algorithms can make about the
-sorted elements is to= compare them. Generically, the interface to such an
+sorted elements is to compare them. Generically, the interface to such an
 algorithm looks like the following:
 <p>
 <pre>
 &lt;T&gt; sort(T[] a, Comparator&lt;T&gt; cmp) {
 </pre>
 <p class=cont>
-where the implementation of the method contains some number of calls to
-the <code>compareTo</code> method:
+where the implementation of the sorting algorithm uses some number of calls to
+the <code>compareTo</code> method of the comparator:
 <pre>
     cmp.compareTo(x, y); // returns &lt;, =, or &gt;
 </pre>
 <p>
 The sorting algorithm receives an array whose elements have been permuted in
 some order relative to their sorted order, and the job of the algorithm is to
-undo that permutation. Given \(n\) elements, there are \(n!\)
+undo that permutation by applying the inverse permutation. In a very real sense,
+the core job of sorting is to compute this inverse permutation.
+Given \(n\) elements, there are \(n!\)
 possible permutations that the sorting algorithm must choose
 correctly among. The information it uses to make that choice consists of the
 sequence of observations the algorithm makes using <code>compareTo()</code>.
@@ -289,9 +292,10 @@ For example, such a sequence might look like (&lt;, &gt;, &lt;, =, &gt;, ...),
 where we've only recorded the result returned by the call. We can organize
 all such possible observation sequences into a <b>decision tree</b>, in which
 each observation sequence corresponds to exactly one path from the root of the tree
-to some leaf.
-Since the decision tree is able to correctly handle all \(n!\)
-permutations of the array, it must have at least \(n!\) leaves:
+to some leaf. When the algorithm reaches a leaf, it must have computed the
+full permutation to apply, so there must be a leaf corresponding to every permutation.
+Since the decision tree handles all \(n!\) permutations of the array, it must
+have at least \(n!\) leaves:
 </p>
 
 <div class=figure>
@@ -342,8 +346,7 @@ The worst-case running time of the sorting algorithm must be at least
 proportional to the number of comparisons it makes, which can be as large as
 the longest path in this decision tree: that is, the height \(h\) of the decision tree. To express such a <em>lower bound</em>
 on running time, we cannot use big-O, because it talks about upper bounds.
-To express lower bounds we use big-<b>omega</b>. In this case, the
-running time of the sorting algorithm is \(\Omega(h)\). But what do we know about \(h\)?
+To express lower bounds we use big-<b>omega</b>.
 <p>
 In general, we say that a function \(f(n)\)
 is \(\Omega(g(n))\) if
@@ -356,23 +359,26 @@ there exists some constant factor \(k\) and value
 
 </p>
 <p>
-Now, a ternary tree of height \(h\) can have at <em>most</em>
+In this case, the running time of the sorting algorithm is \(\Omega(h)\).
+But what do we know about \(h\)?
+A ternary tree of height \(h\) can have at <em>most</em>
 \(3^h\) leaves. Therefore, we know
 \(3^h ≥ n!\), or equivalently, that
 \(h ≥ log_3(n!) = \ln(n!)/\ln(3)\).
 From
 <a href="https://en.wikipedia.org/wiki/Stirling%27s_approximation">Stirling's formula</a>, we learn that
-\(\ln n!\) is \(O(n \ln n)\).
+\(\ln n!\) is \(\Omega(n \ln n)\).
 Ignoring the constant factor of \(1/\ln(3)\), this result means
 that \(\Omega(h) = \Omega(n \lg n)\), as claimed. Hence, generic sorting
 algorithms cannot be faster in the worst case, even if they can be faster
-for particular inputs, such as the linear-time performance of
+for particular inputs, as seen in the linear-time performance of
 insertion sort on an already-sorted array.
 </p>
 <p>
-Now we know that any sorting algorithm must take at least \(\Omega(n \lg n)\) time. But that doesn't mean
-there is actually any algorithm with that running time. In fact, there <em>are</em> such asymptotically efficient
-sorting algorithms, such as merge sort and quicksort.
+Now we know that any sorting algorithm must take at least \(\Omega(n \lg n)\)
+time. But that doesn't mean there is actually any algorithm with that running
+time. In fact, there <em>are</em> such asymptotically efficient sorting
+algorithms, such as merge sort and quicksort.
 </p>
 
 <h2>Merge sort</h2>
@@ -413,6 +419,7 @@ from each array as the following diagram suggests:
   <script class=graphics>
     with (new CFigure("merge-inv-constrain")) {
         function r() { return rectangle().setH(20).setLineWidth(1) }
+        setFontSize(13)
         var before1 = r(), before2 = r(), before3 = r(), before4=r(),
             a = label("a")
         var after1 = r(), after2 = r()
@@ -513,6 +520,7 @@ The first <code>arraycopy</code> does nothing, and the second
                 pin(p1, r.ul())
                 pin(p2, r.lr())
                 label("n" + (x == 0 ? "" : "/" + (1<<x))).at(r.center())
+                    .setFontSize(15 - x)
                 let m = average(p1.x(), p2.x())
                 level(x + 1, p1.toBottom(hs), point(minus(m, sep/2), plus(p2.y1(), hs)))
                 return level(x + 1, point(plus(m, sep/2), plus(p1.y1(), hs)), p2.toBottom(hs))
@@ -706,7 +714,7 @@ stop iteration from walking off either end of the array.
         var left, right
         var rects = [ iRect(f), iRect(f), iRect(f) ]
         align("abut", "top bottom", rects[0], rects[1], rects[2])
-        setFontSize(11)
+        setFontSize(14)
         rects[0].addText("≤p")
         rects[1].addText("?")
         rects[2].addText("≥p")

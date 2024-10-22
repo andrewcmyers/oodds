@@ -749,15 +749,17 @@ to 1, 2, or 3 nodes in the corresponding red–black tree.
 <li>An \(N\)-ary generalization of 2–3–4 trees.
 <li>Every leaf has the same depth.
 <li>Every node except the root has at least \(\lceil N/2\rceil\) children, which ensures the tree height
- is \(O(\log n)\) in the number of elements \(n\).
-<li>If \(N\) is large, it means that relatively few edges are followed to reach any given leaf
+ is \(O(\log n)\) in the number of elements \(n\). Taking \(N\) into account,
+ the height is \(O(\log n)/O(\log N)\).
+<li>If \(N\) is large, relatively few edges are followed to reach any given leaf.
 <li>However, B-trees are characterized by complex logic with tricky corner cases.
-<li>They are used frequently in databases and file systems where following “pointers” is expensive.
+<li>They are used frequently in databases and file systems where indirections are especially expensive.
 </ul>
 <li>Splay trees
 <ul>
-<li>Binary search tree with <em>no</em> additional shape invariant.
-<li>Searched-for nodes are rotated to top of tree, so repeatedly
+<li>A splay tree is a binary search tree with, surprisingly, <em>no</em> additional shape invariant.
+<li>Searching in the tree causes tree rotations that incrementally rebalance the tree.
+<li>Searched-for nodes are also rotated to top of tree, so repeatedly
     searching for the same elements is especially fast.
 <li>Asymptotically optimal (amortized) performance: \(O(\log n)\).
 <li>Used in network routers to figure out where to send packets.
