@@ -519,7 +519,7 @@ The first <code>arraycopy</code> does nothing, and the second
                 let r = rectangle()
                 pin(p1, r.ul())
                 pin(p2, r.lr())
-                label("n" + (x == 0 ? "" : "/" + (1<<x))).at(r.center())
+                label(text(italic("n"), (x == 0 ? "" : "/" + (1<<x)))).at(r.center())
                     .setFontSize(15 - x)
                 let m = average(p1.x(), p2.x())
                 level(x + 1, p1.toBottom(hs), point(minus(m, sep/2), plus(p2.y1(), hs)))
@@ -527,7 +527,7 @@ The first <code>arraycopy</code> does nothing, and the second
             }
             return p2
         }
-        let levels = group(label("lg n"), vspace(5), label("levels")).align("center", "abut")
+        let levels = group(label(text("lg", whitespace(), italic("n"))), vspace(5), label("levels")).align("center", "abut")
         align("left", "center", levels, canvasRect())
         let p2 = level(0, point(levels.x1(), plus(1,canvasRect().y0())),
                           canvasRect().ur().toBottom(h).toLeft(1))
