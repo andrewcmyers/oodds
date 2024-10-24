@@ -15,15 +15,15 @@
 -->
 
 <p>
-A <b>graph</b> is a highly useful mathematical abstraction. A graph
-consists of a set of <b>nodes</b> (also called <b>nodes</b>) and a set
-of <b>edges</b> connecting those vertices. There are two main kinds
-of graphs: <b>undirected graphs</b> and <b>directed graphs</b>. In a
-directed graph (sometimes abbreviated as <b>digraph</b>), the edges
+A <strong>graph</strong> is a highly useful mathematical abstraction. A graph
+consists of a set of <strong>nodes</strong> (also called <strong>nodes</strong>) and a set
+of <strong>edges</strong> connecting those vertices. There are two main kinds
+of graphs: <strong>undirected graphs</strong> and <strong>directed graphs</strong>. In a
+directed graph (sometimes abbreviated as <strong>digraph</strong>), the edges
 are directed: that is, they have a direction, proceeding from a
-<b>source</b> vertex to a <b>sink</b> (or <b>destination</b>) vertex.
-The sink vertex is a <b>successor</b> of the source, and the the source
-is a <b>predecessor</b> of the sink.  In undirected graphs, the edges
+<strong>source</strong> vertex to a <strong>sink</strong> (or <strong>destination</strong>) vertex.
+The sink vertex is a <strong>successor</strong> of the source, and the the source
+is a <strong>predecessor</strong> of the sink.  In undirected graphs, the edges
 are symmetrical.
 </p>
 <div class=figure>
@@ -65,9 +65,9 @@ Graphs are a highly useful abstraction in computer science because so many
 important problems can be expressed in terms of graphs. We have already seen a
 number of graph structures: for example, the objects in a running program form
 a directed graph in which the vertices are objects and references between
-objects are edges. To implement <b>automatic garbage collection</b> (which
+objects are edges. To implement <strong>automatic garbage collection</strong> (which
 discards unused objects), the language implementation uses a algorithm for
-<b>graph reachability</b>.
+<strong>graph reachability</strong>.
 </p>
 <p>
 Other examples of graphs, many of which we've seen, include:
@@ -103,7 +103,7 @@ trying to invent a new algorithm for the specific domain of interest.
 <p>
 There are many computational problems over graphs that are not known to
 be solvable in any reasonable amount of time. In particular, there is a large class of problems
-known as the <b>NP complete problems</b> that are not known to be efficiently solvable, but
+known as the <strong>NP complete problems</strong> that are not known to be efficiently solvable, but
 are known to be equivalent in complexity. If we could give an efficient algorithm for solving
 any one of them, then we would have efficient algorithms for all of them.
 </p>
@@ -133,16 +133,16 @@ these things unless explicitly stated otherwise.
 
 <h2>Adjacency and degree</h2>
 <p>
-Vertices \(v\) and \(w\) are <b>adjacent</b> if they are connected
-by an edge. The <b>degree</b> of a vertex is the total number of adjacent 
+Vertices \(v\) and \(w\) are <strong>adjacent</strong> if they are connected
+by an edge. The <strong>degree</strong> of a vertex is the total number of adjacent 
 vertices. In a directed graph, we can distinguish between outgoing and incoming
-edges. The <b>out-degree</b> of a vertex is the number of outgoing edges and
-the <b>in-degree</b> is the number of incoming edges.
+edges. The <strong>out-degree</strong> of a vertex is the number of outgoing edges and
+the <strong>in-degree</strong> is the number of incoming edges.
 </p>
 
 <h2>Labels</h2>
 <p>The real value of graphs is obtained when we use them to organize
-information.  Both edges and vertices of graphs can have <b>labels</b> that
+information.  Both edges and vertices of graphs can have <strong>labels</strong> that
 carry meaning about an entity represented by a vertex or about the relationship
 between two entities represented by an edge. For example, we might encode
 information about the population of cities and distances between them
@@ -181,7 +181,7 @@ with (new CFigure("cities_graph")) {
 Here, the vertices are labeled with a pair containing the name of the city and
 its population, and the edges are labeled with the distance between the cities.
 </p>
-<p>A graph in which the edges are labeled with numbers is called a <b>weighted graph</b>.
+<p>A graph in which the edges are labeled with numbers is called a <strong>weighted graph</strong>.
 Of course, the labels do not have to represent weight; they might stand for
 distances, or the probability of transitioning from one state to
 another, or the similarity between two vertices, etc.
@@ -242,7 +242,7 @@ with (new CFigure("weighted_digraph")) {
 
 <h3>Adjacency matrix</h3>
 <p>
-An <b>adjacency matrix</b> represents a graph as a two-dimensional array.
+An <strong>adjacency matrix</strong> represents a graph as a two-dimensional array.
 Each vertex is assigned a distinct index in {0,1,...,|V|-1}. If
 the graph is represented by the 2D array <code>m</code>, then the
 edge (or lack thereof) from vertex <code>i</code> to vertex <code>j</code>
@@ -302,9 +302,9 @@ we store that information in the corresponding array entry:</p>
 The space required by the adjacency matrix representation is O(V<sup>2</sup>),
 so adjacency matrices can waste a lot of space if the number of edges |E| is
 much smaller than O(V<sup>2</sup>). In particular, a graph with only O(V) edges
-is said to be <b>sparse</b>. For example, graphs in which either the
+is said to be <strong>sparse</strong>. For example, graphs in which either the
 in-degree or out-degree is bounded by a constant are sparse. Adjacency matrices
-are not as wasteful when the graphs they represent are <b>dense</b> (i.e., not sparse).
+are not as wasteful when the graphs they represent are <strong>dense</strong> (i.e., not sparse).
 </p>
 <p>
 The adjacency matrix representation is <em>time</em>-efficient for some
@@ -320,7 +320,7 @@ matrix will be symmetric around its main diagonal; that is, <code>m[i][j]</code>
 
 <h3>Adjacency list representation</h3>
 <p>
-Since sparse graphs are quite common, the <b>adjacency list</b> representation is
+Since sparse graphs are quite common, the <strong>adjacency list</strong> representation is
 often preferred. This representation keeps track of the outgoing edges from
 each vertex, typically as a linked list. For example, the graph above might
 be represented with the following data structure:
@@ -380,15 +380,15 @@ requires scanning the entire data structure, requiring \( O(V+E) \) time.
 <p>
 When it is necessary to be able to walk forward on outgoing edges and backward
 on incoming edges, a good approach is to maintain two adjacency lists,
-one representing the graph as above and one corresponding to the <b>dual</b>
-(or <b>transposed</b>) graph</b> in which all edges are reversed. That is,
-there is a an edge (u,v) in the original graph if and only if there is an edge (v,u) in 
+one representing the graph as above and one corresponding to the <strong>dual</strong>
+(or <strong>transposed</strong>) graph</b> in which all edges are reversed. That is,
+there is an edge \((u,v)\) in the original graph if and only if there is an edge \((v,u)\) in 
 the transposed graph.  Of course, this invariant must be maintained between the
 two adjacency list representations.
 </p>
 <p>
-Testing whether there is an edge from vertex i to vertex j requires scanning
-all the outgoing edges, taking O(V) time in the worse case. If this operation
+Testing whether there is an edge from vertex <code>i</code> to vertex <code>j</code> requires scanning
+all the outgoing edges, taking \(O(V)\) time in the worse case. If this operation
 needs to be fast, the linked list can be replaced with a hash table. For example,
 we might implement the graph using this Java representation, which preserves
 the asymptotic space efficiency of adjacency lists while also supporting
@@ -413,23 +413,23 @@ for large values of \(V\) and \(E\). So this sum is \(O(V+E)\).
 
 <h2>Paths and cycles</h2>
 <p>
-Following a series of edges from a starting vertex creates a <b>path</b>
+Following a series of edges from a starting vertex creates a <strong>path</strong>
 through the graph, visiting a sequence of vertices \((v_0, v_1, ..., v_n)\)
-where the edges followed are exactly the edges \(v_0, v_1\), ..., \(v_{n-1}, v_n\).
-The <b>length</b> of the path is the number of edges (that is, \(n\)). Note that
+where the edges followed are exactly the \(n\) edges \((v_0, v_1), \dots, (v_{n-1}, v_n)\).
+The <strong>length</strong> of the path is the number of edges (that is, \(n\)). Note that
 \(n=0\) is possible; a path can have length 0 and consist of just a single vertex
 and no edges.
-If no vertex appears twice in the path, except that possibly v<sub>0</sub> =
-v<sub>n</sub>, the path is called <b>simple</b>.
+If no vertex appears twice in the path, except that possibly \(v_0 = v_n\),
+the path is called <strong>simple</strong>.
 (Some authors use the term “path” to refer only to simple paths, and may also
 require that all vertices in the path are distinct; in this case, the term
 “walk” is used to refer to the concept we are calling a path.)
 If the first and last vertices of a path are the same, the path is a
-<b>cycle</b>.
+<strong>cycle</strong>.
 </p>
 <p>
 Some graphs have no cycles. For example, linked lists and trees are both examples
-of graphs in which there are no cycles.  They are <b>directed acyclic graphs</b>,
+of graphs in which there are no cycles.  They are <strong>directed acyclic graphs</strong>,
 abbreviated as DAGs. In trees and linked lists, each vertex has at most one
 predecessor. In general, vertices of DAGs can have more than one predecessor.
 </p>
@@ -437,13 +437,13 @@ predecessor. In general, vertices of DAGs can have more than one predecessor.
 <h2>Topological sorting</h2>
 <p>
 One use of directed graphs is to represent an ordering constraint on vertices.
-For example, vertices might represent events, and an edge (u,v) might represent
-the constraint that u must happen before v.</p>
+For example, vertices might represent events, and an edge \((u,v)\) might represent
+the constraint that event \(u\) must happen before event \(v\).</p>
 
 <p>
-A <b>topological sort</b> of the vertices is a <em>total</em> ordering of the vertices
-that is consistent with all edges. That is, if (u,v) is an edge, then u must appear before
-v in the total ordering. A graph can be topologically sorted if and only if
+A <strong>topological sort</strong> of the vertices is a <strong>total ordering</strong> of the vertices
+that is consistent with all edges. That is, if \((u,v)\) is an edge, node \(u\) must appear before
+node \(v\) in the total ordering. A graph can be topologically sorted if and only if
 it has no cycles.
 </p>
 <p>
@@ -544,14 +544,14 @@ edges exist, these problems become harder and different algorithms are needed.
 <p>
 The problem of finding the <em>longest</em> simple path between two nodes in a graph
 is, in general, intractable. It is related to some other important problems.
-A <b>Hamiltonian path</b> is one that visits every vertex in a graph exactly once.
-A <b>Hamiltonian cycle</b> is a cycle that visits every vertex exactly once.
+A <strong>Hamiltonian path</strong> is one that visits every vertex in a graph exactly once.
+A <strong>Hamiltonian cycle</strong> is a cycle that visits every vertex exactly once.
 The ability to determine whether a graph contains a Hamiltonian path or a Hamiltonian
 cycle would be useful, but in general the best known algorithms for these problems
 require exponential time.
 </p>
 <p>
-A weighted version of this problem is the <b>traveling salesman problem</b>
+A weighted version of this problem is the <strong>traveling salesman problem</strong>
 (TSP), which tries to find the Hamiltonian cycle with the minimum total weight.
 The name comes from imagining a salesman who wants to visit every one of a set
 of cities while traveling the least possible total distance. This problem is at
@@ -569,9 +569,9 @@ has two exams at the same time. We can represent this problem using an
 undirected graph in which the exams are vertices, with the exams \(v_1\) and
 \(v_2\) connected by an edge if there exists at least one student who
 needs to take both exams. We can schedule the exams in the \(k\) slots if there
-is a <b>k-coloring</b> of the graph: a way to assign a color to
+is a <strong>k-coloring</strong> of the graph: a way to assign a color to
 each vertex with one of \(k\) colors such that no two
-adjacent vertices are assigned the same color. The <b>chromatic number</b> of a graph
+adjacent vertices are assigned the same color. The <strong>chromatic number</strong> of a graph
 is the smallest number of colors needed to color it.
 </p>
 <p>
