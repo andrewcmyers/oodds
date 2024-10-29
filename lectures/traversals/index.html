@@ -66,8 +66,8 @@ nodes reachable from the roots.
 <script class=graphics>
 with (new CFigure("tricolor")) {
     let cr = canvasRect().inset(4)
-    let c1 = ellipse(), c2 = ellipse().addText("\nundiscovered").setVerticalAlign("top"),
-        c3 = ellipse().addText("\nunreachable").setVerticalAlign("top")
+    let c1 = ellipse(), c2 = ellipse().addText("undiscovered").setVerticalAlign("top"),
+        c3 = ellipse().addText("unreachable").setVerticalAlign("top")
 
     equal(c1.w(), c2.w(), c3.w())
 
@@ -77,7 +77,7 @@ with (new CFigure("tricolor")) {
     align("none", "top", c1, c2, c3, cr)
 
     let c1g = ellipse().at(c1).setFillStyle("#ddd").addText("roots").setW(60).setH(40),
-        c2g = ellipse().at(c2).setFillStyle("#ddd").addText("\nfrontier").setInset(0).setVerticalAlign("top").setW(minus(c2.w(), 40)).setH(minus(c2.h(), 80))
+        c2g = ellipse().at(c2).setFillStyle("#ddd").addText("frontier").setInset(0).setVerticalAlign("top").setW(minus(c2.w(), 40)).setH(minus(c2.h(), 80))
         c2b = ellipse().at(c2).setFillStyle("black").addText("finished").setTextStyle("white")
                      .setW(minus(c2g.w(), 70))
                      .setH(minus(c2g.h(), 60)),
