@@ -534,11 +534,12 @@ creating a cycle. Back edges always go to an ancestor in the DFS forest.
 <b>forward edge</b> or a <b>cross edge</b>. It is a forward edge if it goes to
 a descendant in the DFS tree, and it is a cross edge if it does not. We can tell
 the difference by looking at the DFS number: a forward edge goes to a black node
-with a higher DFS number, and a cross edge goes to a black node with a lower DFS number.
+that was visited later and therefore has a higher DFS number;
+a cross edge goes to a black node that was visited earlier and so has a lower DFS number.
 </p>
 
-<p>We can classify and label the edges during DFS if we like, and the algorithm
-is still linear time.</p>
+<p>Each label classification takes constant time, so we can classify and label the edges during DFS,
+and the traversal still takes linear time.</p>
 
 <h2>Cycle detection</h2>
 
