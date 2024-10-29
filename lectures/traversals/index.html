@@ -320,50 +320,6 @@ leading from the starting node and leading to the current node
 implementation.
 </p>
 
-<h2>The DFS number</h2>
-
-<p>
-DFS does not compute shortest distances, but it does compute something else that
-is useful: the <strong>DFS number</strong>, which gives the order in which we visit
-the nodes; that is, the order in which nodes are converted from white to gray.
-</p>
-
-<!--
-Here is the modified DFS algorithm that computes the DFS
-number, again using a LIFO stack as the frontier:
-</p>
-
-<pre>
-frontier = new Stack();
-frontier.push(root);
-nextDfs = 0;
-for (v) v.dfs = ∞;
-
-while (frontier not empty) {
-   g = frontier.pop();
-   if (g.dfs < ∞) continue; // dup on stack popped
-   g.dfs = nextDfs++;
-   foreach (g → v)
-     if (v.dfs == ∞) frontier.push(v);
-}
-</pre>
-
-or as a recursive method:<br>
-
--->
- 
-<pre>
-nextDfs = 0;
-for (v) v.dfs = ∞;
-DFS(root);
-
-DFS(Node g) {
-    g.dfs = nextDfs++;
-    foreach (g → v)
-        if (v.dfs == ∞) DFS(v);
-}
-</pre>
-
 <h2>Time and space complexity</h2>
 
 <p>
@@ -395,8 +351,6 @@ program. This is a subgraph of the original graph. In the above example, the DFS
 <center>
 <img src="call-tree.png">
 </center>
-
-<p>The DFS numbering is a preorder numbering of the DFS tree.</p>
 
 <p>
 A single traversal may not be enough to search the whole graph,
@@ -497,6 +451,54 @@ is already finished, yet v is not. So in either case, v' is finished
 before v.
 </p>
 -->
+
+<h2>The DFS number</h2>
+
+<p>
+DFS does not compute shortest distances, but it does compute something else that
+is useful: the <strong>DFS number</strong>, which gives the order in which we visit
+the nodes; that is, the order in which nodes are converted from white to gray.
+The DFS numbering is a preorder numbering of the DFS tree.</p>
+<p>
+This ordering can be used by various other algorithms.
+</p>
+
+<!--
+Here is the modified DFS algorithm that computes the DFS
+number, again using a LIFO stack as the frontier:
+</p>
+
+<pre>
+frontier = new Stack();
+frontier.push(root);
+nextDfs = 0;
+for (v) v.dfs = ∞;
+
+while (frontier not empty) {
+   g = frontier.pop();
+   if (g.dfs < ∞) continue; // dup on stack popped
+   g.dfs = nextDfs++;
+   foreach (g → v)
+     if (v.dfs == ∞) frontier.push(v);
+}
+</pre>
+
+or as a recursive method:<br>
+
+-->
+ 
+<pre>
+nextDfs = 0;
+for (v) v.dfs = ∞;
+DFS(root);
+
+DFS(Node g) {
+    g.dfs = nextDfs++;
+    foreach (g → v)
+        if (v.dfs == ∞) DFS(v);
+}
+</pre>
+
 
 <h2>Edge classification</h2>
 <p>
