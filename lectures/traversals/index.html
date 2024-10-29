@@ -28,6 +28,12 @@ the minmax best reachable node (e.g., two-player game search)</li>
 Generally, the goal of a graph traversal is to visit all nodes reachable
 from a given root node or set of root nodes. In an undirected graph we follow all edges; in
 a directed graph we follow only out-edges.</p>
+<p>
+In fact, we have already seen some algorithms that traverse graphs; trees are
+graphs, so tree traversals are graph traversals. However, the algorithms we
+have seen for traversing trees rely on the properties of trees; they must be
+modified to work on graphs more generally.
+</p>
 
 <h2>Tricolor algorithm</h2>
 
@@ -60,8 +66,8 @@ nodes reachable from the roots.
 <script class=graphics>
 with (new CFigure("tricolor")) {
     let cr = canvasRect().inset(4)
-    let c1 = ellipse(), c2 = ellipse().addText("undiscovered").setVerticalAlign("top"),
-        c3 = ellipse().addText("unreachable").setVerticalAlign("top")
+    let c1 = ellipse(), c2 = ellipse().addText("\nundiscovered").setVerticalAlign("top"),
+        c3 = ellipse().addText("\nunreachable").setVerticalAlign("top")
 
     equal(c1.w(), c2.w(), c3.w())
 
@@ -71,10 +77,10 @@ with (new CFigure("tricolor")) {
     align("none", "top", c1, c2, c3, cr)
 
     let c1g = ellipse().at(c1).setFillStyle("#ddd").addText("roots").setW(60).setH(40),
-        c2g = ellipse().at(c2).setFillStyle("#ddd").addText("frontier").setW(minus(c2.w(), 40)).setH(minus(c2.h(), 80)).setVerticalAlign("top"),
+        c2g = ellipse().at(c2).setFillStyle("#ddd").addText("\nfrontier").setInset(0).setVerticalAlign("top").setW(minus(c2.w(), 40)).setH(minus(c2.h(), 80))
         c2b = ellipse().at(c2).setFillStyle("black").addText("finished").setTextStyle("white")
-                    .setW(minus(c2g.w(), 70))
-                    .setH(minus(c2g.h(), 60)),
+                     .setW(minus(c2g.w(), 70))
+                     .setH(minus(c2g.h(), 60)),
         c3b = ellipse().at(c3).setFillStyle("black").addText("finished, reachable").setTextStyle("white")
 
     let l1, l2, l3
@@ -87,12 +93,16 @@ with (new CFigure("tricolor")) {
 </div>
 
 <p>
-The algorithm maintains a key invariant, which we will call the <b>black–white invariant</b> or
-<b>tricolor invariant</b>:
+The algorithm maintains a key invariant, called the <b>black–white invariant</b> or <b>tricolor invariant</b>,
+with two parts:
 <ol>
 <li><em>The root is not white.</em></li>
 <li><em>There is no edge from a black node to a white node.</em></li>
 </ol>
+<p>
+Because there is no edge from a black node to a white node, any edge exiting a black node goes either to
+a black node or to a gray frontier node.
+</p>
 <p>
 This invariant clearly holds initially, and because it is true at the end, we
 know that any remaining white nodes cannot be reached from the black nodes.
@@ -104,10 +114,10 @@ The algorithm pseudo-code is as follows:
 
 <ul>
 <li>Color the root node gray and all other nodes white;
-<li>while some gray node \(g\) exists:
+<li>While some gray node \(g\) exists:
 <ul>
-<li>color some white successors of \(g\) gray;
-<li>if \(g\) has no white successors, optionally color \(g\) black.
+<li>Color some white successors of \(g\) gray;
+<li>If \(g\) has no white successors, optionally color \(g\) black.
 </ul>
 </ul>
 
@@ -218,6 +228,16 @@ when we are trying to find the shortest path through the graph from a root to a 
 When a queue is used in this way, it is known as a <b>worklist</b>; it keeps
 track of work left to be done.</p>
 
+<div class=exercise>
+Suppose that the BFS started at node B instead. In what order would the nodes be visited and
+with what distance?
+<div class=answer>
+<pre>
+B0 C1 D1 A2 E2
+</pre>
+</div>
+</div>
+
 <h2>Depth-first search</h2>
 <p>
 What if we replace the FIFO queue with a LIFO stack?
@@ -243,11 +263,16 @@ E
 <p>With a stack, the search will proceed from a given node as far as it can
 before backtracking and considering other nodes on the stack. For example,
 the node E had to wait until all nodes reachable from B and D were considered.
-With this stack-based frontier, we get <b>depth-first search</b>.
 </p>
 
 <p>
-A more standard way of writing depth-first search is as a recursive function,
+By simply changing the frontier from FIFO queue to a LIFO stack, we
+get something close to <b>depth-first search</b>, but it visits nodes in a
+different order, in general.
+</p>
+
+<p>
+The standard way of writing depth-first search is as a recursive function,
 using the call stack instead of an explicit stack. We start with every node
 white except the (gray) root node and apply the function <code>DFS</code> to
 the root:
@@ -298,10 +323,13 @@ implementation.
 <h2>The DFS number</h2>
 
 <p>
-With DFS, the <code>distance</code> field does not necessarily represent the
-shortest distance from the root, so let's get rid of it. A much more useful
-datum is the <em>DFS number</em>, which gives the order in which we first
-visit the nodes. Here is the modified DFS algorithm that computes the DFS
+DFS does not compute shortest distances, but it does compute something else that
+is useful: the <strong>DFS number</strong>, which gives the order in which we visit
+the nodes; that is, the order in which nodes are converted from white to gray.
+</p>
+
+<!--
+Here is the modified DFS algorithm that computes the DFS
 number, again using a LIFO stack as the frontier:
 </p>
 
@@ -321,6 +349,8 @@ while (frontier not empty) {
 </pre>
 
 or as a recursive method:<br>
+
+-->
  
 <pre>
 nextDfs = 0;
@@ -337,20 +367,20 @@ DFS(Node g) {
 <h2>Time and space complexity</h2>
 
 <p>
-For both BFS and DFS, there are at most \(|V|\) executions of the while loop, as a
-node can go on the stack or queue at most once, and the body of the loop
-on successors can be executed at most |E| times over all executions, since
-each edge is looked at only once. So the asymptotic time complexity of
-BFS and DFS is linear, i.e. \(O(|V| + |E|)\).
+For both BFS and the iterative version of DFS, there are at most \(|V|\)
+executions of the while loop, as a node can go on the stack or queue at most
+once, and the body of the loop on successors can be executed at most |E| times
+over all executions, since each edge is looked at only once. So the asymptotic
+time complexity of BFS and DFS is linear, i.e. \(O(|V| + |E|)\).
 </p>
 
 <p>During execution, the BFS and DFS algorithms maintain an amount of state 
 proportional to the size of the queue or stack. For DFS, this
 is proportional to the length of the path from the root to the node currently
-being visited. For BFS, this is proportional to the
+being visited. For BFS, the state is proportional to the
 size of the perimeter of nodes at distance \(k\) or \(k+1\)
 from the root. In both algorithms, the amount of state can be \(O(|V|)\). For DFS this
-happens when searching a linked list. For BFS this happens when
+the worst case is when searching a linked list. For BFS, this happens when
 searching a graph with a lot of branching, such as a binary tree,
 because there can be as many as \(2^k\) nodes at distance \(k\) from
 the root. For balanced binary trees, DFS maintains state proportional to
@@ -359,19 +389,18 @@ the height of the tree, or \(O(\log |V|)\). On such graphs, DFS requires less sp
 
 <h2>The DFS forest</h2>
 
-<p>The sequence of calls to DFS form a tree: the <b>DFS tree</b> of the
+<p>The sequence of calls to DFS forms a tree: the <b>DFS tree</b> of the
 program. This is a subgraph of the original graph. In the above example, the DFS tree is:</p>
 
 <center>
 <img src="call-tree.png">
 </center>
 
-<p>
-The DFS numbering is a preorder numbering of the DFS tree.</p>
+<p>The DFS numbering is a preorder numbering of the DFS tree.</p>
 
 <p>
-If we want to search the whole graph, then a single traversal may not
-be enough, because there may be vertices that are not reachable from the root.
+A single traversal may not be enough to search the whole graph,
+because there may be vertices that are not reachable from the root.
 For example, consider the original graph expanded with two new
 nodes F and G:
 </p>
