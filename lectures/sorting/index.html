@@ -160,7 +160,7 @@ asymptotic complexity.
 <h2>Stability</h2>
 <p>
 Insertion sort has one other nice property: implemented properly, it is a
-<b>stable</b> sort, meaning that if given an array containing elements that compare
+<strong>stable</strong> sort, meaning that if given an array containing elements that compare
 as equal to each other, it keeps those elements in the same relative order as in
 the original array. A stable sort does not unnecessarily reorder any elements.
 </p>
@@ -228,7 +228,7 @@ the outer loop can stop one element earlier than in insertion sort.
 
 <p>
 Because each loop iteration must in turn iterate over the rest of the
-array to find the smallest element, the <b>best</b>-case performance of this algorithm
+array to find the smallest element, the <strong>best</strong>-case performance of this algorithm
 is the same as the worst-case performance: \(O(n^2)\).
 </p>
 <p>
@@ -290,9 +290,11 @@ correctly among. The information it uses to make that choice consists of the
 sequence of observations the algorithm makes using <code>compareTo()</code>.
 For example, such a sequence might look like (&lt;, &gt;, &lt;, =, &gt;, ...),
 where we've only recorded the result returned by the call. We can organize
-all such possible observation sequences into a <b>decision tree</b>, in which
+all such possible observation sequences into a <strong>decision tree</strong>, in which
 each observation sequence corresponds to exactly one path from the root of the tree
-to some leaf. When the algorithm reaches a leaf, it must have computed the
+to some leaf. With three possible children at each node, the decision tree is
+a <strong>ternary</strong> tree.
+When the algorithm reaches a leaf, it must have computed the
 full permutation to apply, so there must be a leaf corresponding to every permutation.
 Since the decision tree handles all \(n!\) permutations of the array, it must
 have at least \(n!\) leaves:
@@ -346,7 +348,7 @@ The worst-case running time of the sorting algorithm must be at least
 proportional to the number of comparisons it makes, which can be as large as
 the longest path in this decision tree: that is, the height \(h\) of the decision tree. To express such a <em>lower bound</em>
 on running time, we cannot use big-O, because it talks about upper bounds.
-To express lower bounds we use big-<b>omega</b>.
+To express lower bounds we use big-<strong>omega</strong>.
 <p>
 In general, we say that a function \(f(n)\)
 is \(\Omega(g(n))\) if
@@ -354,7 +356,7 @@ there exists some constant factor \(k\) and value
 \(n_0\) such that for large values of
 \(n\) (that is, where \(n &gt; n_0\), the inequality
 \(f(n) &ge; k·g(n)\) always holds. In this case,
-\(g(n)\) is an <b>asymptotic lower bound</b> for \(f(n)\).
+\(g(n)\) is an <strong>asymptotic lower bound</strong> for \(f(n)\).
 </p>
 
 </p>
@@ -383,7 +385,7 @@ algorithms, such as merge sort and quicksort.
 
 <h2>Merge sort</h2>
 <p>
-Most efficient sorting algorithms use recursion to implement a <b>divide-and-conquer</b>
+Most efficient sorting algorithms use recursion to implement a <strong>divide-and-conquer</strong>
 strategy. They break the array into smaller subarrays and recursively
 sort them. Merge sort is one such algorithm. Given an array to sort,
 it finds the middle of the array and then recursively sorts the
@@ -589,7 +591,7 @@ of this size can speed up merge sort by about 20%.
 <p>
 Quicksort is another divide-and-conquer sorting algorithm. It avoids
 the work of merging by partitioning the array elements before
-recursively sorting. The algorithm chooses a <b>pivot value</b> \(p\) and
+recursively sorting. The algorithm chooses a <strong>pivot value</strong> \(p\) and
 then separates all the elements in the array so that the right half 
 contains
 elements at least as large as \(p\) and the left half contains elements
@@ -703,7 +705,7 @@ so both <code>i</code> and <code>j</code> are in bounds and can go past each oth
 the values they index will be on the correct side of the array and the 
 array can be partitioned between them. Finally, there is at least one
 value <code>v</code> to the right of <code>i</code> such that <code>v ≥ p</code> and at least one value <code>v</code> to the left
-of <code>j</code> such that <code>v ≤ p</code>. These values serve as <b>sentinel values</b> that
+of <code>j</code> such that <code>v ≤ p</code>. These values serve as <strong>sentinel values</strong> that
 stop iteration from walking off either end of the array.
 </p>
 <div class=figure>
@@ -811,13 +813,13 @@ Finding the maximum and minimum elements in an array is a straightforward
 \(O(n)\)
 algorithm.  But what if we want to find the <em>median</em> element? Or the
 10th largest element? The problem of finding the \(n\)th largest element in an
-array is called the <b>order statistics</b> problem.  Clearly, we can solve
+array is called the <strong>order statistics</strong> problem.  Clearly, we can solve
 this problem by sorting the array and then indexing to the appropriate
 position, but that does a lot of unnecessary sorting work.
 </p>
 <p>
 Fortunately, the quicksort algorithm can be tweaked a little to solve
-the order statistics problem efficiently, giving us the <b>quickselect</b>
+the order statistics problem efficiently, giving us the <strong>quickselect</strong>
 algorithm. It looks like quicksort except that it only recurses on one side
 of the partitioned array:
 </p>

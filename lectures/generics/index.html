@@ -246,6 +246,17 @@ than just <code>Object</code>s.
 <pre class="load">
 <a href="usesite2.java">usesite2.java</a>
 </pre>
+<div class=exercise>
+In the Java Collections Framework, The class <code>HashSet&lt;T&gt;</code> is declared to implement the interface <code>Set&lt;T&gt;</code>.  Is
+<code>HashSet&lt;Integer&gt;</code> a subtype of <code>Set&lt;?&gt;</code>?
+<p class=answer>
+Yes, because  we can use a value of type <code>HashSet&lt;Integer&gt;</code>
+anywhere that a <code>Set&lt;?&gt;</code> is expected.
+<code>HashSet&lt;Integer&gt;</code> is a subtype of <code>Set&lt;Integer&gt;</code>
+and <code>et&lt;Integer&gt;</code> is a subtype of <code>Set&lt;?&gt;</code>.
+By transitivity, <code>HashSet&lt;Integer&gt;</code> is a subtype of <code>Set&lt;?&gt;</code>
+</p>
+</div>
 <h2>Limitations</h2>
 <p>
 The way generics are actually implemented in Java is that all actual type parameters are
@@ -307,13 +318,28 @@ type parameter is <code>String</code>:
 <a href="instanceof.java">instanceof.java</a>
 </pre>
 <p>
-The last four lines above illustrate how downcasts interoperate with generics. Code <em>can</em> cast to
-a type with an actual type parameter, but the type parameter is not actually checked at
-run time; Java takes the programmer's word that the type parameter is correct. We can cast to a wildcard
-instantiation, but such a cast is not very useful if we need to use the elements at their actual
-type. Finally, we can cast to the raw type <code>LList</code>. Casting to raw types is unsafe;
-it is essentially the same as casting to <code>LList&lt;?&gt;</code> but even less safe. As a result,
-IDEs like IntelliJ will often give a warning when raw types are used.
+The last four lines above illustrate how downcasts interoperate with generics.
+Code <em>can</em> cast to a type with an actual type parameter, but the type
+parameter is not actually checked at run time; Java takes the programmer's word
+that the type parameter is correct. We can cast to a wildcard instantiation,
+but such a cast is not very useful if we need to use the elements at their
+actual type. Finally, we can cast to the raw type <code>LList</code>. Casting
+to raw types is unsafe; it is essentially the same as casting to
+<code>LList&lt;?&gt;</code> but even less safe. As a result, IDEs like IntelliJ
+will often give a warning when raw types are used.
+</p>
+<p>To see why raw types are
+dangerous, consider that we could as easily have give the variable the
+incorrect type <code>LList&lt;Integer&gt;</code>. Then it is easy
+to try to extract an object of type <code>String</code> as if it were
+an <code>Integer</code>:
+</p>
+<pre class="load">
+<a href="rawtypes.java">rawtypes.java</a>
+</pre>
+<p>
+Even though there is no explicit cast, this code generates a run-time type error.
+Fortunately, IDEs like IntelliJ will usually give an warning.
 </p>
 </li>
 </ol>
