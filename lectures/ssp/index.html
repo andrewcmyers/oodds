@@ -78,7 +78,7 @@ Recall that the tricolor algorithm changes nodes from white to gray and from gra
 to black, never allowing an edge from a black node to a white node.
 In Dijkstra's algorithm, the nodes
 are not discovered (turned from white to gray) in distance order, but they are
-finished (turned from gray to black) in distance order.
+<em>finished</em> (turned from gray to black) in distance order.
 </p>
 <p>Like BFS and the iterative version of DFS, Dijkstra's algorithm can be implemented
 as a <b>worklist algorithm</b>. Recall that in BFS and DFS, the worklist is a queue and a stack, respectively.
@@ -108,10 +108,10 @@ all reachable nodes are black and hold their true minimum distance.
 </p>
 <p>
 Another key difference from BFS is that when an edge from a frontier
-node to some node v is considered, it may lie on a shorter path to
-v than was previously known.  In this case, the distance estimate to
-v is lowered, and the priority queue must also be informed about
-the change so that it can produce v perhaps earlier than it would
+node to some node <code>v</code> is considered, it may lie on a shorter path to
+<code>v</code> than was previously known.  In this case, the distance estimate to
+<code>v</code> is lowered, and the priority queue must also be informed about
+the change so that it can produce <code>v</code> perhaps earlier than it would
 otherwise have.
 </p>
 <p>Here is the pseudo-code:</code>
