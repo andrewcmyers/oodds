@@ -98,17 +98,19 @@ true minimum distance from the root, and they are not on the priority queue.
 </ul>
 
 <p>
-Dijkstra's algorithm starts with the root in the priority queue
-at distance <code>0</code> (<code>v.dist = 0</code>), so it is gray. All other nodes are 
-at distance ∞ and are white. The algorithm then works roughly like BFS, except
-that when node is popped from the priority queue, the node with
-the <em>smallest</em> <code>v.dist</code> value among all those on
-the queue is popped. When the algorithm completes,
+The main loop of 
+Dijkstra's algorithm starts with the root node in the priority queue
+at distance <code>0</code> (<code>root.dist = 0</code>), so it is gray. All other nodes are 
+at distance ∞ and are white. The algorithm then works similarly to BFS, except
+that the gray node <code>g</code> that is popped from the priority queue is the one with
+the <em>smallest</em> <code>dist</code> value among all those on
+the queue. When the algorithm completes,
 all reachable nodes are black and hold their true minimum distance.
 </p>
 <p>
-Another key difference from BFS is that when an edge from a frontier
-node to some node <code>v</code> is considered, it may lie on a shorter path to
+To make nodes hold the correct distance,  there is another change
+from BFS. When an edge from a frontier
+node <code>g</code> to some node <code>v</code> is considered, it may lie on a shorter path to
 <code>v</code> than was previously known.  In this case, the distance estimate to
 <code>v</code> is lowered, and the priority queue must also be informed about
 the change so that it can produce <code>v</code> perhaps earlier than it would
@@ -139,10 +141,10 @@ otherwise have.
 </pre>
 <p>
 Dijkstra's algorithm is an example of a <b>greedy algorithm</b>: an algorithm
-in which simple local choices (like choosing the gray vertex with the smallest
-<code>g.dist</code>) lead to globally optimal results (minimal distances
-computed to all vertices). Many other problems, such as finding a minimum
-spanning tree, can be solved by greedy algorithms. Other problems, such as
+in which simple local choices (in this case, choosing the gray vertex with the smallest
+value of <code>g.dist</code>) lead to globally optimal results (minimal distances
+computed to all vertices). Many problems, such as finding minimum
+spanning trees, can be solved by greedy algorithms. Other problems, such as
 Traveling Salesperson,
 cannot.
 </p>
@@ -356,7 +358,7 @@ class SquigglyArrow extends Constrain.Line {
             vx = -uy, vy = ux
         let bs_pts = [], s = dist/n
         for (let i = 0; i <= n; i++) {
-            let off = 2*SQUIGGLE_HEIGHT*(Math.random()-0.5)
+            let off = 2*SQUIGGLE_HEIGHT*(this.figure.rand.double()-0.5)
             if (i <= 2 || i >= n-2) off = 0
             let x = x0 + ux * s * i + vx * off,
                 y = y0 + uy * s * i + vy * off
@@ -422,9 +424,9 @@ interior paths, which don't go directly to \(v\) via the new edge,
 but instead go via some other black node \(b\). By invariant part 1, we know \(b\)<code>.dist</code>\( ≤ g\)<code>.dist</code>, so any such interior path must be at least as long as the
 preexisting interior path that goes from the roots directly to <code>b</code> and then
 to <code>v</code>, and we know by invariant part 2 that <em>that</em> path is no
-shorter than <code>v.dist</code>. Therefore, the third category of interior paths
-cannot yield paths that are shorter than the existing paths to \(v\) that are summarized
-by \(v\)<code>.dist</code>.
+shorter than <code>v.dist</code>. Therefore, the third category of new interior paths
+cannot yield paths that are shorter than the previously existing interior paths to \(v\),
+which are already summarized by \(v\)<code>.dist</code>.
 </p>
 </ul>
 </ol>

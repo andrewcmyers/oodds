@@ -42,6 +42,7 @@ class LightStyle extends Constrain.Trees.TreeStyle {
     }
 }
 
+
 class CFigure extends Constrain.Figure {
     constructor(canvas, advance) {
         super(canvas)
@@ -51,6 +52,7 @@ class CFigure extends Constrain.Figure {
         this.setFadeColor("#eee")
         this.boxw = 80
         this.boxh = 20
+        this.rand = new Math.seedrandom("oodds")
 
         if (advance) {
             this.theAdvanceButton = this.advanceButton()
@@ -156,6 +158,10 @@ class CFigure extends Constrain.Figure {
     }
     lightStyle(specialEdges, specialNodes) {
         return new LightStyle(this, specialEdges, specialNodes)
+    }
+    renderFrame(animating, frameInterval, frameLength) {
+        this.rand = new Math.seedrandom("oodds")
+        super.renderFrame(animating, frameInterval, frameLength)
     }
 }
 

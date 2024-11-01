@@ -51,7 +51,9 @@ variation across different experimental runs and a difference between the two
 computers, we can see that the shape of the curve has an underlying similarity. If we
 plot the timing data for sufficiently large problem sizes \(n\), and
 rescale the vertical axis to account for the relative speed of the computers,
-we typically see a more well-behaved plot like the following:
+we effectively zoom out from the origin, making
+the experimental variation less and less important,
+resulting in a well-behaved plot like the following:
 </p>
 <canvas id="idealized-runtime" style="width:600px; height:240px"></canvas>
 <script class=graphics>
@@ -219,14 +221,15 @@ Thus, if this ratio has a finite limit, \( f(n) \) is \( O(g(n)) \).
 On the other hand, if the ratio limits to infinity, \( f(n) \) is
 <em>not</em> \( O(g(n)) \). (Using the definition of limits, both of these
 shortcuts can be proved sound with respect to the definition of big-O,
-choosing a value of \(k\) that for the first shortcut is strictly
-larger than the ratio.)
+choosing any value of \(k\) that for the first shortcut is strictly
+larger than the ratio limit.)
 </p>
 <p>
-To evaluate the limit of \( f(n)/g(n) \), L'Hôpital's rule often comes in handy.
-When both \( f(n) \) and \( g(n) \) go to infinity as \( n \) goes to infinity, the ratio
-\( f(n)/g(n) \) of the two functions has the same limit as the ratio of
-their derivatives: \( f'(n)/g'(n) \).
+To evaluate the limit of \( f(n)/g(n) \), L'Hôpital's rule often comes in
+handy.  When, as is often the case for complexity, both \( f(n) \) and \( g(n)
+\) go to infinity as \( n \) goes to infinity, the ratio \( f(n)/g(n) \) of the
+two functions has the same limit as the ratio of their derivatives: \(
+f'(n)/g'(n) \).
 </p>
 <p>
 For example, \( \ln n \) is \( O(n) \) because
@@ -235,6 +238,6 @@ For example, \( \ln n \) is \( O(n) \) because
 the derivative of \( \ln^k n \) is \( (k \ln^{k-1} n)/n\).
 Since \( \ln n \) is \(O(n)\) so is \(\ln^2 n \), and therefore
 \(ln^3 n\), and so on for any positive \(k\).  (This is an argument by induction.)
-No matter what power we raise \(\lg n\) to, it grows more slowly asymptotically than
+In other words, no matter what power we raise \(\lg n\) to, it grows more slowly asymptotically than
 any polynomial \(n^k\) with \(k&gt; 0\). This fact is useful because logarithmic
 factors show up frequently in the analysis of algorithms.

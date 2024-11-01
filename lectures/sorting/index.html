@@ -525,7 +525,7 @@ The first <code>arraycopy</code> does nothing, and the second
                 let r = rectangle()
                 pin(p1, r.ul())
                 pin(p2, r.lr())
-                label(text(italic("n"), (x == 0 ? "" : "/" + (1<<x)))).at(r.center())
+                label(text(whitespace(), italic("n"), (x == 0 ? "" : "/" + (1<<x)))).at(r.center())
                     .setFontSize(15 - x)
                 let m = average(p1.x(), p2.x())
                 level(x + 1, p1.toBottom(hs), point(minus(m, sep/2), plus(p2.y1(), hs)))
@@ -573,13 +573,15 @@ Like insertion sort, merge sort is a stable sort. This is a major
 reason why merge sort is commonly used. Another is that its run time
 is not only fairly low but is also predictable.
 </p><p>
-Merge sort is not quite as fast as the quicksort algorithm that we will see
-next because it does extra copying into the temporary array.
+Merge sort is not quite as fast as the quicksort algorithm that we discuss
+next because it copies elements into the temporary array.
 We can avoid some of the copying by exchanging the roles of <code>a</code> and <code>tmp</code> on
-alternate recursive calls. This trick speeds up the algorithm slightly at the cost of more complex code.
+alternate recursive calls. This trick speeds up the algorithm slightly at the cost of making the
+code more complex.
 It is actually possible to do an in-place merge in linear time, but in-place merging
 is quite tricky and about 5 times slower in practice than using a separate array.
-</p><p>
+</p>
+<p>
 Another trick that is used to speed up merge sort is to use insertion
 sort when the subarrays are small enough. For small arrays,
 insertion sort is faster because \(k_1n^2\) is smaller than \(k_2n \lg n\)
@@ -707,8 +709,9 @@ so both <code>i</code> and <code>j</code> are in bounds and can go past each oth
 the values they index will be on the correct side of the array and the 
 array can be partitioned between them. Finally, there is at least one
 value <code>v</code> to the right of <code>i</code> such that <code>v ≥ p</code> and at least one value <code>v</code> to the left
-of <code>j</code> such that <code>v ≤ p</code>. These values serve as <strong>sentinel values</strong> that
-stop iteration from walking off either end of the array.
+of <code>j</code> such that <code>v ≤ p</code>.
+These values serve as <strong>sentinels</strong> that stop the algorithm
+from walking off the end of the array.
 </p>
 <div class=figure>
   <canvas id="qs-inv" style="height:80px; width:400px">
@@ -753,13 +756,13 @@ rather than at the beginning.
 <p>
 Interestingly, these inner loops do not need to do any bounds checking on
 <code>i</code> and <code>j</code>, which makes them significantly more efficient.
-The reason bounds checks are not needed is that the sentinel values in the array,
+The reason bounds checks are not needed is alluded to above: the sentinel values in the array,
 maintained by the loop invariant, stop the inner loops before they walk off
 the ends of the array.
 </p>
 <p>
-An example of partitioning will probably help understand what is going
-on.  We start out with the following array, with <code>p=5</code>:
+An example of partitioning will probably help.
+We start out with the following array, with <code>p=5</code>:
 </p>
 <pre>
   5 2 6 7 1 9 3 8
