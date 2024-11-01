@@ -720,7 +720,8 @@ elements strictly to the right <code>j</code> are at least the pivot value.
 All of those elements are already successfully partitioned.
 Indices <code>i</code> and </code>j</code> point to elements that could be
 partitioned to the other side of the array.
-Finally, we have <code>l</code> ≤ <code>i</code> ≤ <code>j + 1</code> ≤ <code>r</code>.
+As a final part of the invariant,
+we have <code>l</code> ≤ <code>i</code> ≤ <code>j + 1</code> ≤ <code>r</code>.
 </p>
 <div class=figure>
   <canvas id="qs-inv" style="height:80px; width:400px">
@@ -770,7 +771,9 @@ and <code>j</code> are adjusted to restore the invariant.
 Note that the two inner loops are written as <code>do...while</code> loops
 because we want to do the body of each inner loop once even if the loop guard
 is initially false.  A <code>do...while</code> loop only evaluates its guard at
-the end of the loop body rather than at the beginning.
+the end of the loop body rather than at the beginning, so it is equivalent to
+taking the corresponding <code>while</code>-loop and placing an extra copy of 
+its body before the loop.
 </p>
 <p>
 Interestingly, these inner loops do not need to do any bounds checking on
@@ -826,8 +829,9 @@ in which case everything to the left of <code>j</code> can also be partitioned
 to the left side.
 </p>
 <p>
-Quicksort is an excellent sorting algorithm for many applications.  It tends to
-be a bit faster than merge sort—around 25% faster for large arrays, primarily
+Quicksort is an excellent sorting algorithm for many applications.  As a rule
+of thumb, it tends to be around 25% faster than
+merge sort for large arrays, primarily
 because it does less movement of data in memory.  However, one downside is that
 it is not a stable sort, because it works by swapping elements.  As with merge
 sort, a noticeable speedup can be obtained by switching to insertion sort for
