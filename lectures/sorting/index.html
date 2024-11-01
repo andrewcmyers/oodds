@@ -721,7 +721,9 @@ All of those elements are already successfully partitioned.
 Indices <code>i</code> and </code>j</code> point to elements that could be
 partitioned to the other side of the array.
 As a final part of the invariant,
-we have <code>l</code> ≤ <code>i</code> ≤ <code>j + 1</code> ≤ <code>r</code>.
+we have that <code>l</code> ≤ <code>i</code> ≤ <code>j + 1</code> ≤ <code>r</code>,
+that <code>l</code> ≤ <code>j</code>,
+and that if <code>i</code>≥<code>j</code>, then <code>j</code> ≤ <code>r</code>–1</code>.
 </p>
 <div class=figure>
   <canvas id="qs-inv" style="height:80px; width:400px">
@@ -825,8 +827,8 @@ i-1</code> or <code>j = i</code>.  In the former case, the loop invariant guaran
 that <code>j+1 = i</code> is a valid point to split the array, with <code>j &gt; l</code>
 so that at least one element ends up at each side of the array.
 The latter case can only happen if <code>a[i]</code> = <code>a[j]</code> = <code>p</code>,
-in which case everything to the left of <code>j</code> can also be partitioned
-to the left side.
+in which case the non-empty subarray to the left of <code>j</code> inclusive can
+also be partitioned to the left side.
 </p>
 <p>
 Quicksort is an excellent sorting algorithm for many applications.  As a rule
