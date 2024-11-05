@@ -62,7 +62,7 @@ absence of a value, we can use <code>Optional.empty()</code> or
 <p>Both abstractions support a method <code>isPresent()</code>,
 which returns <code>true</code> if a value is contained, and both support a method
 <code>get()</code>, which returns the contained value, if any. In the case of
-<code>Optional</code>, calling <code>get()</code> on an empty Optional causes
+<code>Optional</code>, calling <code>get()</code> on an empty <code>Optional</code> causes
 the unchecked exception <code>NoSuchElementException</code> to be thrown.
 For <code>Maybe</code>, on the other hand, a <em>checked</em> exception
 <code>NoMaybeValue</code> is thrown in this situation. Because the exception is
