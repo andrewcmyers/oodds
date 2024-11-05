@@ -223,9 +223,10 @@ for (i = (n/2)-1; i &gt;= 0; i--) {
 }
 </pre>
 <p>This loop works correctly because it has the following loop invariant: when
-the loop is considering node \(i\), the two subtrees of node \(i\) already
+the loop is considering node \(i\), the subtrees of all following nodes
+(nodes \(i+1\) through \(n-1\)) are already heaps. Therefore the two subtrees of node \(i\) already
 satisfy the heap invariant: they occur in the part of the array that has
-already been scanned. Therefore, bubbling down node \(i\) is all that is needed
+already been scanned. Bubbling down node \(i\) is all that is needed
 to make the entire subtree rooted at \(i\) also satisfy the invariant.
 </p>
 <canvas id=heapify_layers style="width: 180px; height: 150px; float: right"></canvas>
