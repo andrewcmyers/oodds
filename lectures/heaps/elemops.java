@@ -1,4 +1,4 @@
-interface ElemOps<E, P> {
+interface HeapElemOps<E, P> {
     /** The priority of element E. */
     P priority(E elem);
 
@@ -9,5 +9,5 @@ interface ElemOps<E, P> {
     PQueuePos<E> position(E elem);
 
     /** Effect: Record the position of the element in the priority queue. */
-    void setPosition(PQueuePos pos);
+    void setPosition(PQueuePos<E> pos);
 }

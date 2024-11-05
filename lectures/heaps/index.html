@@ -14,21 +14,26 @@ the higher the priority. <b>Max-queues</b> in which larger numbers correspond to
 higher priorities can be implemented in essentially the same way.</p>
 
 <p>
-Another application in which priority queues are very useful is <em>discrete
-event-driven simulation</em>.  Such a simulator needs to process events in the
+Priority queues have other applications:
+</p>
+<ul>
+<li>
+In <strong>discrete
+event-driven simulation</strong>, events are processed in the
 order in which they occur, updating the state of the simulation for each event.
 A min-queue is used to store unprocessed events, where the priority is a
 timestamp indicating the time of occurrence. Handling one event can generate
 new future events, which are added to the queue.</p>
-
-<p>
-Another use for priority queues is for the data compression algorithm known as
-<a href="http://en.wikipedia.org/wiki/Huffman_coding">Huffman coding</a>, an
-optimal way to compress individual symbols in a data stream. Priority queues can also
-be used for sorting, since elements to be sorted can be pushed into the priority queue
-and then simply removed in sorted order. In fact, with a good implementation of
-priority queues, this sorting algorithm is asymptotically optimal.
-</p>
+<li>
+<a href="http://en.wikipedia.org/wiki/Huffman_coding"><strong>Huffman coding</strong></a> is a data
+compression algorithm that optimally compresses individual symbols in a data
+stream.
+<li>
+Priority queues can also be used for sorting: elements to be
+sorted can be pushed into the priority queue and then simply removed in sorted
+order. In fact, with a good implementation of priority queues, this sorting
+algorithm is asymptotically optimal.
+</ul>
 
 <h2>Priority queue interface</h2>
 <p>
@@ -40,18 +45,6 @@ A priority queue can be described via the following interface:
 <p>
 The methods described in this interface suffice to implement Dijkstra's shortest path algorithm.
 </p>
-<p>
-To implement <code>increasePriority()</code>, an implementation must have a
-fast way to find the element whose priority is to be updated. This can be
-accomplished by using a hash table to look up the position of elements in the
-underlying data structure, or by storing the position of the element in the
-queue into the element itself. Using the Concept design pattern, we would
-pass an object to the priority queue that provides operations for manipulating
-queue elements, providing an interface like the following:
-</p>
-<pre class=load>
-<a href="elemops.java">ElemOps.java</a>
-</pre>
 
 <h2>Implementation 1: list</h2>
 
@@ -65,7 +58,7 @@ We can do better!
 <p>
 If you already have an implementation of balanced search trees, it is
 easy to implement priority queues on top. The idea is to use elements
-as keys, ordered first by their priorities and secondarily by the
+as keys, ordered first by their priorities and secondarily by
 some intrinsic element ordering. New elements are added by using the
 ordinary BST add operation. The minimum element in the tree can be found by
 simply walking leftward in the tree as far as possible and then pruning or
@@ -83,23 +76,23 @@ consequently a bit slow.
 
 <h2>Implementation 3: Binary Heap</h2>
 
-<p>A simple concrete data structure called a <b>binary heap</b> allows all operations
-to be done in \(O(\log n)\) time with good constant factors.
+<p>A simple, ingenious concrete data structure called a <b>binary heap</b> allows all priority-queue
+operations to be done in \(O(\log n)\) time with good constant factors.
 </p>
 <p>
-In computer science, the term <b>heap</b> is unfortunately a bit overloaded.
-Binary heaps should not be confused with <b>memory heaps</b>. A <em>memory
-heap</em> is a low-level data structure used to keep track of the computer's
+In computer science, the term <b>heap</b> is unfortunately overloaded.
+Binary heaps should not be confused with <b>memory heaps</b>. A <strong>memory
+heap</strong> is a low-level data structure used to keep track of the computer's
 memory so that the programming language implementation (the <b>language runtime</b>)
-knows where to place objects in memory. Here we use the term heap to
-refer to another, ingenious data structure.
+knows where to place objects in memory. Here we use “heap” to
+refer to binary heaps.
 </p>
 <p>
 A <b>binary</b> heap is a binary tree satisfying the <b>heap invariant</b>:
 </p>
 <p>
-<b>(Heap Invariant)</b> Every node n in the tree has the highest priority among all nodes in the
-subtree rooted at n. Equivalently, the priority of any node is at least as high as
+<b>(Heap Invariant)</b> Every node \(n\) in the tree has the highest priority among all nodes in the
+subtree rooted at \(n\). Equivalently, the priority of any node is at least as high as
 the priority of any of its children. Equivalently still, a heap stores its highest
 priority element at the root, and the left and right subtrees are also both heaps.
 </p>
@@ -108,11 +101,21 @@ priority element at the root, and the left and right subtrees are also both heap
   Note that the root of each subtree contains the highest-priority element in that subtree.
 </p>
 <div class=figure>
-<img src="heap_example.png">
+<canvas id=heap_example style="height:140px; width: 200px"></canvas>
+<script class=graphics>
+  with (new CFigure("heap_example")) {
+    setFontSize(14)
+    setConnectionStyle('intersection')
+    align("LR", "TB", margin(),
+        tree(lightStyle(), 1, [3, [6, 12, 9], 5], [4, 7, 10])
+    )
+  }
+</script>
 </div>
 <p>
-  It is possible to manipulate binary heaps as tree structures. However, additional
-  speedup can be achieved if the binary heap satisfies a second invariant:
+  It is possible to manipulate binary heaps as tree data structures, with
+  pointers between nodes.  However, a more efficient, pointer-free
+  representation is possible if the binary heap satisfies a second invariant:
 </p>
 <p>
   <b>(Shape Invariant)</b> For every h, if there exists a node \(n\) at depth \(h\),
@@ -122,7 +125,32 @@ priority element at the root, and the left and right subtrees are also both heap
   depths \(h\) and \(h–1\).
 </p>
    <div class=figure>
-    <img src="heap_shape.png">
+    <canvas id=heap_shape style="width: 150px; height: 80px"></canvas>
+    <script class=graphics>
+      with (new CFigure("heap_shape")) {
+        const m = margin()
+        const lr = m.lr().toTop(10), ll = point(), top = point(variable(), m.y0())
+        const p1 = point(), p2 = point()
+        const x1 = variable()
+        const p3 = point(x1, m.y0())
+        const p4 = point(x1, m.y1())
+        setFontSize(16)
+        setFontName("Palatino, Times")
+        const hline = line(p3, p4).setStartArrow("arrow").setEndArrow("arrow").setArrowSize(7)
+            .addLabel(text(italic("h")), 0.5, 8)
+        polygon(top, lr, p2, p1, ll)
+        align("center", "abut", p2, vspace(10), p1)
+        align("none", "center", ll, p1)
+        align("none", "center", lr, p2)
+        align("none", "center", ll, m.ll())
+        align("none", "TB", hline,  m)
+        align("abut", "none", m.cl(), hspace(4), hline)
+        align("center", "none", p3, p4)
+        align("abut", "center", p4, hspace(15), ll)
+        align("distribute", "none", ll, top, lr)
+
+      }
+    </script>
    </div>
 <p class=cont>In fact, the example tree above also satisfies this shape invariant.</p>
 <p>
@@ -146,7 +174,7 @@ simple arithmetic. There is no need to store or follow pointers!
 <h3>Binary heap operations</h3>
 <h4>Add</h4>
 <p>
-Adding a new node to the heap is done by adding the element at the end of the array to preserve the shape invariant. However, the heap invariant may not hold, because its priority may be greater than its parent's priority. To restore the heap invariant, we <em>bubble up</em> the element by swapping it with its parent until either it reaches the root or its parent node has higher priority. This requires at most \(\lg n\) swaps, because the tree is perfectly balanced. So adds take at most \(O(\log n)\) time.</p>
+Adding a new node to the heap is done by adding the element at the end of the array to preserve the shape invariant. However, the heap invariant may not hold, because its priority may be greater than its parent's priority. To restore the heap invariant, we <strong>bubble up</strong> the element by swapping it with its parent until either it reaches the root or its parent node has higher priority. This requires at most \(\lg n\) swaps, because the tree is perfectly balanced. So adds take at most \(O(\log n)\) time.</p>
 
 <p>In the example above, if we add an element with priority 2, it is first placed at the end of the array, then bubbles up past the 5 and the 3, finally ending up where 3 was:
 </p>
@@ -161,7 +189,7 @@ The minimum element is always at the root (location 0 in the array). We can extr
 but we need to replace it with something.
 The last element in the array is a good candidate. We move it to the root
 of the tree. This reestablishes the shape invariant, but the heap invariant may now be broken.
-We fix the heap invariant by <em>bubbling the element down</em> (sometimes also called sifting down).
+We fix the heap invariant by <strong>bubbling down</strong> the element (sometimes it is called <strong>sifting down</strong>).
 The element is compared against its
 two children. If either child is higher priority, it is swapped with the higher
 priority child. The process repeats until either the element is higher priority than
@@ -183,7 +211,7 @@ We may wish to change the priority of an element in the queue. Assigning a new p
 
 <h2>Heapsort</h2>
 <p>
-The heapsort algorithm sorts an array by first <em>heapifying</em> it to make
+The heapsort algorithm sorts an array by first <strong>heapifying</strong> it to make
 it satisfy the heap invariant. Then <code>extractMin()</code> is used
 repeatedly to read out the elements in increasing order. This can be used to
 sort an array in \(O(n \log n)\) time. That repeatedly calling <code>extractMin()</code>
@@ -205,7 +233,7 @@ already been scanned. Therefore, bubbling down node \(i\) is all that is needed
 to make the entire subtree rooted at \(i\) also satisfy the invariant.
 </p>
 <canvas id=heapify_layers style="width: 180px; height: 150px; float: right"></canvas>
-<p>The total time required to heapify is, perhaps surprisingly, linear. No work
+<p>The total time required to heapify is linear, perhaps surprisingly. No work
 is done on the half of the elements in indices \(\lfloor n/2\rfloor\dots n-1\) because these are all leaves. 
 Considering the rest of the elements, as suggested by the figure at the right,
 at most a quarter need to be bubbled down one step, at most an eighth
@@ -241,6 +269,19 @@ way:
 Hence, we can see that heapifying is actually the fast part of heapsort!
 </p>
 
+<h2>Finding elements in the queue</h2>
+<p>
+To implement <code>increasePriority()</code>, an implementation must have a
+way, ideally fast, to find the element whose priority is to be updated. This can be
+accomplished by using a hash table to look up the position of elements in the
+underlying data structure, or by storing the position of the element in the
+queue into the element itself. Using the Concept design pattern, we would
+pass an object to the priority queue that provides operations for manipulating
+queue elements, providing an interface like the following:
+</p>
+<pre class=load>
+<a href="elemops.java">ElemOps.java</a>
+</pre>
 <h2>Improvements</h2>
 <p>
 There are many variations on this basic data structure, some of which can yield
