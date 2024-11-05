@@ -46,35 +46,13 @@ A priority queue can be described via the following interface:
 The methods described in this interface suffice to implement Dijkstra's shortest path algorithm.
 </p>
 
-<h2>Implementation 1: list</h2>
-
 <p>It is straightforward to implement priority queues with ordered or unordered lists.
-Ordered lists allow constant-time <code>extractMin</code> and linear time <code>add</code>,
+Ordered lists (or sorted arrays) allow constant-time <code>extractMin</code> and linear time <code>add</code>,
 whereas unordered lists allow constant-time <code>add</code> and linear time <code>extractMin</code>.
-We can do better!
+This is not fast enough for many applications, but we can do better.
 </p>
 
-<h2>Implementation 2: Binary Search Tree</h2>
-<p>
-If you already have an implementation of balanced search trees, it is
-easy to implement priority queues on top. The idea is to use elements
-as keys, ordered first by their priorities and secondarily by
-some intrinsic element ordering. New elements are added by using the
-ordinary BST add operation. The minimum element in the tree can be found by
-simply walking leftward in the tree as far as possible and then pruning or
-splicing out the element found there. The priority of an element can be
-adjusted by first finding the element; then the element is removed from the
-tree and readded with its new priority.
-</p>
-<p>
-This implementation has reasonable asymptotic performance: all of the
-operations can be done in logarithmic time, asymptotically.  But while
-a binary search tree is asymptotically optimal, the data structure of a
-balanced search tree is unnecessarily complex for the priority queue job, and
-consequently a bit slow.
-</p>
-
-<h2>Implementation 3: Binary Heap</h2>
+<h2>Binary Heap</h2>
 
 <p>A simple, ingenious concrete data structure called a <b>binary heap</b> allows all priority-queue
 operations to be done in \(O(\log n)\) time with good constant factors.

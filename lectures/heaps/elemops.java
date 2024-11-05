@@ -1,6 +1,9 @@
-interface HeapElemOps<E, P> {
+interface HeapElemOps<E, P> extends Comparator<P> {
     /** The priority of element E. */
     P priority(E elem);
+
+    /** Compare two priorities. */
+    int compare(P priority1, P priority 2);
 
     /** Effect: set the priority of {@code elem} to {@code priority}. */
     void setPriority(E elem, P priority);
