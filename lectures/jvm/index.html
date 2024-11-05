@@ -43,7 +43,7 @@ hardware architectures, which can execute multiple machine instructions per cycl
 </p>
 <h2>Interpreter designs</h2>
 <p>
-There are multiple kinds of software interpreters. The simplest
+Software interpreters come in different flavors. The simplest
 interpreters are abstract syntax tree (AST) interpreters, which
 take as input the program represented as a tree. To get the program
 into a tree representation, <a href="../../lecture.html?id=parsing">parsing</a> is required. AST
@@ -189,7 +189,7 @@ local variable array in the called method's stack frame. The result
 from the method, if any, is pushed onto the operand stack of the
 caller.
 </p><p>
-There are multiple bytecode instructions for calling methods. Given a
+Multiple bytecode instructions exist for calling methods. Given a
 call <code>x.eat(5)</code>, where <code>eat</code> is an ordinary non-final, non-private
 method and <code>x</code> has static type <code>Animal</code>, the corresponding invocation
 bytecode is something like this:

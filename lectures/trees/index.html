@@ -177,7 +177,7 @@ useful for walking upward in a tree, though it takes up extra memory and
 creates additional maintenance requirements.
 </p>
 <h2>Why trees?</h2>
-<p>There are two main reasons why tree data structures are important:</p>
+<p>Tree data structures are important for two main reasons:</p>
 <ol>
 <li><p>Some information has a natural tree-like structure, so storing it
 in trees makes sense. Examples of such information include parse trees of expressions,
@@ -440,7 +440,7 @@ by using a <code>Comparator</code> that only compares keys.
 Removing elements from a tree is generally more complicated than adding them, because the
 elements to be removed are not necessarily leaves. The algorithm starts by first finding the
 node containing the value \(x\) to be removed and its parent node \(p\) (if any).
-There are three cases to consider:
+Three cases must be considered:
 </p>
 <ol>
 <li><em>Node \(x\) is a leaf.</em>
@@ -687,7 +687,7 @@ could be as bad as \(O(n)\) time. What are our options for ensuring that trees
 are balanced?
 </p>
 <p>
-There are algorithms for efficiently rebalancing trees, relying on adding
+Algorithms exist for efficiently rebalancing trees, relying on adding
 additional bookkeeping information to the tree data structure. For example,
 AVL trees and Red–Black trees are two commonly used augmented versions of
 binary search trees, with accompanying algorithms for rebalancing them.

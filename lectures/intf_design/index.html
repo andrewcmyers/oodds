@@ -515,7 +515,7 @@ To implement an <code>equals()</code> method, it is necessary to think about
 what equality means for the objects you are implementing.  Equality is a deep
 subject that mathematicians and computer scientists are still arguing about! As
 software developers aiming for effective abstractions, we need to think about it
-too.  There are two natural ways to define equality on two values:
+too.  The equality of two values can be defined in two natural ways:
 <ul>
 <li><p><b>Leibniz equality.</b> The mathematician
 <a href="https://en.wikipedia.org/wiki/Gottfried_Wilhelm_Leibniz">Leibniz</a>
@@ -668,7 +668,7 @@ would allow that equality:
 These implementation challenges reflect a problem in the specification of
 <code>Object.equals()</code>. The expected mathematical properties of equality
 are in tension with the approach of asking each object to be able to decide
-whether it is equal to all other objects. There are approaches to equality that
+whether it is equal to all other objects. Other approaches to equality
 are more philosophically consistent, but since the Java libraries rely on the
 <code>equals()</code> method in many places, we have to learn to live with
 <code>equals()</code> and sometimes strike compromises.

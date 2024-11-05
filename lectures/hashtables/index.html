@@ -204,7 +204,7 @@ adversary cannot produce collisions at a rate higher than random choice.
 <h2>Step 3: Collision resolution</h2>
 <h3>Chaining</h3>
 <p>
-There are two main ideas for how to deal with collisions. The best way is
+Collisions are dealt with in two main ways. The best way is
 usually <strong>chaining</strong>: each array entry corresponds to a <strong>bucket</strong>
 containing a mutable set of elements. (Confusingly, this approach is sometimes called
 <strong>closed addressing</strong> or <strong>open hashing</strong>.) Typically, the bucket is
@@ -525,9 +525,9 @@ to the computation being done. But some settings, there really is an adversary
 influencing the choice of keys.
 </p>
 <p>
-There are relatively inexpensive hash functions that work well for less
-adversarial situations, and more expensive hash functions that make it
-infeasible for an adversary to choose keys that collide. A key property we want
+Some relatively cheap hash functions work well for less
+adversarial situations, whereas more expensive hash functions must be used
+to make it infeasible for an adversary to choose keys that collide. A key property we want
 is <em>diffusion</em>: the hashes of two related keys should appear to have no
 relation to each other.  In particular, if any two keys \(k\) and \(k'\) are
 “close” to each other in the sense that the computation is likely to generate
@@ -647,11 +647,13 @@ version of the Java collection classes,
 the internal hash function does not produce much diffusion, so it is important
 for the client-provided <code>hashCode()</code> to do so.
 </p>
+
 <h2>Generating hash codes</h2>
+
 <p>
 A poorly designed <code>hashCode()</code> method can cause the hash table
-implementation to fail to work correctly or to exhibit poor performance. There are
-two main considerations:
+implementation to fail to work correctly or to exhibit poor performance.
+Two main considerations apply:
 </p>
 <ol>
 <li><p>For the hash table to work, the <code>hashCode()</code> method must be

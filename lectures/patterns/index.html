@@ -539,7 +539,7 @@ hash table, using the original object itself as a key to find the state.
 The Visitor pattern is an important pattern that allows the traversal of a tree
 data structure (such as an abstract syntax tree) to be factored out from the
 nodes of the tree in a generic way that can be reused for multiple traversals.
-There are many variations on the visitor pattern.
+The Visitor pattern has many variations.
 </p>
 <p>
 Generally when building programs that manipulate abstract syntax tree, such as
@@ -569,7 +569,7 @@ Reynolds and later dubbed the “Expression Problem” by Phil Wadler.
 -->
 <p>
 The Visitor pattern provides a structure to help manage this tension.
-There are a number of variation on the Visitor pattern, but the common
+Among the variations on the Visitor pattern, the common
 idea is that operations are expressed as subclasses of a common Visitor
 class. In the classic Visitor pattern, the Visitor class (and its subclasses)
 have one method for each possible type. The base Visitor class supplies
@@ -743,8 +743,8 @@ Assignment 7, in which you will build a distributed version of the critter
 simulation. The model will run on a shared server with one or more clients
 viewing that model through a user interface.
 </p>
-<p>There are many variations of the MVC pattern. Some versions of the MVC
-pattern make less of a distinction between the view and the controller; this
+<p>The MVC pattern has many variations. Some versions
+make less of a distinction between the view and the controller; this
 is usually indicated by talking about the M/VC pattern, in which the view and the
 controller are more tightly coupled, but strong separation is maintained between
 the model and these two parts of the design.
@@ -752,7 +752,7 @@ the model and these two parts of the design.
 
 <h2>Antipatterns</h2>
 <p>
-There are also coding patterns that are used frequently, but are best avoided. These
+Coding patterns exist that are used frequently, yet are best avoided. These
 are often dubbed &ldquo;antipatterns&rdquo;. For example, some Java programmers make heavy use
 of reflection in Java. Using reflection is generally bad practice, leading to slow, fragile
 code. A <em>good</em> reason to use reflection is if you are loading code dynamically
