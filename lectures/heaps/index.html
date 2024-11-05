@@ -132,11 +132,11 @@ priority element at the root, and the left and right subtrees are also both heap
         const lr = m.lr().toTop(10), ll = point(), top = point(variable(), m.y0())
         const p1 = point(), p2 = point()
         const x1 = variable()
-        const p3 = point(x1, m.y0())
-        const p4 = point(x1, m.y1())
+        const hl1 = point(x1, m.y0())
+        const hl2 = point(x1, m.y1())
         setFontSize(16)
         setFontName("Palatino, Times")
-        const hline = line(p3, p4).setStartArrow("arrow").setEndArrow("arrow").setArrowSize(7)
+        const hline = line(hl1, hl2).setStartArrow("arrow").setEndArrow("arrow").setArrowSize(7)
             .addLabel(text(italic("h")), 0.5, 8)
         polygon(top, lr, p2, p1, ll)
         align("center", "abut", p2, vspace(10), p1)
@@ -145,10 +145,9 @@ priority element at the root, and the left and right subtrees are also both heap
         align("none", "center", ll, m.ll())
         align("none", "TB", hline,  m)
         align("abut", "none", m.cl(), hspace(4), hline)
-        align("center", "none", p3, p4)
-        align("abut", "center", p4, hspace(15), ll)
+        align("center", "none", hl1, hl2)
+        align("abut", "center", hl2, hspace(15), ll)
         align("distribute", "none", ll, top, lr)
-
       }
     </script>
    </div>
@@ -161,10 +160,29 @@ nodes in the array from left to right. The heap structure illustrated above woul
 the following array of length 9, with array indices shown on the bottom.
 </p>
 <div class=figure>
-<img src="array_rep.png">
+<canvas id=heap_array_rep style="height: 50px"></canvas>
+<script class=graphics>
+    with (new CFigure("heap_array_rep")) {
+        const elemw = variable()
+        const elems = [1, 3, 4, 6, 5, 7, 10, 12, 9].map(n => rectangle().setW(elemw).addText(n + ""))
+        setFontSize(14)
+        setFontStyle("italic")
+        const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => label(text(italic("" + i))))
+        align("distribute", "center", ...indices)
+        group(elems).align("abut", "TB")
+        for (let i = 0; i < 9; i++) {
+            align("center", "none", elems[i], indices[i])
+        }
+        align("none", "abut", elems[0], vspace(10), indices[0])
+
+        align("left", "top", elems[0], margin())
+        align("right", "top", elems[8], margin())
+        elems[0].setH(20)
+    }
+</script>
 </div>
 <p>
-The nice thing about this representation is that it is possible to represent
+Remarkably, this array represents
 the tree structure without pointers. The shape invariant guarantees that the
 children of the node at index \(i\) are found at indices \(2i+1\) (left) and
 \(2i+2\) (right). Conversely, the parent of a node at index i is found at
