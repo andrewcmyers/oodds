@@ -661,9 +661,11 @@ general.) Enforcement of the heap order invariant ensures that the tree
 structure is exactly what you would get if the elements had been inserted in
 priority order into a regular binary search tree.
 </p>
-<p>For example, the following tree is a treap in which the keys are the letters and the priorities
-are the numbers. Notice that traversing the tree in-order visits the letters alphabetically, and
-that priority becomes higher along any path from a leaf up to the root.</p>
+<p>For example, the following tree is a treap in which the keys are the letters
+and the priorities are the numbers. The BST invariant guarantees traversing the
+tree in-order visits the letters alphabetically, while the heap order invariant
+ensures that priority increases along any path from a leaf up to the
+root.</p>
 <div class=figure>
 <canvas id=treap_example style="width: 180px; height: 120px"></canvas>
 <script class=graphics>
@@ -719,7 +721,7 @@ into a simple BST in the order specified by their priorities.
 Finally, to obtain a tree that is balanced with high probability, we simply assign random
 priorities to elements as they are inserted. The resulting tree will then have the same
 structure as a binary search tree whose elements were inserted in random order, which
-we know has a height that is \(O(\log(n)\) with high probability.
+we know has height \(O(\lg n)\) with high probability.
 </p>
 
 <h2>Other balanced binary trees</h2>
