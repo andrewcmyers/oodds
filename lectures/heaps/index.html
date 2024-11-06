@@ -182,11 +182,38 @@ simple arithmetic. There is no need to store or follow pointers!
 <p>
 Adding a new node to the heap is done by adding the element at the end of the array to preserve the shape invariant. However, the heap invariant may not hold, because its priority may be greater than its parent's priority. To restore the heap invariant, we <strong>bubble up</strong> the element by swapping it with its parent until either it reaches the root or its parent node has higher priority. This requires at most \(\lg n\) swaps, because the tree is perfectly balanced. So adds take at most \(O(\log n)\) time.</p>
 
-<p>In the example above, if we add an element with priority 2, it is first placed at the end of the array, then bubbles up past the 5 and the 3, finally ending up where 3 was:
+<p>In the example above, if we add an element with priority 2, it is first
+placed at the end of the array, then bubbles up past the 5 and the 3, finally
+ending up where 3 was. It stops bubbling up at that point because its parent
+has higher priority (1). You can see the bubbling-up steps in the following figure.
 </p>
 
 <div class=figure>
-<img src="heap_example_add.png">
+<canvas id=heap_example_add style="width: 250px; height: 150px"></canvas>
+<script class=graphics>
+  with (new CFigure("heap_example_add", true)) {
+    setFontSize(14)
+    setConnectionStyle('intersection')
+    const t = tree(lightStyle(), 1, [3, [6, 12, 9], [5, 2, undefined]], [4, 7, 10])
+    align("LR", "TB", t, margin())
+    let f1 = addFrame()
+    setTextStyle("#c30")
+    const n5 = after(f1, label("5"))
+    const n2 = after(f1, label("2"))
+    align("abut", "center", t.view(f1).findGraphic(2), n5)
+    align("abut", "center", t.view(f1).findGraphic(5), n2)
+    align("LR", "TB", after(f1, label("X")), t.view(f1).findGraphic(5))
+    align("LR", "TB", after(f1, label("X")), t.view(f1).findGraphic(2))
+    let f2 = addFrame()
+    setTextStyle("#c80")
+    const n3 = after(f2, label("3"))
+    const n2b = after(f2, label("2"))
+    align("abut", "center", t.view(f2).findGraphic(3), n2b)
+    align("abut", "center", n2, hspace(5), n3)
+    align("LR", "TB", after(f2, label("X")), t.view(f2).findGraphic(3))
+    align("LR", "TB", after(f2, label("X")), n2)
+  }
+</script>
 </div>
 
 <h4>ExtractMin</h4>
@@ -206,8 +233,33 @@ which was the last element in the array. Then we bubble the 5 down. We compare i
 lower priority than both, so we swap it with the higher priority child, which is 2. (We must swap it with the higher priority child to maintain the heap invariant, because that child will become the parent of the other child.) We then compare with the new children, 6 and 3, and swap with 3, at which point 5 becomes a leaf. The heap invariant is now reestablished.
 </p>
 <div class=figure>
-<img src="heap_example_pop.png">
+<canvas id=heap_example_pop style="width: 250px; height: 150px"></canvas>
+<script class=graphics>
+  with (new CFigure("heap_example_pop", true)) {
+    setFontSize(14)
+    setConnectionStyle('intersection')
+    const t = tree(lightStyle(), 5, [2, [6, 12, 9], 3], [4, 7, 10])
+    align("LR", "TB", t, margin())
+    let f1 = addFrame()
+    setTextStyle("#c30")
+    const n2 = after(f1, label("2"))
+    const n5 = after(f1, label("5"))
+    align("abut", "center", t.view(f1).findGraphic(5), n2)
+    align("abut", "center", t.view(f1).findGraphic(2), n5)
+    align("LR", "TB", after(f1, label("X")), t.view(f1).findGraphic(5))
+    align("LR", "TB", after(f1, label("X")), t.view(f1).findGraphic(2))
+    let f2 = addFrame()
+    setTextStyle("#c80")
+    const n3 = after(f2, label("3"))
+    const n5b = after(f2, label("5"))
+    align("abut", "center", n5, hspace(5), n3)
+    align("abut", "center", t.view(f2).findGraphic(3), n5b)
+    align("LR", "TB", after(f2, label("X")), n5)
+    align("LR", "TB", after(f2, label("X")), t.view(f2).findGraphic(3))
+  }
+</script>
 </div>
+
 <p>Again, at most \(\lg n\) swaps are needed.</p>
 
 <h4>IncreasePriority</h4>
