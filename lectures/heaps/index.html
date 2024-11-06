@@ -130,6 +130,16 @@ priority element at the root, and the left and right subtrees are also both heap
     </script>
    </div>
 <p class=cont>In fact, the example tree above also satisfies this shape invariant.</p>
+
+<div class=exercise>
+A binary search tree with 5 nodes with keys 1..5 satisfies both the Order invariant on its keys and also the
+usual binary search tree invariant. What range of heights is possible for such a tree?
+<p class=answer>
+It cannot have any left children, so it must have height 4.
+</p>
+</div>
+
+<h2>Representing heaps as arrays</h2>
 <p>
 The shape invariant makes it possible to represent
 the binary heap as a resizable array. The elements of the tree are placed in the 
