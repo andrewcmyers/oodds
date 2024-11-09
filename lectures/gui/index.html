@@ -85,6 +85,7 @@ some are useful user interface devices such as buttons or text editors.
         <li>GridPane
         <li>FlowPane
         <li>BorderPane
+        <li>AnchorPane
         </ul>
       <li>Chart
       <li>Axis
@@ -151,6 +152,8 @@ stacks all its children on top of each other in the center. <code>GridPane</code
 children into a regular grid, like an HTML table. <code>FlowPane</code> lays out its children like
 words of text, in a series of top-to-bottom rows in which each row contains children laid out left-to-right. <code>BorderPane</code> expects to have five children; one is placed in the center and the four others
 are placed at the top, bottom, right, and left.
+<code>AnchorPane</code> places children relative to its sides, following
+to constraints attached to the children.
 </p>
 <div class=figure>
 <canvas id=panes style="width: 600px; height: 300px"></canvas>
