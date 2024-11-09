@@ -1,19 +1,77 @@
-<h1>Graphical User Interfaces: Events and Animation</h1>
+<h1>Events and Animation</h1>
+
+<h2>Encoding and reading scene graphs</h2>
+<p>
+Constructing scene graphs by writing code can be tedious and also increase
+coupling between the way the user interface looks and the way it behaves.
+Instead, JavaFX provides a convenient way to define scene graphs using
+the syntax of XML (short for “Extensible Markup Language”). A file with an
+<tt>.fxml</tt> extension specifies how to construct a JavaFX scene graph.
+</p>
+<p>
+For example, consider a simple user interface with an editable text area
+and a button:
+</p>
+<center>
+<img width="40%" src="fxml-screenshot.png" />
+</center>
+<p>
+In addition to the text area and button, we will need some other pane
+nodes to place them in the window. We can capture this layout separately
+from code by specifying the scene graph as XML like the following:
+</p>
+
+<pre class="load">
+<a href="simple.fxml">simple.fxml</a>
+</pre>
+<p>
+In principle this XML content can be created from scratch, but we are more
+likely to create and edit it using the Scene Builder tool.
+</p>
+
+<p>
+Given such an FXML file,
+JavaFX lets us write simple code to initialize a scene graph from it.
+Further, instance variables in the code (<code>theButton</code> and
+<code>theTextArea</code>) can be initialized from the correspondingly named
+nodes in the FXML file, by attaching <code>@FXML</code> annotations:
+</p>
+
+<pre class="load">
+<a href="fxmlMain.java">fxmlMain.java</a>
+</pre>
 
 <h2>Handling events</h2>
 <p>
-Programs can define <strong>event handlers</strong> to handle different types of input events. Handlers must be registered to receive events with a GUI component on which the event can occur. There are several ways to specify a handler: classes, inner classes, or lambda expressions. All are basically syntactic sugar for the same thing, but convenient. Here is an example with a lambda expression:
+The example program above has a button but it doesn't do anything yet
+when pushed. To make that happen we need to define how the program
+should handle that event.
+</p>
+<p>
+Programs can define <strong>event handlers</strong> to handle different
+types of input events. Handlers must be registered to receive
+events with a GUI component on which the event can occur. There are
+several ways to specify a handler: classes, inner classes, or lambda
+expressions. All are basically syntactic sugar for the same thing, but
+convenient. Here is an example with a lambda expression:
 <pre>
 Button b = ...;
 b.setOnAction(e -&gt; print("button clicked"));
 </pre>
 <p>
-This is essentially the Observer pattern, but for many events, there can be
-only one registered handler. Lambda expressions are really just syntactic sugar
-for <b>inner classes</b>, which are anonymous classes implementing a specified
-interface. In this case, the method <code>setOnAction</code> expects to
-receive an object implementing the interface <code>EventHandler&lt;ActionEvent&gt;</code>,
-where <code>EventHandler</code> is defined as follows:
+This code causes the button to call the provided function whenever
+the buttion is activated by clicking on it.
+</p>
+<p>
+This code is essentially the Observer pattern, but for many events,
+there can be only one registered handler. Lambda expressions are really
+just syntactic sugar for <b>inner classes</b>, which are anonymous
+classes implementing a specified interface. In this case, the method
+<code>setOnAction</code> expects to receive an object implementing
+the interface <code>EventHandler&lt;ActionEvent&gt;</code>, where
+<code>EventHandler</code> has a single method. Interfaces with
+single methods can be implemented by a lambda expression like
+the one above.
 </p>
 <pre class="load">
 <a href="EventHandler.java">EventHandler.java</a>
@@ -24,19 +82,128 @@ lambda expression is syntactic sugar for the following code defining an inner cl
 <pre class="load">
 <a href="desugared_lambda.java">desugared_lambda.java</a>
 </pre>
-It is not even necessary to use an inner class; an ordinary class can be used to
-implement the desired interface, as in the following code:
+It is not even necessary to use an inner class; we could
+implement the <code>EventHandler</code> interface using an
+ordinary top-level class:
 <pre class="load">
 <a href="desugared_top_level_class.java">desugared_lambda.java</a>
 </pre>
 </p>
 <p>
-In fact, even inner classes are syntactic sugar for top-level classes. Because
-they are just syntactic sugar, they come with some limitations. In particular,
-inner classes and lambda expressions can only refer to variables defined
-outside their scope if those variables are final. The reason for this
-limitation is that their objects may outlive the external variables they refer
-to. For that reason, the implementation of inner classes and lambdas actually
-makes a copy of any such external variable. Since the variable is final, there
-is no way for the programmer to tell that such a copy has been made!
+In fact, inner classes are syntactic sugar for top-level
+classes. Because lambda expressions and inner classes are just syntactic
+sugar, they have some limitations. In particular, inner classes and
+lambda expressions can only refer to variables defined outside their
+scope if those variables are immutable. The reason for this limitation
+is that their objects may outlive the external variables they refer
+to. For that reason, the implementation of inner classes and lambdas
+actually makes a copy of the value fo any such external variable.  Since
+the variable is final, there is no way for the programmer to tell that
+such a copy has been made!
 </p>
+<h3>Handling events with FXML</h3>
+<p>
+The binding between a scene graph node and the action it triggers
+can be defined in an FXML file. For example, in the FXML example
+above, the <code>Button</code> node can be given a method to
+invoke when the button is clicked:
+</p>
+<pre class="load">
+<a href="button-action.fxml">button-action.fxml</a>
+</pre>
+<p>
+Then we define a corresponding method to call with an <code>@FXML</code>
+annotation so that JavaFX can connect the node and method together:
+<pre class="load">
+<a href="handleButtonPressed.java">handleButtonPressed.java</a>
+</pre>
+
+<h2>Event types</h2>
+<p>
+Graphical user interfaces respond to events and can also generate new events. TThere are many kinds of events,  which in JavaFX are all subclasses of the
+class <a href="https://openjfx.io/javadoc/23/javafx.base/javafx/event/package-summary.html"><code>javafx.event.Event</code></a>.
+</p>
+<p>
+Low-level events include keyboard keys or mouse buttons being pressed
+or released, and motion occurring on a mouse or trackpad. Other events
+coming from outside the application include changes to the size or
+visibility of application windows.
+</p>
+<p>
+JavaFX also automatically synthesizes some higher-level events from
+lower-level ones. For example, a mouse button press and release when the mouse
+is positioned over a GUI button causes the button to generate an action event.
+Pressing the mouse button twice quickly causes a double-click event.
+These events are automatically generated by JavaFX; applications can
+define their own new events similarly.
+</p>
+<p>
+Thus, there are three main kind of events in JavaFX, represented
+by different classes that implement 
+<ol>
+<li>
+The class <code>InputEvent</code> represents low-level input events, with
+subclasses like <code>KeyEvent</code>, <code>MouseEvent</code>,
+<code>TouchEvent</code>, <code>GestureEvent</code>, and
+<code>DragEvent</code>.
+<li> Class <code>WindowEvent</code> represents events from the window
+manager.
+<li> Class
+<code>ActionEvent</code> represents higher-level events generated by controls
+such as Button.
+</ol>
+<p>
+Every event has an <strong>event target</strong>, which is often the current
+window (<code>Stage</code>).  Each event also carries additional
+information specific to the event.  For example, mouse events include the
+position of the mouse, keyboard events specify the key, and so on.
+</p>
+<h2>Event delegation</h2>
+<p>
+When an event is generated by JavaFX, a complex process is used to
+determine which code should handle the event. Based on the event
+target, an <strong>event dispatch chain</strong> is determined.  The
+event dispatch chain usually corresponds to a path through the scene
+graph from the scene down to some leaf, although this behavior can be
+overridden.
+</p>
+<p>Each node in the event dispatch chain has the opportunity
+to handle the event and perform some action, such as updating the
+application state or generating new events. An event handler also
+has the ability to consume it by calling its <code>consume()</code>
+method, preventing it from being seen by the rest of the chain.
+</p>
+<h2>Properties</h2>
+<p>
+Scene graph nodes have state that can be queried by calling observer
+methods. Generally speaking, these observer methods also have
+corresponding methods that return <strong>property objects</strong>.
+Property objects can be read at any time to learn the current value
+of the property. Thus, for a method named <code>getX()</code> there
+is typically another method <code>XProperty</code> that provides
+the corresponding property. For a node <code>n</code>, the value of 
+<code>n.getX()</code> is always equal to <code>n.XProperty().getValue()</code>.
+Further, for properties that are not read-only, the property can
+be used to change the value in the node.
+</p>
+
+<table>
+<tr>
+<th>Observer method</th><th>Property method</th>
+<tr>
+<td><code>boolean isDisabled()</code>
+<td><code>BooleanProperty disabledProperty()</code>
+<tr>
+<td><code>double getWidth()<br> double getHeight()</code>
+<td><code>ReadOnlyDoubleProperty widthProperty()<br>
+ReadOnlyDoubleProperty heightProperty()</code>
+<tr>
+<td><code>double getLayoutX()<br> double getLayoutY()</code>
+<td><code>DoubleProperty layoutXProperty()<br>
+DoubleProperty layoutYProperty()</code>
+<tr>
+<td><code>String getText()</code>
+<td><code>StringProperty text()</code>
+</table>
+
+<h2>Animation</h2>
