@@ -12,8 +12,9 @@
             <Font name="Baskerville" size="13" />
           </font>
         </Button>
-        <TextArea id="typeme" fx:id="t" prefHeight="300" prefWidth="240"
-                  text="Type more fun text here." wrapText="true" />
+        <TextArea id="typeme" fx:id="t"
+                  prefHeight="300" prefWidth="240"
+                  text="Type more fun text here." />
       </children>
     </HBox>
   </children>
