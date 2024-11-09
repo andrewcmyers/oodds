@@ -294,7 +294,7 @@ with (new CFigure("keyframe_animation", true)) {
     function dot(c) {
         return circle().setW(5).setFillStyle(c).setStrokeStyle("#000")
     }
-    let arena = square().setStrokeStyle(null).setFillStyle("#ddd").setW(200)
+    let arena = square().setStrokeStyle(null).setFillStyle("#ddd").setW(200).setCornerRadius(6)
     let o = square().setW(10).setFillStyle("yellow").setLineWidth(2)
     let vlines = [0,1,2,3].map(i => vertLine())
     let m = margin()
