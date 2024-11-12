@@ -173,7 +173,7 @@ threads are preempted.
 
 <h3>Daemon and normal threads</h3>
 <p>
-A thread is either a <em>daemon</em> or a <em>normal</em> thread.
+A thread is either a <strong>daemon</strong> or a <strong>normal</strong> thread.
 Daemon threads are used for minor or ephemeral tasks such as timers or sounds.
 The initial thread (the one that runs <code>main</code>) is normal.
 The application halts when either <code>System.exit(...)</code> is called or all
@@ -265,7 +265,7 @@ meaning that their execution can be thought of an indivisible unit that cannot
 be interrupted by another thread. This does not mean that when one thread
 executes, say, <code>withdraw()</code>, that all other threads are suspended.
 However, it does mean that as far as the programmer is concerned, the system
-<em>acts</em> as if this were true.
+<strong>acts</strong> as if this were true.
 </p>
 
 <h2>Critical sections and atomicity</h2>
@@ -350,7 +350,7 @@ restriction on which threads can hold it. The simplest form of lock is a
 most one thread at a time.
 </p>
 <p>
-Threads can <em>acquire</em> them and <em>release</em> mutexes.
+Threads can <strong>acquire</strong> them and <strong>release</strong> mutexes.
 </p>
 <p>
 <b>acquire</b>: When a thread tries to acquire a mutex, it first checks whether
@@ -447,7 +447,7 @@ synchronized void deposit(int n) {
 <h3>Mutex variations</h3>
 
 <p>
-Java mutexes are <em>reentrant mutexes</em>, meaning that it is harmless for a
+Java mutexes are <strong>reentrant mutexes</strong>, meaning that it is harmless for a
 single thread to acquire the same mutex more than once. One consequence is that
 one synchronized method can call another on the same object without getting
 stuck trying to acquire the same mutex. Each mutex keeps track of the number of
@@ -455,9 +455,9 @@ times the thread has acquired the mutex, and the mutex is only really released
 once it has been released by the holding thread the same number of times.
 </p>
 <p>
-A locking mechanism closely related to the mutex is the <em>semaphore</em>,
+A locking mechanism closely related to the mutex is the <strong>semaphore</strong>,
 named after <a href="https://en.wikipedia.org/wiki/Railway_semaphore_signal">railway
-semaphores</a>. A <em>binary semaphore</em> acts just like a (non-reentrant)
+semaphores</a>. A <strong>binary semaphore</strong> acts just like a (non-reentrant)
 mutex, except that a thread is not required to hold the semaphore in order to
 release it. In general, semaphores can be acquired by up to some fixed number
 of threads, and additional threads trying to acquire it block until some
@@ -503,7 +503,7 @@ won't be simultaneously modifying the fields in question, leading to
 an inconsistent view of their contents.
 </p><p>
 Synchronization is also needed when we need to make sure that one
-thread <em>sees</em> the updates caused by another thread. It is possible
+thread <strong>sees</strong> the updates caused by another thread. It is possible
 for one thread to update an instance variable and another thread to later
 read the same instance variable and see the value it had before the update.
 This inconsistency arises because
@@ -528,7 +528,7 @@ print (y);</pre></td></tr></table>
 <p>
 What possible values of <code>y</code> might be printed by Thread 2? Naively, it
 looks like the only possible value is 1. But without synchronization, Thread 2 could
-observe the update to <code>x</code> <em>before</em> the update to <code>y</code>.
+observe the update to <code>x</code> <strong>before</strong> the update to <code>y</code>.
 The fact that Thread 1 assigned to <code>y</code> before
 it assigned 1 to <code>x</code> does not matter! This behavior can and does happen frequently
 with modern hardware. This bizarre state of affairs shows that programming with
@@ -548,7 +548,7 @@ current thread, the programmer must assume that its value can
 change at any time. Any invariant that involves the value of such a
 field cannot be relied upon.
 </p><p>
-Note that <em>immutable</em> state shared between threads doesn't need
+Note that <strong>immutable</strong> state shared between threads doesn't need
 to be locked because it cannot be updated. This fact
 encourages a style of programming that avoids mutable state.
 </p>
