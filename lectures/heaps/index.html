@@ -328,7 +328,7 @@ way:
 Hence, we can see that heapifying is actually the fast part of heapsort!
 </p>
 
-<h2>Finding elements in the queue</h2>
+<h2>Finding elements in the heap</h2>
 <p>
 To implement <code>increasePriority()</code>, an implementation must have a
 fast way to find the element whose priority is to be updated. This might be
@@ -344,7 +344,14 @@ that provides operations for manipulating queue elements, implementing an
 interface like the following:
 </p>
 <pre class=load>
-<a href="elemops.java">ElemOps.java</a>
+<a href="elemops.java">HeapElemOps.java</a>
+</pre>
+<p>
+Using this interface, we can implement the core heap operation of swapping two elements
+while updating their positions to match:
+</p>
+<pre class=load>
+<a href="swap.java">swap.java</a>
 </pre>
 <h2>Improvements</h2>
 <p>
