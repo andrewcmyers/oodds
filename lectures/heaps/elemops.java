@@ -3,14 +3,14 @@ interface HeapElemOps<E, P> extends Comparator<P> {
     P priority(E elem);
 
     /** Compare two priorities. */
-    int compare(P priority1, P priority 2);
+    int compare(P priority1, P priority);
 
     /** Effect: set the priority of {@code elem} to {@code priority}. */
-    void setPriority(E elem, P priority);
+    void setPriority(E elem, E priority);
 
     /** The current position of the element in the priority queue. */
-    PQueuePos<E> position(E elem);
+    int position(E elem);
 
     /** Effect: Record the position of the element in the priority queue. */
-    void setPosition(PQueuePos<E> pos);
+    void setPosition(E e, int position);
 }

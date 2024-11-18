@@ -331,12 +331,17 @@ Hence, we can see that heapifying is actually the fast part of heapsort!
 <h2>Finding elements in the queue</h2>
 <p>
 To implement <code>increasePriority()</code>, an implementation must have a
-way, ideally fast, to find the element whose priority is to be updated. This can be
+fast way to find the element whose priority is to be updated. This might be
 accomplished by using a hash table to look up the position of elements in the
-underlying data structure, or by storing the position of the element in the
-queue into the element itself. Using the Concept design pattern, we would
-pass an object to the priority queue that provides operations for manipulating
-queue elements, providing an interface like the following:
+underlying data structure, or alternatively by storing the position of the
+element in the queue into the element itself.
+</p>
+<p>
+We can use the Concept design pattern to implement a binary heap that supports
+either way to maintain the element position and also gives flexiblity
+about how elements store their priorities. We pass an object to the priority queue
+that provides operations for manipulating queue elements, implementing an
+interface like the following:
 </p>
 <pre class=load>
 <a href="elemops.java">ElemOps.java</a>
