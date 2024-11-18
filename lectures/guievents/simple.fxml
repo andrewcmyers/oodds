@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Pane id="top" prefHeight="300" prefWidth="320"
+      xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="fxml.Main">
+  <children>
+    <HBox layoutX="0" prefHeight="300" prefWidth="333">
+      <children>
+        <Button id="pressme" fx:id="b" text="Press me!">
+          <font>
+            <Font name="Baskerville" size="13" />
+          </font>
+        </Button>
+        <TextArea id="typeme" fx:id="t"
+                  prefHeight="300" prefWidth="240"
+                  text="Type more fun text here." />
+      </children>
+    </HBox>
+  </children>
+</Pane>

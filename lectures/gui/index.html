@@ -1,4 +1,4 @@
-<h1>Graphical User Interfaces: Display and Layout</h1>
+<h1>Graphical User Interfaces</h1>
 <p>
 One of the driving forces behind the development of object-oriented programming
 was the need to create <strong>graphical user interfaces</strong> (GUIs). It is not surprising,
@@ -85,6 +85,7 @@ some are useful user interface devices such as buttons or text editors.
         <li>GridPane
         <li>FlowPane
         <li>BorderPane
+        <li>AnchorPane
         </ul>
       <li>Chart
       <li>Axis
@@ -97,6 +98,10 @@ some are useful user interface devices such as buttons or text editors.
   </ul>
 </ul>
 </tt>
+<p>
+Scene graphs show up in other settings. For example, video games
+are often built using 3D scene graphs.
+</p>
 <h2>Building a GUI</h2>
 <p>
 A scene graph must be constructed. This can be done either by either</p>
@@ -125,10 +130,12 @@ of children changes.
 </p>
 <p>
 A scene graph can also be created in advance using the <a
-href="https://www.oracle.com/technetwork/java/javase/downloads/javafxscenebuilder-info-2157684.html">
-JavaFX SceneBuilder application</a>. SceneBuilder saves the scene in
-XML format in an <tt>.fxml</tt> file, which can be loaded by the application to
-create the entire scene graph at once.
+href="https://gluonhq.com/products/scene-builder/"> JavaFX Scene Builder
+application</a>. Scene Builder saves the scene in XML format in an
+<tt>.fxml</tt> file, which can be loaded by the application to create the
+entire scene graph at once. With this approach, the application code
+does not need to know about many details of the scene graph, such as
+intermediate nodes used only for layout.
 </p>
 <h2>Layout</h2>
 <p>
@@ -145,6 +152,8 @@ stacks all its children on top of each other in the center. <code>GridPane</code
 children into a regular grid, like an HTML table. <code>FlowPane</code> lays out its children like
 words of text, in a series of top-to-bottom rows in which each row contains children laid out left-to-right. <code>BorderPane</code> expects to have five children; one is placed in the center and the four others
 are placed at the top, bottom, right, and left.
+<code>AnchorPane</code> places children relative to its sides, following
+to constraints attached to the children.
 </p>
 <div class=figure>
 <canvas id=panes style="width: 600px; height: 300px"></canvas>

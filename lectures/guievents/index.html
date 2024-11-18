@@ -1,19 +1,84 @@
-<h1>Graphical User Interfaces: Events and Animation</h1>
+<h1>Events and Animation</h1>
+
+<h2>Encoding and reading scene graphs</h2>
+<p>
+Constructing scene graphs by writing code can be tedious and also increase
+coupling between the way the user interface looks and the way it behaves.
+Instead, JavaFX provides a convenient way to define scene graphs using
+the syntax of XML (short for “Extensible Markup Language”). A file with an
+<tt>.fxml</tt> extension specifies how to construct a JavaFX scene graph.
+</p>
+<p>
+For example, consider a simple user interface with an editable text area
+and a button:
+</p>
+<center>
+<img width="40%" src="fxml-screenshot.png" />
+</center>
+<p>
+In addition to the text area and button, we will need some other pane
+nodes to place them in the window. We can capture this layout separately
+from code by specifying the scene graph as XML like the following:
+</p>
+
+<pre class="load">
+<a href="simple.fxml">simple.fxml</a>
+</pre>
+<p>
+In principle this XML content can be created from scratch, but we are more
+likely to create and edit it using the Scene Builder tool.
+</p>
+
+<p>
+Given such an FXML file,
+JavaFX lets us write simple code to initialize a scene graph from it.
+Further, instance variables in the code (<code>theButton</code> and
+<code>theTextArea</code>) can be initialized from the correspondingly named
+nodes in the FXML file, by attaching <code>@FXML</code> annotations:
+</p>
+
+<pre class="load">
+<a href="fxmlMain.java">fxmlMain.java</a>
+</pre>
+
+<p>
+Such instance variables are initially null, but The
+<code>initialize()</code> method of the application is called after they
+have been given a value from the FXML file. This method is then the
+place to add further customization of behavior or appearance.
+</p>
 
 <h2>Handling events</h2>
 <p>
-Programs can define <strong>event handlers</strong> to handle different types of input events. Handlers must be registered to receive events with a GUI component on which the event can occur. There are several ways to specify a handler: classes, inner classes, or lambda expressions. All are basically syntactic sugar for the same thing, but convenient. Here is an example with a lambda expression:
+The example program above has a button but it doesn't do anything yet
+when pushed. To make that happen we need to define how the program
+should handle that event.
+</p>
+<p>
+Programs can define <strong>event handlers</strong> to handle different
+types of input events. Handlers must be registered to receive
+events with a GUI component on which the event can occur. There are
+several ways to specify a handler: classes, inner classes, or lambda
+expressions. All are basically syntactic sugar for the same thing, but
+convenient. Here is an example with a lambda expression:
 <pre>
 Button b = ...;
-b.setOnAction(e -&gt; print("button clicked"));
+b.setOnAction(e -&gt; println("button clicked"));
 </pre>
 <p>
-This is essentially the Observer pattern, but for many events, there can be
-only one registered handler. Lambda expressions are really just syntactic sugar
-for <b>inner classes</b>, which are anonymous classes implementing a specified
-interface. In this case, the method <code>setOnAction</code> expects to
-receive an object implementing the interface <code>EventHandler&lt;ActionEvent&gt;</code>,
-where <code>EventHandler</code> is defined as follows:
+This code causes the button to call the provided function whenever
+the button is activated by clicking on it.
+</p>
+<p>
+This code is essentially the Observer pattern, but for many events,
+there can be only one registered handler. Lambda expressions are really
+just syntactic sugar for <b>inner classes</b>, which are anonymous
+classes implementing a specified interface. In this case, the method
+<code>setOnAction</code> expects to receive an object implementing
+the interface <code>EventHandler&lt;ActionEvent&gt;</code>, where
+<code>EventHandler</code> has a single method. Interfaces with
+single methods can be implemented by a lambda expression like
+the one above.
 </p>
 <pre class="load">
 <a href="EventHandler.java">EventHandler.java</a>
@@ -24,19 +89,262 @@ lambda expression is syntactic sugar for the following code defining an inner cl
 <pre class="load">
 <a href="desugared_lambda.java">desugared_lambda.java</a>
 </pre>
-It is not even necessary to use an inner class; an ordinary class can be used to
-implement the desired interface, as in the following code:
+It is not even necessary to use an inner class; we could
+implement the <code>EventHandler</code> interface using an
+ordinary top-level class:
 <pre class="load">
 <a href="desugared_top_level_class.java">desugared_lambda.java</a>
 </pre>
 </p>
 <p>
-In fact, even inner classes are syntactic sugar for top-level classes. Because
-they are just syntactic sugar, they come with some limitations. In particular,
-inner classes and lambda expressions can only refer to variables defined
-outside their scope if those variables are final. The reason for this
-limitation is that their objects may outlive the external variables they refer
-to. For that reason, the implementation of inner classes and lambdas actually
-makes a copy of any such external variable. Since the variable is final, there
-is no way for the programmer to tell that such a copy has been made!
+In fact, inner classes are syntactic sugar for top-level
+classes. Because lambda expressions and inner classes are just syntactic
+sugar, they have some limitations. In particular, inner classes and
+lambda expressions can only refer to variables defined outside their
+scope if those variables are immutable. The reason for this limitation
+is that their objects may outlive the external variables they refer
+to. For that reason, the implementation of inner classes and lambdas
+actually makes a copy of the value fo any such external variable.  Since
+the variable is final, there is no way for the programmer to tell that
+such a copy has been made!
 </p>
+<h3>Handling events with FXML</h3>
+<p>
+The binding between a scene graph node and the action it triggers
+can be defined in an FXML file. For example, in the FXML example
+above, the <code>Button</code> node can be given a method to
+invoke when the button is clicked:
+</p>
+<pre class="load">
+<a href="button-action.fxml">button-action.fxml</a>
+</pre>
+<p>
+Then we define a corresponding method to call with an <code>@FXML</code>
+annotation so that JavaFX can connect the node and method together:
+<pre class="load">
+<a href="handleButtonPressed.java">handleButtonPressed.java</a>
+</pre>
+
+<h2>Event types</h2>
+<p>
+Graphical user interfaces respond to events and can also generate new events.
+There are many kinds of events,  which in JavaFX are all subclasses of the
+class <a
+href="https://openjfx.io/javadoc/23/javafx.base/javafx/event/package-summary.html"><code>javafx.event.Event</code></a>.
+</p>
+<p>
+Low-level events include keyboard keys or mouse buttons being pressed
+or released, and motion occurring on a mouse or trackpad. Other events
+coming from outside the application include changes to the size or
+visibility of application windows.
+</p>
+<p>
+JavaFX also automatically synthesizes some higher-level events from
+lower-level ones. For example, a mouse button press and release when the mouse
+is positioned over a GUI button causes the button to generate an action event.
+Pressing the mouse button twice quickly causes a double-click event.
+These events are automatically generated by JavaFX; applications can
+define their own new events similarly.
+</p>
+<p>
+Thus, there are three main kind of events in JavaFX, represented
+by different classes that implement 
+<ol>
+<li>
+The class <code>InputEvent</code> represents low-level input events, with
+subclasses like <code>KeyEvent</code>, <code>MouseEvent</code>,
+<code>TouchEvent</code>, <code>GestureEvent</code>, and
+<code>DragEvent</code>.
+<li> Class <code>WindowEvent</code> represents events from the window
+manager.
+<li> Class
+<code>ActionEvent</code> represents higher-level events generated by controls
+such as Button.
+</ol>
+<p>
+Every event has an <strong>event target</strong>, which is often the current
+window (<code>Stage</code>).  Each event also carries additional
+information specific to the event.  For example, mouse events include the
+position of the mouse, keyboard events specify the key, and so on.
+</p>
+<h2>Event delegation</h2>
+<p>
+When an event is generated by JavaFX, a complex process is used to
+determine which code should handle the event. Based on the event
+target, an <strong>event dispatch chain</strong> is determined.  The
+event dispatch chain usually corresponds to a path through the scene
+graph from the scene down to some leaf, although this behavior can be
+overridden.
+</p>
+<p>Each node in the event dispatch chain has the opportunity
+to handle the event and perform some action, such as updating the
+application state or generating new events. An event handler also
+has the ability to consume it by calling its <code>consume()</code>
+method, preventing it from being seen by the rest of the chain.
+</p>
+<h2>Properties</h2>
+<p>
+Scene graph nodes have state that can be queried by calling observer
+methods. Generally speaking, these observer methods also have
+corresponding methods that return <strong>property objects</strong>.
+Property objects can be read at any time to learn the current value
+of the property. Thus, for a method named <code>getX()</code> there
+is typically another method <code>XProperty</code> that provides
+the corresponding property. For a node <code>n</code>, the value of 
+<code>n.getX()</code> is always equal to <code>n.XProperty().getValue()</code>.
+Further, for properties that are not read-only, the property can
+be even used to change the value in the node.
+</p>
+<p>
+This table lists some useful observer methods and the corresponding property
+methods. If the observer method returns a value of type <code>T</code>,
+the property method returns a property object whose class implements the
+interface <code>ObservableValue&lt;T&gt;</code>:
+</p>
+
+<table class=rowlines>
+<tr>
+<th>Observer method</th><th>Property method</th>
+<tr>
+<td><code>boolean isDisabled()</code>
+<td><code>BooleanProperty disabledProperty()</code>
+<tr>
+<td><code>double getWidth()<br> double getHeight()</code>
+<td><code>ReadOnlyDoubleProperty widthProperty()<br>
+ReadOnlyDoubleProperty heightProperty()</code>
+<tr>
+<td><code>double getLayoutX()<br> double getLayoutY()</code>
+<td><code>DoubleProperty layoutXProperty()<br>
+DoubleProperty layoutYProperty()</code>
+<tr>
+<td><code>String getText()</code>
+<td><code>StringProperty textProperty()</code>
+</table>
+
+<h3>Property listeners</h3>
+<p>
+Properties can be used to trigger actions by the application, by attaching
+<strong>listeners</strong> to them of type
+<code>ChangeListener&lt;T&gt;</code>.  When the value (of type <code>T</code>
+of the property changes, a method of the listener is called:
+</p>
+<pre>
+ void changed(ObservableValue&lt;? extends T&gt; observable,
+              T oldValue, T newValue); 
+</pre>
+<p>
+The passed argument <code>observable</code> would be the property whose
+value changed from value <code>oldvalue</code> to <code>newValue</code>.
+</p>
+<p>In the example program above, we could extend the behavior of the text area
+by adding a listener that monitors changes to the contents of the text area
+and performs an action:
+<pre>
+@Override
+public void initialize(final URL location, ResourceBundle resources) {
+    theTextArea.textProperty().addListener((obs, before, after) -&gt;
+        println("Text changed to " + after);
+}
+</pre>
+<p>
+Listeners can be a useful as a way to loosen coupling but they can also make
+the control flow of the program hard to understand, since updates to one
+property can trigger listeners that then cause immediate updates to other
+properties.
+</p>
+
+<h2>Animation</h2>
+
+<p>
+Properties make it easy to add animations that can make programs more
+usable or attractive. An animation is created by defining a sequence of
+<strong>key frames</strong> corresponding to different moments in time.
+A key frame specifies the values of various properties at that point
+in time. Given this specification, JavaFX creates a smooth animation
+by interpolating the values of properties between key frames. For example,
+the following figure shows how the position of an object on the screen might
+be controlled by a sequence of key frames that specify its horizontal and
+vertical position. Of course, properties other than position can also be
+controlled in this way, including properties like rotational orientation
+or even color.
+</p>
+<div class=figure>
+<canvas id="keyframe_animation" style="height: 400px">
+</canvas>
+<span class=caption>A key-frame animation. Red is the horizontal position and green is the vertical.</span>
+</div>
+<p>
+An animation is defined by creating a <code>Timeline</code> object
+and adding key frames to it. Each key frame has a specified
+duration (in milliseconds) and a set of pairs of properties and values
+specified as <code>KeyValue</code> objects. A key frame may also
+have an event handler to be invoked to perform some action at the end
+of the key frame when the properties reach their final values.
+</p>
+<p>
+By default, animations linearly interpolate property values, so that
+properties change at a constant rate during the key frame. Smoother
+interpolation can be achieved for a property by specifying other interpolators
+in the <code>KeyValue</code> object for the property.
+</p>
+<script class=graphics>
+with (new CFigure("keyframe_animation", true)) {
+    const xposs = [0, 0.3, 0.75, 1],
+          gyposs = [0.8, 0.2, 0.6, 0.4]
+          ryposs = [0.3, 0.8, 0.7, 0.2]
+
+    function dot(c) {
+        return circle().setW(5).setFillStyle(c).setStrokeStyle("#000")
+    }
+    let arena = square().setStrokeStyle(null).setFillStyle("#ddd").setW(200).setCornerRadius(6)
+    let o = square().setW(10).setFillStyle("yellow").setLineWidth(2)
+    let vlines = [0,1,2,3].map(i => vertLine())
+    let m = margin()
+    let timeline = box()
+    align("none", "TB", ...vlines)
+    let gdots = [0,1,2,3].map(i => dot("green"))
+    let rdots = [0,1,2,3].map(i => dot("red"))
+    const xpos = x => plus(times(timeline.x0(), minus(1,x)),
+                           times(timeline.x1(), x))
+    const ypos = y => plus(times(timeline.y1(), minus(1,y)),
+                           times(timeline.y0(), y))
+                            
+    for (const i in vlines) {
+        align("center", "none", vlines[i], gdots[i], rdots[i])
+        align("none", "TB", vlines[i], timeline)
+        if (i > 0) {
+            line(gdots[i-1], gdots[i]).setStrokeStyle("green").setLineDash([3,3])
+            line(rdots[i-1], rdots[i]).setStrokeStyle("red").setLineDash([3,3])
+        }
+        equal(vlines[i].x(), xpos(xposs[i]))
+        equal(gdots[i].y(), ypos(gyposs[i]))
+        equal(rdots[i].y(), ypos(ryposs[i]))
+    }
+    let sweep = vertLine().setLineWidth(2).setStrokeStyle("blue")
+    let time_arrow = horzLine().setEndArrow("arrow").addLabel("time", 0.5, -5).setW(150)
+    align("center", "top", arena, m)
+    align("none", "TB", sweep, timeline)
+    align("left", "abut", timeline, vspace(10), time_arrow)
+
+    align("LR", "none", timeline, m.inset(5))
+    align("none", "abut", timeline, theAdvanceButton)
+    timeline.setH(times(0.3, m.h()))
+
+    const interval = i => i == 0 ? 0 : (xposs[i] - xposs[i-1]) * 2000
+
+    const frames = [0, 1, 2, 3].map(i => addFrame(i).setLength(interval(i)))
+
+    inFrame(frames[0], equal(sweep.x(), vlines[0].x()))
+    inFrame(frames[0], equal(o.center(),
+        relative(ryposs[0], gyposs[0], arena.ll(), arena.lr())))
+    for (const i in frames) {
+        if (i == 0) continue;
+        inFrame(frames[i], equal(o.center(),
+          linear(frames[i],
+            relative(ryposs[i-1], gyposs[i-1], arena.ll(), arena.lr()),
+            relative(ryposs[i], gyposs[i], arena.ll(), arena.lr()))))
+        inFrame(frames[i],
+            equal(sweep.x(), linear(frames[i], vlines[i-1].x(), vlines[i].x())))
+    }
+}
+</script>
