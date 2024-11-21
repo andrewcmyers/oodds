@@ -108,7 +108,35 @@ depicted in Figure 3.
 
 </p><p>
 <div class=figure>
-<img src="java-arch.png"/>
+<canvas id=java_arch style="width: 370px; height: 260px"></canvas>
+<script class=graphics>
+  with (new CFigure("java_arch")) {
+    function software(t) {
+        return rectangle().addText(t).setCornerRadius(8).setH(30)
+    }
+    const top_g = group(
+      label("Java source code").expand(5),
+      software("Java compiler").setW(100),
+      label("JVM bytecode").expand(5))
+    const JVM_interp = software("JVM interpreter").setW(120)
+    const JIT_compiler =software("JIT compiler").setW(100) 
+    align("abut", "center", JVM_interp, hspace(30), JIT_compiler)
+    const mc = label("machine code").expand(5)
+    arrow(top_g.child(0), top_g.child(1))
+    arrow(top_g.child(1), top_g.child(2))
+    setConnectionStyle("intersection")
+    arrow(top_g.child(2), JVM_interp)
+    arrow(top_g.child(2), JIT_compiler)
+    arrow(JIT_compiler, mc)
+    arrow(JVM_interp, JIT_compiler).setLineDash([5,5])
+    align("center", "top", top_g.child(0), margin())
+    align("none", "bottom", mc, margin(10))
+    align("center", "none", JIT_compiler, mc)
+    align("center", "none", average(JIT_compiler, JVM_interp), top_g)
+    align("none", "distribute", top_g.child(0), top_g.child(1), top_g.child(2), JVM_interp, mc)
+    top_g.align("center", "distribute")
+  }
+</script>
 <span class="caption">Figure 3: The Java execution architecture</span>
 </div>
 
