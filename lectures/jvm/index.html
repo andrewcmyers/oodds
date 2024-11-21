@@ -8,8 +8,21 @@ language</strong>. The first is <strong>compilation</strong>, or <strong>transla
 program is translated into a second, <strong>target</strong> language.
 </p><p>
 <div class=figure>
-<img src="compilation.png" />
-<span class="caption">Figure 1: Compiling a program</span>
+<canvas id=compilation_diagram style="height: 130px"></canvas>
+<script class=graphics>
+  with (new CFigure("compilation_diagram")) {
+    const g = group(
+      label("language 1 (source)").expand(5),
+      rectangle().setCornerRadius(8).addText("compiler").setH(30),
+      label("language 2 (target)").expand(5))
+    g.align("center", "distribute")
+    arrow(g.child(0), g.child(1))
+    arrow(g.child(1), g.child(2))
+    align("center", "top", g.child(0), margin())
+    align("center", "bottom", g.child(2).toBottom(10), margin())
+  }
+</script>
+<p class="caption">Figure 1: Compiling a program</p>
 </div>
 </p><p>
 Compilation can be slow because it is not simple to translate from a
@@ -21,7 +34,25 @@ method for running code: <strong>interpretation</strong>, in which an interprete
 reads the program and does whatever computation it describes.
 </p><p>
 <div class=figure>
-<img src="interpretation.png"/>
+<canvas id=interpretation_diagram style="width: 370px; height: 90px"></canvas>
+<script class=graphics>
+  with (new CFigure("interpretation_diagram")) {
+    const g = group(
+      label("program inputs").expand(5),
+      rectangle().setCornerRadius(8).addText("interpreter").setH(30).setW(100),
+      label("program outputs").expand(5))
+    const program = label("program").expand(5)
+    g.align("distribute", "center")
+    arrow(g.child(0), g.child(1))
+    arrow(g.child(1), g.child(2))
+    arrow(program, g.child(1))
+    align("left", "none", g.child(0), margin(5))
+    align("right", "none", g.child(2), margin(5))
+    align("center", "bottom", g.child(1), margin(15))
+    align("center", "none", program, g.child(1))
+    align("center", "top", program, margin())
+  }
+</script>
 <span class="caption">Figure 2: Interpreting a program</span>
 </div>
 </p><p>
