@@ -264,7 +264,7 @@ with (new CFigure("method-disp-fig-new")) {
     align("center", "none", RDV, ADV)
 
     let bytecode = rectangle().addText("Animal.eat bytecode")
-        .setW(60).setCornerRadius(10).setLineWidth(2)
+        .setW(80).setCornerRadius(10).setLineWidth(2).setFontSize(12)
     geq(bytecode.x0(), plus(50, RDV.x1()))
     geq(bytecode.w(), 60)
     align("right", "center", bytecode, canvasRect().inset(4))
