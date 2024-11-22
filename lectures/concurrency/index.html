@@ -213,11 +213,15 @@ are available to run this part of the work, then Amdahl's law says that the
 maximum speedup is
 \[1 \over (1-p) + p/c\]
 which, no matter how large \(c\) becomes,
-never exceeds \(1/(1-p)\).
+never exceeds \(1/(1-p)\). Here, the denominator term \(1-p\) represents the work
+that cannot be parallelized, and the term \(p/c\) represents the parallelizable work,
+sped up by a factor of \(c\).
 </p>
 <p>
-Since most programs have some work that is difficult to parallelize, Amdahl's law explains
-why it is often difficult to get large gains from having many cores.
+Most programs have some work that is difficult to parallelize: often there is
+some initial setup of computation or final collection of results that cannot be
+done concurrently.  Thus, Amdahl's law explains why it is often difficult to
+get large gains from having many cores.
 </p>
 
 <h2>Race conditions</h2>
@@ -225,11 +229,11 @@ why it is often difficult to get large gains from having many cores.
 We have to be careful about multiple threads accessing the same object,
 because threads can interfere with each other.
 Two threads simultaneously reading information from the same object 
-is not a problem. Read-read sharing is safe. But if both threads are
+is not a problem. Read–read sharing is safe. But if both threads are
 simultaneously trying to update the same object, or if one thread
 is updating the object while the other is reading it, it is possible that
 inconsistencies can arise. This is called a <strong>race condition</strong>.
-Both read-write and write-write races are problems.
+Both read–write and write–write races are problems.
 </p>
 <p>
 For example, consider the following bank account simulation:
@@ -355,10 +359,10 @@ restriction on which threads can hold it. The simplest form of lock is a
 most one thread at a time.
 </p>
 <p>
-Threads can <strong>acquire</strong> them and <strong>release</strong> mutexes.
+Threads can <strong>acquire</strong> and <strong>release</strong> mutexes.
 </p>
-<p>
-<b>acquire</b>: When a thread tries to acquire a mutex, it first checks whether
+<dl>
+<dt>acquire:<dd><p>When a thread tries to acquire a mutex, it first checks whether
 the mutex is already held by another thread. If so, the thread blocks
 and makes no further progress, until some future time when the mutex is no
 longer held by any thread. At that point, the thread then becomes the unique
@@ -368,13 +372,14 @@ actually acquire the mutex corresponds to the order in which they tried. Mutex
 implementations usually try to provide some <strong>fairness</strong>, so that threads
 do eventually acquire the mutex.
 </p>
+<dt>release:<dd>
 <p>
-<b>release</b>:
 At most one thread can hold a mutex at a time.
 While a mutex is being held by a thread, all other threads that try to acquire
 it will be blocked until it is released, at which point
 a waiting thread, if any, will manage to acquire it.
 </p>
+</dl>
 <p>
 Considering the single-owner principle, we can think of a mutex as guarding
 some mutable state. When no thread holds the mutex, no thread can access the
@@ -491,6 +496,21 @@ The time that <code>volatile</code> is useful is when
 all you want is indeed to acquire a mutex around all accesses to a variable;
 in this case, <code>volatile</code> is the easiest and cheapest way to do it.
 </p>
+<p>
+We might think that we could fix the <code>Account</code> example from earlier by
+declaring <code>balance</code> to be volatile:
+</p>
+
+<pre>
+<s>private volatile int balance;</s>
+</pre>
+
+<p>
+But this declaration <em>will not help at all</em>. There are still two
+separate accesses to the variable (a read and a write) from each of the methods of
+<code>Account</code>. Each access will be separately synchronized, so all
+interleavings remain possible.
+</p>
 
 <h3>Atomic abstractions</h3>
 <p>
@@ -504,7 +524,7 @@ implementation is probably more efficient than what can be achieved with
 standard Java mutexes.
 </p>
 <p>
-For example, we could fix the <code>Account</code> example from earlier by
+For example, we <em>could</em> fix the <code>Account</code> example from earlier by
 storing the balance in an <code>AtomicInteger</code>:
 <pre>
 class Account {
@@ -535,7 +555,7 @@ leads to disaster.
 Synchronization is needed whenever we must rely on invariants on
 the state of objects, either between different fields of one or more
 objects, or between contents of the same field at different times.
-Without synchronization there is no guarantee that some other thread
+Without synchronization, there is no guarantee that some other thread
 won't be simultaneously modifying the fields in question, leading to
 an inconsistent view of their contents.
 </p><p>
@@ -591,5 +611,6 @@ field cannot be relied upon.
 </p><p>
 Note that <strong>immutable</strong> state shared between threads doesn't need
 to be locked because it cannot be updated. This fact
-encourages a style of programming that avoids mutable state.
+encourages a style of programming that avoids mutable state—which has an additional
+benefit of simplifying reasoning about code even when concurrency is not being used.
 </p>
