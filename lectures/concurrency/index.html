@@ -482,7 +482,8 @@ Java allows instance variables to be declared as <code>volatile</code>. These va
 though they have their own mutex: each access to such a variable (read or write) causes
 synchronization using that mutex. This mechanism is occasionally useful, but it's not enough
 in many situations. For example, declaring the variable <code>balance</code> to be volatile
-in the earlier bank example would not help at all; all of the wrong interleavings would still be possible.
+in the earlier bank example would not help at all.
+Each access will be separately synchronized, so all the bad interleavings remain possible.
 </p>
 <p>
 Some programmers have a bad habit of trying to solve concurrency problems
@@ -492,24 +493,9 @@ is nothing magic about volatile variables. Anything that can be accomplished
 with them can be accomplished with other synchronization mechanisms.  And
 because they cause automatic synchronization, they are expensive, both because
 synchronization has an inherent overhead and because it can remove desirable parallelism.
-The time that <code>volatile</code> is useful is when
+The <code>volatile</code> declaration is useful is when
 all you want is indeed to acquire a mutex around all accesses to a variable;
 in this case, <code>volatile</code> is the easiest and cheapest way to do it.
-</p>
-<p>
-We might think that we could fix the <code>Account</code> example from earlier by
-declaring <code>balance</code> to be volatile:
-</p>
-
-<pre>
-<s>private volatile int balance;</s>
-</pre>
-
-<p>
-But this declaration <em>will not help at all</em>. There are still two
-separate accesses to the variable (a read and a write) from each of the methods of
-<code>Account</code>. Each access will be separately synchronized, so all
-interleavings remain possible.
 </p>
 
 <h3>Atomic abstractions</h3>
