@@ -556,7 +556,8 @@ completely synchronized with caches of other processors. Updates to the local ca
 do not propagate immediately to main memory or to the caches of other processors.
 For example, consider
 two threads executing the following code in parallel. Say the values of <code>x</code> and <code>y</code>
-are initially 0.
+are initially 0. The idea is for Thread 2 to wait until Thread 1 finishes some work. It
+signals that it is done by setting the variable <code>x</code> to 1:
 </p>
 <table class=sidebysidecode><tr><td>
 Thread 1:
@@ -576,11 +577,12 @@ looks like the only possible value is 1. But without synchronization, on some pr
 Thread 2 could observe the update to <code>x</code> <strong>before</strong> the update to <code>y</code>.
 The fact that Thread 1 assigned to <code>y</code> before
 it assigned 1 to <code>x</code> does not matter! This behavior can and does happen frequently
-with modern hardware. When it happens is hardware-dependent, so that code that seems to work
-correctly on one processor (say, an Intel x86 processor) may fail to work on a machine using
-an ARM processor. This bizarre state of affairs shows that programming with
-concurrency can be highly counterintuitive, and that one must never rely on naive assumptions
-about the order of events.
+with modern hardware. When it happens is hardware-dependent, so that code that
+seems to work correctly on one processor (say, an Intel x86 processor) may fail
+to work on a machine using an ARM processor, which makes weaker guarantees.
+This bizarre state of affairs shows that programming with concurrency can be
+highly counterintuitive, and that it is easy to make bad assumptions about the
+order of events.
 </p>
 <p>
 The most reliable way
