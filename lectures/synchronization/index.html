@@ -124,6 +124,7 @@ all accesses to the shared state must be guarded by the same lock.
 <p>
 Given that synchronization is needed for threads to see each other's effects, is there
 a way to successfully implement the earlier example that broke due to weak memory consistency?
+Recall that the idea was to have one thread wait until another one finished some updates:
 </p>
 
 <table class="sidebysidecode"><tr><td>
