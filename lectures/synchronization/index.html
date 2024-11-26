@@ -225,10 +225,10 @@ be holding it at a given time.
         // result.setVerticalAlign("top")
         return result
     }
-    const s1 = state("Thread running,\nnot holding mutex"), 
-          s2 = state("Thread blocked,\nwaiting for mutex"),
-          s3 = state("Thread running,\nholding mutex"),
-          s4 = state("Thread blocked\nwaiting for CV,\nnot holding mutex")
+    const s1 = state("Thread running, not holding mutex"), 
+          s2 = state("Thread blocked, waiting for mutex"),
+          s3 = state("Thread running, holding mutex"),
+          s4 = state("Thread blocked waiting for CV, not holding mutex")
     const m = margin()
     s4.setFontSize(11)
     
@@ -244,7 +244,7 @@ be holding it at a given time.
     arrow(s3, s4).addLabel(lineLabel("wait", 0.5, 15))
     arrow(s4, s2)
     let lb = label("unblocked thread")
-    let lb24 = group(lb, label("calls notifyAll")).align("center", "abut")
+    let lb24 = group(lb, vspace(2), label("calls notifyAll")).align("center", "abut")
     align("center", "top", lb, average(s2, s4).toBottom(3))
   }
 </script>
@@ -267,11 +267,34 @@ from <code>wait()</code>, it immediately tries to acquire the lock. Only one thr
 the others block, waiting for the winner to release the lock.
 Eventually they acquire the lock, though there is no guarantee that
 the condition is true when any of the threads awake.
-</p><p>
+</p>
+<p>
+Using a condition variable, we can successfully implement the earlier example:
+<table class="sidebysidecode"><tr><td>
+Thread 1:
+<pre>
+synchronized (m) {
+    y = 1;
+    x = 1;
+    m.notifyAll();
+}
+</pre>
+</td>
+<td>
+Thread 2:
+<pre>
+synchronized (m) {
+    while (x == 0) m.wait();
+    print (y);
+}</pre></td></tr></table>
+<p>
+This code is guaranteed not to loop forever, and it creates a synchronization dependency
+that ensure the update to <code>y</code> is seen by thread 2.
+<p>
 After a thread calls <code>wait()</code>, the condition it is waiting for might
 be true when <code>wait()</code> returns. But it need not be. Some other thread
 might have been scheduled first and may have made the condition false.
-So <code>wait()</code> is always called in a loop:
+So <code>wait()</code> is always, always called in a loop:
 </p><p>
 <pre>
 while (!condition) wait();
@@ -280,14 +303,14 @@ while (!condition) wait();
 Failure to test the condition after <code>wait()</code> leads to what
 is called a <b>wakeup–waiting race</b>, in which threads awakened by
 <code>notifyAll()</code> race to observe the condition as true. The winners of
-the race can then spoil things for later awakeners.
+the race can then spoil things for threads awakened later.
 </p>
 <h2>Monitors</h2>
 </p><p>
 The <b>monitor</b> pattern is a design pattern for managing synchronization.
 It builds synchronization into objects: a monitor
 is an object with a built-in lock on which all of the monitor's
-public methods are synchronized. This design is accomplished in Java easily, because
+copublic methods are synchronized. This design is accomplished in Java easily, because
 every object can be used as a lock, and the <code>synchronized</code> keyword enforces the
 monitor pattern. Java objects are designed to be used as monitors. A monitor
 also has some number of condition variables. Java objects only have
@@ -399,14 +422,16 @@ In general, when at the same time a thread holds multiple locks acquired in the 
 \(L_1, L_2, L_3, ..., L_n \), the order in which they are acquired must
 respect the ordering: \(L_1 &lt; L_2 &lt; ... &lt;L_n\). There is no built-in
 ordering on locks; it is up to the application designer to choose an ordering that
-works for the computations being performed. What is crucial is that the ordering
-is transitive and irreflexive, so that there are no cycles.
+works for the computations being performed.
+The ordering does not need to be a total ordering; it is allowed for two locks to
+have no ordering with respect to each other.  What is crucial is that the ordering
+have no cycles.
 </p>
 <p>
-In the example above, we might choose a lock ordering in which <tt>a &lt; b</tt>.
-In this scenario, <tt>b</tt> could not be waiting on the lock for <tt>a</tt>,
-because a method of <tt>b</tt> already holds a lock that is higher in the ordering,
-so it must already have acquired the lock for <tt>a</tt>.
+In the example above, we might choose a lock ordering in which <code>a &lt; b</code>.
+In this scenario, <code>b</code> could not be waiting on the lock for <code>a</code>,
+because a method of <code>b</code> already holds a lock that is higher in the ordering,
+so it must already have acquired the lock for <code>a</code>.
 </p>
 <p>
 In general, a thread may acquire a lock on (synchronize on) an object only
@@ -420,22 +445,21 @@ an already held lock is not a problem.
 To prevent deadlock, we can impose a requirement that a method only hold
 locks up to a certain level in the order &lt;. This requirement becomes part
 of the precondition of the method and is called the <b>locking level</b>
-of the method, written \(LL\). The locking level \(LL\) specifies the highest level lock in the lock
+of the method, written \(LL\). The locking level \(LL\) specifies the highest-level lock in the lock
 ordering that might be held when the method is called.
 </p>
 <p>
 Since a monitor acquires its lock when public methods are called, the locking level on 
 entry to a monitor method must be less than the monitor itself
-(or equal to, in the case of reentrant locks). Otherwise
+(or equal to, assuming reentrant locks as in Java). Otherwise
 the lock ordering could be violated. Thus, the public methods of a monitor have
 an (often implicit) precondition \(LL ≤ \texttt{this}\).
 </a>
 <p>
-If we apply this approach to the example above, we might specify that <tt>a
-&lt; b</tt> in the lock ordering.  The methods <tt>f()</tt> then requires \(LL
-&lt; a\) and <tt>g()</tt> requires \(LL &lt; b\). The call to <tt>a.f()</tt> in
-<tt>B.g()</tt> is then illegal, because it violates the lock ordering, and as
-we saw it leads to possible deadlock.
+If we apply this approach to the example above, we might specify that <code>a
+&lt; b</code> in the lock ordering.  The methods <code>f()</code> then requires \(LL
+&lt; a\) and <code>g()</code> requires \(LL &lt; b\). The call to <tt>a.f()</tt> in
+<tt>B.g()</tt> then becomes illegal.
 </p>
 <pre class=code>
 class A {
@@ -551,7 +575,7 @@ class Workers extends Runnable {
 
     // not synchronized, to allow concurrent execution<
     public void doWork() {
-        ...avoid using shared mutable state...
+        // ...avoid using shared mutable state here...
     }
 
     double getResult() {
