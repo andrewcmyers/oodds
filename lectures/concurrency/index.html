@@ -576,13 +576,13 @@ What possible values of <code>y</code> might be printed by Thread 2? Naively, it
 looks like the only possible value is 1. But without synchronization, on some processors,
 Thread 2 could observe the update to <code>x</code> <strong>before</strong> the update to <code>y</code>.
 The fact that Thread 1 assigned to <code>y</code> before
-it assigned 1 to <code>x</code> does not matter! This behavior can and does happen frequently
-with modern hardware. When it happens is hardware-dependent, so that code that
+it assigned 1 to <code>x</code> does not necessarily mean that Thread 2 observes those updates
+in the same order! When this surprising behavior happens is hardware-dependent, so that code that
 seems to work correctly on one processor (say, an Intel x86 processor) may fail
-to work on a machine using an ARM processor, which makes weaker guarantees.
+to work on a machine using a processor that makes weaker guarantees, such as ARM.
 This bizarre state of affairs shows that programming with concurrency can be
-highly counterintuitive, and that it is easy to make bad assumptions about the
-order of events.
+highly counterintuitive and non-portable. With concurrency, it is easy to make
+bad assumptions about the order of events.
 </p>
 <p>
 The most reliable way
