@@ -11,28 +11,28 @@ no matter how much time or space is available.
 
 <p>
 The class of problems that are generally considered to be <em>tractable</em> are those
-that can be solved in <b>polynomial time</b>, which is to say O(n<sup>k</sup>)
-for some k. In practice, algorithms that take polynomial time with k larger
-than 1 scale poorly, and algorithms that require k≥5 are almost never used
-in practice (and even k=3 and k=4 are often impractically slow).
+that can be solved in <b>polynomial time</b>, which is to say \( O(n^k) \)
+for some \(k\). In practice, algorithms that take polynomial time with \(k\) larger
+than 1 scale poorly, and algorithms that require \(k≥5\) are almost never used
+in practice (and even \(k=3\) and \(k=4\) are often impractically slow).
 </p>
 <p>
 We define the complexity class <b>P</b> as the set of all problems that can be
-solved by an algorithm taking polynomial time, that is, time O(n<sup>k</sup>) for 
-some constant k.</p>
+solved by an algorithm taking polynomial time, that is, time \(O(n^k)\) for 
+some constant \(k\).</p>
 <p>
 Beyond P is the class <b>EXPTIME</b>, which includes all
-algorithms that take time O(2<sup>n<sup>k</sup></sup>) for some constant k.
-Algorithms in EXPTIME effectively hit a wall when the problem size n
+algorithms that take time \(O(2^{n^k})\) for some constant \(k\).
+Algorithms in EXPTIME effectively hit a wall when the problem size \(n\)
 becomes even moderately large.
-For example, if an algorithm takes time 2<sup>n</sup>,
-increasing the problem size from n to size n+1 requires twice as much time.
-Even if the algorithm is fast for small n, as n grows, we quickly reach
+For example, if an algorithm takes time \(2^n\),
+increasing the problem size from \(n\) to size \(n+1\) requires twice as much time.
+Even if the algorithm is fast for small \(n\), as \(n\) grows, we quickly reach
 a size where even a small increase is far too expensive. Contrast
-this with the case of an O(n<sup>k</sup>) algorithm, where
-going from n to n+1 means increasing the time only by a factor of roughly 1+k/n,
+this with the case of an \(O(n^k)\) algorithm, where
+going from size \(n\) to \(n+1\) means increasing the time only by a factor of roughly \(1+k/n\),
 which gets smaller as n increases.
-(To see why, note that ((n+1)/n)<sup>k</sup> ≈ 1 + k/n when n ≫ k.)
+(To see why, note that \(((n+1)/n)^k ≈ 1 + k/n\) when \(n ≫ k\).
 </p>
 <p>
 Another important class is <b>nondeterministic polynomial time</b>, or
@@ -45,15 +45,15 @@ whether it is indeed a solution.
 <p>
 Examples of problems in NP are the following:
 <ul>
-<li><b>Graph coloring.</b> Does there exist a valid k-coloring of a given undirected graph, that is,
-a coloring of the vertices with k distinct colors such that no two adjacent vertices have the same color?
-If we are given a k-coloring, checking whether it is valid can be done in linear time.
+<li><b>Graph coloring.</b> Does there exist a valid \(k\)-coloring of a given undirected graph, that is,
+a coloring of the vertices with \(k\) distinct colors such that no two adjacent vertices have the same color?
+If we are given a \(k\)-coloring, checking whether it is valid can be done in linear time.
 But if we are not given such a coloring, it is not known how to efficiently test whether one
 exists or how to find one if so.
 <li><b>Hamiltonian cycles.</b> A Hamiltonian cycle in a graph is a cycle that includes
 every vertex exactly once. The problem is to test whether such a cycle exists in a given graph.
-Given a candidate cycle as a list of vertices, it can be checked in polynomial time whether it
-is indeed a cycle and whether each vertex occurs exactly once.
+Given a candidate cycle as a list of vertices, it can be checked in polynomial time (in the size of
+the graph) whether it is indeed a cycle and whether each vertex occurs exactly once.
 <li><b>Boolean satisfiability (SAT)</b>. Given a boolean formula using logical “and”, ”or”, and “not”, is it
 is there a way to choose boolean values (true or false) for the variables in the formula that cause
 the whole formula to evaluate to true? The formula is said to be <em>satisfiable</em> if such an
@@ -62,7 +62,7 @@ the formula can be evaluated in polynomial time to determine if the assignment s
 But it is not known how to efficiently find a satisfying assignment.
 </ul>
 <p>
-These are three famous problems in NP. All of them can be solved by exponential-time
+These are three famous problems in NP. All of them can be solved by brute-force exponential-time
 algorithms that essentially try all exponentially many possible solutions. But this
 approach is infeasible for all but very small instances of the problem.
 It is not known whether polynomial-time algorithms for these problems exist,
@@ -73,12 +73,13 @@ although by now most computer scientists believe they do not.
 
 <p>
 Each of these three problems above has the interesting property that in polynomial time, any
-problem in NP can be reduced to it (encoded in it). That is, if a computational problem A is
-in NP, then there is a translation that, given an instance x of A, transforms x into an instance
-(G,k) of the graph coloring problem such that a valid k-coloring of G could be transformed back to a solution of x.</p>
+problem in NP can be reduced to it (encoded in it). That is, if a computational problem \(A\) is
+in NP, then there is a translation that, given an instance \(x\) of \(A\), transforms \(x\) in polynomial
+time into an instance
+\((G,k)\) of the graph coloring problem such that a valid \(k\)-coloring of G could be transformed back to a solution of \(x\).</p>
 
 <p>Because they can express any
-problem in NP, these problems are said to be <em>NP-complete</em>. If we had a
+problem in NP, these problems are said to be <strong>NP-complete</strong>. If we had a
 polynomial-time algorithm to solve an NP-complete problem, we could solve any
 problem in NP in polynomial time! This result would mean that the complexity
 classes P and NP were the same.</p>
