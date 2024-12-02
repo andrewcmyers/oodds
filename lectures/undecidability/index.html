@@ -297,11 +297,14 @@ while (...) {
 System.out.println(x.toString());
 </pre>
 <p>
-Assuming the body of the while loop does not generate any <code>NullPointerException</code>s,
-this code generates <code>NullPointerException</code> if and only if
-the <code>while</code> loop terminates. If we had an analysis tool that could
-predict <code>NullPointerException</code>s at compile time, we could use it to determine whether the <code>while</code> loop terminates. But we know that termination is undecidable, therefore
-predicting <code>NullPointerException</code>s is impossible in general.
+Assuming the body of the while loop does not generate any
+<code>NullPointerException</code>s, this code generates
+<code>NullPointerException</code> if and only if the <code>while</code> loop
+terminates. If we had a compile-time analysis tool that predicted
+<code>NullPointerException</code>s with perfect accuracy, we could use it to
+determine whether the <code>while</code> loop terminates. But we know that
+termination is undecidable; therefore, predicting
+<code>NullPointerException</code>s is also impossible in general.
 </p>
 
 <p>
@@ -310,8 +313,8 @@ giving answers &ldquo;true&rdquo;, &ldquo;false&rdquo; or
 &ldquo;not sure&rdquo;. Type checking is another example of such an analysis.
 A compiler type-checks programs conservatively by only allowing programs
 that (if the type system is sound) definitely have no run-time type errors.
-However, a type checker will sometime complain about programs being ill-typed
-even though they do not cause run-time type errors.
+However, undecidability implies a type checker must sometimes complain about
+programs being ill-typed even though they do not cause run-time type errors.
 </p>
 
 <p>
