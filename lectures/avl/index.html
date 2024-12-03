@@ -545,6 +545,46 @@ those on the path from the leaf up to the first unbalanced node (or the root)
 and those involved in whatever tree rotations are performed.
 </p>
 
+<div class=exercise>
+<p>
+Suppose we have an AVL tree whose keys are integers. We add the keys from
+1 through 7 consecutively to the tree. Draw the sequence of trees that result.
+</p>
+<div class=answer>
+<canvas id=insertion_exercise style="width: 700px; height: 150px"></canvas>
+<script class=graphics>
+with (new CFigure("insertion_exercise")) {
+    setFontSize(14)
+    setConnectionStyle("intersection")
+    setStyle('drawNode', (figure, num) => {
+        if (num == null) return point()
+        else return label("" + num)
+    })
+    setStyle('drawEdge', (figure, n1, n2) => {
+        if (n2.value === null) return point()
+        return connector(n1.gobj, n2.gobj)
+    })
+    const trees = [
+      tree(null, 1),
+      tree(null, 1, null, 2),
+      tree(null, 2, 1, 3),
+      tree(null, 2, 1, [3, null, 4]),
+      tree(null, 2, 1, [4, 3, 5]),
+      tree(null, 4, [2, 1, 3], [5, null, 6]),
+      tree(null, 4, [2, 1, 3], [6, 5, 7])
+    ]
+    for (let i = 0; i < trees.length; i++) {
+        equal(trees[i].w(), times(i, trees[1].w()))
+    }
+    align("left", "top", trees[0], margin())
+    align("right", "TB", trees[trees.length-1], margin())
+    align("distribute", "TB", ...trees)
+    align("abut", "none", trees[0], hspace(20), trees[1])
+}
+</script>
+</div>
+</div>
+
 <h2>Deleting from an AVL tree</h2>
 <p>
 Removing a key from the tree can also make it unbalanced. The algorithm works

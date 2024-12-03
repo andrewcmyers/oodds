@@ -87,6 +87,10 @@ function hide_answers() {
             show.onclick = (e) => {
                 a.style.display = 'block'
                 show.style.display = 'none'
+                for (const script of a.getElementsByClassName('graphics')) {
+                    console.log("running answer script "+ script.textContent)
+                    eval(script.textContent)
+                }
             }
         }
     }
