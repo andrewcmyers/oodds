@@ -245,7 +245,7 @@ rotation except that their parent nodes may change.)
             const top = f.point()
             const result = f.polygon(top, f.point(f.plus(top.x(), 20), f.plus(top.y(), 35)),
                               f.point(f.minus(top.x(), 20), f.plus(top.y(), 35)))
-                .addText(v).setVerticalAlign("bottom")
+                .addText(v).setVerticalAlign("bottom").setFontSize(18).setInset(1)
             result.target = function() { return top }
             return result
         } else {
@@ -258,6 +258,8 @@ rotation except that their parent nodes may change.)
   with (window.rot_tree = new CFigure("tree_rot", true)) {
     setFontSize(16)
     setConnectionStyle("intersection")
+    setFontName("Times")
+    setFontStyle("italic")
     const left = tree(new RotTree(thisFigure()), "x", "A", ["y", "B", "C"]),
           right = tree(new RotTree(thisFigure()), "y", ["x", "A", "B"], "C")
     sameSize(left.bbox, right.bbox)
