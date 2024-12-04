@@ -848,8 +848,8 @@ to 1, 2, or 3 nodes in the corresponding red–black tree.
 </ul>
 <li>B-trees
 <ul>
-<li>B-trees are an \(N\)-ary generalization of 2–3–4 trees
-<li>Every leaf has the same depth.
+<li>B-trees are an \(N\)-ary generalization of 2–3–4 trees.
+<li>Similarly, every leaf has the same depth.
 <li>Every node except the root has at least \(\lceil N/2\rceil\) children, which ensures the tree height
  is \(O(\log n)\) in the number of elements \(n\). Taking \(N\) into account,
  the height is \(O(\log n)/O(\log N)\).
@@ -860,12 +860,13 @@ to 1, 2, or 3 nodes in the corresponding red–black tree.
 <li>Splay trees
 <ul>
 <li>A splay tree is a binary search tree with, surprisingly, <em>no</em> additional shape invariant.
-<li>Searching in the tree causes tree rotations that incrementally rebalance the tree.
-<li>Searched-for nodes are also rotated to the root of the tree, so repeatedly
-    searching for the same elements is especially fast.
-<li>Even though they have no shape invariant, they still have asymptotically optimal (amortized) performance on all operations: \(O(\log n)\).
-<li>Splay trees are often used in network routers to figure out where to send
-packets.
+<li>Unlike with the other BSTs discussed,
+searching in the tree causes tree rotations that incrementally rebalance the tree.
+<li>Searched-for nodes are rotated to the root of the tree.
+Frequently accessed elements tend to be located near the root of the tree, so accessing
+them is especially fast. 
+<li>Even though splay trees have no shape invariant, they still have asymptotically optimal (amortized) performance on all operations: \(O(\log n)\).
+<li>Splay trees are often used in network routers to figure out where to send packets.
 </ul>
 </ul>
 <p>
