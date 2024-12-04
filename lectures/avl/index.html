@@ -1,4 +1,4 @@
-<h1>Balanced binary trees</h1>
+<h1>Balanced Binary Trees</h1>
 <p>
 We've already seen that by imposing the <strong>binary search tree invariant</strong>
 (BST invariant), we can search for keys in a tree of height \(h\) in \(O(h)\) time,
@@ -8,7 +8,7 @@ nodes \(n\) in the tree, whereas we would like to know that trees are <strong>ba
 that their height \(h\), and therefore their worst-case search time, is logarithmic
 in the number of nodes in the tree.</p>
 
-<h2>AVL Trees</h2>
+<h2>AVL trees</h2>
 <p>
 There are many different balanced tree schemes. The first was AVL trees, named
 after its inventors, Adelson-Velsky and Landis. AVL trees strengthen the usual BST
@@ -184,7 +184,7 @@ vanishingly small for large \(n\). Asymptotically, the Fibonacci numbers grow as
 \(φ^n\) is both an asymptotic upper <em>and lower</em> bound on \(F_n\).
 </p>
 </div>
-<h3>Another inductive argument</h3>
+<h3>Lower bound on the number of nodes in an AVL tree</h3>
 <p>
 Without showing an exact formula for \(N(h)\) or \(F_n\), we can even more easily
 prove an exponential lower bound on \(N(h)\) by induction. We show that for all
@@ -219,7 +219,7 @@ are related by constant factors, so \(h\) is \(O(\log n)\).
 Therefore, AVL trees are balanced.
 </p>
 
-<h2 id=tree_rotations>Tree Rotations</h2>
+<h2 id=tree_rotations>Tree rotations</h2>
 <p>
 The key to balancing search trees is to reorganize them incrementally as
 operations are performed, so that they never become unbalanced. However, any
