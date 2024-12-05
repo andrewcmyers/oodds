@@ -125,7 +125,7 @@ F_1 &= 1
 <p>
 In fact, if we add 1 to each term in the sequence of values for \(N(h)\), the
 familiar Fibonacci sequence emerges: \(1, 2, 3, 5, 8, 13, ...\) . In general,
-\(N(h) = F(h+3) - 1\).  We now show that \(N(h)\) grows asymptotically at the same
+\(N(h) = F_{h+3} - 1\).  We now show that \(N(h)\) grows asymptotically at the same
 rate as the Fibonacci sequence and that the Fibonacci sequence grows
 exponentially.</p>
 
@@ -713,8 +713,8 @@ What if instead we had removed the node 1?
 <p>
 First node 1 is pruned, obtaining the tree on the left.  Since node 2 is
 unbalanced, the single-rotation deletion rebalancing is performed to obtain the
-tree in the center. This rotation does not unbalance node 6 or change its
-height, so rebalancing is complete.
+tree in the center. This rotation does not unbalance node 6,
+so rebalancing is complete.
 </p>
 <div class=figure>
 <canvas id=deletion_exercise style="width: 400px; height: 150px"></canvas>
