@@ -329,7 +329,7 @@ to raw types is unsafe; it is essentially the same as casting to
 will often give a warning when raw types are used.
 </p>
 <p>To see why raw types are
-dangerous, consider that we could as easily have give the variable the
+dangerous, consider that we could as easily have given the variable the
 incorrect type <code>LList&lt;Integer&gt;</code>. Then it is easy
 to try to extract an object of type <code>String</code> as if it were
 an <code>Integer</code>:
@@ -339,7 +339,7 @@ an <code>Integer</code>:
 </pre>
 <p>
 Even though there is no explicit cast, this code generates a run-time type error.
-Fortunately, IDEs like IntelliJ will usually give an warning.
+Fortunately, IDEs like IntelliJ will usually give an warning about code like this.
 </p>
 </li>
 </ol>
