@@ -71,9 +71,11 @@ with (new CFigure("codeberg")) {
 <div class="figure">
 </div>
 <p>
-Our goal for documenting the implementation of a module is to support implementation and
-maintenance by describing implementation methods and even abstracting them.
-Therefore, private method specifications have the same clauses as specifications for public methods.
+Our goal for documenting the implementation of a module is to support
+implementation and maintenance of the module. To help future implementers, we
+should also describe methods internal to the implementation, and even abstract
+them.  Therefore, private method specifications are equipped with the same specification clauses
+as public methods.
 </p><p>
 We also want to write specifications for instance variables where it is not obvious.
 Two kinds of information are essential:
@@ -119,11 +121,12 @@ broken:
 Just as with preconditions and postconditions, it is useful to have some
 default expectations for class invariants, in order to keep the documentation
 clear and concise. In particular, most class fields are typically required to
-be non-null in order to satisfy the class invariant. Stating this condition
-explicitly for each field is tiresome and clutters the code, so it is better to
-follow the convention that the class invariant requires all instance variables
-to be be non-null, unless it is explicitly documented otherwise, as in the case
-of the instance variables <code>first</code> and <code>last</code>, above.
+be non-null in order to satisfy the class invariant, so stating this condition
+explicitly for each field is tiresome and clutters the code. It is better to
+follow the convention that—unless explicitly documented otherwise—the class
+invariant requires all instance variables to be be non-null.
+The above instance variables <code>first</code> and <code>last</code> are
+an example of specifying the possibility of null.
 </p>
 
 <h2>Documenting implementations: the specializer's view</h2>
