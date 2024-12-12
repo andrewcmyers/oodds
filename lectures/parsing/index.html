@@ -230,7 +230,7 @@ with (fig) {
         return f.label(v).setFontStyle("italic").expand(3)
     })
     setConnectionStyle("intersection")
-    const t = tree(null, "E", ["T", ["T", "*(", ["E", ["E", ["T", ["F", "*2"]]], "*+", ["T", ["F", "*3"]]], "*)"], "*×", ["F", "*5"]])
+    const t = tree(null, "E", ["T", ["T", ["F", "*(", ["E", ["E", ["T", ["F", "*2"]]], "*+", ["T", ["F", "*3"]]], "*)"]], "*×", ["F", "*5"]])
     
     align("LR", "TB", t, margin(25))
     onVisible(document.getElementById("unambiguous-parse2"), canvas => delayedRender() )
