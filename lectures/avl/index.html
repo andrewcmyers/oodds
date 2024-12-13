@@ -1,4 +1,4 @@
-<h1>Balanced binary trees</h1>
+<h1>Balanced Binary Trees</h1>
 <p>
 We've already seen that by imposing the <strong>binary search tree invariant</strong>
 (BST invariant), we can search for keys in a tree of height \(h\) in \(O(h)\) time,
@@ -8,7 +8,7 @@ nodes \(n\) in the tree, whereas we would like to know that trees are <strong>ba
 that their height \(h\), and therefore their worst-case search time, is logarithmic
 in the number of nodes in the tree.</p>
 
-<h2>AVL Trees</h2>
+<h2>AVL trees</h2>
 <p>
 There are many different balanced tree schemes. The first was AVL trees, named
 after its inventors, Adelson-Velsky and Landis. AVL trees strengthen the usual BST
@@ -125,7 +125,7 @@ F_1 &= 1
 <p>
 In fact, if we add 1 to each term in the sequence of values for \(N(h)\), the
 familiar Fibonacci sequence emerges: \(1, 2, 3, 5, 8, 13, ...\) . In general,
-\(N(h) = F(h+3) - 1\).  We now show that \(N(h)\) grows asymptotically at the same
+\(N(h) = F_{h+3} - 1\).  We now show that \(N(h)\) grows asymptotically at the same
 rate as the Fibonacci sequence and that the Fibonacci sequence grows
 exponentially.</p>
 
@@ -184,7 +184,7 @@ vanishingly small for large \(n\). Asymptotically, the Fibonacci numbers grow as
 \(φ^n\) is both an asymptotic upper <em>and lower</em> bound on \(F_n\).
 </p>
 </div>
-<h3>Another inductive argument</h3>
+<h3>Lower bound on the number of nodes in an AVL tree</h3>
 <p>
 Without showing an exact formula for \(N(h)\) or \(F_n\), we can even more easily
 prove an exponential lower bound on \(N(h)\) by induction. We show that for all
@@ -219,7 +219,7 @@ are related by constant factors, so \(h\) is \(O(\log n)\).
 Therefore, AVL trees are balanced.
 </p>
 
-<h2 id=tree_rotations>Tree Rotations</h2>
+<h2 id=tree_rotations>Tree rotations</h2>
 <p>
 The key to balancing search trees is to reorganize them incrementally as
 operations are performed, so that they never become unbalanced. However, any
@@ -245,7 +245,7 @@ rotation except that their parent nodes may change.)
             const top = f.point()
             const result = f.polygon(top, f.point(f.plus(top.x(), 20), f.plus(top.y(), 35)),
                               f.point(f.minus(top.x(), 20), f.plus(top.y(), 35)))
-                .addText(v).setVerticalAlign("bottom")
+                .addText(v).setVerticalAlign("bottom").setFontSize(18).setInset(1)
             result.target = function() { return top }
             return result
         } else {
@@ -258,6 +258,8 @@ rotation except that their parent nodes may change.)
   with (window.rot_tree = new CFigure("tree_rot", true)) {
     setFontSize(16)
     setConnectionStyle("intersection")
+    setFontName("Times")
+    setFontStyle("italic")
     const left = tree(new RotTree(thisFigure()), "x", "A", ["y", "B", "C"]),
           right = tree(new RotTree(thisFigure()), "y", ["x", "A", "B"], "C")
     sameSize(left.bbox, right.bbox)
@@ -543,6 +545,40 @@ those on the path from the leaf up to the first unbalanced node (or the root)
 and those involved in whatever tree rotations are performed.
 </p>
 
+<div class=exercise>
+<p>
+Suppose we have an AVL tree whose keys are integers. We add the keys from
+1 through 7 consecutively to the tree. Draw the sequence of resulting trees.
+</p>
+<div class=answer>
+<canvas id=insertion_exercise style="width: 700px; height: 150px"></canvas>
+<script class=graphics>
+with (new CFigure("insertion_exercise")) {
+    setFontSize(14)
+    setConnectionStyle("intersection")
+    let st = lightStyle()
+    const trees = [
+      tree(st, 1),
+      tree(st, 1, undefined, 2),
+      tree(st, 2, 1, 3),
+      tree(st, 2, 1, [3, undefined, 4]),
+      tree(st, 2, 1, [4, 3, 5]),
+      tree(st, 4, [2, 1, 3], [5, undefined, 6]),
+      tree(st, 4, [2, 1, 3], [6, 5, 7])
+    ]
+    for (let i = 0; i < trees.length; i++) {
+        equal(trees[i].w(), times(i, trees[1].w()))
+        equal(trees[i].h(), 60 * Math.log(i+2))
+    }
+    align("left", "top", trees[0], margin())
+    align("right", "T", trees[trees.length-1], margin())
+    align("distribute", "T", ...trees)
+    align("abut", "none", trees[0], hspace(20), trees[1])
+}
+</script>
+</div>
+</div>
+
 <h2>Deleting from an AVL tree</h2>
 <p>
 Removing a key from the tree can also make it unbalanced. The algorithm works
@@ -641,6 +677,69 @@ double rotation may or may not change the height of the whole subtree. It is
 only necessary to check whether nodes above \(z\) are still balanced if the double
 rotation changes the height of the \(y\) node to \(h+2\).
 </p>
+
+<h3>Deletion example</h3>
+<p>
+Suppose we have the AVL tree on the left below whose keys are integers, and we remove
+the key 7. The first step is to splice out the 7 node, arriving at the tree in the middle.
+The node 6 is the lowest unbalanced node, so the LR version of deletion balancing is used,
+double-rotating the node 4 to the top
+and arriving at the tree on the right.
+</p>
+<canvas id=deletion_ex style="width: 700px; height: 150px"></canvas>
+<script class=graphics>
+with (new CFigure("deletion_ex")) {
+    setFontSize(14)
+    setConnectionStyle("intersection")
+    let st = lightStyle()
+    const trees = [
+      tree(st, 6, [2, 1, [4,3,5]], [7,8,undefined]),
+      tree(st, 6, [2,1,[4,3,5]], 8),
+      tree(st, 4, [2, 1, 3], [6, 5, 8])
+    ]
+    for (let i = 1; i < trees.length; i++) {
+        equal(trees[i].w(), trees[0].w())
+    }
+    align("left", "top", trees[0], margin())
+    align("right", "T", trees[trees.length-1], margin())
+    align("distribute", "T", ...trees)
+    align("abut", "none", trees[0], hspace(20), trees[1])
+}
+</script>
+</div>
+<div class=exercise>
+What if instead we had removed the node 1?
+<div class=answer>
+<p>
+First node 1 is pruned, obtaining the tree on the left.  Since node 2 is
+unbalanced, the single-rotation deletion rebalancing is performed to obtain the
+tree in the center. This rotation does not unbalance node 6,
+so rebalancing is complete.
+</p>
+<div class=figure>
+<canvas id=deletion_exercise style="width: 400px; height: 150px"></canvas>
+</div>
+<script class=graphics>
+with (new CFigure("deletion_exercise")) {
+    setFontSize(14)
+    setConnectionStyle("intersection")
+    let st = lightStyle()
+    const u = undefined
+    const trees = [
+      tree(st, 6, [2, u, [4,3,5]], [7,8,u]),
+      tree(st, 6, [4,[2, u, 3], 5], [7,8,u])
+    ]
+    for (let i = 1; i < trees.length; i++) {
+        equal(trees[i].w(), trees[0].w())
+    }
+    align("left", "top", trees[0], margin())
+    align("right", "T", trees[trees.length-1], margin())
+    align("distribute", "T", ...trees)
+    align("abut", "none", trees[0], hspace(20), trees[1])
+}
+</script>
+</div>
+</div>
 
 <h2>Random Treaps</h2>
 <p>
@@ -742,15 +841,15 @@ used in the standard C++ and Java libraries, for example.
 <li>2–3–4 trees
 <ul>
 <li>Every leaf has the same depth.
-<li>Every node has 2, 3, or 4 children, except the leaves, so the tree height
+<li>Every node except the leaves has 2, 3, or 4 children, so the tree height
  is \(O(\log n)\) in the number of elements \(n\).
 <li>2–3–4 trees are isomorphic to red–black trees, with each node in a 2–3–4 tree corresponding
 to 1, 2, or 3 nodes in the corresponding red–black tree.
 </ul>
 <li>B-trees
 <ul>
-<li>B-trees are an \(N\)-ary generalization of 2–3–4 trees
-<li>Every leaf has the same depth.
+<li>B-trees are an \(N\)-ary generalization of 2–3–4 trees.
+<li>Similarly, every leaf has the same depth.
 <li>Every node except the root has at least \(\lceil N/2\rceil\) children, which ensures the tree height
  is \(O(\log n)\) in the number of elements \(n\). Taking \(N\) into account,
  the height is \(O(\log n)/O(\log N)\).
@@ -761,12 +860,13 @@ to 1, 2, or 3 nodes in the corresponding red–black tree.
 <li>Splay trees
 <ul>
 <li>A splay tree is a binary search tree with, surprisingly, <em>no</em> additional shape invariant.
-<li>Searching in the tree causes tree rotations that incrementally rebalance the tree.
-<li>Searched-for nodes are also rotated to the root of the tree, so repeatedly
-    searching for the same elements is especially fast.
-<li>Even though they have no shape invariant, they still have asymptotically optimal (amortized) performance on all operations: \(O(\log n)\).
-<li>Splay trees are often used in network routers to figure out where to send
-packets.
+<li>Unlike with the other BSTs discussed,
+searching in the tree causes tree rotations that incrementally rebalance the tree.
+<li>Searched-for nodes are rotated to the root of the tree.
+Frequently accessed elements tend to be located near the root of the tree, so accessing
+them is especially fast. 
+<li>Even though splay trees have no shape invariant, they still have asymptotically optimal (amortized) performance on all operations: \(O(\log n)\).
+<li>Splay trees are often used in network routers to figure out where to send packets.
 </ul>
 </ul>
 <p>
