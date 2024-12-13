@@ -8,8 +8,8 @@ int qselect(int[] a, int l, int r, int n) {
         if (n < k) {
             r = k;
         } else {
-            l = k;
             n -= k - l;
+            l = k;
         }
     }
     return a[l];
