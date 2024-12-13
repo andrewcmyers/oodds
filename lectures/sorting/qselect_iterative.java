@@ -9,7 +9,7 @@ int qselect(int[] a, int l, int r, int n) {
             r = k;
         } else {
             l = k;
-            n = n - k;
+            n -= k - l;
         }
     }
     return a[l];
