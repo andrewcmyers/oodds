@@ -118,17 +118,17 @@ represented as an arrow from \(u\) to \(v\), and we might write \(u→v\)
 to signify that \((u,v) ∈ E\).
 </p>
 
-<p>If the graph is undirected, then the edges are a set of sets of <em>unordered</em>
-pairs \(\{u,v\}\).  When drawing graphs, this is usually
-represented as a line between u and v without an arrowhead.
+<p>If the graph is undirected, then the edges are a set of <em>unordered</em>
+pairs, where each pair is a 2-element set \(\{u,v\}\).  When drawing graphs, this is usually
+represented as just a line between \(u\) and \(v\), with no arrowhead.
 Alternatively, we can model an undirected graph as a directed graph
-with edges in both directions; i.e., if \((u,v) &isin; E\),
-then \((v,u) &isin; E\) also.
+with edges in both directions; that is, if \((u,v) &isin; E\) holds,
+then so does \((v,u) &isin; E\).
 </p>
 <p>
 In some settings, edges from a vertex to itself (self-edges) or multiple edges between the same
 pair of vertices may be permitted. But usually the default is <em>not</em> to allow
-these things unless explicitly stated otherwise.
+these features unless explicitly stated otherwise.
 </p>
 
 <h2>Adjacency and degree</h2>
@@ -299,9 +299,9 @@ we store that information in the corresponding array entry:</p>
 </table>
 </div>
 <p>
-The space required by the adjacency matrix representation is O(V<sup>2</sup>),
-so adjacency matrices can waste a lot of space if the number of edges |E| is
-much smaller than O(V<sup>2</sup>). In particular, a graph with only O(V) edges
+The space required by the adjacency matrix representation is \(O(V^2)\),
+so adjacency matrices can waste a lot of space if the number of edges \(|E|\) is
+much smaller than \(O(V^2)\). In particular, a graph with only \(O(V)\) edges
 is said to be <strong>sparse</strong>. For example, graphs in which either the
 in-degree or out-degree is bounded by a constant are sparse. Adjacency matrices
 are not as wasteful when the graphs they represent are <strong>dense</strong> (i.e., not sparse).
