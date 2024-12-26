@@ -1,7 +1,7 @@
 body {
     background-color: #eee;
     font-size: 12pt;
-    font-family: Palatino, Times, serif;
+    font-family: Palatino, "Palatino Linotype", Times, serif;
 }
 #content {
     margin: 0 auto;
