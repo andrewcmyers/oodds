@@ -422,7 +422,7 @@ from each array as the following diagram suggests:
     with (new CFigure("merge-inv-constrain")) {
         function r() { return rectangle().setH(20).setLineWidth(1) }
         setFontSize(13)
-        setFontName("Menlo, Courier, fixed")
+        setFontName("Menlo, Geneva, Consolas, Courier, fixed")
         var before1 = r(), before2 = r(), before3 = r(), before4=r(),
             a = label("a")
         var after1 = r(), after2 = r()
@@ -620,7 +620,7 @@ State of the array after partitioning
         var left, right
         function invRect() { return rectangle().setH(30).setLineWidth(1) }
         setFontSize(16)
-        setFontName("Menlo, Courier, fixed")
+        setFontName("Menlo, Geneva, Consolas, Courier, fixed")
         align("abut", "top bottom",
             left = invRect().setW(150).addText("≤ p"),
             right = invRect().setW(180).addText("≥ p"))
@@ -689,7 +689,7 @@ first element:
         var left, right
         setFontSize(13)
         setLineWidth(1)
-        setFontName("Menlo, Courier, fixed")
+        setFontName("Menlo, Geneva, Consolas, Courier, fixed")
         const psq = square().addText("p")
         align("abut", "top bottom",
             left = psq,
@@ -739,7 +739,7 @@ and that if <code>i</code>≥<code>j</code>, then <code>j</code> ≤ <code>r</c
         let m = margin()
         align("abut", "top bottom", rects[0], rects[1], rects[2])
         setFontSize(14)
-        setFontName("Menlo, Courier, fixed")
+        setFontName("Menlo, Geneva, Consolas, Courier, fixed")
         rects[0].addText("≤ p")
         rects[1].addText("?").setFontName("Palatino, Times").setFontSize(16)
         rects[2].addText("≥ p")
