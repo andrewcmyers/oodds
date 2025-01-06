@@ -211,7 +211,7 @@ side effect of changing the value of variable <code>x</code>.
 Unlike Python, which you might be familiar with, Java is
 <strong>whitespace-insensitive</strong>.  This means that whitespace characters such as
 spaces, newlines, and tabs are all equivalent to each other (outside of string
-and and character literals).  Multiple statements can legally be put on the
+and character literals).  Multiple statements can legally be put on the
 same line as long as they are properly terminated with semicolons. However, by
 convention we normally have only one statement per line of code, to make code
 more readable. Code tends to be read many more times than it is changed, so
@@ -547,7 +547,8 @@ r.LL = a
 r.UR = b;
 </pre>
 <p>
-Assuming variables a and b are initialized and updated as in the code above, we
+Assuming variables <code>a</code> and <code>b</code> are initialized and
+updated as in the code above, we
 arrive at the following object diagram. Notice that the <code>Rectangle</code> object does not
 <i>contain</i> the two <code>Point</code> objects; it merely <strong>references</strong> them by containing
 <strong>pointers</strong> to the <code>Point</code> objects. Changes

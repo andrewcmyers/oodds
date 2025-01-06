@@ -254,7 +254,7 @@ of initializing all vertex distances to ∞ into this initial graph construction
 It turns out there are more complex data structures that implement a priority
 queue while making the increase-priority operation only \(O(1)\). Two such data
 structures are <b>Fibonacci heaps</b> and <b>relaxed heaps</b>. If adjusting
-the distance is \( O(1)\), the algorithm takes just just \(O(V \log V + E)\)
+the distance is \( O(1)\), the algorithm takes just \(O(V \log V + E)\)
 time. However, these asymptotically efficient data structures do not use the
 elegant encoding of the tree structure as an array—they use real pointers—which
 makes the constant factors worse than for binary heaps.  They make sense for
