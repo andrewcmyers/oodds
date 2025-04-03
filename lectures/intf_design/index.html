@@ -99,6 +99,26 @@ even override convenience methods if there is a more efficient way to implement
 them than the generic way in the context of this particular implementation.
 </p>
 
+<h3>The Principle of Least Surprise</h3>
+<p>
+Even if an interface is well documented, we cannot assume that users have read it
+carefully. Therefore it is important to avoid surprising behavior that might
+be a pitfall for unwary users. It helps to choose good names for operations and then
+make the behavior of the operation intuitive. Particularly problematic is
+operations with unexpected side effects, such as in the following example:
+</p>
+<pre>
+  /** Returns: a new temporary file that information can be written to.
+   *  Effects: deletes all previously created temporary files.
+   */
+  File createTemporaryFile();
+</pre>
+<p>
+Without reading the specification, the user of this operation would not naturally 
+expect that it would have the possibly damaging side effect of deleting files.
+This interface does not obey the principle of Least Surprise.
+</p>
+
 <h2>How should we document interfaces?</h2>
 <p>
 Once we've decided what operations and other functionality belongs in an interface,
