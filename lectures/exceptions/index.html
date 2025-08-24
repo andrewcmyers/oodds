@@ -344,7 +344,7 @@ interface AutoCloseable {
 }
 </pre>
 <p>
-The try-with-resources statement will ensure that the <code>close()</code> is
+The try-with-resources statement ensures that the method <code>close()</code> is
 invoked on all of the named resources. For example, if we wanted to read some
 data from a file, we might create a <code>FileReader</code> to read from the
 file and also a <code>BufferedReader</code> to buffer the input for efficiency:
