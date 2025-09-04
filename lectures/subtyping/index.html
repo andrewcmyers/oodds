@@ -119,10 +119,11 @@ As we can see, even a simple abstraction like <code>Board</code> has a variety
 of implementations, with different tradeoffs in simplicity of code, running
 time, and space used. If the rest of the code accessing the board through the
 interface <code>Board</code>, the code has loose coupling. We can easily change
-to another implementation of Board if we gain better understanding of these
-tradeoffs. For example, a search algorithm to suggest the next move might need
-to allocate a large number of board objects; in that case, we would likely
-prefer the space-efficient  implementation <code>SBoard</code>.
+to another implementation of <code>Board</code> if we gain better understanding of these
+tradeoffs, or use different implementations of <code>Board</code> within the same program
+for different uses. For example, a search algorithm to suggest the next move might need
+to allocate a large number of board objects; in that case, we might
+prefer the more space-efficient implementation <code>SBoard</code>.
 </p>
 
 <h3>Using objects at type Board</h3>
