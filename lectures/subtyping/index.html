@@ -59,8 +59,8 @@ keyword. Now we must make some implementation choices, such as how
 to represent the tiles of the game. One obvious representation is as a
 two-dimensional array of integers, with 0 representing blank tiles:
 </p>
-<pre class="load">
-<a href="ABoard.java">ABoard.java</a>
+<pre class=load>
+<a href="CBoard.java">CBoard.java</a>
 </pre>
 
 <p>
@@ -69,7 +69,7 @@ declared in the interface must be implemented as a <code>public</code> method
 in the class. The class has some other components as well. For example, the
 instance variables <code>tiles</code> and <code>score</code> are declared
 <code>private</code> to hide them from clients. A class can also add new
-methods not declared in the interface, such as the <code>ABoard()</code>
+methods not declared in the interface, such as the <code>CBoard()</code>
 constructor.
 </p>
 <p>
@@ -138,11 +138,11 @@ either implementation:
 <a href="Display.java">display.java</a>
 </pre>
 <p>The client code can use <code>display()</code> on either kind of object, because
-both <code>ABoard</code> and <code>SBoard</code> are implementations of <code>Board</code>.
+both <code>CBoard</code> and <code>SBoard</code> are implementations of <code>Board</code>.
 </p>
 
 <p>
-As long as <code>ABoard</code> and <code>SBoard</code> are implemented correctly, the code of
+As long as <code>CBoard</code> and <code>SBoard</code> are implemented correctly, the code of
 <code>display()</code> cannot tell which implementation is being used. That is
 why <code>display()</code> can be used on objects of either kind.  The
 abstraction barrier imposed by the <code>Board</code> interface allows the programmer to
@@ -153,7 +153,7 @@ implementation, with confidence that it won't break the program.
 When compiling the method call <code>p.tile(r, c)</code> in the method
 <code>display(Board b)</code>, the compiler does not know which method code it
 is going to run. The variable <code>p</code> can refer to either an
-<code>ABoard</code> object or an <code>SBoard</code> object (or maybe some
+<code>CBoard</code> object or an <code>SBoard</code> object (or maybe some
 other implementation of <code>Board</code> altogether). In general, the
 compiler cannot figure out ahead of time which one it will be. The call to
 <code>p.tile(r, c)</code> must find the correct method implementation at run
@@ -180,22 +180,22 @@ keyword <code>static</code> used to declared static fields and methods.)</p>
 
 <p> 
 Both interface names like <code>Board</code> and class names like
-<code>ABoard</code> and <code>SBoard</code> may be used as static types in Java
+<code>CBoard</code> and <code>SBoard</code> may be used as static types in Java
 programs, but only class names may be used
 as dynamic types. The dynamic type of an object can never be <code>Board</code>; it is always
 the class of the object that was provided to the <code>new</code> operator when the object was
 created.</p>
 
 <p>For example, consider the following code. The first line creates an object with dynamic type
-<code>ABoard</code> and assigns it to a variable of static type <code>ABoard</code>. The second
+<code>CBoard</code> and assigns it to a variable of static type <code>CBoard</code>. The second
 line assigns the same object to a variable of static type <code>Board</code>. This is allowed
-because <code>ABoard</code> is an implementation of <code>Board</code>. The third line tries to
+because <code>CBoard</code> is an implementation of <code>Board</code>. The third line tries to
 use the interface <code>Board</code> with the operator <code>new</code>. This is illegal, because
 <code>Board</code> is not a class; the compiler doesn't know what implementation to use.
 </p>
 <pre>
-ABoard a = new ABoard(); // ok
-Board b = a; // ok
+CBoard c = new CBoard(); // ok
+Board b = c; // ok
 Board p = new Board();  // illegal
 </pre>
 <p>
@@ -205,12 +205,12 @@ may be used as dynamic types.
 
 <h2>Subtyping and subtype polymorphism</h2>
 <p>
-Because <code>ABoard</code> implements <code>Board</code>, an expression of
-static type <code>ABoard</code> can always be used where a
+Because <code>CBoard</code> implements <code>Board</code>, an expression of
+static type <code>CBoard</code> can always be used where a
 <code>Board</code> is expected. This is an example of a <b>subtype</b> relationship
-between two types. We write <code>ABoard</code> &lt;: <code>Board</code> to
-mean that the type <code>ABoard</code> is a subtype of the type
-<code>Board</code>. (Sometimes you will see this written as <code>ABoard</code> ≤ <code>Board</code>.)
+between two types. We write <code>CBoard</code> &lt;: <code>Board</code> to
+mean that the type <code>CBoard</code> is a subtype of the type
+<code>Board</code>. (Sometimes you will see this written as <code>CBoard</code> ≤ <code>Board</code>.)
 Since an <code>SBoard</code> can also be used wherever a
 <code>Board</code> is expected, the subtype relationship
 <code>SBoard</code> &lt;: <code>Board</code> also holds.
@@ -245,7 +245,7 @@ The subtyping relationships among the various types form a <b>type hierarchy</b>
     [l_Integer, l_String, l_intarray, l_collection, l_Board].forEach(o =>
         connector(l_obj.lc().toBottom(4), o.uc()).setEndArrow("arrow")
     )
-    let lA = label("ABoard"), lS = label("SBoard"), lT = label("TBoard")
+    let lA = label("CBoard"), lS = label("SBoard"), lT = label("TBoard")
     let tier3 = group(lA, hspace(40), lS, hspace(40), lT)
                   .align("abut", "bottom").setX(l_Board.x())
     align("none", "bottom", tier3, canvasRect());
@@ -260,7 +260,7 @@ In addition to the subtype relationships we've discussed so far, this diagram sh
 more, such as <code>Board</code> &lt;: <code>Object</code>. 
 The subtyping relation is reflexive (\(T&lt;:T\) for all types T) and is also transitive
 (if \(T&lt;:U\) and \(U&lt;:V\), then \(T&lt;:V\)).)
-Thus by transitivity, we also have <code>ABoard</code> &lt;: <code>Object</code>.
+Thus by transitivity, we also have <code>CBoard</code> &lt;: <code>Object</code>.
 We can also notice that array types like <code>int[]</code> are subtypes of <code>Object</code>.
 Standing alone in the diagram are the primitive types (<code>int</code>, <code>boolean</code>, <code>char</code>, ...). These types are not subtypes of any other type.
 </p>
@@ -320,8 +320,8 @@ Java's <b>cast</b> operator can be used to control the compile-time type at
 which a value is used. A cast does not affect the run-time type of the value,
 only the type which the compiler will treat the value as belonging to.
 As an example, suppose we have a variable <code>a</code> of type
-<code>ABoard</code>.  To force it to be treated as a <code>Board</code>, we
-write a <b>cast expression</b>: <code>(Board) a</code>.  Since <code>ABoard</code> is a subtype of
+<code>CBoard</code>.  To force it to be treated as a <code>Board</code>, we
+write a <b>cast expression</b>: <code>(Board) a</code>.  Since <code>CBoard</code> is a subtype of
 <code>Board</code>, this cast will always succeed at run time: it is
 <b>type-safe</b>. We refer to this kind of cast as an <b>upcast</b> because it
 shifts the type upward in the type hierarchy. In fact, it is not normally necessary to
@@ -334,12 +334,12 @@ It is also possible to cast downward in the subtype hierarchy. This gives us a <
 an unsafe cast that can fail at run time. For example, consider this code:
 </p>
 <pre>
-ABoard a = new ABoard();
+CBoard a = new CBoard();
 Board p = a;
-ABoard a2 = (ABoard) p;
+CBoard a2 = (CBoard) p;
 </pre>
 <p>
-Here, all three variables refer to the same underlying <code>ABoard</code> object.
+Here, all three variables refer to the same underlying <code>CBoard</code> object.
 The downcast to <code>a2</code> succeeds at run time because the dynamic type of the object
 is a subtype of the type it is being cast to. On the other hand, if we had reassigned
 the variable <code>p</code> to refer to an <code>SBoard</code> object, the downcast
@@ -353,8 +353,8 @@ operator to test the run-time type of the object.
 </p>
 <pre>
 Board p = ...;
-if (p instanceof ABoard) {
-    ABoard a2 = (ABoard) p;
+if (p instanceof CBoard) {
+    CBoard a2 = (CBoard) p;
     ...
 }
 </pre>
@@ -362,7 +362,7 @@ if (p instanceof ABoard) {
 introducing a variable in the instanceof expression itself:
 <pre>
 Board p = ...;
-if (p instanceof ABoard a2) {
+if (p instanceof CBoard a2) {
     ...
 }
 </pre>
