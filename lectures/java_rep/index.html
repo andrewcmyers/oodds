@@ -560,15 +560,18 @@ fewer digits of precision. For example, if you subtract 1000000.0 from
 In fact, as <a href="#dumpFloat">the program linked above</a> shows,
 the result is reported to be 0.125, a very large relative error of 25%. Oops!</p>
 
-<p>Another thing to watch out for is that the order of operations may affect
+<p>Another issue to watch out for is that the order of operations may affect
 what you compute, because rounding gets done at different places. Just because
 two formulas produce the same real number in mathematics doesn't mean they will
 produce the same floating-point number. Even an operation as simple as summing
 a set of numbers can produce different results depending on the order in which
-the numbers are added.  As a result, we have to be very careful about comparing
-two floating-point numbers for equality. They will be equal if they were
-produced by exactly the same computation, but otherwise round-off error will
-make them differ somewhat. Rather than check for equality, often we instead
+the numbers are added. For example, in real numbers we know that \((x+y)+z = x + (y+z)\),
+but when computed with floating-point numbers, rounding can cause
+<code>(x+y)+z</code> and <code>x+(y+z)</code> to produce different results.
+As a result, we have to be very careful about comparing
+two floating-point numbers for equality. Floating-point numbers will be equal if they were
+produced by exactly the same computation, but otherwise round-off error can
+make them differ slightly. Rather than check for equality, often we instead
 check that their difference lies within some <strong>tolerance</strong> corresponding to
 the largest expected round-off error.
 </p>
