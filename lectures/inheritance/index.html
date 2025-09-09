@@ -20,12 +20,12 @@ code, both across programs and within programs.
 
 <p>
 Suppose someone gives us an implementation of the <code>Board</code> interface
-that we saw in the previous lecture. In the <code>ABoard</code> implementation, the game state
+that we saw in the previous lecture. In the <code>CBoard</code> implementation, the game state
 is represented by a 2D array of integers:
 </p>
 
 <pre>
-class ABoard implements Board {
+class CBoard implements Board {
    private int[][] tiles;
 
    public int tile(int r, int c) {
@@ -39,13 +39,13 @@ class ABoard implements Board {
 Now suppose that we want to build a better game implementation by
 reusing this code. For example, we might want the game to
 log all of the moves that have been made. We could proceed by
-copying the code of <code>ABoard</code> to create a new class <code>LogBoard</code>, which
+copying the code of <code>CBoard</code> to create a new class <code>LogBoard</code>, which
 we could then add new fields and methods to. But this strategy doesn't work
-very well when the original supplier of <code>ABoard</code> fixes some bugs and
-gives us a new version <code>ABoard'</code>. Now we have to either apply the same bug fixes to
-<code>LogBoard</code> on the code that we copied from <code>ABoard</code>
+very well when the original supplier of <code>CBoard</code> fixes some bugs and
+gives us a new version <code>CBoard'</code>. Now we have to either apply the same bug fixes to
+<code>LogBoard</code> on the code that we copied from <code>CBoard</code>
 to get a new </code>LogBoard'</code>,
-or start afresh from <code>ABoard'</code> and build a new <code>LogBoard'</code> from it.
+or start afresh from <code>CBoard'</code> and build a new <code>LogBoard'</code> from it.
 Either way, it will be a lot of work and difficult to automate.
 </p>
 <div class="figure">
@@ -57,7 +57,7 @@ Figure 1: The problem of merging upgrades
 <script class=graphics>
 with (new CFigure("merging-updates")) {
     const i = 4,
-          l1 = label("ABoard").expand(i), l2 = label("ABoard'").expand(i),
+          l1 = label("CBoard").expand(i), l2 = label("CBoard'").expand(i),
           l3 = label("LogBoard").expand(i), l4 = label("LogBoard'").expand(i)
     align("none", "center", l1, l2)
     align("none", "center", l3, l4)
@@ -76,18 +76,18 @@ with (new CFigure("merging-updates")) {
 
 <p>
 At least for some kinds of changes that we might make between
-<code>ABoard</code> and <code>LogBoard</code>, <b>inheritance</b> offers a solution to this
+<code>CBoard</code> and <code>LogBoard</code>, <b>inheritance</b> offers a solution to this
 problem. We can think of inheritance as a language mechanism for
 <i>copying</i> a class and making certain kinds of changes to that class, without
 actually physically copying the code.
 </p><p>
-To add the new functionality to <code>ABoard</code>, we build a new class
-<code>LogBoard</code> that inherits all the functionality from <code>ABoard</code>.
-This is done by declaring that <code>LogBoard</code> <b>extends</b> <code>ABoard</code>:
+To add the new functionality to <code>CBoard</code>, we build a new class
+<code>LogBoard</code> that inherits all the functionality from <code>CBoard</code>.
+This is done by declaring that <code>LogBoard</code> <b>extends</b> <code>CBoard</code>:
 </p>
 
 <pre>
-class LogBoard extends ABoard {
+class LogBoard extends CBoard {
    private int numMoves;
 
    public int numMoves() {
@@ -102,25 +102,25 @@ class LogBoard extends ABoard {
 </pre>
 
 <p>
-Here <code>ABoard</code> is the <em>superclass</em> and <code>LogBoard</code> is the <em>subclass</em>.
+Here <code>CBoard</code> is the <em>superclass</em> and <code>LogBoard</code> is the <em>subclass</em>.
 In general, classes inheriting from other classes form an <em>inheritance
 hierarchy</em> or <em>class hierarchy</em>, in which superclasses are above their
 subclasses.
 </p><p>
-The <code>LogBoard</code> class is just like the <code>ABoard</code> class, except:
+The <code>LogBoard</code> class is just like the <code>CBoard</code> class, except:
 </p>
 <ul class="bullets">
 <li>
 It has an additional method, <code>numMoves</code>, and a
-new field, <code>numMoves</code>, that <code>ABoard</code> does not have.
+new field, <code>numMoves</code>, that <code>CBoard</code> does not have.
 </li>
 <li> It has a new version of the <code>move</code> method that <em>overrides</em> the original
-version from <code>ABoard</code>. It overrides the original because it has the
+version from <code>CBoard</code>. It overrides the original because it has the
 same name and signature as the original method. (Recall that the <em>signature</em>
 consists of the name of the method, the types of its arguments, and its return type.)
 </li>
-<li> The type <code>LogBoard</code> is a subtype of the type <code>ABoard</code>. That
-is, <code>LogBoard</code> &lt;: <code>ABoard</code>.
+<li> The type <code>LogBoard</code> is a subtype of the type <code>CBoard</code>. That
+is, <code>LogBoard</code> &lt;: <code>CBoard</code>.
 </li>
 </ul>
 
@@ -130,15 +130,15 @@ Because of the subtyping relationship between the two classes, we
 can write the following code:
 </p>
 <pre>
-ABoard p = new LogBoard();
+CBoard p = new LogBoard();
 p.move(up); // which move?
 </pre>
 
 <p class="cont">
 Now here is an interesting question. There are <code>move</code> methods in
-both <code>LogBoard</code> and <code>ABoard</code>, and they do different
+both <code>LogBoard</code> and <code>CBoard</code>, and they do different
 things. Which one is executed in the call <code>p.move(up)</code>? The
-<em>static</em> type of <code>p</code> is <code>ABoard</code>, but at the time
+<em>static</em> type of <code>p</code> is <code>CBoard</code>, but at the time
 of the call, <code>p</code> refers to an object of <em>dynamic</em> type
 <code>LogBoard</code>.</p>
 
@@ -149,25 +149,25 @@ So it is the <code>LogBoard</code> version that is run. This is known as <em>dyn
 
 <p>
 As a slightly more complicated example, suppose the
-superclass <code>ABoard</code> has a method <code>scramble</code> that calls <code>move</code>,
+superclass <code>CBoard</code> has a method <code>scramble</code> that calls <code>move</code>,
 but <code>LogBoard</code> does not have a <code>scramble</code> method:
 </p>
 
 <pre>
-class ABoard {
+class CBoard {
    public void scramble() {
       ... move(randomDir) ...
    }
 }
 
-ABoard p = new LogBoard();
+CBoard p = new LogBoard();
 p.scramble();
 // is p.numMoves() equal to 0?
 </pre>
 
 <p>
 When <code>p.scramble()</code> is called, the <code>scramble</code> method of
-<code>ABoard</code> is invoked. But when that method calls <code>move</code>,
+<code>CBoard</code> is invoked. But when that method calls <code>move</code>,
 which version of <code>move</code> is dispatched?
 It is the <code>move</code> method of <code>LogBoard</code>. The
 <code>move</code> method is still an instance method, and as above, the method
@@ -289,14 +289,14 @@ explicitly, as in the following example:
 </p>
 
 <pre>
-class ABoard {
+class CBoard {
    private int[][] tiles;
-   public ABoard(int size) {
+   public CBoard(int size) {
       tiles = new int[size][size];
    }
 }
 
-class LogBoard extends ABoard {
+class LogBoard extends CBoard {
    private int numMoves = 0;
    public LogBoard() {
       super(4);
@@ -333,7 +333,7 @@ its initial default state. It then performs the following steps:
 For example, consider a call to the constructor <code>LogBoard()</code>.  At
 the beginning of the method the instance variables <code>tiles</code> has the
 value <code>null</code>, and <code>score</code> and <code>numMoves</code> are
-0. The <code>LogBoard</code> constructor first calls the <code>ABoard</code>
+0. The <code>LogBoard</code> constructor first calls the <code>CBoard</code>
 constructor, causing <code>tiles</code> to be initialized to reference an
 array. The next step would be to perform instance variable initializers,
 so <code>numMoves</code> is (redundantly) assigned the value 0. Finally,
@@ -347,10 +347,10 @@ a message.
 What if we want the <code>LogBoard</code> code to access the <code>tiles</code> field
 directly? As defined, we cannot, because <code>tiles</code> is declared <code>private</code>.
 However, if we give <code>tiles</code> the <code>protected</code> visibility in
-<code>ABoard</code>, it becomes visible to subclasses:
+<code>CBoard</code>, it becomes visible to subclasses:
 </p>
 <pre>
-class ABoard {
+class CBoard {
    protected int[][] tiles;
    ...
 }
@@ -380,14 +380,14 @@ Suppose that <code>scramble()</code> had been defined to call a protected method
 </p>
 
 <pre>
-class ABoard {
+class CBoard {
    public void scramble() {
       ... internalMove(n); ...
    }
    protected void internalMove(int d) { ... }
 }
 
-class LogBoard extends ABoard {
+class LogBoard extends CBoard {
    private int numMoves = 0;
    protected void internalMove(int d) {
       numMoves++;
@@ -396,7 +396,7 @@ class LogBoard extends ABoard {
 }
 </pre>
 <p>
-This example shows that the specialization interface of <code>ABoard</code>
+This example shows that the specialization interface of <code>CBoard</code>
 allows the <code>LogBoard</code> class to change the behavior of existing
 public methods without overriding them directly. Protected methods
 are hooks for future extensibility of OO code. The specialization
