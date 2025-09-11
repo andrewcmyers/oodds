@@ -154,7 +154,7 @@ function localizeContent(node, lecture_url) {
               kids = n.childNodes,
               link = kids[0]
         if (link.tagName != 'A') continue
-        if (id == null || id == "") {
+        if (id == null || id === "") {
             n.id = "pre_node_" + lec_name + "_" + (++nodenum)
         }
         n.removeChild(link)

@@ -120,10 +120,10 @@ function colorize_node(n) {
 function colorize_all(node) {
     if (!node) node = document
     for (const code of node.getElementsByTagName('code')) {
-	colorize_node(code)
+        colorize_node(code)
     }
     for (const pre of node.getElementsByTagName('pre')) {
-	colorize_node(pre)
+        colorize_node(pre)
     }
 }
 
