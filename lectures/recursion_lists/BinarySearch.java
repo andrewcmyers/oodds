@@ -1,4 +1,5 @@
-/** Returns: an index i between indices first and last, inclusive, such that a[i] = x.
+/** Returns: an index i between indices first and last, inclusive,
+             such that a[i] = x.
     Requires: such an index exists, and a is sorted in ascending order.
  */
 int search(int[] a, int x, int first, int last) {
