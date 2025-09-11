@@ -318,7 +318,12 @@ subtyping is called <b>subtype polymorphism</b>.)
 </p>
 <p>
 Java's <b>cast</b> operator can be used to control the compile-time type at
-which a value is used. A cast does not affect the run-time type of the value,
+which a value is used. Given an arbitrary expression <code>e</code>, we write
+<code>(t)e</code> to mean that we want to view the result of <code>e</code> as having
+type <code>t</code>. What the cast does depends on the static and dynamic type of <code>e</code>.
+</p>
+<p>
+A cast does not affect the run-time type of the value,
 only the type which the compiler will treat the value as belonging to.
 As an example, suppose we have a variable <code>a</code> of type
 <code>CBoard</code>.  To force it to be treated as a <code>Board</code>, we
@@ -382,6 +387,11 @@ abstraction barrier is porous.  In general, it is good form to work with the
 narrowest interface that still allows the desired operations to be performed.
 Often this means accessing objects only through the interfaces they implement
 rather than through their classes.
+</p>
+<p>A third kind of cast, unrelated to subtyping, is a <b>coercion</b> that converts a
+value to the desired type. This form of cast does real computation and can lose information.
+For example, the expression <code>(int) 2.0</code> coerces the floating point number 2.0 to
+the corresponding value of type <code>int</code>.
 </p>
 
 <h2>Interface subtyping</h2>
