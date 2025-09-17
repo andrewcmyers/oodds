@@ -40,7 +40,7 @@ expands into smaller and smaller arguments until the base case is reached. For e
 This recursive definition not only makes sense mathematically,
 it can be implemented in a direct way as Java code:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="fibo.java">fibo.java</a>
 </pre>
 <p>
@@ -53,7 +53,7 @@ This is very concise code, but not very efficient, as we'll see.
 Suppose we want to find an element in an array that is sorted. We can implement
 this algorithm quite simply using recursion:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="BinarySearch.java">BinarySearch.java</a>
 </pre>
 <p>
@@ -73,7 +73,7 @@ squaring</strong> can be implemented recursively in an elegant way.  Algorithms
 like this one are used by modern cryptography, because there the exponents are
 far too large for the obvious, simple exponentiation algorithm to be practical.
 </p>
-<pre class="load">
+<pre class=load>
 <a href="Exponentiation.java">Exponentiation.java</a>
 </pre>
 <p>
@@ -269,7 +269,7 @@ object</b> that is used to mark the end of the list.
 <p>
 A linked list node is implemented with code like the following:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="Node.java">Node.java</a>
 </pre>
 <p>
@@ -400,18 +400,50 @@ int sum(Node n) {
 <p>
 If we want to insert at the end of the list, we have to modify the last node.
 We can find the last node by scanning down the list until we find it. Or we
-can keep track of the last node of the list explicitly.
+can keep track of the last node of the list explicitly. This can be done
+recursively or iteratively:
 </p>
 <pre>
 /** Effect: Update the list starting at n to add a node containing x at the end.
  *  Requires: n is not null.
  */
-void append(Object x, Node n) {
-   while (n.next != null)
-	  n = n.next;
-   n.next = new Node();
-   n.next.data = x;
+void append(Node n, Object x) { // recursive
+   if (n.next == null) {
+       n.next = new Node(x, null);
+       return;
+   }
+   append(n.next, x);
 }
+
+void append(Node n, Object x) { // iterative
+   while (n.next != null) {
+       n = n.next;
+   }
+   n.next = new Node(x, null);
+}
+</pre>
+
+<p>
+What about removing a node from a list? This operation can be
+implemented recursively in a straightforward way.
+</p>
+
+<pre class=load>
+<a href="remove_recursive.java">remove_recursive.java</a>
+</pre>
+
+<p>
+An iterative version of this code is trickier.  The problem is that when the
+node is found, the <em>previous</em> node in the list needs to be updated to
+point to the next node. The simple loop we've been using so far will have
+forgotten what that previous node is. We can solve this problem by marching two
+pointers through the list at the same time. The variable <code>n</code> points
+to the current node, and the <code>p</code> points to the previous node, or
+contains <code>null</code> if <code>n</code> is the first node:
+</p>
+
+<pre class=load>
+<a href="remove_iterative.java">remove_recursive.java</a>
 </pre>
 
 <h2>Tail recursion elimination</h2>
@@ -436,6 +468,14 @@ a recursive tail call:
 <pre>
    return contains(x, n.next);
 </pre>
+<div class=exercise>
+Is the recursive version of the method <code>remove()</code> above tail-recursive?
+Explain briefly why or why not.
+<p class=answer>
+No, because further work is done after the recursive call.
+</p>
+</div>
+
 <p>
 Since <code>contains()</code> is tail-recursive, we can mechanically
 transform it into iterative, non-recursive code, because
@@ -444,10 +484,10 @@ tail-recursive methods are equivalent to
 <code>while</code> loop and vice versa. The reason this works is that the
 activation record for a tail-recursive method is not needed after the call is
 made, so the same activation record can be reused for the recursive call. We do not
-need a stack of activation records, but can do with just one.
+need a stack of activation records, but can make do with just one.
 </p>
 <p>
-To make the transformation, simply wrap the entire method body in a
+To perform the transformation, simply wrap the entire method body in a
 <code>while</code>-loop with a guard of <code>true</code> and on each iteration
 update the method parameters to the new values that would have been passed
 in the recursive call.
@@ -488,7 +528,7 @@ fact, we can see that it is <em>tail</em>-recursive, which means that it too can
 to iterative code.
 Here is what the binary search code looks like after this transformation:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="BinarySearchIterative.java">BinarySearchIterative.java</a>
 </pre>
 <p>
@@ -507,6 +547,27 @@ and convert it into an efficient loop when necessary for good performance.
 The moral is that we can often write short, clear, recursive code and convert it to an
 efficient loop when efficiency is paramount.
 </p>
+<div class=exercise>
+<p>
+Can you convert the recursive implementation of <code>remove()</code> above into
+a tail-recursive one, by adding an additional parameter to represent the previous node?
+</p>
+<div class=answer>
+<pre class=load>
+<a href="remove_tail_recursive.java">remove_tail_recursive.java</a>
+</pre>
+<p>To get the effect of the original <code>remove</code> method, we call
+this with <code>p</code> equal to <code>null</code>:
+<pre>
+   remove(n, x, null)
+</pre>
+</p>
+<p>
+From this tail-recursive code, we can get an iterative implementation like the
+one above, using the tail-recursion removal trick!
+</p>
+</div>
+</div>
 <h2>Doubly linked lists</h2>
 <p>
 The list shown above is considered <em>singly</em> linked because each
@@ -519,7 +580,7 @@ walk in both directions, at a cost of more storage to represent the extra links.
 <p>
 The definition of a doubly linked list node looks something like the following:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="DNode.java">DNode.java</a>
 </pre>
 <p>Doubly linked lists come in both linear and circular varieties, as
@@ -547,7 +608,7 @@ other abstractions.
 For example, we can use a linked list to efficiently implement an <b>immutable
 list</b> of objects:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="ImmList.java">ImmList.java</a>
 </pre>
 <p>
@@ -556,7 +617,7 @@ need an additional <b>header object</b> so that we can represent empty lists
 with something other than <code>null</code>. (Notice that we don't bother to
 repeat the specifications from the interface. No need!)
 </p>
-<pre class="load">
+<pre class=load>
 <a href="ImmListImpl.java">ImmListImpl.java</a>
 </pre>
 <p>
@@ -594,7 +655,7 @@ The sharing that was possible with immutable lists is necessarily lost when we u
 linked lists to implement mutable lists. On the other hand, we can offer a larger
 set of operations:
 </p>
-<pre class="load">
+<pre class=load>
 <a href="MutList.java">MutList.java</a>
 </pre>
 <p>Again, this abstraction can be implemented using a linked list.
@@ -614,16 +675,11 @@ end.
 </p>
 <p>
 A final important thing we want to be able to do with mutable lists is to remove a node. For
-doubly linked lists, removing nodes is easy, but it is slightly tricky for singly linked lists.
-The problem is that when the node is found, the <em>previous</em>
-node in the list needs to be updated to point to the next node. The simple loop we've been
-using so far will have forgotten what that previous node is. A second wrinkle is that
-if the node to be removed is the first node in the list, there <em>is</em> no previous node
-to be updated. We can solve this problem by marching two pointers through the list at the same
-time. The variable <code>n</code> points to the current node, and the <code>p</code> points
-to the previous node, or contains <code>null</code> if <code>n</code> is the first node:
+doubly linked lists, removing nodes is easy, but as we saw above,
+it is a little tricky for singly linked lists. The code below uses the iterative approach
+used above, with modifications to update <code>head</code> and <code>size</code> appropriately.
 </p>
-<pre class="load">
+<pre class=load>
 <a href="MList.java">MList.java</a>
 </pre>
 <h2>Abstract data types vs. data structures</h2>
@@ -654,7 +710,7 @@ a mutable abstraction that supports two key operations:
 
 <p>The stack ADT is easily and efficiently implemented using linked lists:</p>
 
-<pre class="load">
+<pre class=load>
 <a href="Stack.java">Stack.java</a>
 </pre>
 <p>
