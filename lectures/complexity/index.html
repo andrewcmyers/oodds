@@ -245,15 +245,16 @@ O(a^n) \) is a strict subset of \(O(b^n)\).
 <h2>Deriving asymptotic complexity</h2>
 
 <p>
-Often, a simple way to show asymptotic complexity is to use the limit of the
-ratio \( f(n)/g(n) \) as \( n \) goes to infinity. If \(g(n)\) always has a
-positive value, then \(f(n) ≤ k g(n)\) is equivalent to requiring that the
-ratio \(f(n)/g(n) ≤ k\).  Thus, if this ratio has a finite limit, \( f(n) \) is
-\( O(g(n)) \).  On the other hand, if the ratio limits to infinity, \( f(n) \)
-is <em>not</em> \( O(g(n)) \). (Using the definition of limits, both of these
-shortcuts can be proved sound with respect to the definition of big-O, choosing
-any value of \(k\) that for the first shortcut is strictly larger than the
-ratio limit.)
+To prove asymptotic complexity, we can use a witness pair as described above,
+but often it is more intuitive to use the ratio \( f(n)/g(n) \), or more
+precisely the limit of this ratio as \( n \) goes to infinity. If \(g(n)\)
+always has a positive value, then \(f(n) ≤ k g(n)\) is equivalent to requiring
+that the ratio \(f(n)/g(n) ≤ k\).  Thus, if this ratio has a finite limit, \(
+f(n) \) is \( O(g(n)) \).  On the other hand, if the ratio limits to infinity,
+\( f(n) \) is <em>not</em> \( O(g(n)) \). (Using the definition of limits, both
+of these shortcuts can be proved sound with respect to the definition of big-O,
+choosing any value of \(k\) that for the first shortcut is strictly larger than
+the ratio limit.)
 </p>
 
 <p>
@@ -277,3 +278,12 @@ because logarithmic factors show up frequently in the analysis of
 algorithms.
 </p>
 
+<div class=exercise>
+Show that the function \(f(n) = n \lg^2 n\) is \(O(n^2 \lg n)\).
+<div class=answer>
+In this case, the limit of the ratio is \(\lg n/n\). Applying
+L'Hôpital's rule, this limit is equal to the limit of the ratio  of
+the derivatives, which is (ignoring constant factors) \(1/n\), and
+this expression clearly limits to zero as \(n\) becomes large.
+</div>
+</div>
