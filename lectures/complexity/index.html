@@ -136,6 +136,27 @@ less than some constant \( k \). A function that is \( O(n^2) \) is called
 integer \( y \) is said to be <b>polynomial</b>.
 </p>
 
+<p>
+Together, the constants \(k\) and \(n_0\) form a <b>witness</b> to the
+asymptotic complexity of the function. To show that a function has a particular
+asymptotic complexity, the direct way is to produce the necessary witness. For
+the example of the function \( f'(n) = 3n + 2 \), one witness is, as we saw
+above, the pair \( (k=4, n_0=2)\). Witnesses are not unique. If \((k, n_0)\) is
+a witness pair, so is \((k', n'_0) \) whenever \( k'≥k \) and \( n'_0≥n_0 \).
+</p>
+
+<div class=exercise>
+Find values of \(k\) and \(n_0\) that demonstrate that the function \(f(n) = 5n^2 + n - 1 \)
+is \(O(n^2)\).
+<div class=answer>
+We need values that show that \(5n^2 + n - 1 &le; kn^2\) for all \(n ≥ n_0\), so we
+need a value of \(k\) that is strictly larger than 5. For any such \(k\) we can find a
+corresponding \(n_0\). For example, suppose we choose \(k=7\). Then, subtracting \(5n^2\)
+from both sides, the inequality is satisfied if \(n-1 ≤ 2n^2\), or when \(2n^2 - n + 1 ≥ 0\).
+Since this is always true (the discriminant of the quadratic is negative), we can choose \(n_0 = 0\).
+</div>
+</div>
+
 <h2>Example</h2>
 
 <p>
@@ -224,15 +245,6 @@ O(a^n) \) is a strict subset of \(O(b^n)\).
 <h2>Deriving asymptotic complexity</h2>
 
 <p>
-Together, the constants \(k\) and \(n_0\) form a <b>witness</b> to the
-asymptotic complexity of the function. To show that a function has a particular
-asymptotic complexity, the direct way is to produce the necessary witness. For
-the example of the function \( f'(n) = 3n + 2 \), one witness is, as we saw
-above, the pair \( (k=4, n_0=2)\). Witnesses are not unique. If \((k, n_0)\) is
-a witness pair, so is \((k', n'_0) \) whenever \( k'≥k \) and \( n'_0≥n_0 \).
-</p>
-
-<p>
 Often, a simple way to show asymptotic complexity is to use the limit of the
 ratio \( f(n)/g(n) \) as \( n \) goes to infinity. If \(g(n)\) always has a
 positive value, then \(f(n) ≤ k g(n)\) is equivalent to requiring that the
@@ -264,3 +276,4 @@ than any polynomial \(n^k\) with \(k&gt; 0\). This fact is useful
 because logarithmic factors show up frequently in the analysis of
 algorithms.
 </p>
+
