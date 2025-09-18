@@ -670,7 +670,7 @@ c_0 &lt; e_1 &lt; c_1 &lt; e_2 &lt; c_2 &lt; e_3 &lt; ･･･ &lt; e_{n-1} &lt
 \]
 </div>
 <p>
-Note that by formulas such as \(c_0 &lt; e_1 &lt;c_1\), we mean that <em>all</em> elements in subtree \(c_0\) are
+Note that a formula such as \(c_0 &lt; e_1 &lt;c_1\) is intended to mean that <em>all</em> elements in subtree \(c_0\) are
 less than \(e_1\) and all elements in \(c_1\) are greater than \(e_1\).
 </p>
 <p>
@@ -711,7 +711,7 @@ which involves a small digression to learn a useful algorithm.
 <h3>How to place a sequence of elements in random order</h3>
 <p>
 The <a href="http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">
-Fisher–Yates algorithm</a> (developed in 1938) places \(N\) elements into random
+Fisher–Yates algorithm</a> (developed in 1938) shuffles \(N\) elements into random
 order. Recall that there are \(N! = 1×2×3×...×N\) possible permutations of \(N\) elements; a
 perfectly random shuffle should have equal probability \(1/N!\) of producing any
 given permutation. The algorithm works as follows. Assume we have the \(N\) elements
@@ -818,7 +818,12 @@ doubly linked list contain pointers to their predecessor nodes. Parent pointers
 can simplify some algorithms, but they do take up space and require enforcing
 additional invariants: in particular, that the parent of the root node is null
 and that for any node \(n\), the parents of its children (if any) are equal to \(n\):
-\[\texttt{n} ∈ \{\texttt{n.parent.left}, \texttt{n.parent.right}\} \]
+</p>
+
+<p>
+\[
+\text{if \(\texttt{n}\) is not the root node,}~
+\texttt{n} ∈ \{\texttt{n.parent.left}, \texttt{n.parent.right}\} \]
 \[\texttt{n.right.parent} = \texttt{n}\]
 \[\texttt{n.left.parent} = \texttt{n}\]
 </p>
