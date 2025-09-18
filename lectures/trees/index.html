@@ -207,15 +207,15 @@ factors), and
 Efficiently searching for information in trees relies on knowing which path to take through the
 tree. This property can be obtained if  the data stored in tree nodes can be ordered
 according to some ordering relation. For example, we might search for information by using
-a string value as the key, and order the strings by dictionary order.
+a string value as the key, and order the strings by dictionary order. A <b>search tree</b> is
+a tree data structure that exploits ordering to allow finding information quickly.
 </p>
 <p>
-Given ordered data, the tree as a <b>search tree</b>. A particularly important form
-of search tree is a <b>binary search tree</b>, which is a binary tree that
-satisfies the following data structure invariant:</p>
+A particularly important form of search tree is a <b>binary search tree</b>,
+a binary tree that satisfies the following data structure invariant.</p>
 
 <p class=definition>
-Binary Tree Order Invariant:
+<em>Binary Tree Order Invariant</em>:
 For each node \(n\) in the tree, all data elements stored in \(n\)'s left subtree
 are less than the element stored at \(n\), and all elements stored in \(n\)'s right
 subtree are greater than the element stored at \(n\).
@@ -298,8 +298,9 @@ search tree to be used with <em>any</em> type for which a reasonable comparison
 operation can be defined, and not just with those types <code>T</code> that happen to declare that
 they extend <code>Comparable&lt;T&gt;</code>.  This looser coupling can be helpful when
 you don't have control over the class that you would like to put into a tree, or when
-that class defines a notion of comparison that doesn't match the one you want.
-</p>
+that class defines a notion of comparison that doesn't match the one you want. For
+example, the class <code>String</code> has a built-in ordering on strings, but for some
+applications you might want the reverse ordering, or an ordering that is case-insensitive.</p>
 
 <h3>Searching in a binary search tree</h3>
 <p>
