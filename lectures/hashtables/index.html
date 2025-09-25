@@ -111,8 +111,9 @@ maintain a collection of employees along with their social security
 numbers, and to look them up by social security number. Using the social
 security number as the index into a direct address table would require
 an array of 1 billion elements, almost all of which are likely to be
-unused. Even assuming our computer has enough memory to store such a
-<strong>sparse</strong> array (probably at least 8 GiB), it will be a waste of memory. Furthermore, on
+unused. Modern computers usually have enough memory to store such a
+<strong>sparse</strong> array (it will require probably at least 8 GiB),
+but it will be a waste of memory. Furthermore, on
 most computer hardware, the use of caches means that accesses to large
 arrays are actually significantly slower than accesses to small arrays,
 sometimes by two orders of magnitude.
