@@ -756,12 +756,15 @@ class Polynomial {
 </pre>
 <p>
 This method does not try to answer whether two objects are truly equal; it only
-answers whether they are “polynomial-equal”. It is obviously reflexive,
-transitive, and symmetric, and simple and efficient. However, the
-standard Java libraries are not designed to work with this notion of equality,
-and it does not implement Leibniz equality, because it may consider
-distinguishable objects to be equal. However, this kind of equality may be a useful
-approach, especially for writing generic code that needs to test equality of
-values at a parameter type.
+answers whether they are “polynomial-equal”: that is, they are
+indistinguishable when viewed through the observers of <code>Polynomial</code>.
+This notion of equality is simple and efficient, and it is obviously reflexive,
+symmetric, and transitive. This kind of equality may be a useful approach,
+especially for writing generic code that needs to test equality of values at a
+parameter type.  However, the standard Java libraries are not designed to work
+with this signature for equality, and it does not implement Leibniz equality,
+because it may consider objects to be equal even though they can be
+distinguished using methods that are not in the <code>Polynomial</code>
+interface.
 </p>
 
