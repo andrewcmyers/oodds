@@ -710,7 +710,7 @@ test in <code>ColoredPoint.equals()</code>; a CartesianPoint will not be equal t
 <code>ColoredPoint</code> because the CartesianPoint does not pass the <code>instanceof</code> test in
 <code>ColoredPoint.canEqual()</code>.
 </p>
-<h3>Using reflection</h3>
+<h3>Symmetry via reflection</h3>
 <p>
 Another way to restore symmetry is to use the Java feature of
 <b>reflection</b>, which enables properties of types to be accessed at run
@@ -729,7 +729,7 @@ time:
 <p>
 This code uses the reflective method <code>getClass()</code> to access the
 run-time class of the objects being compared. Two objects can only be
-considered equal if they are implemented by the same class.
+considered equal by this code if they are implemented by the same class.
 </p>
 <p>
 This reflection-based approach has been promoted as a best practice for
