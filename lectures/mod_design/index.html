@@ -213,89 +213,9 @@ Writing classes that can be inherited and reused effectively requires
 keeping these two different kinds of specification separate.
 </p>
 
-<h2>Behavioral subtyping</h2>
 <p>
-    We want our implementations to be usable in a modular way, even and especially
-    as implementations evolve. To achieve modularity, everyone—both clients
-    and specializers—should be able to rely on the contracts expressed by
-    the specifications.
-</p>
-<p>
-    One implication of obeying contracts is that when subclasses override behavior,
-    the new behavior they provide should still be compatible with the existing
-    specifications. In other words, it should be possible to substitute an object
-    of a subclass for an object of a type that it is subtype of, not only without
-    violating type safety, but also without violating the specifications of the supertype.
-    In other words, inheritance needs to be used in a way that preserves
-    behavioral subtyping.
-</p>
-<p>
-    Behavioral subtyping should hold for all forms of subtyping: both classes implementing
-    interfaces, and interfaces extending other interfaces. For example, recall the
-    <code>Board</code> interface, which has an observer <code>tile()</code>:
-<pre>
-/** A state of the 2048 game, which contains a 4x4 grid containing numeric tiles. */
-interface Board {
-   /**
-    * Returns: the value of the tile at row r and column c, or 0 if that tile
-    *   position is blank.
-    * Requires: both r and c are in the range 0..3.
-    */
-   int tile(int r, int c);
-   ...
-}
-</pre>
-<p>
-   Now, suppose we wanted to define a subtype or subclass <code>IBoard</code> with
-   a specification for <code>tile()</code> that changed the result for blank board
-   cells:
-</p>
-<pre>
-   /**
-    * Returns: the value of the tile at row r and column c, or -1 if that tile
-    *   position is blank.
-    * Requires: both r and c are in the range 0..3.
-    */
-</pre>
-<p>
-   This specification would not violate subtyping, because it still returns
-   a value of the type <code>int</code> that clients expect. However, client
-   code written against the original spec might not work correctly against an
-   implementation of this new spec. It is likely to test against the value 0
-   rather than -1. Therefore the new interface is not a behavioral subtype
-   of <code>Board</code>. It violates the contract that <code>Board</code>
-   establishes.
-</p>
-<p>Suppose instead that we changed the specification for <code>tile()</code> to
-eliminate the precondition:
-</p>
-<pre>
-   /**
-    * Returns: the value of the tile at row r and column c, or 0 if that tile
-    *   position is blank. If r and c are out of range, throws an OutOfRange
-    *   exception.
-    */
-</pre>
-<p>
-    This specification <em class=term>refines</em> the specification in
-    <code>Board</code>, because it specifies behavior for inputs about which
-    the original spec made no promises. Any client using an object according to
-    the <code>Board</code> spec will be able to successfully use any correct
-    implementation of the <code>IBoard</code> spec. <code>IBoard</code> is not
-    just a subtype of <code>Board</code>, it is a behavioral subtype.
-</p>
-<p>
-    In general, as this example demonstrates, it is safe to <em
-    class=term>weaken</em> preconditions so that more inputs are allowed
-    and to <em class=term>strengthen</em> postconditions so that fewer
-    outputs are produced. The same thing can be said about the relationship
-    between an implementation and its interface. The implementation can
-    accept more inputs than its precondition demands and for any given input,
-    can produce a more restricted set of outputs than its postcondition
-    describes.
-</p>
-<p>
-    Behavioral subtyping helps explain why it is useful to distinguish
+    <a href="../lecture.html?id=subtyping#Behavioral%20subtyping">Behavioral subtyping</a>
+    helps explain why it is useful to distinguish
     between the specification provided by the specialization interface—which
     subclasses need not obey—and the (in general, more flexible) public
     specification that all subclasses of the interface or classes must obey.
