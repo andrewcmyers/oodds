@@ -234,7 +234,7 @@ keeping these two different kinds of specification separate.
     interfaces, and interfaces extending other interfaces. For example, recall the
     <code>Board</code> interface, which has an observer <code>tile()</code>:
 <pre>
-/** A state of the 2048 game, which contains a 4x4 grid of numeric tiles. */
+/** A state of the 2048 game, which contains a 4x4 grid containing numeric tiles. */
 interface Board {
    /**
     * Returns: the value of the tile at row r and column c, or 0 if that tile
@@ -246,8 +246,28 @@ interface Board {
 }
 </pre>
 <p>
-   Now, suppose we wanted to define a subtype <code>IBoard</code> with
-   a specification for <code>tile()</code> that eliminates the precondition:
+   Now, suppose we wanted to define a subtype or subclass <code>IBoard</code> with
+   a specification for <code>tile()</code> that changed the result for blank board
+   cells:
+</p>
+<pre>
+   /**
+    * Returns: the value of the tile at row r and column c, or -1 if that tile
+    *   position is blank.
+    * Requires: both r and c are in the range 0..3.
+    */
+</pre>
+<p>
+   This specification would not violate subtyping, because it still returns
+   a value of the type <code>int</code> that clients expect. However, client
+   code written against the original spec might not work correctly against an
+   implementation of this new spec. It is likely to test against the value 0
+   rather than -1. Therefore the new interface is not a behavioral subtype
+   of <code>Board</code>. It violates the contract that <code>Board</code>
+   establishes.
+</p>
+<p>Suppose instead that we changed the specification for <code>tile()</code> to
+eliminate the precondition:
 </p>
 <pre>
    /**
@@ -257,21 +277,34 @@ interface Board {
     */
 </pre>
 <p>
-    This specification <em class=term>refines</em>
-
-
-    
+    This specification <em class=term>refines</em> the specification in
+    <code>Board</code>, because it specifies behavior for inputs about which
+    the original spec made no promises. Any client using an object according to
+    the <code>Board</code> spec will be able to successfully use any correct
+    implementation of the <code>IBoard</code> spec. <code>IBoard</code> is not
+    just a subtype of <code>Board</code>, it is a behavioral subtype.
 </p>
 <p>
-    Behavioral subtyping is another reason why it is useful to distinguish
+    In general, as this example demonstrates, it is safe to <em
+    class=term>weaken</em> preconditions so that more inputs are allowed
+    and to <em class=term>strengthen</em> postconditions so that fewer
+    outputs are produced. The same thing can be said about the relationship
+    between an implementation and its interface. The implementation can
+    accept more inputs than its precondition demands and for any given input,
+    can produce a more restricted set of outputs than its postcondition
+    describes.
+</p>
+<p>
+    Behavioral subtyping helps explain why it is useful to distinguish
     between the specification provided by the specialization interface—which
     subclasses need not obey—and the (in general, more flexible) public
     specification that all subclasses of the interface or classes must obey.
-    Subclasses can rely on the stronger spec provided by specialization interface,
-    but most clients can only rely on the weaker public specification. The
-    specialization interface of a class can only be used safely by code that
-    “knows” the exact class it is using. But this knowledge implies tighter
-    coupling than is usually desirable.
+    Subclasses can rely on the stronger spec provided by specialization
+    interface, but most clients can only rely on the weaker public
+    specification. The specialization interface of a class can only be used
+    safely by code that “knows” the exact class it is using—but this knowledge
+    implies tighter coupling than is usually desirable between ordinary clients
+    and the implementation.
 </p>
 
 <h2>Module Dependency Diagrams</h2>
