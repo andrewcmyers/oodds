@@ -7,7 +7,7 @@ programmers a common vocabulary for explaining their designs and aid in quick
 understanding of the advantages and disadvantages of particular designs.
 </p>
 <p>
-The term <b>design pattern</b> was introduced by the very influential
+The term <em class=term>design pattern</em> was introduced by the very influential
 &ldquo;Gang of Four&rdquo; book, <i>Design Patterns: Elements of Reusable
 Object-Oriented Software,</i> by Erich Gamma, Richard Helm, Ralph Johnson, and
 John Vlissides. The book discusses object-oriented programming and identifies
@@ -18,7 +18,7 @@ identified since, some more useful and meaningful than others. In this lecture
 we look at some of the more important ones to understand why they
 are helpful. Understanding patterns will also help you resist the lure of the
 <a href="http://en.wikipedia.org/wiki/Cargo_cult_programming">Cargo Cult
-Programming</a> <b>antipattern</b>, in which design patterns are used without real
+Programming</a> <em class=term>antipattern</em>, in which design patterns are used without real
 purpose.
 </p>
 
@@ -138,7 +138,7 @@ are chosen to make <code>Optional</code> compatible with Java Streams.
 <h2>Iterator pattern</h2>
 <p>
 A common problem when designing programs is how to
-set up a stream of information from a <b>producer</b> module A to a <b>consumer</b>
+set up a stream of information from a <em class=term>producer</em> module A to a <em class=term>consumer</em>
 module B, while keeping both A and B decoupled so that each has no dependency
 on the module they are communicating with. Assuming that the values communicated have some type
 T, the communication we want can be depicted as follows:
@@ -232,13 +232,14 @@ the others.
 <p>
 Some languages other than Java support another language construct that
 makes it easier to implement iterators. The C#, Python, Ruby languages support
-<b>generators</b> that send results to the consumer using the
+<em class=term>generators</em> that send results to the consumer using the
 <code>yield</code> statement. An extended version of Java that supports
 <code>yield</code> is <a
 href="http://www.cs.cornell.edu/projects/jmatch">JMatch</a>, developed at Cornell. In these
 languages, one can think of the iterator as running concurrently with the
 consumer, but only when the consumer requests a new value. The iterator and
-the loop body are <b>coroutines</b>. For example, with
+the loop body are <em class=term>coroutines</em> that both execute during the
+loop, but only one executes at a given time. For example, with
 generators, an iterator for trees can be implemented very easily using recursion:
 </p>
 <pre class=load>
@@ -253,9 +254,9 @@ is to keep the path from the root to the current node in a stack.
 </p>
 
 <p>
-Ironically, the term <b>iterator</b> originally referred to this style of
+Ironically, the term <em class=term>iterator</em> originally referred to this style of
 implementing iteration, which was invented in the language CLU in the 70's. The
-term <b>generator</b> originally referred to what we now know as the iterator
+term <em class=term>generator</em> originally referred to what we now know as the iterator
 design pattern.
 </p>
 
@@ -287,7 +288,7 @@ boundary, perhaps implemented as an inner class.
 
 <p>
 How does the producer know which observers to notify? This is accomplished by
-<b>registering</b> the observer(s) with the producer. The producer implements
+<em class=term>registering</em> the observer(s) with the producer. The producer implements
 an interface similar to this:
 <pre class=load>
 <a href="Observable.java">Observable.java</a>
@@ -338,7 +339,7 @@ Observer:
 <p>
 Notice that the types of the Iterator operations are exactly the same as the
 types of the Observer operations, except that all the arrows are flipped to
-point in the opposite direction! This shows that we have a <b>duality</b>
+point in the opposite direction! This shows that we have a <em class=term>duality</em>
 between Iterator and Observer.
 </p>
 
@@ -352,7 +353,7 @@ implementation. For example, when creating a set, we specify exactly which imple
   Set s = new HashSet();
 </pre>
 <p>One way to avoid binding the client code explicitly to an implementing class is to use
-<b>factory methods</b>, which we have discussed earlier. We might declare a class with
+<em class=term>factory methods</em>, which we have discussed earlier. We might declare a class with
 static methods that create appropriate data structures:
 <pre>
 class DataStructs {
@@ -407,7 +408,7 @@ interface UIFactory {
 }
 </pre>
 <p>Then, different <code>UIFactory</code> objects can encapsulate different choices
-of <b>look and feel</b> for the user interface, depending on the platform on which they
+of <em class=term>look and feel</em> for the user interface, depending on the platform on which they
 are running. This is why GUIs look different on Windows and Mac OS.
 The implementation of each GUI component is chosen dynamically based on the
 underlying OS platform to conform to the look and feel of the platform.
@@ -492,8 +493,8 @@ as much state as possible in underlying objects that are shared across many inst
 
 <h2>Interning</h2>
 
-<p>A related idea to flyweight objects is <b>interning</b> (known in Lisp as
-<b>hashconsing</b>). A hash table is used to keep track of all objects of a
+<p>A related idea to flyweight objects is <em class=term>interning</em> (known in Lisp as
+<em class=term>hashconsing</em>). A hash table is used to keep track of all objects of a
 given class. Object creation is done by a factory method. When a new object is
 requested to be created, the factory method uses the parameters to the calls to
 look up whether a suitable object has already been created. If so, this object
@@ -597,17 +598,17 @@ once and reused to implement multiple traversals.
 <p>
 Programming in an event-driven style can result in messy designs in which not
 all events are handled. One way to ensure all events are handled is to
-think about the program, or about parts of the program, as <b>state
-machines</b>. Often state machines are presented as mathematical abstractions,
+think about the program, or about parts of the program, as <em class=term>state machines</em>.
+Often state machines are presented as mathematical abstractions,
 but they are also a way to organize code: a design pattern called the
-<b>state design pattern</b>.
+<em class=term>state design pattern</em>.
 </p>
 <p>A state machine has a set of states and a set of events that can occur. At any given
 moment, the machine is in one of the allowed states. However, when it receives a new
 event, it can change states. For each state and event, there is a new state to which
 the machine transitions when that event is received in that state.
 When the number of states is finite, the state machine is sometimes
-called a <b>finite-state automaton</b>.</p>
+called a <em class=term>finite-state automaton</em>.</p>
 
 <p>As a simple example, consider a window in a graphical user interface.
 Simplifying a bit, it might be in one of the following states: (opened, closed, fullscreen, minimized).
@@ -656,7 +657,7 @@ how the system moves among states. It doesn't help as much with ensuring that al
 combinations of states and events are considered.
 </p -->
 
-<p>Alternatively, we can specify its behavior by giving a <b>state transition table</b>.
+<p>Alternatively, we can specify its behavior by giving a <em class=term>state transition table</em>.
 The rows of the table correspond to states, and the columns correspond to events. The entries in
 the table say what the next state is, given the current state and event.
 </p>
@@ -701,7 +702,7 @@ following code suggests how our window example might look in this style.
 <p>
 Since the GUI components are used to manipulate the information managed by the
 application, it is tempting to store that information and the algorithms that
-manipulate it (the <b>application logic</b>) directly in components, perhaps by
+manipulate it (the <em class=term>application logic</em>) directly in components, perhaps by
 using inheritance. This is usually a bad idea. The code for graphical
 presentation of information is different from the underlying operations on that
 information. Interleaving them makes the code harder to understand and
@@ -711,11 +712,12 @@ to Android, whose GUI toolkit is very different. So it is a good idea to keep
 GUI code and the application logic separate.
 </p>
 <p>
-This observation leads to the <b>Model-View-Controller (MVC)</b> pattern, in which the application
-classes are separated into one of three categories: the <b>model</b>, which contains
+This observation leads to the <em class=term>Model-View-Controller (MVC)</em> pattern,
+in which the application
+classes are separated into one of three categories: the <em class=term>model</em>, which contains
 the important application state and operations, and does not refer to the GUI
-classes; the <b>view</b>, which provides a graphical view of the model; and the
-<b>controller</b>, which handles user input and translates it into either changes to the view or
+classes; the <em class=term>view</em>, which provides a graphical view of the model; and the
+<em class=term>controller</em>, which handles user input and translates it into either changes to the view or
 commands to be performed on the model.
 <div class=figure>
 <img src="mvc-MDD.png"/>

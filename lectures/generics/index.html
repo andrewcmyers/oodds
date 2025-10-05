@@ -2,15 +2,15 @@
 
 <p>
     We have already seen that object-oriented languages support
-    <b>subtype polymorphism</b>; generics give us a different kind of polymorphism,
-    <b>parametric polymorphism</b>.  Recall that polymorphism means that something
+    <em class=term>subtype polymorphism</em>; generics give us a different kind of polymorphism,
+    <em class=term>parametric polymorphism</em>.  Recall that polymorphism means that something
     can be used at multiple types. Subtype polymorphism allows client code to be written with
     respect to a single type (as specified by, say, an interface or abstract class)
     while interoperating with multiple implementations of
-    that type. Parametric polymorphism, also known as <b>generics</b>, solves the opposite problem, in a sense: it
+    that type. Parametric polymorphism, also known as <em class=term>generics</em>, solves the opposite problem, in a sense: it
     allows a single implementation to interoperate with multiple clients who want
     to use that implementation for different types. This goal is achieved by writing
-    the implementation with respect to a <b>type parameter</b>, a variable ranging over
+    the implementation with respect to a <em class=term>type parameter</em>, a variable ranging over
     types that can be instantiated with different concrete types.
     Support for generics is not an essentially object-oriented idea, and was not
     originally part of Java, having been first introduced in Java 5.
@@ -23,7 +23,7 @@ Collections
 The main motivation for adding parametric polymorphism and generic types to Java was the
 <b>Java Collections Framework</b>. This is a built-in
 library of different abstractions and implementations
-for <b>collections</b>: types that one can put things into, take things out of, test for membership in, and iterate over.
+for <em class=term>collections</em>: types that one can put things into, take things out of, test for membership in, and iterate over.
 Generics were introduced in Java 5 to make the Collections Framework more effective.
 Prior to this time, the interface <code>Collection</code> looked like the following:
 </p>
@@ -76,7 +76,7 @@ for (Integer i : c) {
 }
 </pre>
 <p>
-The reason is that arrays are a <b>parameterized type</b>. We can think of the type
+The reason is that arrays are a <em class=term>parameterized type</em>. We can think of the type
 <code>Integer[]</code> as the application of a type-level function (we might call it <code>array</code>
 if we were to give it a readable name)
 to the type argument <code>Integer</code>, returning the type <code>Integer[]</code>.
@@ -97,7 +97,7 @@ and the type <code>Collection&lt;Collection&lt;String&gt;&gt;</code> is a collec
 collections of strings.
 </p>
 <p>
-A parameterized type is declared by giving it a <b>formal type parameter</b> that
+A parameterized type is declared by giving it a <em class=term>formal type parameter</em> that
 can then be used as a type inside the type's definition—for example, in method signatures:
 </p>
 <pre class="load">
@@ -107,7 +107,7 @@ Interface.java
 </pre>
 <p>
 Inside the definition, the type parameter <code>T</code> stands for whatever actual type the client chooses to apply it
-to. A type like <code>Collection&lt;String&gt;</code> is called an <b>instantiation</b> of the
+to. A type like <code>Collection&lt;String&gt;</code> is called an <em class=term>instantiation</em> of the
 parameterized type <code>Collection</code>
 on the type argument <code>String</code>.
 The signatures of the methods of <code>Collection&lt;String&gt;</code> are exactly
@@ -155,7 +155,7 @@ before the return type:
 <a href="generic_print.java">generic_print.java</a>
 </pre>
 <p>Notice that a call to the <code>print</code> method does not need to specify the
-actual type parameter <code>Integer</code>. The compiler is able to <b>infer</b> the missing
+actual type parameter <code>Integer</code>. The compiler is able to <em class=term>infer</em> the missing
 parameter automatically. It is also possible to supply type parameters to generic
 method calls explicitly, by putting the type parameter in angle brackets after the dot.
 </p>
@@ -197,7 +197,7 @@ sound way, so Java does not support variance. Other languages such as Scala do h
 <h2>Wildcards</h2>
 <p>
 To make up for the lack of variance, Java has a feature called
-<b>wildcards</b>, in which question marks are used as type arguments. The type
+<em class=term>wildcards</em>, in which question marks are used as type arguments. The type
 <code>LList&lt;?&gt;</code> represents an object that is an <code>LList&lt;T&gt;</code>
 for <em>some</em> type T, though precisely <em>which</em> type <code>T</code> is not known at compile
 time (or for that matter, even at run time).
@@ -260,7 +260,7 @@ By transitivity, <code>HashSet&lt;Integer&gt;</code> is a subtype of <code>Set&l
 <h2>Limitations</h2>
 <p>
 The way generics are actually implemented in Java is that all actual type parameters are
-<b>erased</b> at run time.  This implementation choice leads to a number of limitations of
+<em class=term>erased</em> at run time.  This implementation choice leads to a number of limitations of
 the generics mechanism in Java when in a generic context where <code>T</code> is a formal parameter:
 </p>
 <ol>
@@ -295,7 +295,7 @@ desired type:
 HashSet&lt;T&gt;[] sets = (HashSet&lt;T&gt;[]) new HashSet&lt;?&gt;[n];
 </pre>
 <p>
-Equivalently, one can use a <b>raw type</b>, a type in which type parameters have been explicitly erased,
+Equivalently, one can use a <em class=term>raw type</em>, a type in which type parameters have been explicitly erased,
 to create the array:
 <pre>
 HashSet&lt;T&gt;[] sets = (HashSet&lt;T&gt;)new HashSet[n];
@@ -375,7 +375,7 @@ Notice that here we are using <tt>String</tt>'s own <tt>compareTo</tt>
 operation as a model for the comparator, but we don't have to. For example, we
 could have used the <tt>compareToIgnoreCase</tt> method to sort strings while
 ignoring the difference between upper and lower case. It turns out that we can
-also use Java 8's new <b>lambda expressions</b> to implement the interface even more
+also use Java 8's new <em class=term>lambda expressions</em> to implement the interface even more
 compactly. Here is how we would sort the array using a lambda expression while
 also ignoring case:
 </p>
@@ -389,7 +389,7 @@ and instantiating it with <code>new</code>.
 </p>
 <p>
 In fact, Java has an even more convenient way to produce an implementation
-of an interface. A <b>method reference</b> can be used to produce an implementation
+of an interface. A <em class=term>method reference</em> can be used to produce an implementation
 of an interface that needs to have a single method implemented. Rather than
 write <code>(x,y) -&gt; x.compareToIgnoreCase(y)</code>, we can simply 
 write <code>String::compareToIgnoreCase</code>, which will have the same effect:

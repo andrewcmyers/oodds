@@ -161,7 +161,7 @@ compiler cannot figure out ahead of time which one it will be. The call to
 time. It does this by checking the dynamic type (aka run-time type) of the
 object <code>p</code>. The dynamic or run-time type of an object is the class
 that was named when the object was created via <code>new</code>. This is called
-<b>dynamic dispatch</b>.
+<em class=term>dynamic dispatch</em>.
 </p>
 
 <h2>Classes vs. types</h2>
@@ -208,7 +208,7 @@ may be used as dynamic types.
 <p>
 Because <code>CBoard</code> implements <code>Board</code>, an expression of
 static type <code>CBoard</code> can always be used where a
-<code>Board</code> is expected. This is an example of a <b>subtype</b> relationship
+<code>Board</code> is expected. This is an example of a <em class=term>subtype</em> relationship
 between two types. We write <code>CBoard</code> &lt;: <code>Board</code> to
 mean that the type <code>CBoard</code> is a subtype of the type
 <code>Board</code>. (Sometimes you will see this written as <code>CBoard</code> ≤ <code>Board</code>.)
@@ -217,8 +217,8 @@ Since an <code>SBoard</code> can also be used wherever a
 <code>SBoard</code> &lt;: <code>Board</code> also holds.
 </p>
 <p>
-The subtyping relationships among the various types form a <b>type hierarchy</b>
-(or <b>subtype hierarchy</b>), an example of which is shown in this figure:
+The subtyping relationships among the various types form a <em class=term>type hierarchy</em>
+(or <em class=term>subtype hierarchy</em>), an example of which is shown in this figure:
 </p>
 <div class="figure">
 <canvas id=subtype_hierarchy style="width:400px; height: 180px"></canvas>
@@ -266,7 +266,7 @@ We can also notice that array types like <code>int[]</code> are subtypes of <cod
 Standing alone in the diagram are the primitive types (<code>int</code>, <code>boolean</code>, <code>char</code>, ...). These types are not subtypes of any other type.
 </p>
 <p>In the diagram above, every type has at most one parent, making this diagram a
-collection of trees (a <b>forest</b>). However, a class is allowed to implement more than
+collection of trees (a <em class=term>forest</em>). However, a class is allowed to implement more than
 one interface, as in the following definition:
 </p>
 <pre>
@@ -302,7 +302,7 @@ incorrectly that <code>int</code> &lt;: <code>Object</code>:
 Object x = 2;
 </pre>
 <p>
-Although this looks like subtyping, actually Java is automatically inserting a <b>coercion</b> (a conversion)
+Although this looks like subtyping, actually Java is automatically inserting a <em class=term>coercion</em> (a conversion)
 to make the types work.  The variable <code>x</code> is not being
 assigned the value appearing on the right-hand side, but rather an object of
 type <code>Integer</code> that is created automatically. The declaration is syntactic sugar for this one:
@@ -313,11 +313,11 @@ type <code>Integer</code> that is created automatically. The declaration is synt
 <p>
 With subtyping, a given value can be treated as though it has more than one
 type. (When a value can have more than one type, it is called
-<b>polymorphism</b>, and the kind of polymorphism we get with
-subtyping is called <b>subtype polymorphism</b>.)
+<em class=term>polymorphism</em>, and the kind of polymorphism we get with
+subtyping is called <em class=term>subtype polymorphism</em>.)
 </p>
 <p>
-Java's <b>cast</b> operator can be used to control the compile-time type at
+Java's <em class=term>cast</em> operator can be used to control the compile-time type at
 which a value is used. Given an arbitrary expression <code>e</code>, we write
 <code>(t)e</code> to mean that we want to view the result of <code>e</code> as having
 type <code>t</code>. What the cast does depends on the static and dynamic type of <code>e</code>.
@@ -327,16 +327,16 @@ A cast does not affect the run-time type of the value,
 only the type which the compiler will treat the value as belonging to.
 As an example, suppose we have a variable <code>a</code> of type
 <code>CBoard</code>.  To force it to be treated as a <code>Board</code>, we
-write a <b>cast expression</b>: <code>(Board) a</code>.  Since <code>CBoard</code> is a subtype of
+write a <em class=term>cast expression</em>: <code>(Board) a</code>.  Since <code>CBoard</code> is a subtype of
 <code>Board</code>, this cast will always succeed at run time: it is
-<b>type-safe</b>. We refer to this kind of cast as an <b>upcast</b> because it
+<em class=term>type-safe</em>. We refer to this kind of cast as an <em class=term>upcast</em> because it
 shifts the type upward in the type hierarchy. In fact, it is not normally necessary to
 write a cast operation, since the language will automatically treat a subtype
 value as belonging to the supertype when necessary.  Occasionally it is useful
 to write an explicit upcast when debugging.
 </p>
 <p>
-It is also possible to cast downward in the subtype hierarchy. This gives us a <b>downcast</b>,
+It is also possible to cast downward in the subtype hierarchy. This gives us a <em class=term>downcast</em>,
 an unsafe cast that can fail at run time. For example, consider this code:
 </p>
 <pre>
@@ -388,7 +388,7 @@ narrowest interface that still allows the desired operations to be performed.
 Often this means accessing objects only through the interfaces they implement
 rather than through their classes.
 </p>
-<p>A third kind of cast, unrelated to subtyping, is a <b>coercion</b> that converts a
+<p>A third kind of cast, unrelated to subtyping, is a <em class=term>coercion</em> that converts a
 value to the desired type. This form of cast does real computation and can lose information.
 For example, the expression <code>(int) 2.0</code> coerces the floating point number 2.0 to
 the corresponding value of type <code>int</code>.
@@ -425,7 +425,7 @@ Java. If we declared another separate interface <code>Q</code> that had all the 
 methods as <code>Board</code>, plus some additional ones, but did not declare
 <code>Q</code> to extend <code>Board</code>, it might appear harmless to
 allow <code>Q</code> &lt;: <code>Board</code>. Unlike some languages, Java does not allow
-this <b>structural</b> subtype relationships, but only <b>nominal</b>
+this <em class=term>structural</em> subtype relationships, but only <em class=term>nominal</em>
 subtyping, in which subtypes are explicitly declared. There are two reasons for this design:
 first, structural subtyping is hard to implement efficiently, and second, just
 because two methods have the same name and signature does not mean that they
@@ -434,7 +434,7 @@ actually mean the same thing.
 <h2>Conformance</h2>
 <p>
 For one type to be a subtype of another, the methods of the first type must have signatures
-that <b>conform</b> to the signatures of those in the supertype. The conformance requirement
+that <em class=term>conform</em> to the signatures of those in the supertype. The conformance requirement
 has implications for the types and visibility of methods.
 </p>
 <p>
@@ -472,11 +472,11 @@ becomes more accessible in the subtype.
     unpleasantly surprised by the behavior of \(S\).
 </p>
 <p>
-    In other words, subtyping used correctly is <b>behavioral subtyping</b>; it
+    In other words, subtyping used correctly is <em class=term>behavioral subtyping</em>; it
     ensures not only that types are compatible but also that <em>behavior</em>
     is.  The principle that objects of a subtype can always be safely
     substituted for supertypes without surprising clients of those supertypes
-    is called the <b>Liskov substitution principle</b>, after Barbara Liskov.
+    is called the <em class=term>Liskov substitution principle</em>, after Barbara Liskov.
 </p>
 <p>
     With respect to the components of the specification, the implication of
@@ -497,7 +497,7 @@ of implementation—except when the objects are actually created. At some point
 an actual implementing class must be provided to <code>new</code>. This might
 seem to break the principle of separating interfaces from implementations.
 </p> <p>When this stronger separation is desired, a common solution is to use
-<b>factory methods</b> to build objects. A factory method is one that creates
+<em class=term>factory methods</em> to build objects. A factory method is one that creates
 objects, typically with an interface type.  For example, we could (in some
 class) declare a method that creates <code>Board</code> objects:
 </p>

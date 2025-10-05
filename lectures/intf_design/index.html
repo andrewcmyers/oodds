@@ -2,7 +2,7 @@
 <p>
 Good software engineering is about dividing code into modules that separate
 concerns and localize them within modules. These modules then interact via
-<b>interfaces</b> that provide abstraction barriers supporting local reasoning.
+<em class=term>interfaces</em> that provide abstraction barriers supporting local reasoning.
 </p>
 <p>
 Designing modules and their interfaces is challenging! There are multiple goals
@@ -17,19 +17,19 @@ look more closely at the problem of designing good interfaces.
 Interfaces exist at the boundaries of the modular decomposition. An interface will
 be most effective when it has the following four properties:
 <ol>
-<li><p>It provides a strong <b>abstraction barrier</b> between modules.</li>
-<li><p>The interface should be as <b>narrow</b> as possible while providing the functionality needed by clients.
-<li><p>The interface should be <b>clearly specified</b> and understandable without seeing the implementation.
-<li><p>The interface should permit <b>efficient and straightforward implementation</b>.
+<li><p>It provides a strong <em class=term>abstraction barrier</em> between modules.</li>
+<li><p>The interface should be as <em class=term>narrow</em> as possible while providing the functionality needed by clients.
+<li><p>The interface should be <em>clearly specified</em> and understandable without seeing the implementation.
+<li><p>The interface should permit <em>efficient and straightforward implementation</em>.
 </ol>
 <p>
 We've already discussed abstraction earlier; our goal now is to examine the
 second two attributes of a good interface.
 </p>
 <p>
-By a <b>narrow</b> interface, we mean an interface that exposes few operations or
+By a <em class=term>narrow</em> interface, we mean an interface that exposes few operations or
 other potential dependencies between modules. The opposite of a narrow interface is
-a <b>wide</b> interface, one that exposes many operations or potential dependencies
+a <em class=term>wide</em> interface, one that exposes many operations or potential dependencies
 between modules.
 </p>
 <p>
@@ -68,7 +68,7 @@ for efficient client code to be written in a straightforward way.
 
 <p>
 Often when a narrow interface feels awkward to use, it is possible to address
-this problem by writing <b>convenience methods</b> that are implemented
+this problem by writing <em class=term>convenience methods</em> that are implemented
 outside the module, using only the narrow interface that the module provides.
 Clients can then use the convenience methods to avoid code duplication, but
 without widening the interface and thereby introducing new dependencies between
@@ -264,9 +264,9 @@ these methods.
 </p>
 
 <p> In choosing operations, it is helpful to notice that well-designed methods
-usually fall into one of three categories: <b>creators</b>, <b>observers</b>
-(sometimes called <b>queries</b>), and <b>mutators</b> (also known as
-<b>commands</b>).
+usually fall into one of three categories: <em class=term>creators</em>, <em class=term>observers</em>
+(sometimes called <em class=term>queries</em>), and <em class=term>mutators</em> (also known as
+<em class=term>commands</em>).
 
 <ul>
 
@@ -281,7 +281,7 @@ those of the class being implemented.
 
 <p>
 As we have seen already, creators are often constructors for the class being
-defined, but they may also be methods called <b>factory methods</b>, which are
+defined, but they may also be methods called <em class=term>factory methods</em>, which are
 implemented by calling a constructor. By hiding the constructor used inside a
 factory method, looser coupling is achieved because the factory method can be
 changed to use a different constructor or even to create an object of a
@@ -293,18 +293,17 @@ have static methods or constructors, creators for an interface type
 
 <p>
 Abstractions that do not have any mutators that can change their state, such as
-<code>String</code> and <code>Integer</code>, are <b>immutable</b>
-abstractions. Abstractions with mutators are <b>mutable</b>. Both kinds of abstractions
+<code>String</code> and <code>Integer</code>, are <em class=term>immutable abstractions</em>.
+Abstractions with mutators are <em class=term>mutable abstractions</em>. Both kinds of abstractions
 have their uses. The advantage of immutable abstractions is that their objects can be
 shared freely by different code modules.
 </p> 
 
-<p>The useful principle of <b>command–query
-separation</b> guides method design. The principle says that
-a given operation should fall into one of these three
-categories, rather than multiple categories. This makes the interface easier to
-use. For example, you don't want to be forced to have side effects in order to
-check the state of an object.</p>
+<p>The useful principle of <em class=term>command–query separation</em> guides
+method design. The principle says that a given operation should fall into one
+of these three categories, rather than multiple categories. This makes the
+interface easier to use. For example, you don't want to be forced to have side
+effects in order to check the state of an object.</p>
 <p>Considering each of the categories in turn, we might come up with operations like the following:</p>
 <ul>
 <li><b>Creators:</b>
@@ -354,7 +353,7 @@ in the Java Collections Framework, rely on the ability to compare whether two
 objects are equal. However, implementing the <b>equals()</b> method is
 surprisingly tricky, because the notion of equality itself is more complex than
 it might appear at first glance. Java objects inherit a built-in implementation
-of the <code>equals()</code> method based on <b>reference equality</b>: two objects are
+of the <code>equals()</code> method based on <em class=term>reference equality</em>: two objects are
 equal if and only if they have the same reference. Reference equality is what the
 built-in operator <code>==</code> implements.
 For mutable abstractions, reference equality is usually the right
@@ -390,11 +389,11 @@ handy for building test cases. The copying method should override <code>Object.c
 start implementing, we should write clear, precise specifications so that we know when
 we have implemented the operations properly.
 </p>
-<p>For each method, we need to define a <b>signature</b> that gives the types of
+<p>For each method, we need to define a <em class=term>signature</em> that gives the types of
 the parameters, the type of the return value, and the possible exceptions that could
-be thrown. We should also define a specification (<b>spec</b>) that describes what the
+be thrown. We should also define a specification (<em class=term>spec</em>) that describes what the
 client needs to know (and is allowed to know) about the behavior of the method.</p>
-<p>For example, we might write a spec for the <b>degree</b> method as follows:</p>
+<p>For example, we might write a spec for the method <code>degree()</code> as follows:</p>
 <pre>
 /** Returns: the degree of the polynomial, the largest exponent with a non-zero
  * coefficient. */
@@ -402,22 +401,23 @@ int degree();
 </pre>
 <h4>Spec clauses</h4>
 <p>To help us construct a good spec, it is useful to think of the spec as being composed of
-various <b>clauses</b>. These cover different things the client needs to know about:</p>
+various <em class=term>clauses</em>. These cover different things the client needs to know about:</p>
 <ul>
-<li><b>Postconditions</b>: The <b>returns clause</b> describes what results come back when the method is called.
-For creators, we can also write this as a <b>creates</b> clause, which is a shorthand promising that the
+<li><b>Postconditions</b>: The <em class=term>returns clause</em> describes what results come back when the method is called.
+For creators, we can also write this as a <em class=term>creates</em> clause, which is a shorthand promising that the
 client can treat the returned object as distinct from any existing object.
-<li><b>Preconditions</b>: The <b>requires clause</b> describes what arguments the caller is permitted to supply.
-   A variant of this clause is a <b>checks clause</b>, which promises that the code will check certain
+<li><b>Preconditions</b>: The <em class=term>requires clause</em> describes what arguments the caller is permitted to supply.
+   A variant of this clause is a <em class=term>checks clause</em>, which promises that the code will check certain
    preconditions and halt the program with an error if the preconditions are violated. The only difference
    between these two versions of the precondition is that one can make debugging easier.
-<li><b>Effects</b>: The <b>effects clause</b> describes what side effects happen to the state of objects.
-A related clause is a <b>modifies clause</b>, which enumerates objects to which some effect occurs without
-specifying what the change is.
+<li><b>Effects</b>: The <em class=term>effects clause</em> describes what side
+effects happen to the state of objects.  A related clause is a <em
+class=term>modifies clause</em>, which enumerates objects to which some effect
+occurs without specifying what the change is.
 <li><b>Examples</b>: Sometimes an example or two can help clarify what the method does.
 </ul>
 <p>
-The key to writing good specs is to think of the spec as a <b>contract</b> between the client and the implementer.
+The key to writing good specs is to think of the spec as a <em class=term>contract</em> between the client and the implementer.
 Like a legal contract, its main goal is to help everyone figure out who to blame when things go wrong. This is
 very important for successful software engineering, especially in a large team.
 </p>
@@ -458,7 +458,7 @@ are mutators that change the values of instance variables to a given value. You
 may see advice that the programmer should implement getters and setters to
 allow access to private instance variables.  However, it is not a good idea to
 reflexively add getters and setters to classes you write. This pattern is
-actually an <b>antipattern</b> to be avoided. Getters and setters weaken the
+actually an <em class=term>antipattern</em> to be avoided. Getters and setters weaken the
 abstraction barrier by advertising the existence of instance
 variables—something that should be hidden by the abstraction barrier. Further,
 the instance variables do not necessarily correspond directly to the
@@ -479,7 +479,7 @@ better to think of such setters as mutators.
 Even getters can be dangerous. A common pitfall is to inadvertently allow
 modification of the data by exposing mutable state from inside the abstraction.
 Making mutable parts of the representation directly accessible to clients is
-an error known as <b>rep exposure</b>.  For example, suppose we store the
+an error known as <em class=term>rep exposure</em>.  For example, suppose we store the
 coefficients of a polynomial as an array in the instance variable
 <tt>coefficients</tt> and provide a getter:
 </p>
@@ -537,12 +537,13 @@ subject that mathematicians and computer scientists are still arguing about! As
 software developers aiming for effective abstractions, we need to think about it
 too.  The equality of two values can be defined in two natural ways:
 <ul>
-<li><p><b>Leibniz equality.</b> The mathematician
+<li><p><em class=term>Leibniz equality.</em> The mathematician
 <a href="https://en.wikipedia.org/wiki/Gottfried_Wilhelm_Leibniz">Leibniz</a>
 said that two things should be equal if and only if they are truly indistinguishable.
 </p>
 
-<li><b>State equality.</b> Some Java classes implement equality by comparing the
+<li><em class=term>State equality,</em> also known as value equality.
+Some Java classes implement equality by comparing the
 current state of two objects, as reported by all of their observers.  For
 example, two Java collections report themselves equal if they contain the
 same objects.
@@ -626,7 +627,7 @@ code might look like the following:
     }
 </pre>
 <p>
-Using the new Java 17 syntax for <code>instanceof</code> with <b>pattern matching</b>,
+Using the new Java 17 syntax for <code>instanceof</code> with <em class=term>pattern matching</em>,
 we can avoid the clunky explicit cast operation:
 <pre>
     boolean equals(Object o) {
@@ -647,8 +648,8 @@ subtype, whereas that object's own <code>equals</code> would conclude
 through an <code>instanceof</code> test that the objects are not equal.
 </p>
 <p>
-Symmetry can be restored by using the Java feature of <b>reflection</b>,
-<b>reflection</b>, in which we access properties of types at run time.
+Symmetry can be restored by using the Java feature of <em class=term>reflection</em>,
+<em class=term>reflection</em>, in which we access properties of types at run time.
 </p>
 <pre>
     boolean equals(Object o) {

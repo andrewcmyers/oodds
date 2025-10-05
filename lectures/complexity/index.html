@@ -85,8 +85,8 @@ There is an additional wrinkle: even at a given problem size, the
 performance of an algorithm may differ widely for different inputs. For
 example, some sorting algorithms run faster when the array is already
 sorted. To account for this variability, we usually characterize the
-<b>worst-case</b> performance of the algorithm on inputs of a given
-size, though sometimes, <b>average-case</b> performance is a more
+<em class=term>worst-case</em> performance of the algorithm on inputs of a given
+size, though sometimes, <em class=term>average-case</em> performance is a more
 important performance measure.
 </p>
 
@@ -95,7 +95,7 @@ important performance measure.
 <p>
 We write expressions like \( O(n) \) and \( O(n^2) \) to describe the
 performance of algorithms in terms of asymptotic complexity.  This
-notation is called <b>&ldquo;big-O&rdquo; notation</b>. It describes
+notation is called <em class=term>&ldquo;big-O&rdquo; notation</em>. It describes
 performance in a way that is largely independent of the kind of computer
 on which we are running our code. It is “asymptotic” in the sense
 that it describes how performance behaves as we increase \(n\) to large
@@ -125,19 +125,19 @@ A perhaps surprising consequence of the definition of \( O(g(n)) \) is that
 both \( f \) and \( f' \) are also \( O(n^2) \), because the quantity \(
 (3n&pm;2) \) is bounded above by \( kn^2 \) (for any \( k \)) as \( n \) grows
 large.  This shows that big-O notation does not precisely characterize the
-behavior of the function; it only establishes an <b>upper bound</b> on how the
+behavior of the function; it only establishes an <em class=term>upper bound</em> on how the
 function grows.</p>
 
 <p>
-A function that is \( O(n) \) is said to be asymptotically <b>linear</b> and a
-function that is \( O(1) \) is said to be <b>constant-time</b> because it is always
+A function that is \( O(n) \) is said to be asymptotically <em class=term>linear</em> and a
+function that is \( O(1) \) is said to be <em class=term>constant-time</em> because it is always
 less than some constant \( k \). A function that is \( O(n^2) \) is called
-<b>quadratic</b>, and a function that is \( O(n^y) \) for some positive
-integer \( y \) is said to be <b>polynomial</b>.
+<em class=term>quadratic</em>, and a function that is \( O(n^y) \) for some positive
+integer \( y \) is said to be <em class=term>polynomial</em>.
 </p>
 
 <p>
-Together, the constants \(k\) and \(n_0\) form a <b>witness</b> to the
+Together, the constants \(k\) and \(n_0\) form a <em class=term>witness</em> to the
 asymptotic complexity of the function. To show that a function has a particular
 asymptotic complexity, the direct way is to produce the necessary witness. For
 the example of the function \( f'(n) = 3n + 2 \), one witness is, as we saw
@@ -183,9 +183,9 @@ Let \(T(n)\) be the running time of this algorithm on an array range of size
 \(n = r - l + 1\). Then \(T(1)\) is at most  some constant \(c_1\), which is
 \(O(1)\).  For larger values, the time taken is at most some constant \(c_2\),
 plus the time needed to find the element in an array range of half the size. We
-can write this as a <b>recurrence</b>: \(T(n) = c_2 + T(n/2)\). For powers of
+can write this as a <em class=term>recurrence</em>: \(T(n) = c_2 + T(n/2)\). For powers of
 two, the solution to this recurrence is \(c_1 + c_2 \lg n\), which is \(O(\lg
-n)\). Thus, this algorithm offers <b>logarithmic performance</b>—a big speedup
+n)\). Thus, this algorithm offers <em class=term>logarithmic performance</em>—a big speedup
 over the obvious, naive linear search algorithm that simply loops through the
 array until the element is found.  For an array of a billion elements, it will
 be much faster to do ~30 recursive calls than to loop a billion times!

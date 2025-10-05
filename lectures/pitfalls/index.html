@@ -371,7 +371,7 @@ comparing those primitive values.
 </p>
 <p>In addition, Java will automatically &quot;box&quot; primitive values into the corresponding
 reference type when necessary, and will automatically unbox them in the other direction,
-too. This feature is called <b>autoboxing</b>. It can have some counterintuitive
+too. This feature is called <em class=term>autoboxing</em>. It can have some counterintuitive
 effects, however. For example, consider this code:
 </p>
 <pre>
@@ -414,7 +414,7 @@ the expression <code>l.equals(k)</code> is true.
 <p>Clearly, the assignment <code>j=i</code> is doing more than just an assignment.
 In fact, it's really executing the following code: <code>j = i.intValue()</code>.
 The <code>intValue()</code> method extracts the <code>int</code> value from the
-<code>Integer</code> object. This is an example of <b>syntactic sugar</b>, in
+<code>Integer</code> object. This is an example of <em class=term>syntactic sugar</em>, in
 which the language permits us to abbreviate how we write code.
 Conversely, if we assigned <code>i=j</code>, this would be syntactic sugar for
 <code>i = Integer.valueOf(j)</code>, which calls a method that depending on

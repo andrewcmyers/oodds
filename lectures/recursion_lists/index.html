@@ -20,7 +20,7 @@ f(n) = f(n-1) + f(n-2)
 \)
 </blockquote>
 <p>
-To make this definition make sense, we need a <b>base case</b> that stops
+To make this definition make sense, we need a <em class=term>base case</em> that stops
 the recursion definition from expanding indefinitely:
 </p>
 <blockquote>\(
@@ -145,14 +145,14 @@ the numbers beside the dotted arrows. The activation record of the called method
 is then destroyed because it is no longer needed.
 </p>
 <p>
-The activation records of a running program form a <b>stack</b>. A stack is an
-ordered sequence of items that supports two operations: <b>push</b> and <b>pop</b>.
-The <b>push</b> operation puts a new item at the beginning of the sequence and
-<b>pop</b> discards the first item in the sequence. The stack of activation
+The activation records of a running program form a <em class=term>stack</em>. A stack is an
+ordered sequence of items that supports two operations: <em class=term>push</em> and <em class=term>pop</em>.
+The <em class=term>push</em> operation puts a new item at the beginning of the sequence and
+<em class=term>pop</em> discards the first item in the sequence. The stack of activation
 records begins with the current activation record. Each call to a method causes
 the creation of a new activation record that is pushed onto the stack. Each
 return from a method causes the current activation record to be popped from the
-stack. Therefore, activation records are also known as <b>stack frames</b>.
+stack. Therefore, activation records are also known as <em class=term>stack frames</em>.
 </p>
 
 <h2>Termination and the base case</h2>
@@ -167,8 +167,8 @@ the base case is reached.
 <p>
 For example, consider the problem of determining the number of
 ways to select \(r\) items from a set of \(n\) items. We write
-this as \(C(n,r)\), where C stands for either <b>choose</b> or
-<b>combinations</b>. To write the code, we break the problem into
+this as \(C(n,r)\), where C stands for either “choose” or
+“combinations”. To write the code, we break the problem into
 deciding what to do with the first element of the set, and then solving
 the problem recursively for the rest of the set. If we choose the
 first element of the set of \(n\) elements, then there are \(C(n&minus;1,
@@ -229,13 +229,13 @@ of recursive calls.
 
 <h1>Linked lists</h1>
 <p>
-<b>Data structures</b> are collections of objects connected by references,
+<em class=term>Data structures</em> are collections of objects connected by references,
 typically used to store and look up information. Data structures often involve
-another kind of recursion: <b>recursion on types</b>.
+another kind of recursion: <em class=term>recursion on types</em>.
 </p>
 <p>
-A classic and very useful example of a data structure is the <b>singly linked list</b>.
-It consists of a sequence of <b>node</b> objects in which each node
+A classic and very useful example of a data structure is the <em class=term>singly linked list</em>.
+It consists of a sequence of <em class=term>node</em> objects in which each node
 points to the next node in the list. Some data is stored along with each node.
 The following figure depicts an example of this 
 data structure, a list containing the first three prime numbers in sequence.
@@ -263,8 +263,8 @@ with (new CFigure("linked-list")) {
 <p>
 As indicated by a slash through the appropriate node cell,
 the last node in the list does not point to another node; instead, it refers to
-the special value <code>null</code> or, alternatively, to a <b>sentinel
-object</b> that is used to mark the end of the list.
+the special value <code>null</code> or, alternatively, to a <em class=term>sentinel object</em>
+that is used to mark the end of the list.
 </p>
 <p>
 A linked list node is implemented with code like the following:
@@ -274,7 +274,7 @@ A linked list node is implemented with code like the following:
 </pre>
 <p>
 Notice that the class <code>Node</code> has an instance variable of the same type. That is,
-<code>Node</code> is defined in terms of itself. It is an example of a <b>recursive type</b>.
+<code>Node</code> is defined in terms of itself. It is an example of a <em class=term>recursive type</em>.
 Recursive types are perfectly legal in Java, and very useful.
 </p>
 <!-- p>
@@ -285,7 +285,7 @@ lists here.
 </p -->
 <p>Lists are conventionally terminated by using the special value <code>null</code>,
 but there are other options.
-A <b>sentinel object</b> can instead be used to mark the end of the list,
+A <em class=term>sentinel object</em> can instead be used to mark the end of the list,
 avoiding the possibility of a null-pointer exception:
 </p>
 <pre>
@@ -300,7 +300,7 @@ way to mark the end of the list.
 <p>
 Something we often want to do with linked lists is to add a new item into the list.
 It is easiest to add at the front of the list because the front of the list is
-immediately accessible. This is sometimes called the <b>cons</b> operation, a
+immediately accessible. This is sometimes called the <em class=term>cons</em> operation, a
 name inherited from the programming language Lisp:
 </p>
 <pre>
@@ -573,7 +573,7 @@ one above, using the tail-recursion removal trick!
 The list shown above is considered <em>singly</em> linked because each
 list node has one outgoing link. A singly linked list can only be traversed in one direction,
 from front to back. It is sometimes helpful to use a
-<b>doubly linked list</b> instead, in which each node points to both the
+<em class=term>doubly linked list</em> instead, in which each node points to both the
 previous and next nodes in the list. In a doubly linked list, it is possible to
 walk in both directions, at a cost of more storage to represent the extra links.
 </p>
@@ -605,15 +605,14 @@ other abstractions.
 </p>
 <h3>Immutable lists</h3>
 <p>
-For example, we can use a linked list to efficiently implement an <b>immutable
-list</b> of objects:
+For example, we can use a linked list to efficiently implement an <em class=term>immutable list</em> of objects:
 </p>
 <pre class=load>
 <a href="ImmList.java">ImmList.java</a>
 </pre>
 <p>
 To implement this interface using a <code>null</code>-terminated list, we will
-need an additional <b>header object</b> so that we can represent empty lists
+need an additional <em class=term>header object</em> so that we can represent empty lists
 with something other than <code>null</code>. (Notice that we don't bother to
 repeat the specifications from the interface. No need!)
 </p>
@@ -699,7 +698,7 @@ linked lists.
 <p>
 Conversely, we can use linked-list data
 structures to implement other abstractions.
-Another useful abstract data type is the <b>stack</b>,
+Another useful abstract data type is the <em class=term>stack</em>,
 a mutable abstraction that supports two key operations:
 </p>
 

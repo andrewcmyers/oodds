@@ -10,8 +10,7 @@ other abstractions.
 </p>
 <h3>Immutable lists</h3>
 <p>
-For example, we can use a linked list to efficiently implement an <b>immutable
-list</b> of objects:
+For example, we can use a linked list to efficiently implement an <em class=term>immutable list</em> of objects:
 
 <pre>
 // An immutable, ordered, finite sequence of objects (a<sub>0</sub>,
@@ -37,7 +36,7 @@ interface ImmList {
 }
 </pre>
 To implement this interface using a <code>null</code>-terminated list, we will
-need an additional <b>header object</b> so that we can represent empty lists
+need an additional <em class=term>header object</em> so that we can represent empty lists
 with something other than <code>null</code>. (Notice that we don't bother to
 repeat the specifications from the interface. No need!)
 </p>
@@ -195,7 +194,7 @@ abstractions, such as immutable lists and mutable lists, which provide a
 particular set of operations.  There are other ways to implement these
 abstractions, however, as we'll see later. And we can use these data
 structures, in turn, to implement other abstractions. For example, one useful
-abstraction we will see over and over again is the <b>stack</b>. A stack is an
+abstraction we will see over and over again is the <em class=term>stack</em>. A stack is an
 ordered list that supports two operations:
 </p>
 

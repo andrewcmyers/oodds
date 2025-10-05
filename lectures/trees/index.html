@@ -1,20 +1,20 @@
 <h1>Trees</h1>
 <p>
 Trees are a very useful class of data structures. Like (singly) linked lists, trees
-are <b>acyclic</b> graphs of node objects in which each node may have some
+are <em class=term>acyclic</em> graphs of node objects in which each node may have some
 attached information. Whereas linked list nodes have zero or one successor
 nodes, tree nodes may have more.
 Having multiple successor nodes (called
-<b>children</b>) makes trees more versatile as a way to represent information
+<em class=term>children</em>) makes trees more versatile as a way to represent information
 and often more efficient as a way to find information within the data
 structure.
 </p>
 <p>
-Like lists, trees are recursive data structures. A non-empty tree has a single <b>root node</b> that
+Like lists, trees are recursive data structures. A non-empty tree has a single <em class=term>root node</em> that
 is the starting point for searching in the tree. All nodes in the tree are
 reachable from the root by following a path of edges.
 All nodes except the root have exactly one predecessor node, called its
-<b>parent</b>. The root is the only node with no parent.</p>
+<em class=term>parent</em>. The root is the only node with no parent.</p>
 
 <p>It is customary to draw trees growing downward. The root
 node may be indicated by an incoming edge.
@@ -81,14 +81,14 @@ node may be indicated by an incoming edge.
 </div>
 <p>
 Because a tree is a recursive data structure, each node in the tree is
-the root of a <b>subtree</b>. For example, in the following tree, the node G has
+the root of a <em class=term>subtree</em>. For example, in the following tree, the node G has
 two children B and H, each of which is the root of a subtree. This tree is
-a <b>binary tree</b> in which each node has up to two children, which are
+a <em class=term>binary tree</em> in which each node has up to two children, which are
 implicitly distinguished as its left and right children. We say that
-a binary tree has a <b>branching factor</b> of 2. The children of a node are usually
+a binary tree has a <em class=term>branching factor</em> of 2. The children of a node are usually
 ordered from left to right, so B is the left child of G and root of the left
 subtree of G, and H is the right child of G and root of the right subtree of G.
-A node with no children is called a <b>leaf</b>.
+A node with no children is called a <em class=term>leaf</em>.
 </p>
 <div class=figure>
 <canvas id=tree_anatomy style="width:600px; height:200px"></canvas>
@@ -144,10 +144,10 @@ A node with no children is called a <b>leaf</b>.
 </script>
 </div>
 <p>
-Each node in a tree has a <b>height</b> and a <b>depth</b>. The <b>depth</b> of
+Each node in a tree has a <em class=term>height</em> and a <em class=term>depth</em>. The <em class=term>depth</em> of
 a node is the length of the (unique) path from the root down to that node. The
 length of a path is the number of edges in the path, so the depth of the root
-is always 0.  The <b>height</b> of a node is the length of the longest path
+is always 0.  The <em class=term>height</em> of a node is the length of the longest path
 from that node to a leaf below it, so leaf nodes have height 0. The height of
 the tree is the height of its root, which is the same as the depth of its
 deepest leaf. Therefore, a tree consisting of a single (root) node has height
@@ -185,7 +185,7 @@ inheritance and subtyping hierarchies, game search trees, and decision trees.</p
 <li><p>Trees make
 it possible to find information within the data structure relatively quickly,
 when they can be arranged that all nodes are fairly close to the root. For simplicity, let's
-think about a <b>complete binary tree of height \(h\)</b> in which all leaves are at equal depth \(h\) and all non-leaves have exactly two children. In a complete binary tree of depth \(h ≥ 0\), there are \(1 + 2
+think about a <em class=term>complete binary tree</em> of height \(h\) in which all leaves are at equal depth \(h\) and all non-leaves have exactly two children. In a complete binary tree of depth \(h ≥ 0\), there are \(1 + 2
 + 4 + ･･･ + 2^h = 2^{h+1} &minus; 1\) nodes. Calling this number
 of nodes \(n\), we have \(h = \lg(n+1)-1\), so \(h\) is \(O(\log n)\). (Recall that \(\lg x\) is the
 base-2 logarithm of \(x\), and that \(O(\log_a n) = O(\log_b n)\) for any constant
@@ -207,11 +207,11 @@ factors), and
 Efficiently searching for information in trees relies on knowing which path to take through the
 tree. This property can be obtained if  the data stored in tree nodes can be ordered
 according to some ordering relation. For example, we might search for information by using
-a string value as the key, and order the strings by dictionary order. A <b>search tree</b> is
+a string value as the key, and order the strings by dictionary order. A <em class=term>search tree</em> is
 a tree data structure that exploits ordering to allow finding information quickly.
 </p>
 <p>
-A particularly important form of search tree is a <b>binary search tree</b>,
+A particularly important form of search tree is a <em class=term>binary search tree</em>,
 a binary tree that satisfies the following data structure invariant.</p>
 
 <p class=definition>
@@ -286,7 +286,7 @@ has the <code>compareTo()</code> method.
 </p>
 <p>
 A more flexible way to define the ordering is to provide it through a
-<b>comparator object</b> that implements the Comparator interface:
+<em class=term>comparator object</em> that implements the Comparator interface:
 <pre class=load>
 <a href="Comparator.java">BST</a>
 </pre>
@@ -320,7 +320,7 @@ algorithm can be expressed compactly as a (tail-)recursive method on <code>Binar
 We've used Java's &ldquo;ternary expression&rdquo; here to make the code
 more compact (and to show off another coding idiom!) The expression
 <code><i>b</i> ? <i>e</i><sub>1</sub> : <i>e</i><sub>2</sub></code> is a
-<b>conditional expression</b> whose value is the result of either
+<em class=term>conditional expression</em> whose value is the result of either
 <i>e</i><sub>1</sub> or <i>e</i><sub>2</sub>, depending on whether the boolean
 expression <i>b</i> evaluates to <code>true</code> or <code>false</code>.</p>
 <p>
@@ -421,7 +421,7 @@ has only right children and has the performance characteristics of a linked list
 For this tree, \(h\) is \(O(n)\), and therefore the main tree operations are
 \(O(n)\). Our goal is logarithmic performance, which requires \(h\) to be
 \(O(\log n)\). A tree in which \(h\) is \(O(\log n)\) is said to be
-<b>balanced</b>.  Fortunately, there are many ways to obtain balanced trees,
+<em class=term>balanced</em>.  Fortunately, there are many ways to obtain balanced trees,
 and we will see some of them.
 </p>
 <h3>Using binary search trees to implement maps</h3>
@@ -445,7 +445,7 @@ Three cases must be considered:
 </p>
 <ol>
 <li><em>Node \(x\) is a leaf.</em>
-<p>In this case, we <b>prune</b> node \(x\) from the tree by setting the
+<p>In this case, we <em class=term>prune</em> node \(x\) from the tree by setting the
 pointer to it from \(p\) to <code>null</code>. The other subtree of \(p\) (shown as
 a white triangle, though it may be empty) is unchanged.</p>
 <div class=figure>
@@ -506,7 +506,7 @@ with (delete_leaf_fig) {
 
 </li>
 <li><em>Node \(x\) has one child.</em>
-<p>We <b>splice out</b> node \(x\) from the tree by redirecting the pointer from \(p\)
+<p>We <em class=term>splice out</em> node \(x\) from the tree by redirecting the pointer from \(p\)
 to \(x\) to now point to the single child of \(x\). Since the BST invariant guarantees
 that \(A &lt; x &lt; p &lt; B\), this operation preserves the invariant.
 </p>
@@ -560,7 +560,7 @@ with (delete_one_child) {
 </li>
 <li><em>Node \(x\) has two children.</em>
 <p>In this case it is not as easy to remove node \(x\). Instead, we
-<b>replace</b> the data in the node with the data from either the immediate
+<em class=term>replace</em> the data in the node with the data from either the immediate
 next or the immediate previous element in the tree. Without loss of generality,
 let's take the immediate next element; call it \(y\).  Since \(y\) is the
 immediate next element, it must occur in the right subtree of node \(x\).
@@ -739,10 +739,10 @@ probability, assuming the random number generator is truly random.
 <h2>Traversing trees</h2>
 <p>
 Given a tree containing some number of elements, it is sometimes useful to
-<b>traverse</b> the tree, visiting each element and doing something with it,
+<em class=term>traverse</em> the tree, visiting each element and doing something with it,
 such as printing it out or adding it to another collection.
 </p>
-<p>The most common traversal strategy is <b>in-order traversal</b>, in which
+<p>The most common traversal strategy is <em class=term>in-order traversal</em>, in which
 each element is visited between the elements of the subtrees. In-order traverse
 can be expressed easily using recursion:
 </p>
@@ -784,7 +784,7 @@ asymptotically than \(O(n \log n)\), we will later see some other sorting algori
 that are just as asymptotically efficient but have lower constant factors.
 </p>
 <p> Since it is easy to visit elements in sorted order, search trees also
-support efficient <b>range queries</b>. Given two elements, we can find all
+support efficient <em class=term>range queries</em>. Given two elements, we can find all
 elements between them, in sorted order, by doing modifying the in-order
 traversal to skip parts of the tree that are outside the desired range. If a
 node's element is above the range, then its right subtree can be skipped
@@ -794,8 +794,8 @@ can be skipped.
 <p>
 Other traversals than in-order can be done.
 By visiting a node <i>before</i> visiting either of its children,
-we obtain <b>preorder</b> traversal. By visiting a node <i>after</i> visiting both of its children,
-we obtain <b>postorder</b> traversal.
+we obtain <em class=term>preorder</em> traversal. By visiting a node <i>after</i> visiting both of its children,
+we obtain <em class=term>postorder</em> traversal.
 </p>
 <pre class=load>
 <a href="pre-order-traverse.java">pre</a>

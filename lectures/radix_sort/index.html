@@ -1,15 +1,16 @@
 <h1>Linear-Time Sorting Algorithms</h1>
 <p>
 We have seen a number of sorting algorithms, including
-<b>insertion sort</b> and <b>selection sort</b>, which are quadratic time in the worst case,
-as well as <b>mergesort</b>, which is O(n log n) time in the worst case. You also learned about
-<b>quicksort</b>, which is quadratic time in the worst case but O(n log n) expected time
+<em class=term>insertion sort</em> and <em class=term>selection sort</em>,
+which are quadratic-time in the worst case,
+as well as <em class=term>mergesort</em>, which is O(n log n) time in the worst case. You also learned about
+<em class=term>quicksort</em>, which is quadratic time in the worst case but O(n log n) expected time
 with randomly chosen pivots and requires no extra storage. Quicksort is very fast in practice,
 but not stable.
 </p>
 
 <p>
-All of these are <b>comparison-based</b> sorting algorithms, which means
+All of these are <em class=term>comparison-based</em> sorting algorithms, which means
 they work on any data that can be compared according to some linear order &le; as 
 specified by, say, the <code>Comparable&lt;T&gt;</code> interface. Comparison-based algorithms
 do not use any information about the data except that the items being compared are linearly
@@ -55,7 +56,7 @@ the same test, and in fact may be completely independent of each other.
 </p>
 
 <p>
-In this way the algorithm generates a <b>computation tree</b> whose nodes are states of the computation (Fig. 1).
+In this way the algorithm generates a <em class=term>computation tree</em> whose nodes are states of the computation (Fig. 1).
 At the root is the initial state. There is a branch point in the tree at every comparison. Each run of the algorithm
 on some input of length n follows exactly one path down through the tree, depending on the input array. At the very bottom of the
 tree are the leaves, which are the final states of the algorithm. Each leaf is a halting state at which
@@ -111,7 +112,7 @@ algorithm could not have traced the same path in the tree on a and b. There must
 </p>
 
 <p>
-For claim 2, we count the maximum number of states that can possibly occur in a binary tree of height h (The <b>height</b> of a tree is the length of the longest path.) A tree of height 0 can contain at most one node, namely the root. A tree of height 1 can contain at most 3 nodes, the root and two children. A tree of height 2 can contain at most 7 nodes: the root, two children, and four grandchildren. In general, one can show inductively that binary a tree of height h can have at most 2<sup>h+1</sup>&minus;1 states and 2<sup>h</sup> leaves.
+For claim 2, we count the maximum number of states that can possibly occur in a binary tree of height h (The <em class=term>height</em> of a tree is the length of the longest path.) A tree of height 0 can contain at most one node, namely the root. A tree of height 1 can contain at most 3 nodes, the root and two children. A tree of height 2 can contain at most 7 nodes: the root, two children, and four grandchildren. In general, one can show inductively that binary a tree of height h can have at most 2<sup>h+1</sup>&minus;1 states and 2<sup>h</sup> leaves.
 </p>
 
 <p>
@@ -145,7 +146,7 @@ properties of the data being sorted.
 </p>
 
 <p>
-One popular such method is <b>counting sort</b>, a special case of <b>bucket sort</b> (discussed below). This is a useful method for sorting integers when the range of possible values is small. It proceeds by creating an <code>int</code> array <code>count</code> to count the number of occurrences of each value in the input array.
+One popular such method is <em class=term>counting sort</em>, a special case of <em class=term>bucket sort</em> (discussed below). This is a useful method for sorting integers when the range of possible values is small. It proceeds by creating an <code>int</code> array <code>count</code> to count the number of occurrences of each value in the input array.
 </p>
 
 <p>
@@ -181,7 +182,7 @@ The time complexity of this algorithm is O(m + n), where m is the number of buck
 <h2>Bucket sort</h2>
 
 <p>
-<b>Bucket sort</b> is like counting sort, but somewhat more general. In bucket sort, we form an array of <b>buckets</b>, which is a partition of the possible input values into disjoint sets. We then loop through the input array, putting each element into its bucket. When we are done, we sort the buckets individually using any sorting algorithm. The buckets are typically much smaller than the original array. When done, the sorted buckets are concatenated together to give the output array.
+<em class=term>Bucket sort</em> is like counting sort, but somewhat more general. In bucket sort, we form an array of <em class=term>buckets</em>, which is a partition of the possible input values into disjoint sets. We then loop through the input array, putting each element into its bucket. When we are done, we sort the buckets individually using any sorting algorithm. The buckets are typically much smaller than the original array. When done, the sorted buckets are concatenated together to give the output array.
 </p>
 
 <p>
@@ -244,7 +245,7 @@ This can be accomplished by sorting the entire array on the value of the least s
 </p>
 
 <p>
-Recall that a sorting method is <b>stable</b> if equal elements appear in the same order in the sorted array as in the original array. This is important if we wish to sort on two fields A and B. We wish the elements to be sorted primarily with respect to some field A, but for elements with the same value of A, they should be sorted secondarily on some other field B. If the sort is stable, we can simply sort everything on the field B first, then on the field A. If the second sort is stable, then it does not undo the results of the first sort, so elements with the same value of A will still be sorted with respect to B. In the case of radix sort, we may have several chunks, not just two.
+Recall that a sorting method is <em class=term>stable</em> if equal elements appear in the same order in the sorted array as in the original array. This is important if we wish to sort on two fields A and B. We wish the elements to be sorted primarily with respect to some field A, but for elements with the same value of A, they should be sorted secondarily on some other field B. If the sort is stable, we can simply sort everything on the field B first, then on the field A. If the second sort is stable, then it does not undo the results of the first sort, so elements with the same value of A will still be sorted with respect to B. In the case of radix sort, we may have several chunks, not just two.
 </p>
 
 <p>

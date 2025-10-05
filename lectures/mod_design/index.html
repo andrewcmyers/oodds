@@ -213,7 +213,7 @@ Writing classes that can be inherited and reused effectively requires
 keeping these two different kinds of specification separate.
 </p>
 
-<h3>Behavioral subtyping and implementations</h3>
+<h2>Behavioral subtyping</h2>
 <p>
     We want our implementations to be usable in a modular way, even and especially
     as implementations evolve. To achieve modularity, everyone—both clients
@@ -228,6 +228,39 @@ keeping these two different kinds of specification separate.
     violating type safety, but also without violating the specifications of the supertype.
     In other words, inheritance needs to be used in a way that preserves
     behavioral subtyping.
+</p>
+<p>
+    Behavioral subtyping should hold for all forms of subtyping: both classes implementing
+    interfaces, and interfaces extending other interfaces. For example, recall the
+    <code>Board</code> interface, which has an observer <code>tile()</code>:
+<pre>
+/** A state of the 2048 game, which contains a 4x4 grid of numeric tiles. */
+interface Board {
+   /**
+    * Returns: the value of the tile at row r and column c, or 0 if that tile
+    *   position is blank.
+    * Requires: both r and c are in the range 0..3.
+    */
+   int tile(int r, int c);
+   ...
+}
+</pre>
+<p>
+   Now, suppose we wanted to define a subtype <code>IBoard</code> with
+   a specification for <code>tile()</code> that eliminates the precondition:
+</p>
+<pre>
+   /**
+    * Returns: the value of the tile at row r and column c, or 0 if that tile
+    *   position is blank. If r and c are out of range, throws an OutOfRange
+    *   exception.
+    */
+</pre>
+<p>
+    This specification <em class=term>refines</em>
+
+
+    
 </p>
 <p>
     Behavioral subtyping is another reason why it is useful to distinguish
@@ -300,7 +333,7 @@ code ought to move.
 <h2>Implementation strategies</h2>
 <p>
 The MDD also helps us plan how to implement code. There
-are two basic ways to go about implementing: <b>top-down</b> and <b>bottom-up</b>.
+are two basic ways to go about implementing: <em class=term>top-down</em> and <em class=term>bottom-up</em>.
 </p>
 
 <p>
@@ -308,8 +341,8 @@ are two basic ways to go about implementing: <b>top-down</b> and <b>bottom-up</b
 and work our way down, implementing clients before the modules on which they
 depend. Top-down development helps us get high-level design decisions right
 early on and to understand user needs. The program is always in a demoable and
-testable state as long as we write <b>stub</b> or <b>mock</b> implementations of the missing
-pieces of the code. With top-down development, we can do <b>system testing</b>
+testable state as long as we write <em class=term>stub</em> or <em class=term>mock</em> implementations of the missing
+pieces of the code. With top-down development, we can do <em class=term>system testing</em>
 in which the whole system is being tested at once, and modulo any functionality
 not yet implemented in stubs, we can test as we develop.
 </p>
@@ -351,8 +384,8 @@ with (new CFigure("top-down-stub")) {
 that depend on them. Bottom-up development has the advantage that, assuming we
 are testing as we go, we are also building upon solid, fully implemented
 foundations. As we implement each module, we can immediately test it with
-<b>unit tests</b> designed for that module. Since the top levels of the
-program are not present, we test instead using a <b>test harness</b> for each
+<em class=term>unit tests</em> designed for that module. Since the top levels of the
+program are not present, we test instead using a <em class=term>test harness</em> for each
 module. The test harness contains that module's unit tests. Bottom-up development is
 particularly effective when it is not clear whether key parts of the
 system can be implemented with acceptable performance.
@@ -426,7 +459,7 @@ but where the pasted version has not been consistently adapted to its new
 context.
 </p>
 <p>
-Copying and pasting code is one of those “lazy shortcuts” that creates
+Copying and pasting code is a lazy shortcut that usually creates
 more work in the long run. When you feel the need to copy code, try instead to
 introduce an abstraction (a class, a method) that captures the functionality
 that you are copying. You might have to think a little harder, but your code

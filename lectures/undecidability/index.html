@@ -11,17 +11,17 @@ no matter how much time or space is available.
 
 <p>
 The class of problems that are generally considered to be <em>tractable</em> are those
-that can be solved in <b>polynomial time</b>, which is to say \( O(n^k) \)
+that can be solved in <em class=term>polynomial time</em>, which is to say \( O(n^k) \)
 for some \(k\). In practice, algorithms that take polynomial time with \(k\) larger
 than 1 scale poorly, and algorithms that require \(k≥5\) are almost never used
 in practice (and even \(k=3\) and \(k=4\) are often impractically slow).
 </p>
 <p>
-We define the complexity class <b>P</b> as the set of all problems that can be
+We define the complexity class <em class=term>P</em> as the set of all problems that can be
 solved by an algorithm taking polynomial time, that is, time \(O(n^k)\) for 
 some constant \(k\).</p>
 <p>
-Beyond P is the class <b>EXPTIME</b>, which includes all
+Beyond P is the class <em class=term>EXPTIME</em>, which includes all
 algorithms that take time \(O(2^{n^k})\) for some constant \(k\).
 Algorithms in EXPTIME effectively hit a wall when the problem size \(n\)
 becomes even moderately large.
@@ -35,8 +35,8 @@ which gets smaller as n increases.
 (To see why, note that \(((n+1)/n)^k ≈ 1 + k/n\) when \(n ≫ k\).
 </p>
 <p>
-Another important class is <b>nondeterministic polynomial time</b>, or
-<b>NP</b>. These are the problems for which a potential solution can be
+Another important class is <em class=term>nondeterministic polynomial time</em>, or
+<em class=term>NP</em>. These are the problems for which a potential solution can be
 <em>checked</em> in polynomial time. It may be intractably difficult
 to <em>discover</em> a solution to a problem in NP, but once we are given
 a candidate solution, we can check in (deterministic) polynomial time
@@ -45,16 +45,16 @@ whether it is indeed a solution.
 <p>
 Examples of problems in NP are the following:
 <ul>
-<li><b>Graph coloring.</b> Does there exist a valid \(k\)-coloring of a given undirected graph, that is,
+<li><em class=term>Graph coloring.</em> Does there exist a valid \(k\)-coloring of a given undirected graph, that is,
 a coloring of the vertices with \(k\) distinct colors such that no two adjacent vertices have the same color?
 If we are given a \(k\)-coloring, checking whether it is valid can be done in linear time.
 But if we are not given such a coloring, it is not known how to efficiently test whether one
 exists or how to find one if so.
-<li><b>Hamiltonian cycles.</b> A Hamiltonian cycle in a graph is a cycle that includes
+<li><em class=term>Hamiltonian cycles.</em> A Hamiltonian cycle in a graph is a cycle that includes
 every vertex exactly once. The problem is to test whether such a cycle exists in a given graph.
 Given a candidate cycle as a list of vertices, it can be checked in polynomial time (in the size of
 the graph) whether it is indeed a cycle and whether each vertex occurs exactly once.
-<li><b>Boolean satisfiability (SAT)</b>. Given a boolean formula using logical “and”, ”or”, and “not”, is it
+<li><em class=term>Boolean satisfiability (SAT)</em>. Given a boolean formula using logical “and”, ”or”, and “not”, is it
 is there a way to choose boolean values (true or false) for the variables in the formula that cause
 the whole formula to evaluate to true? The formula is said to be <em>satisfiable</em> if such an
 assignment exists. Given a candidate assignment of truth values to the variables,
@@ -140,15 +140,15 @@ integer is prime or composite&mdash;is known to be in polynomial time.
 Beyond the problems mentioned above, there are even computational
 problems that cannot be solved at all, even in principle, and even with
 unlimited time and space. We can prove mathematically
-that such problems exist. We will focus on <b>decision problems</b> where
+that such problems exist. We will focus on <em class=term>decision problems</em> where
 the goal is to decide whether a given property holds of some input, and we will
-show that some decision problems are <b>undecidable</b> by any algorithm.
+show that some decision problems are <em class=term>undecidable</em> by any algorithm.
 </p>
 
 <h3>Undecidability of the halting problem</h3>
 
 <p>
-An example of such a decision problem is the <b>halting problem</b>: Given a
+An example of such a decision problem is the <em class=term>halting problem</em>: Given a
 program <code>p</code> and input <code>x</code> to that program, does
 <code>p</code> terminate when run on input <code>x</code>? We will see that
 the halting problem is undecidable in general. That is, there is no
@@ -275,7 +275,7 @@ The conclusion is that some useful results are simply not computable by any algo
 
 <p>
 This result may sound obscure but it has some far-reaching practical implications.
-In particular, many different <b>program analyses</b> besides
+In particular, many different <em class=term>program analyses</em> besides
 termination are also undecidable. For example, we cannot reliably
 identify dead code (code that cannot be reached), or tell if a given
 program will ever generate a <code>NullPointerException</code>, or
@@ -308,7 +308,7 @@ termination is undecidable; therefore, predicting
 </p>
 
 <p>
-As a result, all “interesting” program analyses must be <b>conservative</b>,
+As a result, all “interesting” program analyses must be <em class=term>conservative</em>,
 giving answers &ldquo;true&rdquo;, &ldquo;false&rdquo; or
 &ldquo;not sure&rdquo;. Type checking is another example of such an analysis.
 A compiler type-checks programs conservatively by only allowing programs
@@ -321,10 +321,11 @@ programs being ill-typed even though they do not cause run-time type errors.
 By similar arguments, we see that we have to be conservative about many other
 facts we'd like to know about programs&mdash;for example, whether they are
 correct, whether they are secure, or whether they leak memory. All automatic
-tools for analyzing programs will either be <b>incomplete</b>, meaning that
-they reject some safe programs as possibly unsafe (this is a <b>false
-positive</b> or a <b>false alarm</b>), or else <b>unsound</b>, meaning that they accept some unsafe
-programs as safe (this is a <b>false negative</b>). Despite these limitations,
+tools for analyzing programs will either be <em class=term>incomplete</em>, meaning that
+they reject some safe programs as possibly unsafe (this is a <em class=term>false positive</em>
+or a <em class=term>false alarm</em>), or else <em class=term>unsound</em>,
+meaning that they accept some unsafe
+programs as safe (this is a <em class=term>false negative</em>). Despite these limitations,
 software developers use incomplete and even unsound automatic tools all the time:
 they can still be useful despite their limitations.
 </p>

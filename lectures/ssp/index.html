@@ -19,8 +19,8 @@ Finding shortest paths in graphs is very useful.
 Suppose we have a weighted directed graph,
 and we want to find the path between two vertices with the minimum
 total weight.
-Interpreting edge weights as distances, this is a <b>shortest-path
-problem</b>. In the example illustrated, there is a path from \(v_0\) to \(v_1\)
+Interpreting edge weights as distances, this is a <em class=term>shortest-path problem</em>.
+In the example illustrated, there is a path from \(v_0\) to \(v_1\)
 with distance 50, but it may
 not be easy to find it. We could find the shortest path by enumerating all possible
 permutations of the vertices and checking which one, but there are \(O(V!)\)
@@ -42,12 +42,12 @@ abstract tricolor algorithm. The tricolor algorithm is <em>nondeterministic</em>
 allows a range of possibilities for each next step. BFS and DFS resolve the nondeterminism
 in different ways and visit nodes in different orders. 
 We now explore another instance of the tricolor algorithm due to
-Edsger Dijkstra, which solves the <b>single-source shortest path</b> problem.
-The algorithm is known as <b>Dijkstra's algorithm</b>.
+Edsger Dijkstra, which solves the <em class=term>single-source shortest path</em> problem.
+The algorithm is often known simply as <em class=term>Dijkstra's algorithm</em>,
+although it is not the only important algorithm Dijkstra introduced!
 </p>
 <p>For simplicity, we assume that all edge weights are nonnegative.
-The <b><a href="http://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm">
-Bellman-Ford algorithm</a></b> is a generalization of Dijkstra's algorithm that can be
+The <em class=term><a href="http://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm"> Bellman-Ford algorithm</a></em> is a generalization of Dijkstra's algorithm that can be
 used in the presence of negative weights, provided there are no negative-weight cycles.
 Minimum distance doesn't make sense in graphs with negative-weight cycles, because one could
 traverse a negative-weight cycle an arbitrary number of times, and there would be
@@ -58,7 +58,7 @@ The problem is to find the shortest path from a given root
 node to all other nodes. To find a path from <em>multiple</em> root nodes, the single-source shortest path algorithm
 can be used repeatedly, once for each starting node; but if many root nodes are
 to be considered, it is more efficient to use a different algorithm that solves the
-<b>all-pairs shortest-path problem</b>. The <b>Floyd–Warshall algorithm</b>
+<em class=term>all-pairs shortest-path problem</em>. The <em class=term>Floyd–Warshall algorithm</em>
 is the standard algorithm for this task and is covered in later courses.
 </p>
 
@@ -81,13 +81,13 @@ are not discovered (turned from white to gray) in distance order, but they are
 <em>finished</em> (turned from gray to black) in distance order.
 </p>
 <p>Like BFS and the iterative version of DFS, Dijkstra's algorithm can be implemented
-as a <b>worklist algorithm</b>. Recall that in BFS and DFS, the worklist is a queue and a stack, respectively.
-In Dijkstra's algorithm, the worklist is a <b>priority queue</b>, which we will explain shortly.
+as a <em class=term>worklist algorithm</em>. Recall that in BFS and DFS, the worklist is a queue and a stack, respectively.
+In Dijkstra's algorithm, the worklist is a <em class=term>priority queue</em>, which we will explain shortly.
 The three colors represent the following situations:
 <ul>
-<li><b>White</b> nodes are undiscovered. Their distance field is set to
+<li><em class=term>White</em> nodes are undiscovered. Their distance field is set to
 ∞ because no path to them has been found yet. (<code>v.dist = ∞</code>)
-<li><b>Gray</b> nodes are frontier nodes. They are on the priority queue, which 
+<li><em class=term>Gray</em> nodes are frontier nodes. They are on the priority queue, which 
 we call <code>frontier</code>.
 Their distance field is finite and is set to the distance along the shortest
 <b>known</b> path from the root to that node. 
@@ -140,7 +140,7 @@ otherwise have.
 19   }
 </pre>
 <p>
-Dijkstra's algorithm is an example of a <b>greedy algorithm</b>: an algorithm
+Dijkstra's algorithm is an example of a <em class=term>greedy algorithm</em>: an algorithm
 in which simple local choices (in this case, choosing the gray vertex with the smallest
 value of <code>g.dist</code>) lead to globally optimal results (minimal distances
 computed to all vertices). Many problems, such as finding minimum
@@ -221,8 +221,8 @@ predecessor satisfying this equation.
 
 <p>
 The thick edges in the previous figure show the shortest paths from the root
-<code>v<sub>0</sub></code> to every other node. They form a <b>spanning
-tree</b> that includes every vertex in the graph and also includes a shortest path to
+<code>v<sub>0</sub></code> to every other node. They form a <em class=term>spanning tree</em>
+that includes every vertex in the graph and also includes a shortest path to
 every such vertex.
 </p>
 
@@ -253,7 +253,7 @@ of initializing all vertex distances to ∞ into this initial graph construction
 <p>
 It turns out there are more complex data structures that implement a priority
 queue while making the increase-priority operation only \(O(1)\). Two such data
-structures are <b>Fibonacci heaps</b> and <b>relaxed heaps</b>. If adjusting
+structures are <em class=term>Fibonacci heaps</em> and <em class=term>relaxed heaps</em>. If adjusting
 the distance is \( O(1)\), the algorithm takes just \(O(V \log V + E)\)
 time. However, these asymptotically efficient data structures do not use the
 elegant encoding of the tree structure as an array—they use real pointers—which
@@ -268,7 +268,7 @@ practice.
 To show that this algorithm works, we need a loop invariant.
 </p>
 <p>
-At any stage of the algorithm, define an <b>interior path</b> to a node <code>v</code>
+At any stage of the algorithm, define an <em class=term>interior path</em> to a node <code>v</code>
 to be a path from the root to <code>v</code> that goes through only black vertices,
 except possibly for <code>v</code> itself.
 </p>
@@ -476,7 +476,9 @@ A* is used for many different optimization problems, including single-player gam
 </p>
 <p>The insight behind the A* algorithm is that for any given
 vertex, we may be able to estimate the remaining distance to the destination.
-We define a <b>heuristic function</b> <code>h(v)</code> that constructs this estimate. Then,
+We define a <em class=term>heuristic function</em> <code>h(v)</code> that constructs this estimate.
+(In general, a heuristic is a computation that does not promise to produce the correct result.)
+Then,
 the priority queue uses <code>v.dist + h(v)</code> as the priority instead of just <code>v.dist</code>.
 Depending on how accurate the heuristic function is, this change causes the
 search to focus on nodes that look like they are in the right direction.</p>
@@ -494,8 +496,8 @@ However, we have to be careful when defining <code>h(v)</code>. If for an edge <
 of weight <code>d</code>, the total distance including the heuristic function
 <em>decreases</em> along the edge, the conditions of Dijkstra's algorithm
 (nonnegative edge weights) are no longer met. In that case we have an
-<b>inadmissible heuristic</b> that could cause us to miss the optimal
-solution. A heuristic function is <b>admissible</b> if it never
+<em class=term>inadmissible heuristic</em> that could cause us to miss the optimal
+solution. A heuristic function is <em class=term>admissible</em> if it never
 overestimates the true remaining distance. When searching with an admissible
 heuristic, each node is seen only once and the optimum path has been found
 immediately when the goal node is reached. 

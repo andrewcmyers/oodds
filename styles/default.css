@@ -193,6 +193,8 @@ p, li {
 
 p.definition { font-weight: bold; padding: 1em; background-color: #ddd; border: 1px solid black }
 
+em.term { font-weight: bold }
+
 dt { font-weight: bold }
 
 

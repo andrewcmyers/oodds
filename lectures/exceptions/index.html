@@ -11,7 +11,7 @@ exceptions well can make programs clearer and more reliable.
 <p>
 In general, a statement or expression may not evaluate in a normal way. For example,
 if we try to divide a number by zero, there is no sensible result. Java handles such
-operations using <b>exceptions</b>.
+operations using <em class=term>exceptions</em>.
 </p>
 <p>
 An exception is associated with a particular Java class, which must be a subclass
@@ -78,7 +78,7 @@ consolidates the handling of multiple errors into one place.
 <h3>Checked vs. unchecked exceptions</h3>
 <p>
 Java requires that some exceptions be declared in methods that might
-generate them.  These are called <b>checked exceptions</b>. Checked
+generate them.  These are called <em class=term>checked exceptions</em>. Checked
 exceptions force the client to be aware that they might happen
 and to handle them appropriately.
 If a method contains an expression or statement that can generate a checked exception,
@@ -87,7 +87,7 @@ exception.  Declaring exceptions helps make code more reliable because clients
 can tell what exceptions will be generated, and the compiler will identify when
 these exceptions are not handled.
 </p>
-Unchecked exceptions include the <b>run-time exceptions</b>
+Unchecked exceptions include the <em class=term>run-time exceptions</em>
 like <code>NullPointerException</code> but also subclasses of
 <code>Error</code>. The compiler will not warn clients if they are
 ignoring unchecked exceptions.
@@ -225,7 +225,7 @@ deal with this problem is to write a catch clause for those exceptions, and to t
 <h3>Specifying partial functions</h3>
 <p>
 Recall the <code>sqrt</code> method. It is a
-<b>partial function</b> that has no natural result in the case where the
+<em class=term>partial function</em> that has no natural result in the case where the
 requested exponent is negative. There are several alternative ways to deal with
 this situation, with varying tradeoffs in terms of performance vs. debugging.
 The alternative least friendly to the client is simply to require that the
@@ -250,11 +250,11 @@ is clear that the client must ensure that <code>n</code> is not negative.
 If the requires clause is violated, it is the <em>client's</em> fault.
 </p>
 
-<p>A more forgiving version of the same spec uses a <b>checks clause</b>, which is
+<p>A more forgiving version of the same spec uses a <em class=term>checks clause</em>, which is
 another way to express a precondition. The difference is that the checks clause promises to check that the
 precondition holds, and to stop the program as cleanly as possible if it is
 violated. For example, the method might throw an exception that is a subclass of
-<b>Error</b>, which the client should not try to catch. However, client code
+<code>Error</code>, which the client should not try to catch. However, client code
 that violates the precondition is still wrong code.  It is still the
 client's fault if the precondition is violated.
 </p>

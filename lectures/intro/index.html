@@ -264,7 +264,7 @@ to explore many possible sequences of moves.
 <p>
 Developing algorithms for the 15-puzzle is made much easier if we
 recognize that it is an example of an important computer science
-abstraction: a <b>graph</b>.
+abstraction: a <em class=term>graph</em>.
 </p>
 <p>
 Imagine we could draw all of the possible states of the 15-puzzle
@@ -381,9 +381,9 @@ through this diagram until the solved state is reached. Fortunately,
 this problem is one that computer scientists have thought about a great deal,
 though not specifically in the context of the 15-puzzle. Instead, a
 computer scientist might view this problem as the more general problem
-of finding a path through a <b>graph</b>. A graph is a mathematical
-structure comprising a set of <b>vertices</b> (or <b>nodes</b>), connected
-by a set of <b>edges</b>. To view the diagram above as a graph, we
+of finding a path through a <em class=term>graph</em>. A graph is a mathematical
+structure comprising a set of <em class=term>vertices</em> (or <em class=term>nodes</em>), connected
+by a set of <em class=term>edges</em>. To view the diagram above as a graph, we
 consider the puzzle states to be the vertices of the graph and the
 moves between the states to be the edges of the graph.
 </p>
@@ -401,12 +401,12 @@ algorithms
 </p>
 <h3>Connectedness</h3>
 <p>
-One interesting property of graphs is whether they are <b>connected</b>:
+One interesting property of graphs is whether they are <em class=term>connected</em>:
 that is, whether there is a path to any given vertex from any other.
 Perhaps surprisingly, the graph of 15-puzzle states is <em>not</em>
 connected: rather, it consists of two separate sets of states that
 are not reachable from each other. The graph for the 15-puzzle is too large to
-show these <b>connected components</b> directly, but a scaled-down 2×2 version
+show these <em class=term>connected components</em> directly, but a scaled-down 2×2 version
 of the 15-puzzle (which we might call a 3-puzzle) is small enough that we can
 see all the states. The 3-puzzle has 4 locations for tiles, so there are
 4×3×2×1 = 24 possible states, shown in the following diagram with 
@@ -491,13 +491,13 @@ problem may allow us to use many other algorithms:
 </p>
 
 <ul>
-<li><b>Search algorithms</b> find the best paths through a graph, or the paths to
+<li><em class=term>Search algorithms</em> find the best paths through a graph, or the paths to
 the best nodes in a graph, according to some notion of best. They can also
 be used to determine connectness of graphs.
 <li>When edges in a graph represent the ability to carry some material
-from one point to another, <b>maximum-flow algorithms</b> find the maximum
+from one point to another, <em class=term>maximum-flow algorithms</em> find the maximum
 carrying capacity of the graph.
-<li><b>Minimum spanning trees</b> choose the best set of edges to ensure that
+<li><em class=term>Minimum spanning trees</em> choose the best set of edges to ensure that
 a graph is fully connected.
 </ul>
 <p>
@@ -507,7 +507,7 @@ We see some of these algorithms later on.
 It is also useful to know when a problem is <em>too hard</em> to solve. For
 example, consider the problem of finding a path through a graph that visits
 each vertex once and ends back at the start vertex. Such a path is called a
-<b>Hamiltonian cycle</b>. Such paths can be found for small graphs, but no
+<em class=term>Hamiltonian cycle</em>. Such paths can be found for small graphs, but no
 efficient algorithm is known for solving this problem in general! Nor should we
 bet on such an algorithm being discovered, because if an efficient algorithm
 were found, it would allow us to solve a number of other seemingly intractable

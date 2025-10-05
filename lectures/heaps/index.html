@@ -1,7 +1,7 @@
 <h1>Priority Queues and Heaps</h1>
 <p>
-To implement Dijkstra's shortest-path algorithm, we need a <b>priority queue</b>: a queue
-in which each element has a <b>priority</b> and from which elements are removed in priority order;
+To implement Dijkstra's shortest-path algorithm, we need a <em class=term>priority queue</em>: a queue
+in which each element has a <em class=term>priority</em> and from which elements are removed in priority order;
 that is, the next element to be removed from the queue is always the element of highest
 priority currently in the queue. A priority queue is an abstraction with several important uses,
 and fortunately, it can be implemented efficiently.</p>
@@ -9,8 +9,8 @@ and fortunately, it can be implemented efficiently.</p>
 <p>
 We have already seen that priority queues are useful for implementing Dijkstra's algorithm
 and A<sup>*</sup> search. In these applications, the priority is the best-known estimate of a
-shortest distance. Such a queue is called a <b>min-queue</b> because the smaller the distance,
-the higher the priority. <b>Max-queues</b> in which larger numbers correspond to
+shortest distance. Such a queue is called a <em class=term>min-queue</em> because the smaller the distance,
+the higher the priority. <em class=term>Max-queues</em> in which larger numbers correspond to
 higher priorities can be implemented in essentially the same way.</p>
 
 <p>
@@ -54,19 +54,19 @@ This is not fast enough for many applications, but we can do better.
 
 <h2>Binary Heap</h2>
 
-<p>A simple, ingenious concrete data structure called a <b>binary heap</b> allows all priority-queue
+<p>A simple, ingenious concrete data structure called a <em class=term>binary heap</em> allows all priority-queue
 operations to be done in \(O(\log n)\) time with good constant factors.
 </p>
 <p>
-In computer science, the term <b>heap</b> is unfortunately overloaded.
-Binary heaps should not be confused with <b>memory heaps</b>. A <strong>memory
+In computer science, the term <em class=term>heap</em> is unfortunately overloaded.
+Binary heaps should not be confused with <em class=term>memory heaps</em>. A <strong>memory
 heap</strong> is a low-level data structure used to keep track of the computer's
-memory so that the programming language implementation (the <b>language runtime</b>)
+memory so that the programming language implementation (the <em class=term>language runtime</em>)
 knows where to place objects in memory. Here we use “heap” to
 refer to binary heaps.
 </p>
 <p>
-A <b>binary</b> heap is a binary tree satisfying the <b>heap invariant</b>:
+A <em class=term>binary</em> heap is a binary tree satisfying the <em class=term>heap invariant</em>:
 </p>
 <p>
 <b>(Heap Invariant)</b> Every node \(n\) in the tree has the highest priority among all nodes in the
@@ -361,8 +361,8 @@ significant performance improvements under the right circumstances.
 <p>
 When using priority queues to implement Dijkstra's shortest-path algorithm on dense
 graphs, the performance limiting operation is often <code>increasePriority()</code>,
-which as we have seen takes logarithmic time. <b>Fibonacci heaps</b> and
-<b>relaxed heaps</b> are heap data structures that can do <code>increasePriority()</code>
+which as we have seen takes logarithmic time. <em class=term>Fibonacci heaps</em> and
+<em class=term>relaxed heaps</em> are heap data structures that can do <code>increasePriority()</code>
 in only constant (amortized) time, yielding a speedup. Since these data structures
 do not enforce the Shape invariant, they require pointers to implement. Hence, although
 their asymptotic performance is the same or better than a simple binary heap on all

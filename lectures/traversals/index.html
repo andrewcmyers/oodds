@@ -38,8 +38,8 @@ modified to work on graphs more generally.
 <h2>Tricolor algorithm</h2>
 
 <p>
-Abstractly, graph traversal can be expressed in terms of the <b>tricolor
-algorithm</b> due to Dijkstra and others. In this algorithm, graph nodes are
+Abstractly, graph traversal can be expressed in terms of the <em class=term>tricolor algorithm</em>
+due to Dijkstra and others. In this algorithm, graph nodes are
 assigned one of three colors that can change over time:
 </p>
 
@@ -93,7 +93,7 @@ with (new CFigure("tricolor")) {
 </div>
 
 <p>
-The algorithm maintains a key invariant, called the <b>black–white invariant</b> or <b>tricolor invariant</b>,
+The algorithm maintains a key invariant, called the <em class=term>black–white invariant</em> or <em class=term>tricolor invariant</em>,
 with two parts:
 <ol>
 <li><em>The root is not white.</em></li>
@@ -140,8 +140,8 @@ different gray nodes are handled concurrently.
 
 <h2>Breadth-first search</h2>
 <p>
-The two most common graph traversal algorithms are <b>breadth-first search</b> (BFS)
-and <b>depth-first search</b> (DFS). Both of these traversal algorithms can be viewed
+The two most common graph traversal algorithms are <em class=term>breadth-first search</em> (BFS)
+and <em class=term>depth-first search</em> (DFS). Both of these traversal algorithms can be viewed
 as refinements of the tricolor algorithm, ones in which choices are made in a way that
 leads to their differing behavior. Pseudo-code for BFS follows:
 </p>
@@ -166,7 +166,7 @@ while (frontier not empty) {
 
 <p>
 Breadth-first search is so called because it explores nodes in the order of
-their distance from the root, where <b>distance</b> is defined as the minimum
+their distance from the root, where <em class=term>distance</em> is defined as the minimum
 path length from a root to the node. We can compute distances explicitly during
 the traversal by replacing the colors with a <code>distance</code> field:
 </p>
@@ -225,7 +225,7 @@ A0  B1  D1  E1  C2
 <p>
 Clearly, nodes are pushed and popped in distance order: A, B, D, E, C. This ordering is very useful
 when we are trying to find the shortest path through the graph from a root to a node.
-When a queue is used in this way, it is known as a <b>worklist</b>; it keeps
+When a queue is used in this way, it is known as a <em class=term>worklist</em>; it keeps
 track of work left to be done.</p>
 
 <div class=exercise>
@@ -267,7 +267,7 @@ the node E had to wait until all nodes reachable from B and D were considered.
 
 <p>
 By simply changing the frontier from FIFO queue to a LIFO stack, we
-get something close to <b>depth-first search</b>, but it visits nodes in a
+get something close to <em class=term>depth-first search</em>, but it visits nodes in a
 different order, in general.
 </p>
 
@@ -345,7 +345,7 @@ the height of the tree, or \(O(\log |V|)\). On such graphs, DFS requires less sp
 
 <h2>The DFS forest</h2>
 
-<p>The sequence of calls to DFS forms a tree: the <b>DFS tree</b> of the
+<p>The sequence of calls to DFS forms a tree: the <em class=term>DFS tree</em> of the
 program. This is a subgraph of the original graph. In the above example, the DFS tree is:</p>
 
 <center>
@@ -368,7 +368,7 @@ To ensure that all nodes are visited, we must check after each traversal whether
 unvisited nodes, and start a new traversal from one of the unvisited nodes if so.
 For example, suppose we next choose F to
 start from. Then we will reach all nodes. Instead of constructing just one
-tree that is a subgraph of the original graph, we get a <b>DFS forest</b> consisting of two trees:
+tree that is a subgraph of the original graph, we get a <em class=term>DFS forest</em> consisting of two trees:
 </p>
 <center>
 <img src="graph2-forest.png">
@@ -504,7 +504,7 @@ DFS(Node g) {
 <p>
 We can classify the various edges of the graph based on the color of the node
 and DFS numbers when the DFS algorithm follows that edge. There are four classes:
-<b>tree edges</b>, <b>back edges</b>, <b>forward edges</b>, and <b>cross edges</b>.
+<em class=term>tree edges</em>, <em class=term>back edges</em>, <em class=term>forward edges</em>, and <em class=term>cross edges</em>.
 The classification is not an absolute property of the graph, but
 depends on what node(s) we choose as root(s) and in what order the algorithm selects successors to push.
 </p>
@@ -517,21 +517,20 @@ with the edges colored to show their classification.</p>
 </center>
 
 <p>
-When the sink node of the edge is white, the edge is a <b>tree edge</b>, shown as solid black
+When the sink node of the edge is white, the edge is a <em class=term>tree edge</em>, shown as solid black
 arrows in the diagram. (The graph looks different in this picture because the nodes have been
 moved to make all the tree edges go downward, but it is the same graph.)  The tree
 edges give the sequence of recursive calls performed in the recursive implementation of DFS.
 A tree edge always goes to a successor in the DFS forest.
 </p>
 
-<p> When the sink node of the edge is gray, it is a <b>back
-edge</b>, shown in red. Because there is only a single path of gray
+<p> When the sink node of the edge is gray, it is a <em class=term>back edge</em>, shown in red. Because there is only a single path of gray
 nodes, a back edge loops back to an earlier gray node that is still on the stack,
 creating a cycle. Back edges always go to an ancestor in the DFS forest.
 </p>
 
 <p> When the sink node of the edge is black, it is either a
-<b>forward edge</b> or a <b>cross edge</b>. It is a forward edge if it goes to
+<em class=term>forward edge</em> or a <em class=term>cross edge</em>. It is a forward edge if it goes to
 a descendant in the DFS tree, and it is a cross edge if it does not. We can tell
 the difference by looking at the DFS number: a forward edge goes to a black node
 that was visited later and therefore has a higher DFS number;
@@ -568,10 +567,10 @@ can be detected in linear time.
 
 <h2>Connected components</h2>
 
-<p>An undirected graph is <b>connected</b> if there is a path between any two nodes.
+<p>An undirected graph is <em class=term>connected</em> if there is a path between any two nodes.
 Graphs need not be connected (although we have been drawing
 only connected graphs so far). However, it is entirely possible to have a graph
-in which there is no path between two nodes. A <b>connected component</b> of an
+in which there is no path between two nodes. A <em class=term>connected component</em> of an
 undirected graph is a maximal connected subgraph; that is, a subgraph that is connected,
 but not contained in any larger connected subgraph. 
 For example, the following undirected graph has three
@@ -579,7 +578,7 @@ connected components:
 </p>
 <img src="components.png">
 <p>
-The <b>connected components problem</b> is to find the connected
+The <em class=term>connected components problem</em> is to find the connected
 components of a graph and to make it possible to quickly determine for a given
 node which connected component it belongs to. This can be very useful.
 For example, suppose
@@ -602,10 +601,10 @@ The number of traversals is the number of components.
 
 <h2>Strongly Connected Components</h2>
 
-<p>For directed graphs, <b>strong connectivity</b> is the more useful notion.
-A directed graph is <b>strongly connected</b> if every vertex is reachable from 
-every other vertex by a directed path. A <b>strongly connected component</b>
-(or just <b>strong component</b>) of a directed
+<p>For directed graphs, <em class=term>strong connectivity</em> is the more useful notion.
+A directed graph is <em class=term>strongly connected</em> if every vertex is reachable from 
+every other vertex by a directed path. A <em class=term>strongly connected component</em>
+(or just <em class=term>strong component</em>) of a directed
 graph is a maximal strongly connected subgraph. For example, the following
 directed graph has four strong components consisting of vertices
 {A}, {B,C}, {D,E,F}, and {G}, respectively.

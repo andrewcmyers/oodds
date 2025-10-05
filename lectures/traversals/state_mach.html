@@ -26,15 +26,15 @@ only be "accepting" the input.
 A state machine is actually a formal, mathematical concept. In general, a
 state machine consists of the following things:
 <ul>
-<li>A set of <b>states</b> S. At any given time, the state machine is in
+<li>A set of <em class=term>states</em> S. At any given time, the state machine is in
 one of these states. Typically the set of states is finite, in which case
-it is called a <b>finite state machine</b> or <b>finite automaton</b>.
+it is called a <em class=term>finite state machine</em> or <em class=term>finite automaton</em>.
 <li>An initial state s<sub>0</sub>, which is a member of S. The automaton starts in this state before any events are received.
 </li>
-<li>A set &Sigma; of possible <b>symbols</b> (events) that can be received by the
+<li>A set &Sigma; of possible <em class=term>symbols</em> (events) that can be received by the
 state machine.
 </li>
-<li>A <b>state transition function</b> &delta;. The state transition function
+<li>A <em class=term>state transition function</em> &delta;. The state transition function
 says how the state machine changes state in response to an event. If the
 machine is in state s, and it receives an event e, then the new state of the
 machine will be s' = &delta;(s,e). Often the state transition function is
@@ -42,7 +42,7 @@ allowed to return a special value that is not a state, to indicate that there
 is no next state. In this case, the input is considered to be illegal and the
 machine is said to reject it.
 </li>
-<li>A set of <b>final states</b>, F. These are states in which the state machine
+<li>A set of <em class=term>final states</em>, F. These are states in which the state machine
 is said to accept the input. Often, state machines are augmented to have
 other actions attached to states or to transitions performed by the machine.
 </li>
@@ -100,7 +100,7 @@ receives a particular input in a particular state.
 <p>State machines are used throughout computer science. For example,
 state machines are used by compilers to break up programs efficiently into
 a sequence of words (tokens). They are also closely related to
-<b>regular expressions</b>, which are a way of compactly describing sets of
+<em class=term>regular expressions</em>, which are a way of compactly describing sets of
 strings.
 </p>
 

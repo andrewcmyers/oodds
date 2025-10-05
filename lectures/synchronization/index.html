@@ -6,12 +6,12 @@
 As we have seen, a write to memory by one thread (e.g., an assignment to
 an instance variable) is not necessarily seen by a later read from the
 same location by another thread. Java, like most programming languages,
-offers only a <b>weak consistency</b> model that does not guarantee that
+offers only a <em class=term>weak consistency</em> model that does not guarantee that
 every write is seen by every later read.
 </p>
 <p>
 When a consistency model considers that one event happens before another in the
-view of every thread, we say that the operations have a <b>happens-before</b>
+view of every thread, we say that the operations have a <em class=term>happens-before</em>
 relationship.  A write that happens-before a read is guaranteed to be seen by
 the read (though it is also possible that the read will return the result of an
 even later write).  Conversely, a read that happens-before a write is guarantee
@@ -40,7 +40,7 @@ the release of the mutex happens-before the acquire.
 <p>
 Different weak consistency models make different guarantees about when
 happens-before relationships exist. A useful least common denominator
-is <b>release consistency</b>.  It guarantees that any operation
+is <em class=term>release consistency</em>.  It guarantees that any operation
 performed by one thread to a location before the thread releases a lock will
 happen-before any operation by another thread to the same location after
 a later acquisition of the same lock. Any release and acquire operations
@@ -168,7 +168,7 @@ preventing thread 1 from making any progress.
 </p>
 <p>
 To allow one thread to wait for updates from another, we need a
-<b>condition variable</b>, a mechanism for blocking a thread until some
+<em class=term>condition variable</em>, a mechanism for blocking a thread until some
 condition becomes true. A condition variable is always associated with a
 mutex that guards the condition and any mutable state used in it.
 </p>
@@ -206,7 +206,7 @@ The <code>notify()</code> method wakes up just one waiting thread.
 </p>
 <p>
 We can visualize the relationship of a thread to a particular mutex and
-condition variable in terms of the following <b>state diagram</b>. A thread can
+condition variable in terms of the following <em class=term>state diagram</em>. A thread can
 be in one of four possible states: running while either holding the mutex or
 not holding the mutex, or blocked either on the mutex or the condition variable.
 The arrows represent the possible ways for a thread to transition between these
@@ -301,13 +301,13 @@ while (!condition) wait();
 </pre>
 </p><p class="cont">
 Failure to test the condition after <code>wait()</code> leads to what
-is called a <b>wakeup–waiting race</b>, in which threads awakened by
+is called a <em class=term>wakeup–waiting race</em>, in which threads awakened by
 <code>notifyAll()</code> race to observe the condition as true. The winners of
 the race can then spoil things for threads awakened later.
 </p>
 <h2>Monitors</h2>
 </p><p>
-The <b>monitor</b> pattern is a design pattern for managing synchronization.
+The <em class=term>monitor</em> pattern is a design pattern for managing synchronization.
 It builds synchronization into objects: a monitor
 is an object with a built-in lock on which all of the monitor's
 copublic methods are synchronized. This design is accomplished in Java easily, because
@@ -379,7 +379,7 @@ public class BlockingQueue<T> {
 <h2>Deadlock</h2>
 <p>
 Monitors ensure consistency of data. But the locking they engage in
-can cause <b>deadlock</b>, a condition in which every thread is waiting to
+can cause <em class=term>deadlock</em>, a condition in which every thread is waiting to
 acquire a lock that some other thread is holding. For example,
 consider two monitors <code>a</code> and <code>b</code> of classes
 <code>A</code> and <code>B</code>, respectively,
@@ -436,7 +436,7 @@ so it must already have acquired the lock for <code>a</code>.
 <p>
 In general, a thread may acquire a lock on (synchronize on) an object only
 if that object comes later in the lock ordering than all locks that the thread
-already holds. Note that many systems, including Java support <b>reentrant locks</b>,
+already holds. Note that many systems, including Java support <em class=term>reentrant locks</em>,
 in which it is safe to acquire the same lock multiple times. In this case, acquiring
 an already held lock is not a problem.
 </p>
@@ -444,7 +444,7 @@ an already held lock is not a problem.
 <p>
 To prevent deadlock, we can impose a requirement that a method only hold
 locks up to a certain level in the order &lt;. This requirement becomes part
-of the precondition of the method and is called the <b>locking level</b>
+of the precondition of the method and is called the <em class=term>locking level</em>
 of the method, written \(LL\). The locking level \(LL\) specifies the highest-level lock in the lock
 ordering that might be held when the method is called.
 </p>
@@ -517,7 +517,7 @@ As we've seen, programming with locks and condition variables can be tricky,
 even when we use the monitor pattern correctly.  Fortunately, for many
 applications, simpler synchronization abstractions are good enough.
 <p>
-In scientific computing applications, <b>barriers</b> are a popular way
+In scientific computing applications, <em class=term>barriers</em> are a popular way
 to ensure that updates by one thread or set of threads are seen by 
 other threads.  A barrier is created with a specified number of threads that
 must reach the barrier. Each thread that reaches the barrier will block until
@@ -600,7 +600,7 @@ shared mutable state such as the instance variables <code>result</code> and
 <p>
 As the comments in the code suggest, there are two serious problems
 with the <code>getResult</code> implementation. First, the loop on <code>working &gt; 0</code>
-will waste a lot of time and energy. This is called <b>busy waiting</b> and should be avoided.
+will waste a lot of time and energy. This is called <em class=term>busy waiting</em> and should be avoided.
 Second, there is no synchronization ensuring that updates to <code>result</code> are seen.
 </p><p>
 How can we fix this? We cannot make <code>getResult()</code>
