@@ -183,17 +183,19 @@ forget to check for the special value, writing code such as this:
 <pre>
     String s1 = s2.substring(s2.indexOf("header:") + 7);
 </pre>
-<p>If the string doesn't begin with <tt>header:</tt>, we'll get a result that
-includes the 6th and following characters of <code>s2</code>. This
-doesn't make much sense! If the library designers had instead chosen to 
-throw an exception, client code could look like that above, and the compiler
+<p> This code is intended to extract a substring containing the value of a header.
+But if the string <em>doesn't</em> begin with the expected substring &ldquo;<tt>header:</tt>&rdquo;, the result
+is the 6th and following characters of <code>s2</code>, starting from the colon character.
+This result doesn't make much sense! If the library designers had instead chosen to 
+throw an exception, client code could look exactly the same, but the compiler
 would force clients to remember to check for the case in which &ldquo;<tt>header:</tt>&rdquo;
-isn't found.
+is not found.
 </p>
 <p>
-Interestingly, the standard Java function for computing the square root of a
-number, <code>Math.sqrt</code>, takes the approach of returning a special
-return value. The return value <code>NaN</code> (“Not A Number”) is returned
+Another example of a function with a special return value is
+the standard Java function for computing the square root of a
+number, <code>Math.sqrt</code>.
+The return value <code>NaN</code> (“Not A Number”) is returned
 when the argument is negative. If the programmer is not careful, <code>NaN</code>s can
 propagate through a series of calculations, turning the final result into
 garbage—a dangerous approach if the calculations are used to control
