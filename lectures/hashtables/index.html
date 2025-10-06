@@ -356,16 +356,19 @@ chaining degrades more gracefully, and chaining is usually faster than probing
 even when the hash table is not nearly full. For these reasons, chaining is often
 preferred over probing.</p>
 
-<p>A recently popular variant of closed hashing is <strong>cuckoo
-hashing</strong>, in which two hash functions are used. Each
-element is stored at one of the two locations computed by these
-hash functions, so at most two table locations must be consulted in
-order to determine whether the element is present. If both possible
-locations are occupied, the newly added element <em>displaces</em>
-the element that was there, and this element is then re-added to the
-table. In general, a chain of displacements occurs. In practice, it
-allows a higher load factor than classic probing while avoiding long
-probing sequences. </p>
+<p>Another hash-table variation uses <em>two</em> hash functions to
+determine where to potentially place each element. Each element is stored at
+one of the two locations computed by these hash functions, so at most two table
+locations must be consulted in order to determine whether the element is
+present. The advantage over a single hash function is that the distribution of
+bucket sizes becomes much more uniform, a property known as “the power of two
+choices.” This idea underlies a recently popular variant of closed hashing,
+<strong>cuckoo hashing</strong>. Instead of probing, if both possible locations
+are occupied, the newly added element <em>displaces</em> an element that was
+there, and this element is then re-added to the table using its other hash
+function. In general, a chain of displacements occurs. The more uniform
+distribution of elements means that cuckoo hashing tolerates a higher load
+factor than classic probing without creating long probing sequences.</p>
 
 <h2>Performance of hash tables</h2>
 
