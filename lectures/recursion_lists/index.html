@@ -684,6 +684,16 @@ used above, with modifications to update <code>head</code> and <code>size</code>
 <h2>Abstract data types vs. data structures</h2>
 <!-- this section was not covered during lecture -->
 <img style="float: right; padding: 2em" src="listimpls.png" alt="abstraction barrier" />
+<canvas style="width: 400px; height: 300px" id="listimpls">
+</canvas>
+<script class=graphics>
+with (new CFigure("listimpls")) {
+    label("stack")
+    box().setW(50).setH(50).addText("singly\nlinked\nlist")
+    let barrier = horzLine().setLineWidth(3)
+    align("LR", "center", barrier, margin())
+}
+</script>
 <p>
 It is useful to distinguish between singly and doubly
 linked lists as concrete data structures, versus various possible
@@ -721,5 +731,5 @@ list. And to pop the top of the stack, we undo this action by changing
 
 <p>Keep in mind that data structures are ways to implement
 abstract data types, and using them through an abstraction barrier is preferable
-to using the data structure directly. This layer of abstraction changing the underlying
-data structure without breaking client code.</p>
+to using the data structure directly. This layer of abstraction allows changing
+the underlying data structure without breaking client code.</p>
