@@ -689,21 +689,26 @@ used above, with modifications to update <code>head</code> and <code>size</code>
 <script class=graphics>
 with (new CFigure("listimpls")) {
     let m = margin()
-    setTextStyle("#468")
-    let sll = textFrame().setW(50).setH(50).addText("singly\nlinked\nlist")
-        .setTextStyle('#02c')
-    let dll = textFrame().setW(50).setH(50).addText("doubly\nlinked\nlist")
-        .setTextStyle('#02c')
-    setTextStyle("green")
-    let immlist = textFrame().addText("immutable list").setTextStyle("green").setW(80).setH(20)
-    let mutlist = textFrame().addText("mutable list").setTextStyle("green").setW(80).setH(20)
+    setTextStyle("#02c")
+    let sll = textFrame("singly\nlinked\nlist").setW(50).setH(50)
+    let dll = textFrame("doubly\nlinked\nlist").setW(50).setH(50)
 
+    setTextStyle("green")
+    let immlist = textFrame().addText("immutable list").setW(80).setH(20)
+    let mutlist = textFrame().addText("mutable list").setW(80).setH(20)
     let stack = label("stack")
     let barrier = horzLine().setLineWidth(6).setStrokeStyle('#999')
+
     setTextStyle("black")
     let barrier_text = label("abstraction\nbarrier")
-    align("abut", "center", m.cl(), barrier, hspace(5), barrier_text, m.cr())
 
+    arrow(sll, immlist)
+    arrow(sll, stack)
+    arrow(dll, mutlist)
+    let abstractions = label('abstractions').setFontStyle('italic')
+    let ds = label('data structures').setFontStyle('italic')
+
+    align("abut", "center", m.cl(), barrier, hspace(5), barrier_text, m.cr())
     align("none", "abut", barrier, vspace(20), sll)
     align("none", "center", sll, dll)
     align("distribute", "top", immlist, stack, mutlist)
@@ -711,11 +716,6 @@ with (new CFigure("listimpls")) {
     align("left", "none", immlist, m)
     align("right", "none", mutlist, barrier.cr())
     align("distribute", "none", m.cl(), sll, dll, barrier.cr())
-    arrow(sll, immlist)
-    arrow(sll, stack)
-    arrow(dll, mutlist)
-    let abstractions = label('abstractions').setFontStyle('italic')
-    let ds = label('data structures').setFontStyle('italic')
     align("center", "none", abstractions, barrier_text, ds)
     align("none", "distribute", m.ur(), abstractions, barrier_text, ds, m.lr())
 }
