@@ -293,24 +293,29 @@ To show <strong>total correctness</strong>, we must show in addition
 that the loop eventually terminates. To show this, there is a fourth step:
 </p>
 <ol>
-<li value="4"><strong>Termination.</strong> Assuming the loop invariant holds at the start of
+<li value="4"><p><strong>Termination.</strong> Assuming the loop invariant holds at the start of
 each iteration, show that some quantity strictly decreases, and that it cannot
 decrease indefinitely.
-This quantity is called the <strong>decrementing function</strong>, <strong>decreasing function</strong>, or 
-<strong>loop variant</strong>, and it is a function of the program state: that is, the variables
-appearing in the loop. Call the decrementing function DF,
-we need to show that if the loop guard is true, then the value of DF after
-the loop body (call it DF') is strictly less than it was at the beginning: DF' &lt; DF.
-Further, there must be some minimal value DF<sub>0</sub> such that if DF &lt; DF<sub>0</sub>,
-then either the loop guard or the loop invariant is false. That is, the result of DF must
-be an element of a well-founded set in which it is not possible to decrease forever.
-Since <em>every</em> interation decreases DF, it will eventually reach a point where it cannot
-decrease, so the loop cannot run forver.
-</li>
+This quantity is called the <strong class=defn>decrementing function</strong> (also known
+as the decreasing function or loop variant) and it is a function of the program state: that is, the variables
+\(\newcommand\DF{\textit{DF}}\)
+appearing in the loop. Calling the decrementing function \(DF\),
+we need to show that if the loop guard is true, then the value of \(\DF\) after
+the loop body (call it \(\DF'\)) is strictly less than it was at the beginning: \(\DF' &lt; \DF\).
+Further, we must be guaranteed that \(\DF\) cannot decrease forever. In any strictly decreasing
+sequence of values of \(\DF\), eventually either the loop guard or the loop invariant becomes false.
+Typically, DF has an integer value and we identify some value \(DF_0\)
+such that if \(DF &lt; DF_0\), either the loop invariant or the guard is
+false.
+Since <em>every</em> iteration decreases \(\DF\), and the loop guard and invariant are both always true
+while the loop executes, the loop must eventually reach a point where \(\DF\) cannot
+decrease any more. Therefore, the loop cannot run forever.
+</p>
 <p>
 Viewing the loop as a tail-recursive function, Termination is about showing
-that the arguments to the function decrease in its tail-recursive call or calls.
+that the arguments to the function strictly decrease in its tail-recursive call or calls.
 </p>
+</li>
 </ol>
 
 <p>
