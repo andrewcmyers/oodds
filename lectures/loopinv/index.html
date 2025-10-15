@@ -389,8 +389,8 @@ Let's try these four steps on the binary search algorithm.
   </ul>
   </li>
   <li><strong>Termination.</strong>
-  <p>The value DF = <code>r &minus; l</code> is guaranteed by the invariant
-  (1) to be nonnegative: we can choose DF<sub>0</sub> = 0.
+  <p>The value \(\DF = \)<code>r &minus; l</code> is guaranteed by the invariant
+  (1) to be nonnegative: we can choose \(\DF_0 = 0\).
   In the case where <code>x ∈ a[l..m]</code>, we know <code>m &lt; r</code>, so
   <code>r' &minus; l' &lt; r &minus; l</code>. In the other case, we know <code>l &lt; m+1</code>, so again,
   <code>r' &minus; l' &lt; r &minus; l</code>. Thus the quantity <code>r &minus; l</code> gets strictly
@@ -510,25 +510,24 @@ permits all possible states the program can get into during the loop. But it als
 to be strong enough that the loop postcondition is satisfied when the loop exits.
 </p>
 <p>
-Therefore, two things commonly go wrong when choosing a loop invariant.
+Two things commonly go wrong when choosing a loop invariant.
 The most typical error is to define a loop invariant that is too weak. This
-error is usually detected when trying to take the Postcondition step. All we
+error is often detected when trying to carry out the Postcondition step. All we
 know when arguing the Postcondition step is that the loop invariant holds and
 the guard does not. If the loop invariant is too weak, we can't argue that from
 those two facts that the loop achieves its postcondition. In essence, the
 loop invariant has forgotten too much about what past loop iterations accomplished.
 A too-weak invariant may also be detected in the
 Preservation step, when the weak loop invariant does not restrict the
-state enough to show that even it is preserved by the loop.
+state enough to show that the invariant is preserved by the loop.
 </p>
 <p>
 The other common error is to define a loop invariant that is too strong. This
-mistake can happen when we try to define invariant that is strong enough to
-prove Postcondition, but don't leave room for the rest of the loop to finish
+mistake can happen when we try to define an invariant that is strong enough to
+prove Postcondition, but we don't leave room for the rest of the loop to finish
 its job. This error typically shows up when one tries to prove Preservation,
 because the overly strong loop invariant simply isn't preserved by executing the loop
-body. This error might also show up in the Establishment step,
-if the putative loop invariant doesn't even hold at the start of the loop.
+body.
 </p>
 <p>
 Choosing loop invariants is a bit of an art, but becomes easier with practice.
@@ -544,7 +543,7 @@ must imply the loop postcondition; in a sense, the loop invariant
 interpolates between the precondition and postcondition.
 It can be helpful to write down both the precondition and the postcondition
 together, and then to try to come up with a logical statement that captures
-both of them. It should generalize both the precondition and the postcondition,
+both of them; it should generalize both the precondition and the postcondition,
 but be close to the precondition as the loop starts and close to the
 postcondition when it ends. For example, in the binary search algorithm,
 we want <code>k = a[l]</code> at the end and we have <code>k ∈ a[0..a.length-1]</code>
@@ -562,7 +561,7 @@ the invariant with future changes.
 </p>
 <p>
 Just as it makes sense to add assertions to check function preconditions,
-it also makes sense to add assertions that check for each iteration 
+it also makes sense to add assertions that check on each iteration 
 the parts of the loop invariant that are easy to check. Such assertions will catch errors
 early and expose problems with your understanding of why the code works.
 </p>
