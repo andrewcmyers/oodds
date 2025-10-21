@@ -235,7 +235,7 @@ To use a loop invariant to argue that code does what we want, we
 use the following steps, depicted in the figure:
 </p>
 <ol>
-<li><p><strong>Establishment (aka Initialization).</strong> Show that the loop invariant is
+<li><p><strong>Establishment</strong> (aka Initialization). Show that the loop invariant is
 true just after loop initialization. That is, the loop invariant must be
 implied by the loop precondition.
 For while-loops of the form <code>while
@@ -260,7 +260,7 @@ the function's postcondition holds in the base case.
 </p>
 </li>
 
-<li><p><strong>Preservation (aka Maintenance).</strong> Show that whenever both the loop invariant and the
+<li><p><strong>Preservation</strong> (aka Maintenance). Show that whenever both the loop invariant and the
 <code>guard</code> are true just before executing the loop body, then the loop
 invariant is true just <em>after</em> executing the loop body. Note that the
 loop invariant may fail to be true at intermediate steps during the execution
