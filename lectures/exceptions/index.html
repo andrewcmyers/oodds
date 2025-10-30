@@ -184,11 +184,11 @@ forget to check for the special value, writing code such as this:
     String s1 = s2.substring(s2.indexOf("header:") + 7);
 </pre>
 <p> This code is intended to extract a substring containing the value of a header.
-But if the string <em>doesn't</em> begin with the expected substring &ldquo;<tt>header:</tt>&rdquo;, the result
+But if the string <em>doesn't</em> begin with the expected substring <code>"header:"</code>, the result
 is the 6th and following characters of <code>s2</code>, starting from the colon character.
 This result doesn't make much sense! If the library designers had instead chosen to 
 throw an exception, client code could look exactly the same, but the compiler
-would force clients to remember to check for the case in which &ldquo;<tt>header:</tt>&rdquo;
+would force clients to remember to check for the case in which the prefix <code>"header:"</code>
 is not found.
 </p>
 <p>
@@ -244,7 +244,7 @@ double sqrt(double x) {
 </pre>
 
 <p>
-What happens if the client calls <tt>sqrt(-1)</tt>? This spec
+What happens if the client calls <code>sqrt(-1)</code>? This spec
 doesn't say. Maybe it throws an exception, maybe it goes into
 an infinite loop, maybe it just returns a wrong answer. If the client makes
 this call, the code can do anything it likes. But that is okay. The spec
@@ -275,7 +275,7 @@ double sqrt(double x) {
 </pre>
 
 <p>The <code>assert</code> statement may check any boolean condition. If Java
-is used with assertions enabled (by using the <tt>-ea</tt> option, which you
+is used with assertions enabled (by using the <kbd>-ea</kbd> option, which you
 <em>should</em> enable in your development environment), then the boolean condition is tested at run
 time. If it evaluates to <code>true</code>, nothing happens. If it executes to
 <code>false</code>, an error <code>AssertionError</code> is generated
