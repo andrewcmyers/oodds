@@ -375,7 +375,7 @@ Notice that here we are using <tt>String</tt>'s own <tt>compareTo</tt>
 operation as a model for the comparator, but we don't have to. For example, we
 could have used the <tt>compareToIgnoreCase</tt> method to sort strings while
 ignoring the difference between upper and lower case. It turns out that we can
-also use Java 8's new <em class=term>lambda expressions</em> to implement the interface even more
+<em class=term>lambda expressions</em> to implement the interface even more
 compactly. Here is how we would sort the array using a lambda expression while
 also ignoring case:
 </p>
@@ -397,6 +397,13 @@ write <code>String::compareToIgnoreCase</code>, which will have the same effect:
 <pre>
 sort(a, String::compareToIgnoreCase)
 </pre>
+<p>
+A method reference is also just sugar for a lambda expression. For example, the
+method reference <code>String::compareToIgnoreCase</code> is sugar for the
+lambda expression <code>(String x, String y)-&gt;
+x.compareToIgnoreCase(y)</code>, which implements the interface
+<code>Comparator&lt;String&gt;</code> that the method <code>sort</code> requires.
+</p>
 <p>
 Generic classes may need to access parameter type operations too. The typical
 approach is to accept the model object in constructors, which then

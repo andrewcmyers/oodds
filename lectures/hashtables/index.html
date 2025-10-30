@@ -1138,11 +1138,11 @@ they should, and some will have fewer. Bucket
 sizes will vary more than one would expect from a random hash function.
 </p>
 <p>
-The average size of a bucket is the load factor \(α\). A given
-if bucket \(i\) contains \(x_i\) elements, which deviates from
+The average size of a bucket is the load factor \(α\). If a given
+bucket \(i\) contains \(x_i\) elements, it deviates from
 the expected size by \(x_i - α\). Clustering can be
 measured by computing the sum of the squares of these deviations:
-\(\sum \left({x_i} - α\right)^2\). This sum can then be
+\(\sum \left({x_i} - α\right)^2\), and this sum can then be
 compared to its expected value. If the hash function satisfies the uniform
 hashing assumption and \(M\) buckets are summed over, this expected value is:
 \[

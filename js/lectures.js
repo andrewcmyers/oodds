@@ -1,4 +1,4 @@
-var base_url = basename(window.location.origin + window.location.pathname)
+const base_url = basename(window.location.origin + window.location.pathname)
 
 function load_lecture() {
     const idpat = /\?id=([_a-z]*)/,
@@ -17,19 +17,20 @@ function basename(url) {
     return url.replace(/\/[^\/]*$/, "")
 }
 
-var base_url = basename(window.location.origin + window.location.pathname)
-
-var DEBUG_RELATIVIZE = false;
+const DEBUG_RELATIVIZE = false
 
 function jump_to_position() {
     if (location.hasOwnProperty('hash')) {
+        let counter = 0
         function poll() {
             const id = decodeURIComponent(location.hash.substring(1))
+            if (!id) return
             const elem = document.getElementById(id) || header_index.get(id)
             if (elem) {
                 elem.scrollIntoView()
             } else {
-                setTimeout(poll, 100)
+                counter++
+                if (counter < 70) setTimeout(poll, 100) // try for 7 seconds
             }
         }
         setTimeout(poll, 100)
@@ -43,6 +44,10 @@ function relativize(url, lecture_base, base) {
     if (DEBUG_RELATIVIZE)
       console.log("relativizing " + url + " : "  + lecture_base + " : " + base)
     if (url == "") return url
+    if (url.match('/lecture.html\\?')) {
+        if (DEBUG_RELATIVIZE) console.log("  result -> " + url)
+        return url
+    }
     const basebase = base.replace(/\/[^\/]*$/, "")
     for (;;) {
         if (url.match('^' + base)) {
