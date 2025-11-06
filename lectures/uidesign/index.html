@@ -112,7 +112,8 @@ memory burden for users. The user has an idea what features are available
 but may not remember how to access them.
 </p>
 <ul>
-    <li>Internally consistent appearance and actions
+    <li><b>Internal consistency</b> Visual design and actions should be
+        consistent across the application to make it easier to remember.
     <li>Clear visual structure
     <li>Protection from dangerous action for safe exploration
 </ul>
@@ -252,22 +253,34 @@ and can remember how to use.
 <h2>Visual design</h2>
 
     <ul>
-    <li> Avoid visual clutter
-    <ul>
-        <li> Use space shading, color rather than lines to organize
-             information.
-	<li> Use low-contrast separators
-	<li> Maximize &ldquo;information/ink ratio&rdquo; (Tufte)
-    </ul>
-    <li> Aim for visual consistency
-	<ul>
-	<li> Large apps need a written <em>style guide</em> to keep look and feel
-	      consistent as app evolves.
-	<li> E.g., buttons that change state vs. buttons that navigate
-	      vs. buttons that expose hidden information: user should
-	      be able to distinguish.
-	</ul>
-    <li> Employ visual features as an <i>additional</i> communication channel.
+    <li> <b>Avoid visual clutter.</b>
+     <p>A good design maximizes the &ldquo;information/ink ratio&rdquo; (Tufte):
+        it uses eye-catching high contrast and bright colors sparingly and for important
+        visual elements that deserve attention. Visual elements whose purpose is merely
+        to organize the visual space can implemented with Use low-contrast separators,
+        including background shading.
+    </p>
+    <li><b>Visual consistency</b>
+    <p>
+        Applications should have a consistent <em class=term>look and feel</em>
+        that helps users instantly identify what they are looking at. For
+        example, controls with related behaviors should have similar
+        appearance.  Form example, visual appearance should distinguish buttons
+        that change state, from buttons that navigate within the application
+        and from controls that expose hidden information.
+
+    </p>
+    <p>
+        It is important to maintain a <em class=term>style guide</em> to keep look and feel
+        consistent as the application evolves. Styling support such as Cascading Style
+        Sheets (CSS) can be used to implement style guides, by defining a mapping
+        from symbolically named functionalities or styles to actual visual style choices.
+    </p>
+    </li>
+    <li><b>Visual features.</b>
+        Different kinds of visual features can be used to communicate information
+        or to complement other ways that the application communicates information,
+        such as text.
         <ul>
         <li> Shape (up to 15)
         <li> Color (up to 24)

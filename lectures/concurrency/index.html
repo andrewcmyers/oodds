@@ -83,13 +83,16 @@ interface is as follows:
 
 <pre>
 class Thread {
-  /** Create a thread that executes its <code>run()</code> method when started. */
+  /** Creates a platform thread that executes its <code>run()</code> method when started. */
   public Thread();
 
-  /** Create a thread that executes the <code>Runnable</code> when started. */
+  /** Creates a platform thread that executes <code>r</code> when started. */
   public Thread(Runnable r);
 
-  /** Start this thread to run concurrently with the calling thread. */
+  /** Creates a virtual thread that immediately executes <code>r</code>. */
+  public static startVirtualThread(Runnable r);
+
+  /** Starts this thread to run concurrently with other threads. */
   public void start();
   
   /** Called by a new thread created with this.start(). May be overridden to
@@ -187,6 +190,39 @@ automatically stopped.</p>
 <p>
 A thread is initially a daemon thread if and only if the thread that created it is. However,
 whether a thread is a daemon thread can be changed with the method <code>setDaemon()</code>.
+</p>
+
+<h3>Platform threads vs. virtual threads</h3>
+<p>
+Java threads come in two flavors: platform threads and virtual threads.
+Platform threads are more heavyweight because they are implemented using the
+underlying thread support of the operating system (OS). They take up more
+memory and take more time to start. However, once running they are efficient,
+so they are a good choice for long-running tasks where CPU performance is
+critical. Platform threads are also subject to scheduling done by the OS,
+which is affected by thread priorities.
+A typical way to create a platform thread is by using the
+<code>Thread</code> constructor:
+<pre>
+new Thread(() -&gt; { /* do work here */ }).start()
+</pre>
+</p>
+<p>
+Virtual threads are managed by the Java runtime. They are lighter-weight than
+platform threads, so they take up less memory and they are faster to start up and
+to stop. You can create a very large number of virtual threads without worrying
+about exhausting OS resources. However, the priority of all virtual threads is
+fixed and equal. A typical way to create a virtual thread is using
+the factory method <code>startVirtualThread()</code>, which not only creates the thread
+but also starts it:
+<pre>
+Thread.startVirtualThread(() -&gt; { /* do work here */ })
+</pre>
+<p>
+You can also start threads by creating an object of the class <code>Thread.Builder</code>.
+Its method <code>start(Runnable r)</code> starts a new thread of the specified flavor
+to execute the code <code>r</code>. Methods <code>Thread.ofVirtual()</code> and
+<code>Thread.ofPlatform()</code> create corresponding builders.
 </p>
 
 <h2>Amdahl's Law</h2>
