@@ -185,17 +185,18 @@ synchronized (m) {
 <div>
 Thread 2:
 <pre>
-while (true) { // busy waiting
+while (true) // inefficient busy-waiting
     synchronized (m) {
         if (x != 0) break;
     }
-}</pre>
+print(y);
+</pre>
 </div></div>
 <p class=cont>
 This kind of loop, which repeatedly polls the value of some state, is called a
-<em class=term>busy-waiting loop</em>.  It will work but the approach will be
+<em class=term>busy-waiting loop</em>.  It will work but the approach is
 very inefficient in general. If thread 1 takes a long time to execute, thread 2
-will waste a lot of compute power.
+could waste a lot of compute power repeatedly checking the value of <code>x</code>.
 </p>
 <p>
 To allow one thread to wait efficiently for updates from another, we need a
