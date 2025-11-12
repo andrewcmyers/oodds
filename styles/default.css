@@ -25,6 +25,14 @@ table.sidebysidecode {
     margin: 0 auto;
     margin-bottom: 2ex;
 }
+div.sidebysidecode {
+    background-color: #e8e4dc;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7ex;
+    font-size: 90%;
+    padding: 0.7ex;
+}
 table.sidebysidecode td {
     width: 50%;
     border-top: none;

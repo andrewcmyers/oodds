@@ -127,25 +127,27 @@ a way to successfully implement the earlier example that broke due to weak memor
 Recall that the idea was to have one thread wait until another one finished some updates:
 </p>
 
-<table class="sidebysidecode"><tr><td>
+<div class="sidebysidecode"><div>
 Thread 1:
 <pre>
 y = 1;
 x = 1;
 </pre>
-</td>
-<td>
+</div>
+<div>
 Thread 2:
 <pre>
 while (x == 0) {}
-print (y);</pre></td></tr></table>
+print (y);</pre></div>
+</div>
 
 <p>
 Since we know synchronization is needed, we might start by guarding the shared variables <code>x</code>
 and <code>y</code> with a mutex <code>m</code>:
 </p>
 
-<table class="sidebysidecode"><tr><td>
+<div class=sidebysidecode>
+<div>
 Thread 1:
 <pre>
 synchronized (m) {
@@ -153,21 +155,50 @@ synchronized (m) {
     x = 1;
 }
 </pre>
-</td>
-<td>
+</div>
+<div>
 Thread 2:
 <pre>
 synchronized (m) {
     while (x == 0) {}
     print (y);
-}</pre></td></tr></table>
+}</pre></div></div>
 <p>
 But this won't work either: if thread 2 gets a head start, it will
 acquire the mutex and then spin forever in the <code>while</code> loop,
 preventing thread 1 from making any progress.
 </p>
 <p>
-To allow one thread to wait for updates from another, we need a
+A less-bad alternative is to put the second thread's lock acquisition
+<em>inside</em> the loop:
+<div class=sidebysidecode>
+<div>
+Thread 1:
+<pre>
+synchronized (m) {
+    y = 1;
+    x = 1;
+}
+
+</pre>
+</div>
+<div>
+Thread 2:
+<pre>
+while (true) { // busy waiting
+    synchronized (m) {
+        if (x != 0) break;
+    }
+}</pre>
+</div></div>
+<p class=cont>
+This kind of loop, which repeatedly polls the value of some state, is called a
+<em class=term>busy-waiting loop</em>.  It will work but the approach will be
+very inefficient in general. If thread 1 takes a long time to execute, thread 2
+will waste a lot of compute power.
+</p>
+<p>
+To allow one thread to wait efficiently for updates from another, we need a
 <em class=term>condition variable</em>, a mechanism for blocking a thread until some
 condition becomes true. A condition variable is always associated with a
 mutex that guards the condition and any mutable state used in it.
@@ -424,8 +455,11 @@ respect the ordering: \(L_1 &lt; L_2 &lt; ... &lt;L_n\). There is no built-in
 ordering on locks; it is up to the application designer to choose an ordering that
 works for the computations being performed.
 The ordering does not need to be a total ordering; it is allowed for two locks to
-have no ordering with respect to each other.  What is crucial is that the ordering
-have no cycles.
+have no ordering with respect to each other.
+What is crucial is that the ordering
+have no cycles. 
+However, two locks that are not ordered with respect to each other cannot
+be held at the same time.
 </p>
 <p>
 In the example above, we might choose a lock ordering in which <code>a &lt; b</code>.
@@ -599,8 +633,8 @@ shared mutable state such as the instance variables <code>result</code> and
 </p>
 <p>
 As the comments in the code suggest, there are two serious problems
-with the <code>getResult</code> implementation. First, the loop on <code>working &gt; 0</code>
-will waste a lot of time and energy. This is called <em class=term>busy waiting</em> and should be avoided.
+with the <code>getResult</code> implementation. First, the busy-waiting loop on <code>working &gt; 0</code>
+will waste a lot of time and energy.
 Second, there is no synchronization ensuring that updates to <code>result</code> are seen.
 </p><p>
 How can we fix this? We cannot make <code>getResult()</code>
