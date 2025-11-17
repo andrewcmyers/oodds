@@ -587,9 +587,7 @@ an <em>ordering</em> on locks. If lock \(L_1\) is acquired before \(L_2\),
 then \(L_1\) must be earlier (lower) in the ordering, which is written as \(L_1 &lt; L_2\).
 In general, when at the same time a thread holds multiple locks acquired in the order
 \(L_1, L_2, L_3, ..., L_n \), the order in which they are acquired must
-respect the ordering: \(L_1 &lt; L_2 &lt; ... &lt;L_n\). In order for a thread
-to acquire a lock, it must be greater in the ordering than all other locks currently
-held by the thread.
+respect the ordering: \(L_1 &lt; L_2 &lt; ... &lt;L_n\).
 </p>
 <p>
 There is no built-in
@@ -609,46 +607,13 @@ because a method of <code>b</code> already holds a lock that is higher in the or
 so it must already have acquired the lock for <code>a</code>.
 </p>
 <p>
-In general, a thread may acquire a lock on (synchronize on) an object only
-if that object comes later in the lock ordering than all locks that the thread
-already holds. Note that many systems, including Java support <em class=term>reentrant locks</em>,
-in which it is safe to acquire the same lock multiple times. In this case, acquiring
-an already held lock is not a problem.
+In general, a thread may acquire a lock on (synchronize on) an object only if
+that object comes later in the lock ordering than all locks that the thread
+already holds.  Note that many systems including Java support <em
+class=term>reentrant locks</em>, in which it is safe to acquire the same lock
+multiple times as long as it is released the same number of times.
+In this case, acquiring an already held lock is not a problem.
 </p>
-<h3>Locking level</h3>
-<p>
-To prevent deadlock, we can impose a requirement that a method only hold
-locks up to a certain level in the order &lt;. This requirement becomes part
-of the precondition of the method and is called the <em class=term>locking level</em>
-(or lock ceiling)
-of the method, written \(LL\). The locking level \(LL\) specifies the highest-level lock in the lock
-ordering that might be held when the method is called. It is therefore safe for
-the method to acquire locks that are higher in the lock ordering than the locking level.
-</p>
-<p>
-Since a monitor acquires its lock when public methods are called, the locking level on 
-entry to a monitor method must be less than the monitor itself
-(or equal to, assuming reentrant locks as in Java). Otherwise
-the lock ordering could be violated. Thus, the public methods of a monitor have
-an (often implicit) precondition \(LL ≤ \texttt{this}\).
-</a>
-<p>
-If we apply this approach to the example above, we might specify that <code>a
-&lt; b</code> in the lock ordering.  The methods <code>f()</code> then requires \(LL
-&lt; a\) and <code>g()</code> requires \(LL &lt; b\). The call to <tt>a.f()</tt> in
-<tt>B.g()</tt> then becomes illegal.
-</p>
-<pre class=code>
-class A {
-    /** Requires: LL ≤ this */
-    synchronized void f() { b.g(); }
-}
-
-class B {
-    /** Requires: LL ≤ this */
-    synchronized void g() { a.f(); }
-}
-</pre>
 <h3>Sorting locks</h3>
 <p>
 In general, a thread might need to acquire multiple locks. How can we be sure that they will be acquired in 
@@ -659,7 +624,7 @@ in that order. This technique requires that we know ahead of time which locks wi
 For example, suppose we want to implement bank transactions that withdraw money from two accounts and deposit
 into a third. But if either of the two source accounts does not have enough money, the transaction should not
 take place. We can start from a definition of an <code>Account</code> class like the one we saw previously,
-except that it throws an exception if a withdrawal would leave the account overdrawn:
+except that it throws an exception if withdrawal would leave the account overdrawn:
 <pre class=load>
 <a href="Account.java">Deadlock.java</a>
 </pre>
@@ -672,21 +637,52 @@ the first account is then refunded in the <code>catch</code> clause:
 <a href="Deadlock.java">Deadlock.java</a>
 </pre>
 <p>
-Unfortunately, if this transaction is run concurrently in multiple threads, it will often deadlock. The
-transaction acquires locks on <code>accounts[i]</code>, <code>accounts[j]</code>, and <code>accounts[k]</code>,
-but nothing ensures that these locks are ordered.</p>
+Unfortunately, if this transaction is run concurrently in multiple threads, it will often deadlock: the
+transaction acquires locks on <code>accounts[i]</code> and <code>accounts[j]</code>,
+but nothing ensures that the lock acquisition is ordered correctly.</p>
 <p>
 The fix to this deadlock is to impose an ordering on the bank accounts. Suppose we choose the ordering that
-<code>accounts[i] &lt; accounts[j]</code> exactly when <code>i &lt; j</code>.
-To simplify the acquisition order graph, we first pull the update to <code>accounts[k]</code> out of the critical section
-involving the other two accounts; that update does not need to happen while locks <code>i</code> and <code>j</code> are held
-unless we are demanding that the whole transaction occur atomically. Then, we
-sort <code>i</code> and <code>j</code> before acquiring their locks:
+<code>accounts[i] &lt; accounts[j]</code> exactly when <code>i &lt; j</code>. Then, we
+sort <code>i</code> and <code>j</code> accordingly before acquiring their locks:
 </p>
 <pre class=load>
 <a href="Deadlock_fixed.java">Deadlock_fixed.java</a>
 </pre>
 <p>
+<h3>Locking level</h3>
+<p>
+To prevent deadlock, we can impose a requirement that a method only hold
+locks up to a certain level in the order &lt;. This requirement becomes part
+of the precondition of the method and is sometimes called the <em class=term>locking level</em>
+of the method, written \(LL\). The locking level \(LL\) specifies the highest-level lock in the lock
+ordering that might be held when the method is called. It is therefore safe for
+the method to acquire locks that are higher in the lock ordering than the locking level.
+</p>
+<p>
+Since a monitor acquires its lock when public methods are called, the locking level on 
+entry to a monitor method must be less than the mutex of the monitor itself
+(or equal to, assuming reentrant locks, as in Java). Otherwise
+the lock ordering could be violated. Thus, the public methods of a monitor have
+an (often implicit) precondition \(LL ≤ \texttt{this}\).
+</a>
+<p>
+If we apply this approach to the example above, we might specify that <code>a
+&lt; b</code> in the lock ordering.  The methods <code>f()</code> then requires \(LL
+&lt; a\) and <code>g()</code> requires \(LL &lt; b\). The call to <tt>a.f()</tt> in
+<tt>B.g()</tt> then becomes illegal. For a monitor, the preconditions written explicitly
+below could be assumed implicitly.
+</p>
+<pre class=code>
+class A {
+    /** Requires: LL ≤ this */
+    synchronized void f() { b.g(); }
+}
+
+class B {
+    /** Requires: LL ≤ this */
+    synchronized void g() { a.f(); }
+}
+</pre>
 
 <h2>Using background threads with JavaFX</h2>
 </p><p>
