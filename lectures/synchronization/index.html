@@ -620,6 +620,7 @@ an already held lock is not a problem.
 To prevent deadlock, we can impose a requirement that a method only hold
 locks up to a certain level in the order &lt;. This requirement becomes part
 of the precondition of the method and is called the <em class=term>locking level</em>
+(or lock ceiling)
 of the method, written \(LL\). The locking level \(LL\) specifies the highest-level lock in the lock
 ordering that might be held when the method is called. It is therefore safe for
 the method to acquire locks that are higher in the lock ordering than the locking level.

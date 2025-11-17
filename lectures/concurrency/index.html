@@ -38,16 +38,17 @@ are located together on the same chip, as they are in most modern <strong>multic
 systems, the processors were located on different chips.
 </p>
 
-<p>concurrency is different from parallelism, but closely related.
-parallelism exists when different hardware units (e.g., cores) are doing work
-at the same time. other forms of parallelism exist: graphics processing units
+<p>Concurrency is different from parallelism, but closely related.
+Parallelism exists when different hardware units (e.g., cores) are doing work
+at the same time. Other forms of parallelism exist: graphics processing units
 (gpus), network, and disk hardware all do work in parallel with the main
-processor(s). modern processors even use parallelism when they are executing
+processor(s). Modern processors even use parallelism when they are executing
 a single thread, because they execute
 multiple machine instructions from a single thread at the same time,
-using pipelining and other techniques. Your computer also has
-a memory subsystem, a peripheral bus, and probably a graphics processing unit, which
-all run in parallel with the CPU.
+using pipelining and other techniques. At a given moment, your computer may
+be executing multiple lines of Java code from the same thread!
+Your computer also has a memory subsystem, a peripheral bus, and probably a
+graphics processing unit, which all run in parallel with the CPU.
 </p>
 <p>
 Thus, concurrency can be present even when there is no parallelism, and parallelism
