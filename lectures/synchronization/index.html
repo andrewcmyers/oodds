@@ -651,26 +651,26 @@ sort <code>i</code> and <code>j</code> accordingly before acquiring their locks:
 <p>
 <h3>Locking level</h3>
 <p>
-To prevent deadlock, we can impose a requirement that a method only hold
-locks up to a certain level in the order &lt;. This requirement becomes part
-of the precondition of the method and is sometimes called the <em class=term>locking level</em>
-of the method, written \(LL\). The locking level \(LL\) specifies the highest-level lock in the lock
-ordering that might be held when the method is called. It is therefore safe for
-the method to acquire locks that are higher in the lock ordering than the locking level.
+For code to acquire a lock without fear of deadlock, a precondition must be satisfied
+that all held locks are lower in the lock ordering than the lock to be acquired. To call
+a method that acquires locks, this requirement must be part of the method precondition.
+The precondition can be expressed in terms of the <em class=term>locking level</em> \(LL\), which
+is a bound on the highest-level lock in the lock
+ordering that might be held. Assuming the precondition holds, it is safe for
+the method to acquire locks that are higher in the lock ordering than \(LL\).
 </p>
 <p>
 Since a monitor acquires its lock when public methods are called, the locking level on 
 entry to a monitor method must be less than the mutex of the monitor itself
-(or equal to, assuming reentrant locks, as in Java). Otherwise
+(or equal to, assuming reentrant locks). Otherwise
 the lock ordering could be violated. Thus, the public methods of a monitor have
-an (often implicit) precondition \(LL ≤ \texttt{this}\).
+an (typically implicit) precondition \(LL ≤ \texttt{this}\).
 </a>
 <p>
 If we apply this approach to the example above, we might specify that <code>a
 &lt; b</code> in the lock ordering.  The methods <code>f()</code> then requires \(LL
 &lt; a\) and <code>g()</code> requires \(LL &lt; b\). The call to <tt>a.f()</tt> in
-<tt>B.g()</tt> then becomes illegal. For a monitor, the preconditions written explicitly
-below could be assumed implicitly.
+<tt>B.g()</tt> then becomes illegal.
 </p>
 <pre class=code>
 class A {
