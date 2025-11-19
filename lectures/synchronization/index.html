@@ -3,7 +3,7 @@
 <h2>Synchronization and happens-before</h2>
 
 <p>
-As seen <a href="lecture.html?id=concurrency#weak_cons_ex">earlier</a>, a write to memory by one thread (e.g., an assignment to
+As seen <a href="lecture.html?id=concurrency#weak_cons_ex">earlier</a>, a write to memory by one thread (such as an assignment to
 an instance variable) is not necessarily observed by a later read from the
 same location by another thread. Java, like most programming languages,
 offers only a <em class=term>weak consistency</em> model that does not guarantee that
@@ -19,17 +19,19 @@ even later write).  Conversely, a read that happens-before a write is guaranteed
 happens-before relationship will appear to happen in that order.
 </p>
 <p>
-Happens-before relationships are not necessarily totally ordered.  An event may
-happen-before two operations done by concurrent threads, yet there need not be
-a happens-before relationship between those two operations.  However,
+Operations performed in sequence within a single thread have happens-before
+relationships corresponding to their temporal ordering. However, operations in
+different threads may not have any happens-before relationship. In other words,
+happens-before relationships are not in general totally ordered. For example,
+an event may happen-before two operations done by concurrent threads, without a
+happens-before relationship existing between those two operations.  However,
 happens-before is transitive: if event X happens-before event Y and Y
 happens-before Z, then X happens-before Z.
 </p>
 
 <p>
-Locks are the starting point for establishing happens-before relationships.
-Locks automatically establish happens-before on their operations. A
-mutex can only be held by a single thread at a time, so acquire and release
+Locks are a fundamental mechanism for establishing happens-before relationships.
+A mutex can only be held by a single thread at a time, so acquire and release
 operations on a mutex automatically have happens-before relationships. In
 particular, if one thread releases a mutex and another thread then acquires it,
 the release of the mutex happens-before the acquire.
