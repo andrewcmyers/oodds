@@ -3,19 +3,19 @@
 <h2>Synchronization and happens-before</h2>
 
 <p>
-As we have seen, a write to memory by one thread (e.g., an assignment to
-an instance variable) is not necessarily seen by a later read from the
+As seen <a href="lecture.html?id=concurrency#weak_cons_ex">earlier</a>, a write to memory by one thread (e.g., an assignment to
+an instance variable) is not necessarily observed by a later read from the
 same location by another thread. Java, like most programming languages,
 offers only a <em class=term>weak consistency</em> model that does not guarantee that
 every write is seen by every later read.
 </p>
 <p>
 When a consistency model considers that one event happens before another in the
-view of every thread, we say that the operations have a <em class=term>happens-before</em>
-relationship.  A write that happens-before a read is guaranteed to be seen by
+view of every thread, the operations are said to have a <em class=term>happens-before</em>
+relationship.  A write that happens-before a read is guaranteed to be visible to
 the read (though it is also possible that the read will return the result of an
-even later write).  Conversely, a read that happens-before a write is guarantee
-<em>not</em> to see the value written by that write. And two writes with a
+even later write).  Conversely, a read that happens-before a write is guaranteed
+<em>not</em> to see the value written by that write. Similarly, two writes with a
 happens-before relationship will appear to happen in that order.
 </p>
 <p>
