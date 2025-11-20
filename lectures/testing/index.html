@@ -11,10 +11,10 @@ occurring late in the process:
 <canvas id=waterfall style="width: 700px; height: 200px"></canvas>
 <script class=graphics>
   with (new CFigure("waterfall")) {
-    setFontSize(10)
+    setFontSize(14)
     setConnectionStyle("intersection")
     function r(txt) {
-        return rectangle().setW(120).setH(25).addText(txt)
+        return rectangle().setW(140).setH(25).addText(txt)
     }
     function s() {
         return hspace().setW(8).setH(8);
@@ -29,7 +29,7 @@ occurring late in the process:
     ];
     align("distribute", "distribute", ...nodes)
     align("left", "top", req, margin(5))
-    align("right", "bottom", maintenance, margin())
+    align("right", "bottom", maintenance, margin(5))
     for (let i = 0; i < nodes.length - 1; i++) {
         arrow(nodes[i], nodes[i].toBottom(30), nodes[i+1])
     }
