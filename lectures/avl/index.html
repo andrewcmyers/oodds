@@ -129,24 +129,71 @@ familiar Fibonacci sequence emerges: \(1, 2, 3, 5, 8, 13, ...\) . In general,
 rate as the Fibonacci sequence and that the Fibonacci sequence grows
 exponentially.</p>
 
+<h3>Lower bound on the number of nodes in an AVL tree</h3>
+<p>
+Without showing an exact formula for \(N(h)\) or \(F_n\), we can even more easily
+prove an exponential lower bound on \(N(h)\) by induction. We show that for all
+\(h≥0\), the inequality \(N(h) ≥ φ^h\) holds,
+where \(φ\) is the <strong>golden ratio</strong> \((1+\sqrt{5})/2 ~~(≈ 1.618)\).
+</p>
+</p>
+Experimentally, we have \(N(0) = 1 = φ^0\) and \(N(1) = 2 ≥ φ^1\). Now we assume an
+<em class=term>induction hypothesis</em>:
+that the condition \(N(x) ≥ φ^x\) holds for all values of \(x\) from 0 up to
+some \(h\).
+We can show that the formula must also hold for \(h+1\),
+using the induction hypothesis.</p>
+
+<p>We use an interesting property
+of the golden ratio: \(φ^2 = φ+1\). This property holds because it is a root
+of the quadratic equation \(x^2 - x - 1 = 0\).
+This property of the golden ratio implies that for any \(h\), \(φ^h = φ^{h-1} + φ^{h-2}\).
+We can use this property to simplify the formula for \(N(h)\):
+</p>
+\begin{align}
+N(h) & = 1 + N(h-1) + N(h-2)           & \text{(by the definition of \(N\))} \\
+     & ≥ 1 + φ^{h-1} + φ^{h-2}         & \text{(by the induction hypothesis)} \\
+     & ≥ 1 + φ^h                       & \text{(by the golden ratio property)} \\
+     & ≥ φ^h
+\end{align}
+<p>
+Now we apply induction. As noted, the inequality \(N(h) ≥ φ^h\) holds
+immediately for \(h=0\) and \(h=1\).  The argument above shows that that for
+any \(h\), if the inequality holds for \(h-1\) and \(h-2\) then it holds for
+\(h\). Since we know it holds for \(h=0\) and \(h=1\), it must hold for
+\(h=2\).  Since it holds for 1 and 2, it must hold for 3. And so on.
+By induction we can conclude that the inequality holds for
+<em>all</em> \(h≥0\).
+</p>
+<p>
+Since, for all \(h≥0\), we have \(N(h) ≥ φ^h\), the height of an AVL 
+tree is asymptotically limited. Given an arbitrary AVL
+tree of height \(h\) containing \(n\) nodes, we have \(φ^h ≤ N(h) ≤ n\). If
+we take the logarithm (base \(φ\)) of this inequality, we obtain
+\(h ≤ \log_{φ} n\). All logarithms
+are related by constant factors, so \(h\) is \(O(\log n)\).
+Therefore, AVL trees are balanced.
+</p>
+
 <div class=digression>
 <h3>Exact formula for the Fibonacci numbers</h3>
 <p>
-It turns out that the Fibonacci number can be computed with an exact, nonrecursive formula:</p>
+As a small digression,
+a similar inductive argument shows that Fibonacci numbers can
+be computed with an exact, nonrecursive formula:</p>
 \begin{align}
 \newcommand\phib{\overline{φ}}
  F_n & = (φ^n &minus; \phib^n)/\sqrt{5} & \text{(1)}
 \end{align}
 <p>
-where \(φ\) is the <strong>golden ratio</strong> \((1+\sqrt{5})/2 ~~(≈ 1.618)\) and 
-\(\phib\) is its negative reciprocal \((1-\sqrt{5})/2 ~~(≈ -0.618)\).
-The golden ratio and its negative reciprocal share an interesting property:
-\(φ^2 = φ+1\) and \(\phib^2 = \phib+1\). They are both numbers \(x\) such that
-\(x^2 = x + 1\), because they are
-the two solutions to the quadratic equation \(x^2 - x - 1 = 0\).
+\(\phib\) is the negative reciprocal of \(\phi\): \((1-\sqrt{5})/2 ~~(≈ -0.618)\).
+The golden ratio and its negative reciprocal are the two solutions to
+the quadratic equation \(x^2 - x - 1 = 0\), so they
+share the property described above:
+\(φ^2 = φ+1\) and \(\phib^2 = \phib+1\).
 Multiplying both sides of the equation on \(φ\) by \(φ^{n-2}\)
 and both sides of the equation on \(\phib\) by \(\phib^{n–2}\), we can conclude
-that for <em>any</em> exponent n,
+that for <em>any</em> exponent \(n\),
 </p>
 \begin{align}
 φ^n & = φ^{n-1} + φ^{n–2} \hspace{6em} & \text{(2)} \\
@@ -154,7 +201,7 @@ that for <em>any</em> exponent n,
 \end{align}
 <p>
 Now we can show that the formula (1) for the Fibonacci numbers is correct by induction.
-First observe that the formula is correct for n=0 and n=1:</p>
+First observe that the formula is correct for \(n=0\) and \(n=1\):</p>
 
 \begin{align}
 F_0 & = 0 = (φ^0 - \phib^0)/\sqrt{5} \\
@@ -162,9 +209,9 @@ F_1 & = 1 = ((1+\sqrt{5})/2 - (1-\sqrt{5})/2)/\sqrt{5} = (φ^1 - \phib^1)/\sqrt{
 \end{align}
 
 <p>
-Now assume that \(n ≥ 2\) and the formula is correct for the entire sequence up to
-but not necessarily including \(F_n\). (This assumption is called the
-<em>induction hypothesis</em>). In particular, the formula is assumed correct for \(F_{n-1}\) and \(F_{n-2}\). Then:
+Our induction hypothesis is that \(n ≥ 2\) and the formula is correct for the
+entire sequence up to but not necessarily including \(F_n\). In particular,
+the formula is assumed correct for \(F_{n-1}\) and \(F_{n-2}\). Then:
 
 \begin{align}
 F_n & = F_{n-1} + F_{n-2} & \text{(definition of \(F_n\))} \\
@@ -184,40 +231,6 @@ vanishingly small for large \(n\). Asymptotically, the Fibonacci numbers grow as
 \(φ^n\) is both an asymptotic upper <em>and lower</em> bound on \(F_n\).
 </p>
 </div>
-<h3>Lower bound on the number of nodes in an AVL tree</h3>
-<p>
-Without showing an exact formula for \(N(h)\) or \(F_n\), we can even more easily
-prove an exponential lower bound on \(N(h)\) by induction. We show that for all
-\(h≥0\), the inequality \(N(h) ≥ φ^h\) holds.
-Experimentally, we have \(N(0) = 1 = φ^0\) and \(N(1) = 2 ≥ φ^1\). Now assume as an induction hypothesis
-that the condition \(N(h) ≥ φ^h\) holds for all values up to but not necessarily including some \(h≥2\).
-We can show that the formula must also hold for \(h\),
-using the induction hypothesis and property (2).</p>
-
-<p>
-Property (2) tells us that \(φ^h = φ^{h-1} + φ^{h-2}\). Then
-</p>
-\begin{align}
-N(h) & = 1 + N(h-1) + N(h-2)           & \text{(by the definition of N)} \\
-     & ≥ 1 + φ^{h-1} + φ^{h-2}         & \text{(by the induction hypothesis)} \\
-     & ≥ 1 + φ^h                       & \text{(by property (2))} \\
-     & ≥ φ^h
-\end{align}
-<p>
-Now we apply induction as before.
-The inequality \(N(h) ≥ φ^h\) holds for \(h=0\) and \(h=1\), and we know that for any \(h\), if it
-holds for \(h-1\) and \(h-2\) then it holds for \(h\), so we can conclude by
-induction that it holds for all \(h≥0\).
-</p>
-<p>
-Since, for all \(h≥0\), we have \(N(h) ≥ φ^h\), we can see that the height of an AVL 
-tree is limited. Given an arbitrary AVL
-tree of height \(h\) containing \(n\) nodes, we have \(φ^h ≤ N(h) ≤ n\). If
-we take the logarithm (base \(φ\)) of this inequality, we obtain
-\(h ≤ \log_{φ} n\). All logarithms
-are related by constant factors, so \(h\) is \(O(\log n)\).
-Therefore, AVL trees are balanced.
-</p>
 
 <h2 id=tree_rotations>Tree rotations</h2>
 <p>
