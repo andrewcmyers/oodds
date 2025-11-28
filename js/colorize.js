@@ -71,7 +71,7 @@ function colorize_text(t, fromRawCode) {
 	    newt += tokens[i];
 	    linecommenting = true;
 	} else if (linecommenting && tokens[i].match(/\r?\n/)) {
-	    tokens[i] = tokens[i].replace(/(\r?)\n/, "</span>\1\n");
+	    tokens[i] = tokens[i].replace(/(\r?)\n/, "</span>$1\n");
 	    newt += tokens[i];
 	    linecommenting = false;
 	} else if (keywords[tokens[i] + "$"] && !commenting && !instring && !linecommenting) {
