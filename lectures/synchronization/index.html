@@ -388,7 +388,9 @@ public class BlockingQueue<T> {
         this.capacity = capacity;
     }
 
-    public synchronized void put(T element) throws InterruptedException {
+    public synchronized void put(T element)
+        throws InterruptedException
+    {
         while (queue.size() == capacity) {
             wait();
         }
@@ -397,7 +399,9 @@ public class BlockingQueue<T> {
         notifyAll();
     }
 
-    public synchronized T take() throws InterruptedException {
+    public synchronized T take()
+        throws InterruptedException
+    {
         while (queue.isEmpty()) {
             wait();
         }
@@ -643,8 +647,10 @@ Unfortunately, if this transaction is run concurrently in multiple threads, it w
 transaction acquires locks on <code>accounts[i]</code> and <code>accounts[j]</code>,
 but nothing ensures that the lock acquisition is ordered correctly.</p>
 <p>
-The fix to this deadlock is to impose an ordering on the bank accounts. Suppose we choose the ordering that
-<code>accounts[i] &lt; accounts[j]</code> exactly when <code>i &lt; j</code>. Then, we
+The fix to this deadlock is to impose an ordering on the bank accounts.
+Suppose we choose the ordering that
+<code>accounts[i] &lt; accounts[j]</code> in the lock ordering
+exactly when <code>i &lt; j</code> in the integer ordering. Then, we
 sort <code>i</code> and <code>j</code> accordingly before acquiring their locks:
 </p>
 <pre class=load>
@@ -670,9 +676,10 @@ an (typically implicit) precondition \(LL ≤ \texttt{this}\).
 </a>
 <p>
 If we apply this approach to the example above, we might specify that <code>a
-&lt; b</code> in the lock ordering.  The methods <code>f()</code> then requires \(LL
-&lt; a\) and <code>g()</code> requires \(LL &lt; b\). The call to <tt>a.f()</tt> in
-<tt>B.g()</tt> then becomes illegal.
+&lt; b</code> in the lock ordering.  The method <code>f()</code> then requires \(LL
+≤ a\) and <code>g()</code> requires \(LL ≤ b\). The call to <tt>a.f()</tt> in
+<tt>B.g()</tt> then becomes illegal because the following holds at the point of the call:
+\(LL=b\not≤a\).
 </p>
 <pre class=code>
 class A {

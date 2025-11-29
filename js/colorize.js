@@ -67,7 +67,7 @@ function colorize_text(t, fromRawCode) {
 	    newt += tokens[i];
 	    commenting = true;
 	} else if (!commenting && !linecommenting && tokens[i].match(/\/\//)) {
-	    tokens[i] = tokens[i].replace(/\/\//, "<span-class=\"comment\">//");
+	    tokens[i] = tokens[i].replace(/\/\//, "<span-class=\"linecomment\">//");
 	    newt += tokens[i];
 	    linecommenting = true;
 	} else if (linecommenting && tokens[i].match(/\r?\n/)) {
