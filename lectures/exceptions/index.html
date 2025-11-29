@@ -208,7 +208,7 @@ real-world systems like airplanes or spacecraft.
 <h3>Checked or unchecked?</h3>
 <p>
 Given that some exceptions are checked and other unchecked, it may not be clear what
-sort of exception to use. Understanding the purpose of exception helps us make
+sort of exception to use. Understanding the purpose of exceptions helps us make
 this choice. It depends on why the exception is being used.
 </p>
 <ul><li>
@@ -226,6 +226,22 @@ they must be declared to satisfy the compiler. The simplest and safest way to
 deal with this problem is to write a catch clause for those exceptions, and to throw an
 <code>Error</code> from the handler.  </p></li>
 </ul>
+
+<h3>Null pointer exceptions</h3>
+<p>
+One of the biggest source of bugs in Java programs is the use of the special
+value <code>null</code>. A value of any boxed type can be null, and if used
+incautiously, will generate the unchecked exception
+<code>NullPointerException</code>. SInce compiler does not warn about unchecked
+exceptions, <em>every</em> pointer value can potentially generate this
+exception!  A rule of thumb for coding reliable software is to avoid or limit
+the use of <code>null</code>.  For example, instead of using <code>null</code>
+to represent a missing value, we can use the <a
+href="?id=patterns/index.html#Option%20pattern">Option design pattern</a>.
+Alternatively, some IDEs support non-null annotations such as
+<code>@NonNull</code> or <code>@NotNull</code>, supporting a distinction
+between values that could be null and ones that cannot be.
+</p>
 
 <h3>Specifying partial functions</h3>
 <p>
