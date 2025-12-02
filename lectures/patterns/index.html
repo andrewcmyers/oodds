@@ -601,7 +601,7 @@ all events are handled. One way to ensure all events are handled is to
 think about the program, or about parts of the program, as <em class=term>state machines</em>.
 Often state machines are presented as mathematical abstractions,
 but they are also a way to organize code: a design pattern called the
-<em class=term>state design pattern</em>.
+<em class=term>State design pattern</em>.
 </p>
 <p>A state machine has a set of states and a set of events that can occur. At any given
 moment, the machine is in one of the allowed states. However, when it receives a new
@@ -689,7 +689,7 @@ make sure that the user interface doesn't permit those events to
 happen&mdash;perhaps by graying out the corresponding UI component. 
 </p>
 <p>
-In the state design pattern, the various events that can be received by the
+In the State design pattern, the various events that can be received by the
 state machine are represented as different methods on the state machine object.
 Each method captures one column of the state transition table. This design
 systematically organizes the code that implements a state machine. The
