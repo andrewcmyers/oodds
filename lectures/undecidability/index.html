@@ -140,8 +140,8 @@ integer is prime or composite&mdash;is known to be in polynomial time.
 Beyond the problems mentioned above, there are even computational
 problems that cannot be solved at all, even in principle, and even with
 unlimited time and space. We can prove mathematically
-that such problems exist. We will focus on <em class=term>decision problems</em> where
-the goal is to decide whether a given property holds of some input, and we will
+that such problems exist. Let us focus on <em class=term>decision problems</em> where
+the goal is to decide whether a given property holds of some input, and
 show that some decision problems are <em class=term>undecidable</em> by any algorithm.
 </p>
 
@@ -150,8 +150,8 @@ show that some decision problems are <em class=term>undecidable</em> by any algo
 <p>
 An example of such a decision problem is the <em class=term>halting problem</em>: Given a
 program <code>p</code> and input <code>x</code> to that program, does
-<code>p</code> terminate when run on input <code>x</code>? We will see that
-the halting problem is undecidable in general. That is, there is no
+<code>p</code> terminate when run on input <code>x</code>? 
+The halting problem turns out to be undecidable in general. That is, there is no
 algorithm that halts and answers this question correctly for all
 programs and inputs.
 </p>
@@ -191,12 +191,12 @@ class P {
 If <code>p</code> is an instance of <code>Program</code> that represents
 the Java program <code>P</code>, then
 <code>terminates(p,x)</code> should return <code>true</code> or
-<code>false</code> according as <code>P.main(x)</code> halts or
+<code>false</code> exactly when <code>P.main(x)</code> halts or
 does not halt, respectively.</p>
 
 <p>
 The method <code>main</code> is allowed to use other classes
-and methods. However, we will only consider programs that receive no input from and
+and methods. However, we only consider programs that receive no input from and
 send no output to the outside environment. The only input to the
 program is <code>x</code> and the only output is the boolean result of <code>main</code>.
 If we can't determine whether such simple programs terminate, then of
@@ -239,7 +239,8 @@ Now consider the following program.
 <p>
 Note that <code>H.main</code> terminates on any input <code>x</code>,
 because the only possibility for nontermination is in line 6 in the call to <code>interpret(p,p)</code>,
-but we have already guaranteed that this will terminate by the call to <code>terminates(p,p)</code> in line 5. Therefore <code>H.main(x)</code> always returns either true or false.
+but we are already guaranteed that this call terminates because of the
+call to <code>terminates(p,p)</code> in line 5. Therefore <code>H.main(x)</code> always returns either true or false.
 </p><p>
 But now let <code>h</code> be an instance of <code>Program</code> representing <code>H</code>,
 and consider what happens when we run <code>H.main(h)</code>. As argued above, this must
@@ -276,9 +277,9 @@ The conclusion is that some useful results are simply not computable by any algo
 <p>
 This result may sound obscure but it has some far-reaching practical implications.
 In particular, many different <em class=term>program analyses</em> besides
-termination are also undecidable. For example, we cannot reliably
+termination are also undecidable. For example, we cannot precisely
 identify dead code (code that cannot be reached), or tell if a given
-program will ever generate a <code>NullPointerException</code>, or
+program can ever generate a <code>NullPointerException</code>, or
 tell if a run-time type error will occur. These problems are all
 provably undecidable.
 </p>
@@ -308,13 +309,14 @@ termination is undecidable; therefore, predicting
 </p>
 
 <p>
-As a result, all “interesting” program analyses must be <em class=term>conservative</em>,
-giving answers &ldquo;true&rdquo;, &ldquo;false&rdquo; or
-&ldquo;not sure&rdquo;. Type checking is another example of such an analysis.
-A compiler type-checks programs conservatively by only allowing programs
-that (if the type system is sound) definitely have no run-time type errors.
-However, undecidability implies a type checker must sometimes complain about
-programs being ill-typed even though they do not cause run-time type errors.
+As a result, all “interesting” program analyses must be <em
+class=term>conservative</em>, giving answers &ldquo;true&rdquo;,
+&ldquo;false&rdquo; or &ldquo;not sure&rdquo;. Type checking is another example
+of such an analysis.  A compiler type-checks programs conservatively by only
+allowing programs that (if the type system is sound) definitely have no
+run-time type errors.  However, undecidability implies that a sound type
+checker must sometimes complain about programs being ill-typed even though they
+cannot cause run-time type errors.
 </p>
 
 <p>
@@ -327,5 +329,5 @@ or a <em class=term>false alarm</em>), or else <em class=term>unsound</em>,
 meaning that they accept some unsafe
 programs as safe (this is a <em class=term>false negative</em>). Despite these limitations,
 software developers use incomplete and even unsound automatic tools all the time:
-they can still be useful despite their limitations.
+these tools can still be useful despite their limitations.
 </p>
