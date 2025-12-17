@@ -600,6 +600,7 @@ no modifications are made to “information used in equals comparisons on the ob
 (a rather circular definition!) There is some flexibility in this spec—arguably,
 too much flexibility—but meeting it is still surprisingly tricky.
 </p>
+
 <p>
 These implementation challenges reflect a problem in the specification of
 <code>equals()</code>. The expected mathematical properties of equality
@@ -608,21 +609,30 @@ whether it is equal to all other objects. Some other approaches to equality
 are more philosophically consistent, but since the Java libraries rely on the
 <code>equals()</code> method in many places, we have to learn to live with
 <code>equals()</code> and sometimes strike compromises.
+</p>
+
 <p>
 One challenge of implementing <code>equals()</code> is that its signature
 requires the ability to compare against values of any object type:
+</p>
+
 <pre>
    boolean equals(Object o);
 </pre>
+
 <p>
 Before the method can test equality of the object <code>this</code> and the
 object <code>o</code>,  it must first determine if object <code>o</code> is the
 right kind of object, and in that case obtain a reference to the object with a
 static type that permits checking it.
+</p>
+
 <p>
 Since our <code>Polynomial</code> class is immutable, we should override the
 <code>equals()</code> method to implement state equality. For example, the
 code might look like the following:
+</p>
+
 <pre>
     boolean equals(Object o) {
         if (o instanceof Polynomial p) {
@@ -632,12 +642,15 @@ code might look like the following:
         }
     }
 </pre>
-</p>
+
+
 <p>
 Note that if the value of <code>o</code> is <code>null</code>, it will not satisfy
 the <code>instanceof</code> text. This code uses the relatively new feature of
 pattern matching in <code>instanceof</code>; if the test succeeds, the variable <code>p</code>
 may be used within the consequent clause of the <code>if</code>-statement in a type-safe way.
+</p>
+
 <p>
 A problem with this approach is that it can violate the symmetry
 property required by the specification of <code>equals()</code>. Suppose
@@ -647,6 +660,7 @@ observers and more state than <code>Polynomial</code> does. Then, a
 subtype, whereas that object's own <code>equals</code> would conclude
 through an <code>instanceof</code> test that the objects are not equal.
 </p>
+
 <h3>canEqual</h3>
 
 <p>
@@ -711,12 +725,13 @@ test in <code>ColoredPoint.equals()</code>; a CartesianPoint will not be equal t
 <code>ColoredPoint</code> because the CartesianPoint does not pass the <code>instanceof</code> test in
 <code>ColoredPoint.canEqual()</code>.
 </p>
+
 <h3>Symmetry via reflection</h3>
-<p>
-Another way to restore symmetry is to use the Java feature of
-<em class=term>reflection</em>, which enables properties of types to be accessed at run
-time:
-</p>
+
+<p>Another way to restore symmetry is to use the Java feature of <em
+class=term>reflection</em>, which enables properties of types to be accessed at
+run time:</p>
+
 <pre>
     boolean equals(Object o) {
         if (getClass() != o.getClass()) return false;
@@ -727,11 +742,13 @@ time:
         }
     }
 </pre>
+
 <p>
 This code uses the reflective method <code>getClass()</code> to access the
 run-time class of the objects being compared. Two objects can only be
 considered equal by this code if they are implemented by the same class.
 </p>
+
 <p>
 This reflection-based approach has been promoted as a best practice for
 implementing <code>equals()</code>, but it is not entirely satisfactory.
@@ -739,14 +756,19 @@ If two classes like <code>CartesianPoint</code> and <code>PolarPoint</code>
 provide alternate implementations of the same
 immutable interface (such as <code>Point</code>), Leibniz equality says that we should consider their objects equal
 even when their classes are different, if the objects cannot be distinguished using their
-interfaces. Using reflection as above forces us to implement a overly strong notion of equality.
+interfaces. Using reflection as above forces us to implement a overly strong notion of equality
+that distinguishes otherwise indistinguishable objects.
 </p>
+
 <h3>Equality at a type</h3>
+
 <p>
-An alternative way to handle equality that is consistent and flexible 
-is to implement equality <em>at a particular type</em>.
+An alternative notion of equality that is consistent and flexible 
+is <em class=term>equality at a type</em>.
 For example, we might evaluate equality of two polynomials
 using a <em>static</em> method of the class <code>Polynomial</code>:
+</p>
+
 <pre>
 class Polynomial {
     /** Returns whether p and q are equal as polynomials. */
@@ -755,6 +777,7 @@ class Polynomial {
     }
 }
 </pre>
+
 <p>
 This method does not try to answer whether two objects are truly equal; it only
 answers whether they are “polynomial-equal”: that is, they are
@@ -768,4 +791,3 @@ because it may consider objects to be equal even though they can be
 distinguished using methods that are not in the <code>Polynomial</code>
 interface.
 </p>
-
