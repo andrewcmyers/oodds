@@ -236,6 +236,16 @@ While this code is legal, it is certainly confusing and
 not an example of good code!
 </p>
 
+<div class=exercise>
+Given <code>int[] a = new int[3];</code> and <code>int[] b = a;</code>, what happens when you
+execute <code>b[0] = 42;</code>? What is the value of <code>a[0]</code> afterward?
+<p class=answer>
+<code>a[0]</code> is 42. Since arrays are reference types, the assignment <code>b = a</code> makes
+<code>b</code> an alias for the same array object. Any modification through <code>b</code> is visible
+through <code>a</code> because they refer to the same underlying array.
+</p>
+</div>
+
 <h2>Strings</h2>
 <p>
 Strings in Java are also objects, which leads to some surprises. The evaluation of
@@ -338,6 +348,18 @@ improve the way strings work in future versions of Java without breaking any
 existing programs.
 </p>
 
+<div class=exercise>
+If <code>z</code> and <code>w</code> are both <code>String</code> variables containing the value
+<code>"HelloWorld"</code> but created by separate concatenation operations, what do
+<code>z == w</code> and <code>z.equals(w)</code> evaluate to?
+<p class=answer>
+<code>z == w</code> evaluates to <code>false</code> because <code>==</code> on reference types
+compares object identity (whether they are the same object), and separate concatenations
+create distinct objects. <code>z.equals(w)</code> evaluates to <code>true</code> because
+<code>equals</code> compares the contents of the strings.
+</p>
+</div>
+
 <h2>Autoboxing</h2>
 <p>
 Sometimes we want to use a primitive type like <code>int</code> where a
@@ -424,6 +446,18 @@ Calls to the <code>valueOf</code> and <code>intValue</code> methods are
 automatically inserted by the Java compiler to implement boxing and unboxing.
 Similar methods exist for the other primitive types.
 </p>
+
+<div class=exercise>
+Why does <code>Integer.valueOf(200) == Integer.valueOf(200)</code> evaluate to <code>false</code>,
+while <code>Integer.valueOf(5) == Integer.valueOf(5)</code> evaluates to <code>true</code>?
+<p class=answer>
+Java caches <code>Integer</code> objects for values between −128 and 127. For values in that
+range, <code>valueOf</code> returns the same cached object, so <code>==</code> returns
+<code>true</code>. For values outside that range (like 200), <code>valueOf</code> creates a new
+object each time, so <code>==</code> compares two different objects and returns <code>false</code>.
+Use <code>.equals()</code> to compare <code>Integer</code> values reliably.
+</p>
+</div>
 
 <h2>About knowing obscure things</h2>
 

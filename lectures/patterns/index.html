@@ -119,11 +119,12 @@ maybe that holds a value, and the <code>orElse</code> method expresses computati
 <a href="maybe_ex2.java">maybe_ex2.java</a>
 </pre>
 <p>
-This code looks like an if-then-else statement but we need to be a little careful. The argument to the
-method <code>orElse</code> is evaluated even if that path is not taken. If we want to avoid evaluating
-that expression, we can use <code>orElseGet()</code> to delay the computation. For example, if we wanted
-to have a side effect when there is no string, we can put the side effect inside a lambda expression and use
-<code>orElseGet()</code>:
+This code looks like an if-then-else statement but we need to be a little
+careful. The argument to the method <code>orElse</code> is evaluated even if
+that path is not taken. If we want to avoid evaluating that expression, we can
+use <code>orElseGet()</code> to delay the computation. For example, if we
+wanted to have a side effect when there is no string, we can put the side
+effect inside a lambda expression and use <code>orElseGet()</code>:
 </p>
 <pre class=load>
 <a href="maybe_ex3.java">maybe_ex3.java</a>
@@ -134,6 +135,19 @@ to have a side effect when there is no string, we can put the side effect inside
 methods have somewhat less intuitive names; for example, the method
 <code>then()</code> is named <code>map()</code>.  These less intuitive names
 are chosen to make <code>Optional</code> compatible with Java Streams.
+
+<div class=exercise>
+Why does <code>Maybe&lt;T&gt;</code> throw a <em>checked</em> exception from <code>get()</code>,
+whereas <code>Optional&lt;T&gt;</code> throws an <em>unchecked</em> exception? What is the practical
+benefit of the checked exception?
+<p class=answer>
+A checked exception forces the programmer to handle the case where the value is
+absent (via <code>try...catch</code> or a <code>throws</code> declaration), so
+the compiler catches missing error handling at compile time. With
+<code>Optional</code>'s unchecked exception, it is easy to forget to check
+whether a value is present, leading to a run-time crash.
+</p>
+</div>
 
 <h2>Iterator pattern</h2>
 <p>
@@ -751,6 +765,20 @@ is usually indicated by talking about the M/VC pattern, in which the view and th
 controller are more tightly coupled, but strong separation is maintained between
 the model and these two parts of the design.
 </p>
+
+<div class=exercise>
+In the window state machine example, the entry for (minimized, close) is marked
+"—". Should we simply ignore a close event when the window is minimized, or is
+there a better design choice?
+<p class=answer>
+It depends on the desired behavior. One option is to transition to "closed"
+(allowing users to close minimized windows). Another is to disable the close
+button while minimized. Thinking through these "—" entries is exactly the value
+of the state transition table: it forces the designer to consider every
+combination of state and event, revealing cases that might otherwise be
+overlooked.
+</p>
+</div>
 
 <h2>Antipatterns</h2>
 <p>

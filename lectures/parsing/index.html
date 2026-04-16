@@ -129,12 +129,11 @@ noun</i> allow us to derive the following noun phrases:
 </p>
 
 <div class=exercise>
-Consider the pseudo-English grammar given above. Which of the following strings are in the language
-of the grammar?
+Consider the pseudo-English grammar given above. Which of the following strings are in the language of the grammar?
 <ol type=a>
-<li><code>the rat eats cheese</code></li>
-<li><code>rat eats</code></li>
-<li><code>the the dog</code></li>
+<li>the rat eats cheese</li>
+<li>rat eats</li>
+<li>the the dog</li>
 </ol>
 <p class=answer>
 (a) is in the language: it parses as <i>sentence → noun-phrase verb-phrase noun-phrase</i>,
@@ -413,7 +412,6 @@ first, and what value does it ultimately return?
 <code>parseE()</code> is called first. It calls <code>parseT()</code>, which parses “<code>2 × 3</code>”
 and returns 6. Then <code>parseE()</code> sees a <code>+</code>, consumes it, and recursively calls
 <code>parseE()</code>, which parses “<code>4</code>” and returns 4. The final result is \(6 + 4 = 10\).
-Notice how the grammar's structure gives <code>×</code> higher precedence than <code>+</code>.
 </p>
 </div>
 <h2>Abstract syntax trees</h2>
