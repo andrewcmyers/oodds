@@ -34,6 +34,16 @@ implement the desired interface, as in the following code:
 <a href="desugared_top_level_class.java">desugared_lambda.java</a>
 </pre>
 </p>
+
+<div class=exercise>
+Which design pattern is being used when a <code>JButton</code> invokes an
+<code>ActionListener</code> after a click?
+<p class=answer>
+The Observer pattern. The button is the subject that notifies registered listeners (observers)
+when an event occurs. Adding a listener with <code>addActionListener</code> is the
+subscription operation.
+</p>
+</div>
 <p>
 In fact, even inner classes are syntactic sugar for top-level classes. Because
 they are just syntactic sugar, they come with some limitations. In particular,
@@ -44,6 +54,18 @@ to. For that reason, the implementation of inner classes and lambdas actually
 makes a copy of any such external variable. Since the variable is final, there
 is no way for the programmer to tell that such a copy has been made!
 </p>
+
+<div class=exercise>
+Suppose a local variable <code>count</code> is declared inside a method, and a lambda expression
+in that method tries to update <code>count</code> by writing <code>count++</code>. Will this
+code compile?
+<p class=answer>
+No. Lambda expressions can only read <em>effectively final</em> variables from the enclosing
+scope, so <code>count++</code> causes a compile-time error. A typical workaround is to store
+the counter inside a mutable object (for example an array of length 1, or a
+<code>java.util.concurrent.atomic.AtomicInteger</code>) and update that object's state instead.
+</p>
+</div>
 <h3>Using background threads with Swing</h3>
 <p>
 In Swing, any background work should be done not by the event dispatch thread,
@@ -98,3 +120,14 @@ back to the event dispatch thread by using method
 <code>SwingUtilities.invokeLater()</code>, but this approach may couple the task
 implementation with the GUI more than is desirable.
 </p>
+
+<div class=exercise>
+Suppose an event handler for a button click directly performs a long-running network request
+(say, downloading a large file) on the event dispatch thread. What will the user observe?
+<p class=answer>
+The user interface will freeze for the duration of the request. Because the event dispatch
+thread is busy, no other input events (clicks, keystrokes, window resizes) can be handled and
+the window will not repaint. That's why long-running work should be moved off the event
+dispatch thread, for example into a <code>SwingWorker</code>.
+</p>
+</div>
