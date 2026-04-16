@@ -78,6 +78,18 @@ might forget to supply the corresponding argument. Code in the style above not
 only avoids cluttering up the normal-case code with error handling, but also
 consolidates the handling of multiple errors into one place.
 </p>
+<div class=exercise>
+A method <code>f</code> throws an exception that is not caught inside <code>f</code>. Method
+<code>g</code> calls <code>f</code> but also does not catch the exception. What happens to the
+exception next?
+<p class=answer>
+The exception propagates up the call stack: <code>f</code> terminates abruptly, <code>g</code>
+also terminates abruptly with the same exception, and propagation continues to <code>g</code>'s
+caller. It continues propagating until some caller's <code>try–catch</code> matches it, or the
+program terminates with an unhandled exception.
+</p>
+</div>
+
 <h3>Checked vs. unchecked exceptions</h3>
 <p>
 Java requires that some exceptions be declared in methods that might
@@ -90,19 +102,20 @@ exception.  Declaring exceptions helps make code more reliable because clients
 can tell what exceptions will be generated, and the compiler will identify when
 these exceptions are not handled.
 </p>
-Unchecked exceptions include the <em class=term>run-time exceptions</em>
-like <code>NullPointerException</code> but also subclasses of
-<code>Error</code>. The compiler will not warn clients if they are
+<p>
+Unchecked exceptions include both <em class=term>run-time exceptions</em>
+like <code>NullPointerException</code> and also subclasses of
+<code>Error</code>. The compiler does not warn clients if they are
 ignoring unchecked exceptions.
 </p>
 <p>Exception classes that are subclasses of the class <code>Exception</code>
 (itself a subclass of <code>Throwable</code>) are checked exceptions, unless
 they are also subclasses of <code>RuntimeException</code>. Java programmers
 are free to define their own new subclasses of <code>Exception</code> that they
-can then use in their code. For example, if we wanted to define a square root
-function, we could define a new checked exception named <code>Negative</code>.
-Any code that called <code>sqrt</code> would then have to handle the case where
-the argument is negative.
+can then use in their code. For example, if we wanted to define a square-root
+function <code>sqrt</code>, we could define a new checked exception named
+<code>Negative</code>.  Any code that called <code>sqrt</code> would then have
+to handle the case where the argument is negative.
 </p>
 <pre>
 class Negative extends Exception {}
@@ -135,6 +148,19 @@ void f() throws Negative {
     ...
 }
 </pre>
+
+<div class=exercise>
+Suppose you define <code>class OutOfInk extends Exception</code> and a printer method
+<code>print()</code> that may throw <code>OutOfInk</code>. A caller contains
+<code>printer.print();</code> with no <code>try–catch</code> and no <code>throws</code> clause on
+the enclosing method. Will the program compile?
+<p class=answer>
+No. Because <code>OutOfInk</code> extends <code>Exception</code> but not
+<code>RuntimeException</code>, it is a <em>checked</em> exception. Any method that can throw it must
+either catch the exception or declare it in a <code>throws</code> clause, so the compiler will
+reject the caller.
+</p>
+</div>
 
 <h2>Exceptions vs. Errors</h2>
 <p>
@@ -349,6 +375,19 @@ clause it belongs to, and include all the information that should be
 found in the clauses that the spec of your code needs.
 </p>
 -->
+
+<div class=exercise>
+You are designing a <code>lookup(String key)</code> method for a configuration library. When the
+key is missing, should you return a sentinel value like <code>null</code>, throw a checked
+exception, or throw an unchecked exception? Which choice makes the compiler most likely to catch
+callers who forget to handle the missing-key case, and why?
+<p class=answer>
+A checked exception. The compiler will force every caller to either catch the exception or declare
+it, so they cannot silently ignore the missing-key case. Returning <code>null</code> (or another
+sentinel) is easy for clients to forget to check and often leads to <code>NullPointerException</code>
+later. An unchecked exception compiles but offers no reminder to the client to handle it.
+</p>
+</div>
 
 <h3>try-with-resources</h3>
 <p>

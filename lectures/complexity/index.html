@@ -146,6 +146,15 @@ a witness pair, so is \((k', n'_0) \) whenever \( k'≥k \) and \( n'_0≥n_0 \)
 </p>
 
 <div class=exercise>
+Is the function \(f(n) = 100n + 50\) an \(O(n)\) function? Briefly explain why or why not.
+<p class=answer>
+Yes. We can bound \(100n + 50\) above by, say, \(101n\) for all \(n ≥ 50\) (witness pair
+\(k=101, n_0=50\)). Constant factors and lower-order additive terms do not affect the
+big-O classification.
+</p>
+</div>
+
+<div class=exercise>
 Find values of \(k\) and \(n_0\) which demonstrate that the function \(f(n) = 5n^2 + n - 1 \)
 is \(O(n^2)\).
 <div class=answer>

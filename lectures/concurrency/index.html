@@ -261,6 +261,17 @@ done concurrently.  Thus, Amdahl's law explains why it is often difficult to
 get large gains from having many cores.
 </p>
 
+<div class=exercise>
+Suppose a program has a part that takes 10% of its running time and cannot be parallelized,
+while the remaining 90% can be perfectly parallelized. According to Amdahl's law, what is the
+maximum speedup this program can ever achieve, no matter how many cores are available?
+<p class=answer>
+At most \(1/(1-p) = 1/0.1 = 10\). Adding more cores only accelerates the parallelizable 90%, so
+the non-parallelizable 10% eventually dominates and caps the speedup at 10&times;, regardless of
+how many cores are used.
+</p>
+</div>
+
 <h2>Race conditions</h2>
 <p>
 We have to be careful about multiple threads accessing the same object,
@@ -312,6 +323,18 @@ executes, say, <code>withdraw()</code>, that all other threads are suspended.
 However, it does mean that as far as the programmer is concerned, the system
 <strong>acts</strong> as if this were true.
 </p>
+
+<div class=exercise>
+Suppose two threads concurrently call <code>deposit(50)</code> on the same <code>Account</code>
+with an initial balance of $100, using the un-synchronized code shown above. What is the range
+of possible final balances, and why is $150 one of the possible (incorrect) outcomes?
+<p class=answer>
+The final balance could be either $150 or $200. The intended outcome is $200, but under the
+interleaving (R2<sub>a</sub>, R2<sub>b</sub>, W2<sub>a</sub>, W2<sub>b</sub>) both threads read
+balance = 100, both compute 150, and both write 150—so one deposit is lost. This is a classic
+lost-update race condition.
+</p>
+</div>
 
 <h2>Critical sections and atomicity</h2>
 
@@ -501,6 +524,16 @@ stuck trying to acquire the same mutex. Each mutex keeps track of the number of
 times the thread has acquired the mutex, and the mutex is only really released
 once it has been released by the holding thread the same number of times.
 </p>
+<div class=exercise>
+Consider a class with two synchronized methods <code>transferTo(Account other, int n)</code> and
+<code>withdraw(int n)</code>. If <code>transferTo</code> internally calls <code>this.withdraw(n)</code>,
+why doesn't the thread executing <code>transferTo</code> deadlock on the receiver's own mutex?
+<p class=answer>
+Since Java's built-in mutexes are reentrant, nested synchronized calls on the
+same object from within the same thread are safe.
+</p>
+</div>
+
 <p>
 A locking mechanism closely related to the mutex is the <strong>semaphore</strong>,
 named after <a href="https://en.wikipedia.org/wiki/Railway_semaphore_signal">railway

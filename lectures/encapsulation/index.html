@@ -230,6 +230,18 @@ is, for the client code, the precise way that information is represented inside
 the module.
 </p>
 
+<div class=exercise>
+A team inherits a program where every module reaches directly into a shared global data structure
+to read and update its fields. When one team member changes the data representation, bugs appear
+all over the codebase. Which property of the design is to blame?
+<p class=answer>
+Tight coupling caused by the lack of information hiding. Since all modules depended on the exact
+representation of the shared data, changing the representation in one place required corresponding
+changes everywhere. Modular programming with encapsulated modules and well-defined interfaces would
+have isolated the change to a single module.
+</p>
+</div>
+
 <h2>An example: rational numbers</h2>
 <p>
 In an object-oriented language like Java, encapsulation
@@ -345,6 +357,18 @@ can be useful if they are made <code>final</code>.</td></tr>
 <td>Only relevant in programs that use inheritance.</td></tr>
 </table>
 
+
+<div class=exercise>
+Suppose a new developer changes <code>Rational</code> so that the field <code>q</code> is declared
+<code>public</code>. Why does this single change make it impossible to enforce the class invariant
+<i>gcd(p, q) = 1 and q &gt; 0</i>?
+<p class=answer>
+With <code>q</code> public, client code can assign any value to <code>q</code> at any time—including
+0 or a value that shares a factor with <code>p</code>. The class no longer mediates access to the
+field, so there is nothing preventing clients from breaking the invariant, and internal methods
+like <code>equals</code> that rely on it may give wrong answers.
+</p>
+</div>
 
 <h2>Preconditions and postconditions</h2>
 
@@ -467,6 +491,17 @@ class invariant permits. Therefore, a fully correct class invariant should
 prevent instance variables from being changed in a way that causes any method
 implementations to malfunction.
 </p>
+<div class=exercise>
+A method <code>divide(int a, int b)</code> documents the precondition &ldquo;Requires: <code>b</code>
+&ne; 0.&rdquo; A client calls <code>divide(10, 0)</code> and the method throws an
+<code>ArithmeticException</code>. Who is at fault for the bug—the client or the implementer?
+<p class=answer>
+The client. A precondition is the client's obligation: by violating it, the client has broken the
+contract, so the implementer is not responsible for what happens. (The implementer may still choose
+to check the precondition with an <code>assert</code> to detect the misuse early.)
+</p>
+</div>
+
 <h2>Assertions</h2>
 <p>
 Preconditions and postconditions define a contract between the client and the
@@ -516,11 +551,11 @@ by providing options to the JVM:
 <p>Corresponding <tt>-da</tt> options can be used to turn off assertion checking selectively.</p>
 
 <h3>Checking preconditions and postconditions</h3>
-<p>But what to use <code>assert</code> on? One obvious target is preconditions and postconditions.
-On entry to a method, use an <code>assert</code> to check that the requires clause holds. On
-every exit from a method, check that the returns clause is satisfied. If a method fails to live
-up to its spec, you'll know immediately and be able to debug the right code.
-</p>
+<p>But where to use <code>assert</code>? One obvious target is preconditions
+and postconditions.  On entry to a method, use an <code>assert</code> to check
+that the requires clause holds. On every exit from a method, check that the
+returns clause is satisfied. If a method fails to live up to its spec, you'll
+know immediately and be able to debug the right code.  </p>
 <pre>
 /* Requires/Checks: X
  * Returns: Y

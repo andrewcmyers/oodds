@@ -127,6 +127,22 @@ InterfaceUse.java
 </a>
 </pre>
 
+<div class=exercise>
+Given a variable <code>c</code> of type <code>Collection&lt;String&gt;</code>, which of the
+following calls will the compiler accept?
+<ol type=a>
+<li><code>c.add("hello")</code></li>
+<li><code>c.add(42)</code></li>
+<li><code>c.contains("world")</code></li>
+</ol>
+<p class=answer>
+(a) and (c) are accepted because their arguments have type <code>String</code>. (b) is rejected
+because <code>42</code> is an <code>int</code> (auto-boxed to <code>Integer</code>), not a
+<code>String</code>.  This is exactly the kind of error that generics allow the compiler to catch
+for us.
+</p>
+</div>
+
 <h2>Implementing generics</h2>
 <p>
 Parametric polymorphism also helps us when we are implementing abstractions. Let's consider
@@ -420,3 +436,16 @@ Creating an object requires providing a model object:
 <pre>
 SortedList<String> sl = new SortedList(String::compareTo);
 </pre>
+
+<div class=exercise>
+Suppose we want a <code>SortedList&lt;String&gt;</code> that sorts strings by their length
+(shorter strings first). Write a lambda expression that could be passed to the
+<code>SortedList</code> constructor to achieve this.
+<p class=answer>
+<code>(x, y) -&gt; x.length() - y.length()</code>. When the result is negative, <code>x</code> is
+considered to come before <code>y</code>; when positive, after; when zero, equal.
+Note that in general when comparing two integers, it is is safer to use the method
+<code>Integer.compare</code>, which has no issues with numeric overflow. However,
+for comparing two string lengths, subtraction works fine.
+</p>
+</div>
