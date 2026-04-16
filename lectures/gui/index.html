@@ -102,6 +102,15 @@ some are useful user interface devices such as buttons or text editors.
 Scene graphs show up in other settings. For example, video games
 are often built using 3D scene graphs.
 </p>
+<div class=exercise>
+In a JavaFX scene graph, what does the parent–child relationship between two nodes represent?
+<p class=answer>
+Containment: the child node is displayed inside the parent node, and the parent is responsible
+for laying the child out. HTML uses the same idea: a <code>&lt;div&gt;</code> contains the
+elements nested inside it.
+</p>
+</div>
+
 <h2>Building a GUI</h2>
 <p>
 A scene graph must be constructed. This can be done either by either</p>
@@ -241,6 +250,15 @@ with (new CFigure("panes")) {
 </script>
 </div>
 
+<div class=exercise>
+You want to lay out a row of toolbar buttons that wraps to a new row when the window becomes
+too narrow to fit them all. Which layout pane is the most appropriate choice?
+<p class=answer>
+<code>FlowPane</code>. It arranges its children like words of text: left-to-right within each
+row, starting a new row whenever the current row runs out of horizontal space.
+</p>
+</div>
+
 <h2>Appearance</h2>
 
 <p>There are several ways to control the appearance of the scene. Some nodes have handles that
@@ -311,3 +329,16 @@ access the nodes in the scene graph.  Such accesses are not allowed. JavaFX prov
 other mechanisms for background threads to communicate with the application thread,
 notably the method <code>Platform.runLater()</code>.
 </p>
+
+<div class=exercise>
+A background worker thread has just finished a long computation and wants to update a
+<code>Label</code> node with the result by calling <code>label.setText(...)</code> directly.
+Why is this unsafe, and what is the correct way to update the label?
+<p class=answer>
+JavaFX scene-graph nodes are not thread-safe: only the JavaFX application
+thread is allowed to read or modify them. A direct modification from a
+background thread can leave the scene graph in an inconsistent state. The
+worker should instead schedule the update on the application thread, for
+example with <code>Platform.runLater(() -&gt; label.setText(result))</code>.
+</p>
+</div>
