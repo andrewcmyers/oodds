@@ -87,6 +87,7 @@ to be written because it can tell that a run-time type error might (and will,
 in this case) result. In fact, run-time type errors are not possible in Java.
 For that reason we say that Java is a <strong>strongly typed language</strong>.
 </p>
+
 <p>Java has many built-in unary and binary operators, some of which are
 rarely used. Some of the commonly used operators are listed here:
 </p>
@@ -120,6 +121,19 @@ rarely used. Some of the commonly used operators are listed here:
 <td><code>||</code></td><td>binary</td><td>Logical disjunction (“or”) of two booleans</td>
 </table>
 
+<div class=exercise>
+What is the value and run-time type of each of the following expressions?
+<ol type=a>
+<li><code>5 + 3</code></li>
+<li><code>!false</code></li>
+<li><code>7 / 2</code></li>
+</ol>
+<p class=answer>
+(a) evaluates to <code>8</code>, of type <code>int</code>.
+(b) evaluates to <code>true</code>, of type <code>boolean</code>.
+(c) evaluates to <code>3</code>, of type <code>int</code>: integer division rounds toward zero.
+</p>
+</div>
 <h2>Variables</h2>
 
 <p>
@@ -615,12 +629,21 @@ class Rectangle {
 </p>
 <pre>
 Rectangle r = ...;
-int ar = r.area(); // evaluates to 3 on rectangle defined above
+int ar = r.area(); // evaluates to 6 on rectangle defined above
 </pre>
 <p>
 Inside the method, we can use the instance variables <code>UR</code> and <code>LL</code>.
 These variable names denote the instance variables of the receiver object.
 </p>
+
+<div class=exercise>
+The comment above claims that <code>r.area()</code> evaluates to 3 for the rectangle defined
+earlier. Using the values <code>LL.x = 0, LL.y = 0, UR.x = 2, UR.y = 3</code>, verify this
+claim by evaluating the expression inside the <code>area</code> method.
+<p class=answer>
+\((UR.x - LL.x) * (UR.y - LL.y) = (2 - 0) * (3 - 0) = 2 * 3 = 6\).
+</p>
+</div>
 <p>
 Methods do not have to be functions; we can also define methods that are
 procedures, used for the side effects they cause. A procedure has a return type

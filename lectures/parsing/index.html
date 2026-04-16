@@ -127,6 +127,22 @@ noun</i></code> and <code><i>noun</i> → <i>adjective</i></code>
 noun</i> allow us to derive the following noun phrases:
 “the dog”, “the old dog”, “the old old dog”, “the old old old dog”, and so on ad infinitum.
 </p>
+
+<div class=exercise>
+Consider the pseudo-English grammar given above. Which of the following strings are in the language
+of the grammar?
+<ol type=a>
+<li><code>the rat eats cheese</code></li>
+<li><code>rat eats</code></li>
+<li><code>the the dog</code></li>
+</ol>
+<p class=answer>
+(a) is in the language: it parses as <i>sentence → noun-phrase verb-phrase noun-phrase</i>,
+with the two noun phrases being “the rat” and “cheese”. (b) is also in the language,
+parsed as <i>sentence → noun-phrase verb-phrase</i>. (c) is not in the language, because
+no production allows <i>article</i> to precede another <i>article</i>.
+</p>
+</div>
 <h2>Ambiguity</h2>
 <p>
 With some grammars, it is possible for a string to have more than one parse
@@ -389,6 +405,17 @@ int parseF() throws SyntaxError {
 <p>
 Now we can parse the previous example input and get a result of 17.
 </p>
+
+<div class=exercise>
+Trace the evaluator above on the input tokens “<code>2 × 3 + 4</code>”. Which method is called
+first, and what value does it ultimately return?
+<p class=answer>
+<code>parseE()</code> is called first. It calls <code>parseT()</code>, which parses “<code>2 × 3</code>”
+and returns 6. Then <code>parseE()</code> sees a <code>+</code>, consumes it, and recursively calls
+<code>parseE()</code>, which parses “<code>4</code>” and returns 4. The final result is \(6 + 4 = 10\).
+Notice how the grammar's structure gives <code>×</code> higher precedence than <code>+</code>.
+</p>
+</div>
 <h2>Abstract syntax trees</h2>
 <p>
 The output of a parser is usually an <strong>abstract syntax tree</strong> (AST), which

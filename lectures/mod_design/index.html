@@ -129,6 +129,18 @@ The above instance variables <code>first</code> and <code>last</code> are
 an example of specifying the possibility of null.
 </p>
 
+<div class=exercise>
+In the <code>LinkedList</code> example, why is it acceptable for the class invariant
+(<code>size ≥ 0</code>) to be temporarily broken during the <code>add</code> method?
+<p class=answer>
+A class invariant only needs to hold at the beginning and end of each public method, not at every
+intermediate point within the method. During <code>add</code>, a new node is created before
+<code>size</code> is incremented, temporarily breaking the invariant that <code>size</code> equals
+the number of nodes. But the invariant is restored by the end of the method, before any other
+code can observe the object.
+</p>
+</div>
+
 <h2>Documenting implementations: the specializer's view</h2>
 
 <p>
@@ -283,6 +295,17 @@ are mixing concerns, and code that has ended up in some module ought to be moved
 to a different module. The dependency arrows in the MDD can show us the direction in which
 code ought to move.
 </p>
+<div class=exercise>
+A module dependency diagram (MDD) shows that modules A and B depend on each other (there are arrows
+in both directions). Why is this a warning sign?
+<p class=answer>
+A cycle between modules means they are tightly coupled: any change to either module may
+propagate to the other and potentially back again. This makes both modules harder to understand,
+maintain, and test independently. A clean MDD looks like a tree or DAG (no cycles), indicating
+loose coupling between modules.
+</p>
+</div>
+
 <h2>Implementation strategies</h2>
 <p>
 The MDD also helps us plan how to implement code. There
@@ -398,6 +421,18 @@ interfaces that define the boundaries between different modules. Good interface
 design and clear specs are especially important at the boundaries where
 different programmers will interact.
 </p>
+
+<div class=exercise>
+You are building a new application and are unsure whether the database layer can handle the
+required throughput. Should you start with top-down or bottom-up development for that part of
+the system, and why?
+<p class=answer>
+Bottom-up development. When there is a risk that a core technology may not perform adequately,
+bottom-up development lets you implement and test that component first. If the database layer
+turns out to be infeasible, you discover the problem early before building higher-level modules
+that depend on it, avoiding wasted effort.
+</p>
+</div>
 
 <h2>How to add bugs</h2>
 <p>
