@@ -140,6 +140,14 @@ edges. The <strong>out-degree</strong> of a vertex is the number of outgoing edg
 the <strong>in-degree</strong> is the number of incoming edges.
 </p>
 
+<div class=exercise>
+Consider the directed graph with edges \(\{(A,B), (B,C), (A,C), (C,A)\}\). What is the in-degree
+of \(A\), and what is the out-degree of \(C\)?
+<p class=answer>
+\(A\) has in-degree 1 (the edge \((C,A)\)), and \(C\) has out-degree 1 (the edge \((C,A)\)).
+</p>
+</div>
+
 <h2>Labels</h2>
 <p>The real value of graphs is obtained when we use them to organize
 information.  Both edges and vertices of graphs can have <strong>labels</strong> that
@@ -399,6 +407,17 @@ queries for particular edges:
 HashMap&lt;Vertex, HashMap&lt;Vertex, Edge&gt;&gt;
 </code>
 </div>
+<div class=exercise>
+You have a directed graph with \(|V| = 10{,}000\) vertices and only \(|E| = 30{,}000\) edges.
+Which representation—adjacency matrix or adjacency list—uses asymptotically less memory, and
+by roughly how much?
+<p class=answer>
+The adjacency list, which uses \(O(V+E) \approx 40{,}000\) space. The adjacency matrix uses
+\(O(V^2) = 10^8\) entries, which is about 2500&times; larger. This is a sparse graph, and
+adjacency lists are designed for exactly this case.
+</p>
+</div>
+
 <h2>Asymptotic complexity with multiple variables</h2>
 <p>
 You might or might not find an expression like \(O(V+E)\) intuitive. Such
@@ -514,6 +533,18 @@ This gives us an (inefficient) way to topologically sort a DAG:
 Since finding the 0 in-degree node takes O(V) time, this algorithm takes
 O(V<sup>2</sup>) time. We can do better, as we'll see shortly.
 </p>
+<div class=exercise>
+Give one valid topological ordering of the &ldquo;men's informal dressing problem&rdquo; DAG above
+that is different from the two shown. Also explain why any ordering that places <i>jacket</i>
+before <i>shirt</i> is invalid.
+<p class=answer>
+One valid ordering is (socks, shirt, tie, pants, belt, jacket, shoes); many others are possible.
+Placing <i>jacket</i> before <i>shirt</i> is invalid because there is an edge (shirt &rarr; tie)
+and (tie &rarr; jacket), so shirt must precede jacket in any topological sort. More directly,
+(shirt &rarr; belt &rarr; jacket) also forces shirt before jacket.
+</p>
+</div>
+
 <h2>Other graph problems</h2>
 <p>
 Many problems of interest can be expressed in terms of graphs. Here are a few
