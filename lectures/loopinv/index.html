@@ -65,6 +65,7 @@ loop invariant.  Knowing what a loop invariant is and thinking explicitly about
 loop invariants will help you write correct, efficient code, especially when implementing
 tricky algorithms.
 </p>
+
 <h2>Binary search via iteration</h2>
 <p>
 Some loops are hard to write correctly without thinking about loop invariants.
@@ -428,6 +429,46 @@ so Postcondition fails.
 </li>
 </ol>
 
+<div class=exercise>
+Suppose we weakened the binary search loop invariant by dropping the requirement that
+<code>l ≤ r</code>. Which of the four proof steps (Establishment, Postcondition, Preservation, Termination) would fail?
+<p class=answer>
+Postcondition would fail: when the loop exits (<code>l ≥ r</code>), we can no longer conclude that
+<code>l = r</code>, because without the invariant guaranteeing <code>l ≤ r</code> we might have
+<code>l > r</code>, meaning the range <code>a[l..r]</code> is empty and we can't conclude <code>x = a[l]</code>.
+Termination would also fail, because the decrementing function <code>r − l</code> is no longer guaranteed
+to be nonnegative.
+</p>
+</div>
+
+<div class=exercise>
+Consider the following loop, which is intended to compute <code>sum = 1 + 2 + ... + n</code> for some \(n \ge 0\):
+<pre>
+int sum = 0;
+int i = 1;
+while (i &lt;= n) {
+    sum = sum + i;
+    i = i + 1;
+}
+</pre>
+Propose a loop invariant strong enough to prove the postcondition <code>sum = n*(n+1)/2</code>,
+and identify what goes wrong in the Postcondition step if we instead try the weaker invariant
+<code>sum ≥ 0</code>.
+<p class=answer>
+A suitable loop invariant is <code>sum = (i−1)*i/2  ∧  1 ≤ i ≤ n+1</code>. When the loop exits,
+the guard <code>i ≤ n</code> is false, so <code>i ≥ n+1</code>; combined with <code>i ≤ n+1</code>
+from the invariant, we have <code>i = n+1</code>, and substituting gives
+<code>sum = n*(n+1)/2</code>, the desired postcondition.
+<br><br>
+The weaker invariant <code>sum ≥ 0</code> is easy to establish and preserve,
+but it fails at Postcondition: knowing only that <code>sum ≥ 0</code> and
+<code>i &gt; n</code> tells us nothing about the actual value of
+<code>sum</code>, so we cannot conclude that <code>sum = n*(n+1)/2</code>.  This
+illustrates that a useful loop invariant must be strong enough to imply the
+postcondition when combined with the negated guard.
+</p>
+</div>
+
 <h2>Example: Exponentiation by squaring and multiplication</h2>
 <p>
 Here is a second example of using a loop invariant to show that an inobvious algorithm works correctly.
@@ -501,6 +542,16 @@ the loop must eventually terminate.</p></li>
 <p>
 Therefore, the loop terminates <em>and</em> returns the correct value of \(x^e\).
 </p>
+
+<div class=exercise>
+In the exponentiation-by-squaring algorithm, what is the decrementing function that proves
+the loop terminates?
+<p class=answer>
+The decrementing function is \(y\). Each iteration halves \(y\) (rounding down), so \(y\) strictly
+decreases on every iteration as long as \(y > 0\). Since \(y\) is always a nonnegative integer
+and the loop guard requires \(y > 0\), the loop must eventually terminate.
+</p>
+</div>
 
 <h2>Debugging and choosing loop invariants</h2>
 <p>

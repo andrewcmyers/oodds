@@ -483,6 +483,16 @@ property, so if you want to drive someone crazy, reassemble the 15-puzzle with
 two tile positions exchanged!
 </p>
 
+<div class=exercise>
+Viewing the 15-puzzle as a graph, what do the vertices of the graph represent, and what do
+the edges represent?
+<p class=answer>
+Each vertex represents a possible configuration (state) of the puzzle board. Each edge
+connects two states that differ by a single legal move (sliding one tile into the empty
+space).
+</p>
+</div>
+
 <h3>Other graph problems</h3>
 
 <p>
@@ -515,3 +525,14 @@ problems that scientists have been struggling with for decades. If you can show
 that your problem is as hard as finding Hamiltonian cycles, it is time to change
 what you are working on!
 </p>
+
+<div class=exercise>
+The 3-puzzle (a 2×2 version of the 15-puzzle) has two connected components
+of 12 states each. If you swap the positions of two tiles in a solved 3-puzzle
+to create a new starting state, will the puzzle necessarily be unsolvable?
+<p class=answer>
+Yes. Swapping two tiles produces an odd permutation of the tiles, which places the puzzle in the
+other connected component. Since the solved state is in the first component, there is no sequence
+of legal moves that leads back to it.
+</p>
+</div>

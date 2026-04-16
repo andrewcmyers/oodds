@@ -72,6 +72,16 @@ faster. Adding two numbers can be done in a single machine instruction
 requiring just one machine cycle, or even less in <strong>superscalar</strong>
 hardware architectures, which can execute multiple machine instructions per cycle.
 </p>
+<div class=exercise>
+What is one advantage of interpretation over compilation, and one advantage of compilation over interpretation?
+<p class=answer>
+Interpretation can start running a program quickly without a separate compilation step, and the
+code is more portable across hardware architectures. Compilation, on the other hand, produces
+much faster code because the translated machine instructions execute directly on hardware rather
+than being decoded by a software interpreter.
+</p>
+</div>
+
 <h2>Interpreter designs</h2>
 <p>
 Software interpreters come in different flavors. The simplest
@@ -333,6 +343,17 @@ with (new CFigure("method-disp-fig-new")) {
 }
 </script>
 
+<div class=exercise>
+In the bytecode for <code>if (b) x = y+1; else x = z;</code>, what does the instruction <code>ifeq 26</code> do, and why is the condition
+<code>ifeq</code> ("if equal to zero") rather than something like <code>iftrue</code>?
+<p class=answer>
+<code>ifeq 26</code> pops the top of the operand stack and branches to offset 26 if the value is zero.
+It uses "equal to zero" because Java booleans are represented as integers at the JVM level:
+0 means <code>false</code> and nonzero means <code>true</code>. So <code>ifeq</code> effectively means
+"if false, branch to the else clause."
+</p>
+</div>
+
 <p>
 The JIT compiler converts bytecode into machine code. In doing so,
 it may create <strong>specialized</strong> versions of inherited methods such as <code>f</code>,
@@ -377,6 +398,18 @@ run-time checking, making Java both faster and more secure.  For
 example, when a method is invoked on an object, verification ensures
 that the receiver object is of the right type (and is not actually an integer, for example).
 </p>
+
+<div class=exercise>
+Suppose class <code>Dog</code> extends <code>Animal</code> and overrides the method <code>eat()</code>. If
+<code>x</code> has static type <code>Animal</code> but actually refers to a <code>Dog</code> object, how does
+the JVM find the correct <code>eat()</code> bytecode when <code>x.eat(5)</code> is called?
+<p class=answer>
+The JVM follows the pointer from the <code>Dog</code> object to its class object, then from the class
+object to the <code>Dog</code> dispatch vector. It looks up <code>eat()</code> at the appropriate index in
+the dispatch vector, which points to <code>Dog</code>'s overriding bytecode rather than
+<code>Animal</code>'s. This is how dynamic dispatch works at the JVM level.
+</p>
+</div>
 
 <h2>Type parameterization via erasure</h2>
 

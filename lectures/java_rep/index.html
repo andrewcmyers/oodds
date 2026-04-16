@@ -190,6 +190,16 @@ need a way to represent the sign of a number.
     essentially everyone uses two's complement.
     </p>
 
+<div class=exercise>
+In Java's two's-complement representation for <code>byte</code> (8 bits), what
+decimal value does the bit pattern <code>11111100</code> represent?
+<p class=answer>
+The most significant bit represents \(-128\). So \(11111100_2 = -128 + 64 + 32 + 16 + 8 + 4 = -4\).
+Equivalently, the bit pattern is obtained by flipping all bits of \(00000100\) (which is 4) to get
+\(11111011\) and adding 1, giving \(11111100\), confirming the value is \(-4\).
+</p>
+</div>
+
 <h3>Bit-level operators</h3>
 
 <p>We've seen that we can view an integral type like <code>int</code>   
@@ -316,6 +326,15 @@ of <code>x</code> are all zero, and that the high 16 bits of the word containing
 variables, taking up an integral number of words that are located contiguously
 in memory. (By contrast to Java, languages like C and C++ try to pack fields
 into memory more.) </p>
+
+<div class=exercise>
+A Java variable of type <code>short</code> (16 bits) and a variable of type <code>int</code> (32 bits) are stored
+as local variables. How many bytes of memory does each take up?
+<p class=answer>
+Both take up 4 bytes (one 32-bit word). Java stores variables on word boundaries, so even a
+<code>short</code> occupies a full word, with the upper 16 bits unused.
+</p>
+</div>
 
 <h2>Objects and pointers</h2>
 
@@ -592,4 +611,18 @@ For most applications, that's plenty of precision and range, with base-10 expone
 is actually the same thing as a real number in mathematics, but if you stick to <code>double</code>, you are much
 less likely to get into trouble pretending that it is.
 </p>
+
+<div class=exercise>
+A programmer computes <code>(1000000.1f - 1000000.0f)</code> using
+<code>float</code> and expects the result to be <code>0.1</code>. Why might the
+actual result differ significantly from <code>0.1</code>?
+<p class=answer>
+A <code>float</code> has only about 7 decimal digits of precision. The number
+<code>1000000.1</code> has 8 significant digits, so its least significant digit
+is already beyond the precision of <code>float</code>.  The subtraction
+amplifies this rounding error: the result comes out to <code>0.125</code>
+rather than <code>0.1</code>, a 25% relative error. Using <code>double</code>
+(about 16 digits of precision) would largely avoid this problem.
+</p>
+</div>
 

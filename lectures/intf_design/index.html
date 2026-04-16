@@ -64,6 +64,17 @@ The rule of thumb, then, is that interfaces should be made only as wide as neces
 for efficient client code to be written in a straightforward way.
 </p>
 
+<div class=exercise>
+You're reviewing two designs for a module. Design A exposes 30 methods, many of which duplicate
+functionality. Design B exposes 6 methods that together provide the same essential
+functionality. Which design is likely to be easier to maintain and reimplement, and why?
+<p class=answer>
+Design B. A narrower interface means looser coupling with clients: there are fewer operations
+whose behavior the implementation is committed to preserving, so the module is easier to
+refactor, reimplement, or extend without breaking client code.
+</p>
+</div>
+
 <h3>Convenience methods</h3>
 
 <p>
@@ -791,3 +802,18 @@ because it may consider objects to be equal even though they can be
 distinguished using methods that are not in the <code>Polynomial</code>
 interface.
 </p>
+
+<div class=exercise>
+A <code>Point</code> class overrides <code>equals()</code> so that a <code>Point</code> considers
+itself equal to any object that is an <code>instanceof Point</code> with the same x and y. A
+<code>ColoredPoint</code> subclass overrides <code>equals()</code> to additionally require the
+same color. If <code>p</code> is a <code>Point(1,2)</code> and <code>cp</code> is a
+<code>ColoredPoint(1,2,red)</code>, what goes wrong?
+<p class=answer>
+Symmetry is broken: <code>p.equals(cp)</code> returns <code>true</code> (because <code>cp</code>
+is a <code>Point</code> with matching coordinates), but <code>cp.equals(p)</code> returns
+<code>false</code> (because <code>p</code> is not a <code>ColoredPoint</code>). This violates
+the <code>equals</code> contract. The <code>canEqual</code> pattern or a reflective
+<code>getClass()</code> check is needed to restore symmetry.
+</p>
+</div>
