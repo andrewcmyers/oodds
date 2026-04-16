@@ -132,10 +132,11 @@ priority element at the root, and the left and right subtrees are also both heap
 <p class=cont>In fact, the example tree above also satisfies this shape invariant.</p>
 
 <div class=exercise>
-A binary search tree with 5 nodes with keys 1..5 satisfies both the Order invariant on its keys and also the
-usual binary search tree invariant. What range of heights is possible for such a tree?
+A binary search tree with 5 nodes with keys 1..5 satisfies both the Order
+invariant on its keys and also the usual binary search tree invariant. What
+range of heights is possible for such a tree?
 <p class=answer>
-It cannot have any left children, so it must have height 4.
+It cannot have any left children, so its height must be exactly 4.
 </p>
 </div>
 
@@ -177,6 +178,16 @@ children of the node at index \(i\) are found at indices \(2i+1\) (left) and
 \(\lfloor (i–1)/2 \rfloor \). So we can walk up and down through the tree using
 simple arithmetic. There is no need to store or follow pointers!
 </p>
+
+<div class=exercise>
+In the array representation above, the value 6 is at index 3. Verify that
+the formulas above for finding the children and parent nodes work for this node.
+<p class=answer>
+Its children are at indices \(2·3+1 = 7\) (value 12) and \(2·3+2 = 8\) (value 9). Its parent
+is at index \(\lfloor (3-1)/2 \rfloor = 1\) (value 3).
+</p>
+</div>
+
 <h3>Binary heap operations</h3>
 <h4>Add</h4>
 <p>
@@ -261,6 +272,17 @@ lower priority than both, so we swap it with the higher priority child, which is
 </div>
 
 <p>Again, at most \(\lg n\) swaps are needed.</p>
+
+<div class=exercise>
+Starting from the example heap above (with root 1), suppose we call <code>extractMin</code>
+twice. What priority is returned by each call, and what is the root of the heap after both
+calls?
+<p class=answer>
+The first call returns 1 and leaves the heap with root 2 (as shown in the figure above).
+The second call returns 2; the last element 10 is moved to the root and bubbles down, so
+the new root becomes 3.
+</p>
+</div>
 
 <h4>IncreasePriority</h4>
 <p>
