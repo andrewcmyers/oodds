@@ -126,6 +126,17 @@ is, <code>LogBoard</code> &lt;: <code>CBoard</code>.
 </li>
 </ul>
 
+<div class=exercise>
+Looking at <code>LogBoard</code>, name two things it inherits from <code>CBoard</code> without
+having to re-declare them, and one thing it <em>adds</em> on top of <code>CBoard</code>.
+<p class=answer>
+It inherits the <code>tiles</code> field and the <code>tile(r,c)</code> method from
+<code>CBoard</code> (and any other methods that <code>CBoard</code> defines, aside from
+<code>move</code>). It <em>adds</em> a new field <code>numMoves</code>, a new method
+<code>numMoves()</code>, and a new (overriding) version of <code>move</code>.
+</p>
+</div>
+
 <h2>Method dispatch and inheritance</h2>
 <p>
 Because of the subtyping relationship between the two classes, we
@@ -235,6 +246,23 @@ would be printed. When the inherited method refers to <code>x</code>, it
 still refers to the original, shadowed instance variable rather than the
 newly declared one.
 </p>
+
+<div class=exercise>
+Given the class definitions above with <code>LogBoard extends CBoard</code> and both
+classes defining <code>move</code>, what is printed (or more precisely, how many times is
+<code>numMoves</code> incremented) by the following sequence?
+<pre>
+CBoard p = new LogBoard();
+p.move(up);
+p.move(down);
+</pre>
+<p class=answer>
+<code>numMoves</code> is incremented twice, once per call. Because <code>move</code> is an
+instance method, dispatch uses the <em>dynamic</em> type of the receiver (<code>LogBoard</code>),
+so <code>LogBoard.move</code> runs both times even though the static type of <code>p</code> is
+<code>CBoard</code>.
+</p>
+</div>
 
 <h2>Inheritance and static methods</h2>
 
@@ -404,6 +432,18 @@ public methods without overriding them directly. Protected methods
 are hooks for future extensibility of OO code. The specialization
 interface defines how code can be extended.
 </p>
+
+<div class=exercise>
+Why is making the field <code>tiles</code> <code>protected</code> rather than
+<code>public</code> a better design choice, even though both would allow <code>LogBoard</code>
+to access it directly?
+<p class=answer>
+<code>protected</code> exposes the field only to subclasses (and classes in the same package),
+which is the specialization interface. Making it <code>public</code> would let arbitrary client
+code read and modify <code>tiles</code>, breaking encapsulation and making it impossible to
+maintain class invariants about the board's representation.
+</p>
+</div>
 
 <h2>Abstract classes</h2>
 <p>
