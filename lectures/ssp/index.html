@@ -72,6 +72,18 @@ where &ldquo;length&rdquo; and &ldquo;shortest&rdquo; refer to
 the sum of the edge weights along the path.
 </p>
 
+<div class=exercise>
+Why does the brute-force approach of checking all permutations of vertices to find shortest paths have time complexity \(O(V!)\)? What is a key difference between breadth-first search and Dijkstra's algorithm?
+<p class=answer>
+The brute-force approach has \(O(V!)\) complexity because there are \(V!\)
+possible orderings (permutations) of the vertices to check. BFS works only when
+all edge weights are the same, finding shortest-distance paths where distance
+is proportional to the number of edges. Dijkstra's algorithm generalizes BFS to
+weighted graphs where edge weights can be arbitrary nonnegative values, and the
+distance is the sum of weights along the path.
+</p>
+</div>
+
 <p>
 Also like BFS, Dijkstra's algorithm is an instance of the tricolor algorithm.
 Recall that the tricolor algorithm changes nodes from white to gray and from gray
@@ -139,6 +151,7 @@ otherwise have.
 18      // color g black
 19   }
 </pre>
+
 <p>
 Dijkstra's algorithm is an example of a <em class=term>greedy algorithm</em>: an algorithm
 in which simple local choices (in this case, choosing the gray vertex with the smallest
@@ -191,6 +204,16 @@ and we have computed the minimum distance to each of them.
 
 <div class="figure">
 <img class="whitebg" src="final-spanning-tree.png">
+</div>
+
+<div class=exercise>
+Suppose the edge with weight 14 is removed from the example graph above. Trace
+the execution of the algorithm to find the minimum distance from \(v_0\) to \(v_1\).
+Which path or paths have this minimum distance?
+<p class=answer>
+There are two optimal paths with length 51, depending on which of the first
+two edges from \(v_0\) is taken: 15 + 20 + 16 or 9 + 23 + 3 + 16.
+</p>
 </div>
 
 <h3>Recovering the shortest path</h3>
@@ -430,6 +453,13 @@ which are already summarized by \(v\)<code>.dist</code>.
 </p>
 </ul>
 </ol>
+
+<div class=exercise>
+Consider the two-part loop invariant for Dijkstra's algorithm. Part 1 states that for every black vertex <code>b</code> and gray vertex <code>g</code>, <code>b.dist ≤ g.dist</code>. Why is this property preserved when we color the minimum-distance gray node black? What would go wrong if we colored an arbitrary gray node black instead?
+<p class=answer>
+Part 1 is preserved because we select the gray node <code>g</code> with the minimum distance among all gray nodes. When we color it black, all remaining gray nodes have distances greater than or equal to <code>g.dist</code>, so the invariant holds. If we colored an arbitrary gray node black instead, we could have a black node with a larger distance than a remaining gray node, violating part 1. This would be catastrophic because part 2 of the invariant relies on part 1: we can only guarantee that <code>b.dist</code> is the true minimum distance if we know no gray node is closer. Violating part 1 would allow us to miss shorter paths.
+</p>
+</div>
 
 <h2>Generalizing shortest paths</h2>
 <p>
