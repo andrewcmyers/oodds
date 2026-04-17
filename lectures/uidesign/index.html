@@ -105,6 +105,17 @@ a gentle learning curve.
         vibration. Reinforce important information through multiple sensory cues.
 </ul>
 
+<div class=exercise>
+A new photo-editing app shows a “Delete all photos” button prominently on its
+main screen, with no confirmation dialog, and the action cannot be undone.
+Which of the principles listed above does this design violate?
+<p class=answer>
+It violates the “No Loaded Guns” principle: a novice user could trigger a destructive,
+irreversible action by accident. It arguably also violates the Principle of Least Surprise,
+since destroying all of a user's photos is a dramatically surprising outcome for a single click.
+</p>
+</div>
+
 <h3>Intermittent but knowledgeable users</h3>
 <p>
 Here the focus is on making features discoverable, and reducing the
@@ -198,6 +209,21 @@ efficient interactions.
         productivity declines. App needs to support parallel activities.
         <li> &gt;1 min: Significant loss of productivity.  User leaves for coffee.
         </ul>
+
+<div class=exercise>
+A user clicks a "Generate report" button in an application, and the computation
+takes about 15 seconds to complete. During that time, the button looks the same
+as before and nothing else on the screen changes.  What is wrong with this
+interaction, and what is a simple way to improve it?
+<p class=answer>
+With no feedback, the user cannot tell whether the click was registered or
+whether the app is still working, so they are likely to click again or give up
+and become distracted (15 seconds falls in the "user loses attention" range).
+The interface should <em>ratify the action quickly</em>—for example, by
+disabling the button, changing the cursor, or showing a progress indicator—so
+the user knows the request was received and can see progress.
+</p>
+</div>
 
 
 <h2>Learning and memory</h2>
@@ -293,6 +319,22 @@ and can remember how to use.
 	      is there in another form.
         </ul>
     </ul>
+
+<div class=exercise>
+A dashboard uses bright red text on a yellow background for every label, heavy
+drop shadows on every box, and blinking icons next to several fields. Why is
+this design likely to confuse users, and which visual design principle(s) does
+it violate?
+<p class=answer>
+When everything is made to stand out, nothing does: users cannot tell which
+elements are important.  This violates the principle of avoiding visual clutter
+(Tufte's &ldquo;information/ink ratio&rdquo;): bright colors and high contrast
+should be reserved for the few elements that truly deserve attention.  It also
+risks violating visual consistency if unrelated elements share the same loud
+styling.
+</p>
+</div>
+
 <h2>Useful reading</h2>
 <ul>
   <li>Envisioning Information. Edward Tufte.</li>

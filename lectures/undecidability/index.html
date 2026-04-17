@@ -69,6 +69,13 @@ It is not known whether polynomial-time algorithms for these problems exist,
 although by now most computer scientists believe they do not.
 </p>
 
+<div class=exercise>
+An algorithm takes time O(n^3) to solve a problem of size n. Another algorithm takes time O(2^n). Which algorithm is in P and which is in EXPTIME? If n increases from 10 to 11, how much does run time increase for each algorithm?
+<p class=answer>
+The O(n^3) algorithm is in P (polynomial time), and the O(2^n) algorithm is in EXPTIME (exponential time). For the O(n^3) algorithm, the time increases from 1000 to 1331, a factor of about 1.33 (or 33%). For the O(2^n) algorithm, the time doubles from 2^10 = 1024 to 2^11 = 2048. This illustrates why exponential-time algorithms hit a wall: as n grows, the run time becomes unmanageable very quickly, whereas polynomial algorithms scale more gracefully.
+</p>
+</div>
+
 <h2>NP-completeness and the P=NP question</h2>
 
 <p>
@@ -92,6 +99,13 @@ that the two classes are different either.
 The P=NP question has intrigued and stymied researchers for decades. It
 remains the single most important unsolved problem of computer science.
 </p>
+
+<div class=exercise>
+<strong>Exercise 2:</strong> Graph coloring is an NP-complete problem. What does this tell us about the relationship between graph coloring and other problems in NP? If someone discovered a polynomial-time algorithm for graph coloring, what would that imply about P and NP?
+<p class=answer>
+Being NP-complete means that every problem in NP can be reduced to the graph coloring problem in polynomial time. In other words, graph coloring is at least as hard as any other problem in NP. If a polynomial-time algorithm for graph coloring were discovered, then by the definition of NP-completeness, we could solve any problem in NP in polynomial time. This would prove that P = NP, which would be a groundbreaking result that most computer scientists currently believe to be false.
+</p>
+</div>
 
 <h2>Space complexity</h2>
 
@@ -331,3 +345,10 @@ programs as safe (this is a <em class=term>false negative</em>). Despite these l
 software developers use incomplete and even unsound automatic tools all the time:
 these tools can still be useful despite their limitations.
 </p>
+
+<div class=exercise>
+<strong>Exercise 3:</strong> The proof that the halting problem is undecidable uses a contradiction argument: it assumes a <code>terminates(p, x)</code> method exists and then constructs a program H that calls it in a way that leads to a contradiction. Explain in your own words why this proof technique works. What does the contradiction tell us about our original assumption?
+<p class=answer>
+The proof works by assuming the opposite of what we want to prove (a technique called proof by contradiction). If we assume that a perfect <code>terminates</code> method exists, we can construct a specific program H that uses this method to create a logical contradiction: H.main(h) would be forced to return a value that is opposite to what it actually returns. Since we've derived an impossibility, our original assumption must be false. This contradiction tells us that no such perfect <code>terminates</code> method can exist, no matter how clever we are in writing it. This is a powerful technique: instead of trying to show why every possible algorithm fails (which is impossible to check), we show that assuming success leads to a logical contradiction, proving that success is impossible in principle.
+</p>
+</div>

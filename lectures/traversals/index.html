@@ -108,6 +108,16 @@ This invariant clearly holds initially, and because it is true at the end, we
 know that any remaining white nodes cannot be reached from the black nodes.
 </p>
 
+<div class=exercise>
+Suppose at some point during a traversal, a node \(v\) is colored gray. What does the
+black–white invariant allow us to say about \(v\)'s predecessors (the nodes with edges into \(v\))?
+<p class=answer>
+Nothing specific: a gray node may have predecessors of any color. The invariant says only that a
+<em>black</em> node cannot have a white successor; it places no restriction on the colors of a
+gray node's predecessors. (A predecessor could be black, gray, or even white in an undirected graph.)
+</p>
+</div>
+
 <p>
 The algorithm pseudo-code is as follows:
 </p>
@@ -437,6 +447,16 @@ assemble lasagna, make sauce, fry sausage, boil pasta, grate cheese. So the
 reverse of this ordering gives us a recipe for successfully making lasagna,
 even though successful cooks are likely to do things more in parallel!
 </p>
+
+<div class=exercise>
+Can the algorithm described above succeed on a graph that contains a cycle?
+Why or why not?
+<p class=answer>
+No. A graph with a cycle has no topological sort at all: if \(u\) and \(v\) are both on a
+cycle, then we would need \(u\) before \(v\) and \(v\) before \(u\) in the ordering, which is
+impossible. Topological sort requires the graph to be a DAG.
+</p>
+</div>
 
 <!--
 <p>Now, why does this work? The algorithm puts nodes onto the list in

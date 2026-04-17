@@ -26,7 +26,7 @@ table.sidebysidecode {
     margin-bottom: 2ex;
 }
 div.sidebysidecode {
-    background-color: #e8e4dc;
+    background-color: #dce4e8;
     display:grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.7ex;
@@ -36,7 +36,7 @@ div.sidebysidecode {
 table.sidebysidecode td {
     width: 50%;
     border-top: none;
-    background-color: #e8e4dc;
+    background-color: #dce4e8;
     vertical-align: middle;
     margin: 0.5ex;
     padding: 0.5ex;
@@ -47,7 +47,7 @@ table.sidebysidecode td pre {
 table.sidebysidecode td:first-child {
     border-top: none;
     border-right: 2px solid gray;
-    background-color: #e8e4dc;
+    background-color: #dce4e8;
 }
 table.sidebysidecode tr {
     border: none
@@ -196,8 +196,11 @@ div#unit-signature-links a { color: white }
     width: 40%;
 }
 
-p, li {
+p, li, div.exercise {
     line-height: 1.3em; 
+}
+div.exercise {
+    padding-top: 1em;
 }
 
 p.definition { font-weight: bold; padding: 1em; background-color: #ddd; border: 1px solid black }

@@ -37,6 +37,18 @@ particular, if one thread releases a mutex and another thread then acquires it,
 the release of the mutex happens-before the acquire.
 </p>
 
+<div class=exercise>
+Consider two threads running concurrently. Thread A writes to variable <code>x</code>, then releases a lock. Thread B later acquires the same lock. Which of the following is guaranteed?
+<ol>
+<li>Thread B will definitely see the value of <code>x</code> that Thread A wrote.</li>
+<li>Thread B might see the value of <code>x</code> that Thread A wrote, but it's not guaranteed.</li>
+<li>Thread B will never see the value of <code>x</code> that Thread A wrote.</li>
+</ol>
+<p class=answer>
+The correct answer is (1). Since Thread A's write to <code>x</code> happens-before the release of the lock, and the release happens-before Thread B's acquire of the same lock, we have a happens-before relationship between the write and Thread B's execution. This means Thread B is guaranteed to see the value that Thread A wrote to <code>x</code>.
+</p>
+</div>
+
 <h3>Release consistency</h3>
 
 <p>
@@ -339,6 +351,14 @@ is called a <em class=term>wakeup–waiting race</em>, in which threads awakened
 <code>notifyAll()</code> race to observe the condition as true. The winners of
 the race can then spoil things for threads awakened later.
 </p>
+
+<div class=exercise>
+Look at the condition variable example from earlier where Thread 1 writes <code>y = 1; x = 1;</code> and Thread 2 waits while <code>x == 0</code> then reads <code>y</code>. Explain why using <code>notifyAll()</code> instead of <code>notify()</code> is safer in this scenario.
+<p class=answer>
+<code>notifyAll()</code> wakes up all waiting threads, while <code>notify()</code> wakes up just one thread arbitrarily. If there were multiple threads waiting and only one was woken by <code>notify()</code>, the other waiting threads might never wake up if that one thread doesn't call <code>notifyAll()</code> itself. With <code>notifyAll()</code>, all waiting threads are guaranteed to wake up and check the condition, which is much more predictable and less error-prone. This is especially important when different threads might be waiting on different conditions combined into the same condition variable.
+</p>
+</div>
+
 <h2>Monitors</h2>
 </p><p>
 The <em class=term>monitor</em> pattern is a design pattern for managing synchronization.
@@ -620,6 +640,20 @@ class=term>reentrant locks</em>, in which it is safe to acquire the same lock
 multiple times as long as it is released the same number of times.
 In this case, acquiring an already held lock is not a problem.
 </p>
+
+<div class=exercise>
+Suppose you have three locks: <code>L1 &lt; L2 &lt; L3</code> in your lock ordering. A thread is currently holding <code>L1</code>. Which of the following operations would violate the lock ordering and potentially cause deadlock?
+<ol>
+<li>Acquiring <code>L2</code></li>
+<li>Acquiring <code>L3</code></li>
+<li>Acquiring <code>L1</code> again (assuming reentrant locks)</li>
+<li>Acquiring unrelated lock <code>L0</code>
+</ol>
+<p class=answer>
+The correct answer is (4). Lock ordering requires that a thread may only acquire a lock that comes later in the ordering than all locks it currently holds. Since the thread holds <code>L1</code>, it can safely acquire <code>L2</code> or <code>L3</code> (both are later in the ordering). It can also acquire <code>L1</code> again if reentrant locks are supported. However, acquiring <code>L0</code> would violate the ordering because <code>L0 &lt; L1</code>, meaning <code>L0</code> comes earlier in the ordering than a lock the thread already holds. This creates the potential for cycles in the lock dependency graph and deadlock.
+</p>
+</div>
+
 <h3>Sorting locks</h3>
 <p>
 In general, a thread might need to acquire multiple locks. How can we be sure that they will be acquired in 

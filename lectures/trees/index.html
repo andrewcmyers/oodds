@@ -90,6 +90,14 @@ ordered from left to right, so B is the left child of G and root of the left
 subtree of G, and H is the right child of G and root of the right subtree of G.
 A node with no children is called a <em class=term>leaf</em>.
 </p>
+
+<div class=exercise>
+What is the minimum number of nodes in a tree of height 2?
+<p class=answer>
+A tree of height 2 must have at least 3 nodes: the root (height 2), one child of the root (height 1), and one grandchild (height 0, a leaf). For example, a tree with just a root and one child connected in a line would have height 1, so we need at least one more level. The minimum is achieved with a path: root → child → grandchild.
+</p>
+</div>
+
 <div class=figure>
 <canvas id=tree_anatomy style="width:600px; height:200px"></canvas>
 <script class=graphics>
@@ -220,6 +228,13 @@ For each node \(n\) in the tree, all data elements stored in \(n\)'s left subtre
 are less than the element stored at \(n\), and all elements stored in \(n\)'s right
 subtree are greater than the element stored at \(n\).
 </p>
+
+<div class=exercise>
+Consider a binary search tree containing the values [4, 2, 6, 1, 3, 5, 7]. Which of these could be the root node?
+<p class=answer>
+The root can be any of these values. For example, if 4 is the root, then {1, 2, 3} go in the left subtree (all less than 4) and {5, 6, 7} go in the right subtree (all greater than 4). If 2 is the root, then {1} is in the left subtree and {3, 4, 5, 6, 7} are in the right subtree. The BST invariant only requires that values are correctly partitioned at each node, not which value is chosen as the root.
+</p>
+</div>
 
 <p>We can visualize the tree relative to a given node as in this picture. Note that we've stopped
 drawing arrowheads on the tree edges, relying instead on the convention that edges go downward:
@@ -806,6 +821,14 @@ we obtain <em class=term>postorder</em> traversal.
 <p>
 For example, a preorder traversal of the tree above would visit the nodes in the order 5, 3, 1, 11, 10, 17, and a postorder traversal would visit the nodes in the order 1, 3, 10, 17, 11, 5.
 </p>
+
+<div class=exercise>
+Why is postorder traversal useful for deleting all nodes in a tree? What would go wrong if you used preorder traversal instead?
+<p class=answer>
+Postorder traversal visits a node only after all its descendants have been visited. This means when you visit a node, you can safely delete it without losing references to its children (they've already been processed). If you used preorder traversal, you would visit the parent before its children. If you delete the parent first, you lose the pointers to the children and cannot visit or delete them, leaving dangling nodes in memory.
+</p>
+</div>
+
 <p>
 Postorder traversals have the useful property that a node is visited only after
 all of its descendants; conversely, a preorder traversal visits a node before

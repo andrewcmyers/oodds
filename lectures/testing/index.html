@@ -77,6 +77,16 @@ code contains assertions to check preconditions, postconditions, and
 invariants.
 </p>
 
+<div class=exercise>
+Suppose you are developing a sorting function incrementally. Would it be better to write and test the entire sorting function before integrating it into your larger system, or to test it as you implement each component? Why?
+<p class=answer>
+It is better to test as you implement each component (continuous testing). This
+way, you know that discovered bugs are in recently written code and can
+localize the error more easily. Testing the entire function all at once would
+make it harder to identify which part of the code introduced the bug.
+</p>
+</div>
+
 <h3>Regression testing</h3>
 <p>
 Code modifications often introduce new bugs, even breaking working
@@ -145,6 +155,19 @@ Black-box testing requires the programmer to define input/output pairs,
 in which the correct output corresponding to each input is defined. This
 can be a time-consuming process.
 </p>
+
+<div class=exercise>
+You are implementing a function that finds the maximum value in an array of
+integers. Design 3 black-box test cases that would help ensure your
+implementation is correct, focusing on both typical and corner cases.
+<p class=answer>
+Good test cases would include: (1) A typical case with multiple elements: array
+= [3, 7, 2, 9, 1] should return 9. (2) A corner case with a single element:
+array = [5] should return 5. (3) A corner case with negative numbers: array =
+[-10, -3, -20] should return -3. These cases test normal operation, edge cases
+with minimal input, and edge cases with negative values.
+</p>
+</div>
 
 <h3>Glass-box testing</h3>
 <p>
@@ -324,9 +347,9 @@ int f(int x, int y) {
 }
 </pre>
 
-<p>The path of execution when y&gt;0 has no information about the
-value of d, which means that when we get to the statement <code>x = x/d</code>,
-we cannot show that <code>d != 0</code>. We have found a potential bug. By representing
+<p>The path of execution when \(y&gt;0\) has no information about the
+value of \(d\), which means that when we get to the statement <code>x = x/d</code>,
+we cannot show that \(d \neq 0 \). We have found a potential bug. By representing
 the values of variables logically, symbolic
 execution effectively runs a very large number of test cases at the same time.
 </p>
