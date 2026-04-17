@@ -164,6 +164,18 @@ that was named when the object was created via <code>new</code>. This is called
 <em class=term>dynamic dispatch</em>.
 </p>
 
+<div class=exercise>
+<strong>Exercise 1:</strong> Suppose we have the following code:
+<pre>
+CBoard cb = new CBoard();
+Board b = cb;
+</pre>
+What is the static type of the variable <code>b</code>? What is the dynamic type of the object that <code>b</code> refers to?
+<p class=answer>
+The static type of <code>b</code> is <code>Board</code> (as declared in the variable declaration). The dynamic type of the object is <code>CBoard</code> (the class used in the <code>new</code> expression). This is an example of subtyping: <code>CBoard</code> can be assigned to a variable of type <code>Board</code> because <code>CBoard</code> implements the <code>Board</code> interface. The dynamic dispatch mechanism ensures that when we call a method on <code>b</code>, the correct <code>CBoard</code> implementation is executed at run time.
+</p>
+</div>
+
 <h2>Classes vs. types</h2>
 <p>
 In Java programs, each object has a <strong>dynamic</strong> or
@@ -378,6 +390,26 @@ use of these operations is a danger sign that your code is not well designed.
 If you find yourself using them a lot, it is worth thinking about whether there
 is a way to redesign your code to avoid them.
 </p>
+
+<div class=exercise>
+<strong>Exercise 2:</strong> Consider the following code:
+<pre>
+Board b = new CBoard();
+SBoard s = (SBoard) b;
+</pre>
+Will this code compile? Will it run successfully? Explain why or why not.
+<p class=answer>
+The code will compile because Java allows downcasts syntactically. However, it
+will fail at run time with a <code>ClassCastException</code>. The variable
+<code>b</code> has static type <code>Board</code>, but its dynamic type is
+<code>CBoard</code> (as set by the <code>new</code> expression). The downcast
+attempts to cast the object to type <code>SBoard</code>, but since the object
+is actually a <code>CBoard</code>, not an <code>SBoard</code>, the cast fails.
+To safely downcast, we should first check the dynamic type using
+<code>instanceof</code>, as shown in the code example with <code>if (p
+instanceof CBoard)</code>.
+</p>
+</div>
 <p>
 Upcasting to a supertype can sometimes be used as a form of information hiding.
 Upcasting to a supertype hides operations not present in the supertype,
@@ -459,6 +491,21 @@ That private visibility modifier would be misleading and useless, so it is disal
 in Java. On the other hand, it makes sense and is legal to have a method that
 becomes more accessible in the subtype.
 </p>
+
+<div class=exercise>
+<strong>Exercise 3:</strong> Suppose the <code>Board</code> interface declares a method with the following signature:
+<pre>
+public int tile(int r, int c);
+</pre>
+An implementing class <code>CBoard</code> provides:
+<pre>
+private int tile(int r, int c) { ... }
+</pre>
+Is this a valid implementation of the <code>Board</code> interface? Why or why not?
+<p class=answer>
+No, this is not valid. The visibility of the <code>tile()</code> method in <code>CBoard</code> is <code>private</code>, which is less visible than the <code>public</code> visibility in the interface. This violates the conformance requirement: methods in a subtype must have visibility that is at least as accessible as in the supertype. If we upcast a <code>CBoard</code> object to a <code>Board</code> variable, the method should still be accessible as public. A private method would make the abstraction barrier inconsistent and is therefore disallowed in Java.
+</p>
+</div>
 
 
 <h3>Behavioral subtyping</h3>
