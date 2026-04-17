@@ -210,6 +210,21 @@ In the example above, after the first sort we would have
 </pre>
 The second sort, being stable, would simply move the 14850 items up and the 14853 items down, but keep them in the same order within each zip code.
 </p>
+<div class=exercise>
+In the insertion sort inner loop, the guard uses a strict comparison: <code>a[j-1] > k</code>.
+What would happen if we changed it to <code>a[j-1] >= k</code>? Would the algorithm still sort
+correctly? Would any other property be affected?
+<p class=answer>
+The algorithm would still sort correctly, because equal elements would simply be shifted one position
+to the right just like larger elements are, and <code>k</code> would end up just to the left of them.
+However, stability would be lost: an element equal to <code>k</code> that originally appeared earlier
+in the array would now be shifted past <code>k</code>'s insertion point, reversing their original
+relative order. The strict <code>&gt;</code> comparison is what makes insertion sort stable — it stops
+shifting as soon as it finds an equal element, placing <code>k</code> to the right of any
+equal-valued predecessors.
+</p>
+</div>
+
 <h2>Selection sort</h2>
 <p>
 Selection sort is another sorting algorithm, used more commonly by humans than
@@ -382,6 +397,21 @@ time. But that doesn't mean there is actually any algorithm with that running
 time. In fact, there <em>are</em> such asymptotically efficient sorting
 algorithms, such as merge sort and quicksort.
 </p>
+
+<div class=exercise>
+<em>Counting sort</em> can sort \(n\) integers drawn from the range \([0, k)\) in \(O(n + k)\) time.
+When \(k\) is \(O(n)\), this is \(O(n)\) — faster than \(\Omega(n \lg n)\). Does this
+contradict the decision-tree lower bound? Why or why not?
+<p class=answer>
+No contradiction. The \(\Omega(n \lg n)\) lower bound applies only to <em>comparison-based</em>
+sorting algorithms, which learn about element order solely through pairwise comparisons. Counting
+sort is not comparison-based: it exploits the fact that elements are small integers by using them
+as array indices. This gives it extra information that a comparison-based algorithm does not have,
+so the decision-tree argument does not apply. The bound tells us that comparisons alone
+cannot sort faster than \(\Omega(n \lg n)\) — but algorithms that use other operations on keys
+are not subject to this constraint.
+</p>
+</div>
 
 <h2>Merge sort</h2>
 <p>
@@ -838,6 +868,26 @@ it is not a stable sort, because it works by swapping elements.  As with merge
 sort, a noticeable speedup can be obtained by switching to insertion sort for
 sufficiently small subarrays.
 </p>
+
+<div class=exercise>
+Trace the first call to the partitioning loop on the array <code>[5, 3, 8, 2, 7, 1, 6, 4]</code>,
+using <code>5</code> as the pivot value (already at <code>a[l]</code>). Show the state of the array
+and the values of <code>i</code> and <code>j</code> after each swap, and give the final partition
+index returned.
+<p class=answer>
+Initial state: <code>[5, 3, 8, 2, 7, 1, 6, 4]</code> with <code>i = 0</code>, <code>j = 7</code>.
+Scanning: <code>i</code> advances to index 2 (<code>a[2] = 8 ≥ 5</code>); <code>j</code> stays at
+index 7 (<code>a[7] = 4 ≤ 5</code>). Swap <code>a[2]</code> and <code>a[7]</code>:
+<code>[5, 3, 4, 2, 7, 1, 6, 8]</code>, then <code>i = 3</code>, <code>j = 6</code>.
+Scanning: <code>i</code> advances to index 4 (<code>a[4] = 7 ≥ 5</code>); <code>j</code> retreats to
+index 5 (<code>a[5] = 1 ≤ 5</code>). Swap <code>a[4]</code> and <code>a[5]</code>:
+<code>[5, 3, 4, 2, 1, 7, 6, 8]</code>, then <code>i = 5</code>, <code>j = 4</code>.
+Now <code>i > j</code>, so the loop exits and returns <code>j + 1 = 5</code>. The two subarrays
+are <code>[5, 3, 4, 2, 1]</code> (indices 0–4) and <code>[7, 6, 8]</code> (indices 5–7).
+Everything in the left subarray is ≤ 5 and everything in the right subarray is ≥ 5, as required
+by the loop invariant.
+</p>
+</div>
 
 <h3>Quickselect</h3>
 <p>
