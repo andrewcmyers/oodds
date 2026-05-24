@@ -100,7 +100,7 @@ called by clients or by any subclass code; instead, it is automatically
 called by the task thread.
 </p>
 <p>
-To report progress back to other threads;
+To report progress back to other threads,
 the worker thread may call <code>setProgress()</code>; they can observe the
 progress report by calling <code>getProgress()</code>.
 When the task completes by returning
