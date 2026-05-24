@@ -1,7 +1,7 @@
 <h1>Interpreters, compilers, and the Java Virtual Machine</h1>
 
 <h2>Interpreters vs. compilers</h2>
-
+<p>
 There are two strategies for obtaining runnable code from a program
 written in some programming language that we will call the <strong>source
 language</strong>. The first is <strong>compilation</strong>, or <strong>translation</strong>, in which the
@@ -249,9 +249,9 @@ instructions. These are used to make the code more compact than it
 otherwise would be: by looking at the offsets for each of the
 instructions, we can see that <code>iload_3</code> takes just one byte whereas
 <code>iload 5</code> takes two.
-</p><p>
+
 <h3>Method dispatch</h3>
-</p><p>
+<p>
 When methods are called, the arguments to the method are popped from
 the operand stack and used to construct the first few entries of the
 local variable array in the called method's stack frame. The result
@@ -271,7 +271,7 @@ Here the <code>#23</code> is an index into the constant pool. The corresponding
 entry contains the string <code>eat:(I)V</code>, showing that the invoked method is
 named <code>eat</code>, that it has a single integer argument (<code>I</code>), and that it
 returns <code>void</code> (<code>V</code>). We can see from the fact that the name of the
-invoked method includes the arguments of the types that all
+invoked method includes the types of the arguments that all
 overloading has been fully resolved by the Java compiler. Unlike the
 Java compiler, the JVM doesn't have to make any decisions about what
 method to call based on the arguments to the call.
@@ -379,7 +379,7 @@ do not involve dispatch, such as constructors, final methods, and
 private methods.
 </p></li>
 
-<li><p><code>invokedynamic</code> invokes object methods without requiring that
+<li><p><code>invokedynamic</code> invokes object methods without requiring that the
 static type of the receiver object supports the method. Run-time
 checking is used to ensure that the method can be called. This relatively
 recent feature is used to implement lambda expressions.

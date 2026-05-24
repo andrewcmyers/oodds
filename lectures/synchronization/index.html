@@ -335,7 +335,7 @@ synchronized (m) {
 }</pre></td></tr></table>
 <p>
 This code is guaranteed not to loop forever, and it creates a synchronization dependency
-that ensure the update to <code>y</code> is seen by thread 2.
+that ensures the update to <code>y</code> is seen by thread 2.
 <p>
 After a thread calls <code>wait()</code>, the condition it is waiting for might
 be true when <code>wait()</code> returns. But it need not be. Some other thread
@@ -360,11 +360,11 @@ Look at the condition variable example from earlier where Thread 1 writes <code>
 </div>
 
 <h2>Monitors</h2>
-</p><p>
+<p>
 The <em class=term>monitor</em> pattern is a design pattern for managing synchronization.
 It builds synchronization into objects: a monitor
 is an object with a built-in lock on which all of the monitor's
-copublic methods are synchronized. This design is accomplished in Java easily, because
+public methods are synchronized. This design is accomplished in Java easily, because
 every object can be used as a lock, and the <code>synchronized</code> keyword enforces the
 monitor pattern. Java objects are designed to be used as monitors. A monitor
 also has some number of condition variables. Java objects only have
@@ -496,7 +496,7 @@ class Workers extends Runnable {
 	}
     }
 
-    // not synchronized, to allow concurrent execution<
+    // not synchronized, to allow concurrent execution
     public void doWork() {
         // ...avoid using shared mutable state here...
     }
@@ -528,7 +528,7 @@ Second, there is no synchronization ensuring that updates to <code>result</code>
 </p><p>
 How can we fix this? We cannot make <code>getResult()</code>
 synchronized, because this would block the final assignment
-to <code>done</code> and <code>result</code> in the <code>run</code> method. We can't use the
+to <code>working</code> and <code>result</code> in the <code>run</code> method. We can't use the
 lock of <code>w</code> to wait until <code>working</code> becomes 0.
 </p>
 <p>
@@ -690,7 +690,7 @@ sort <code>i</code> and <code>j</code> accordingly before acquiring their locks:
 <pre class=load>
 <a href="Deadlock_fixed.java">Deadlock_fixed.java</a>
 </pre>
-<p>
+
 <h3>Locking level</h3>
 <p>
 For code to acquire a lock without fear of deadlock, a precondition must be satisfied
@@ -707,7 +707,7 @@ entry to a monitor method must be less than the mutex of the monitor itself
 (or equal to, assuming reentrant locks). Otherwise
 the lock ordering could be violated. Thus, the public methods of a monitor have
 an (typically implicit) precondition \(LL ≤ \texttt{this}\).
-</a>
+</p>
 <p>
 If we apply this approach to the example above, we might specify that <code>a
 &lt; b</code> in the lock ordering.  The method <code>f()</code> then requires \(LL
@@ -728,7 +728,7 @@ class B {
 </pre>
 
 <h2>Using background threads with JavaFX</h2>
-</p><p>
+<p>
 In JavaFX, any background work should be done not by the Application thread,
 but rather in a separate thread. If the Application thread is busy doing work
 instead of handling user interface events, the UI becomes unresponsive.

@@ -263,7 +263,7 @@ row, starting a new row whenever the current row runs out of horizontal space.
 
 <p>There are several ways to control the appearance of the scene. Some nodes have handles that
 allow them to be minimized, maximized, or resized. There are also various controls such as
-sliders or knobs to control shape, size, color, or other aspect of the appearance. Nodes can also be
+sliders or knobs to control shape, size, color, or other aspects of the appearance. Nodes can also be
 added, removed, moved, or transformed. With JavaFX, when such a change is made and the
 scene needs to be redrawn, the visible components of the scene redraw themselves in the right order.</p>
 
@@ -297,7 +297,7 @@ mouse clicks and button pushes.</p>
 <h2>Threads</h2>
 <p>
 Unlike simple Java programs, a JavaFX application typically has multiple concurrent threads:
-a <strong>main thread</strong>, a <strong>application thread</strong>, and a <strong>rendering thread</strong>, as well as various background worker threads, depending on the application. The application thread's sole task
+a <strong>main thread</strong>, an <strong>application thread</strong>, and a <strong>rendering thread</strong>, as well as various background worker threads, depending on the application. The application thread's sole task
 is to loop continuously, listening for the occurrence of hardware-generated events such as mouse
 clicks. For each such occurrence, it constructs an <code>Event</code> object describing the
 event and the GUI component in which it occurred, then calls the event handler of each registered

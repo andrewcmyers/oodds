@@ -317,7 +317,7 @@ races between R1 and W2 and between R2 and W1.
 We can fix this code by controlling which interleavings are possible. In
 particular, we want only interleavings in which the methods
 <code>withdraw()</code> and <code>deposit()</code> execute <strong>atomically</strong>,
-meaning that their execution can be thought of an indivisible unit that cannot
+meaning that their execution can be thought of as an indivisible unit that cannot
 be interrupted by another thread. This does not mean that when one thread
 executes, say, <code>withdraw()</code>, that all other threads are suspended.
 However, it does mean that as far as the programmer is concerned, the system
@@ -563,7 +563,7 @@ is nothing magic about volatile variables. Anything that can be accomplished
 with them can be accomplished with other synchronization mechanisms.  And
 because they cause automatic synchronization, they are expensive, both because
 synchronization has an inherent overhead and because it can remove desirable parallelism.
-The <code>volatile</code> declaration is useful is when
+The <code>volatile</code> declaration is useful when
 all you want is indeed to acquire a mutex around all accesses to a variable;
 in this case, <code>volatile</code> is the easiest and cheapest way to do it.
 </p>
