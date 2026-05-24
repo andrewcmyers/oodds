@@ -80,7 +80,7 @@ The reason is that arrays are a <em class=term>parameterized type</em>. We can t
 <code>Integer[]</code> as the application of a type-level function (we might call it <code>array</code>
 if we were to give it a readable name)
 to the type argument <code>Integer</code>, returning the type <code>Integer[]</code>.
-Obviously, this built-in parameterized type is useful, The idea of generics is to allow the programmer to
+Obviously, this built-in parameterized type is useful. The idea of generics is to allow the programmer to
 define their <em>own</em> parameterized types, obtaining the same precise static type
 checking that comes with the built-in array type.
 </p>
@@ -117,7 +117,7 @@ except that every occurrence of <code>T</code> is replaced with <code>String</co
 behaves exactly as if its signature were <code>boolean add(String x)</code>.
 </p>
 <p>
-Using this additonal type information,
+Using this additional type information,
 the compiler can tell when we are trying to add an element of the wrong type to a collection, and we
 don't have to worry about getting the wrong type of element out of the collection at run time:
 </p>
@@ -200,7 +200,6 @@ The head element of the list, which is assigned to a variable of type <tt>String
 is actually an <tt>Integer</tt>! This is erroneous, so the Java compiler will not
 allow it. A similar situation arises with arrays, although in that case the error is unfortunately only caught at run time.
 </p>
-</p>
 <pre class="load">
 <a href="array-unsound.java">variance-unsound.java</a>
 </pre>
@@ -263,7 +262,7 @@ than just <code>Object</code>s.
 <a href="usesite2.java">usesite2.java</a>
 </pre>
 <div class=exercise>
-In the Java Collections Framework, The class <code>HashSet&lt;T&gt;</code> is declared to implement the interface <code>Set&lt;T&gt;</code>.  Is
+In the Java Collections Framework, the class <code>HashSet&lt;T&gt;</code> is declared to implement the interface <code>Set&lt;T&gt;</code>.  Is
 <code>HashSet&lt;Integer&gt;</code> a subtype of <code>Set&lt;?&gt;</code>?
 <p class=answer>
 Yes, because  we can use a value of type <code>HashSet&lt;Integer&gt;</code>
@@ -314,7 +313,7 @@ HashSet&lt;T&gt;[] sets = (HashSet&lt;T&gt;[]) new HashSet&lt;?&gt;[n];
 Equivalently, one can use a <em class=term>raw type</em>, a type in which type parameters have been explicitly erased,
 to create the array:
 <pre>
-HashSet&lt;T&gt;[] sets = (HashSet&lt;T&gt;)new HashSet[n];
+HashSet&lt;T&gt;[] sets = (HashSet&lt;T&gt;[])new HashSet[n];
 </pre>
 <p>
 Raw types are an unchecked end run around the Java type system: Java allows a
@@ -390,7 +389,7 @@ operation available to the generic code.
 Notice that here we are using <tt>String</tt>'s own <tt>compareTo</tt>
 operation as a model for the comparator, but we don't have to. For example, we
 could have used the <tt>compareToIgnoreCase</tt> method to sort strings while
-ignoring the difference between upper and lower case. It turns out that we can
+ignoring the difference between upper and lower case. It turns out that we can use
 <em class=term>lambda expressions</em> to implement the interface even more
 compactly. Here is how we would sort the array using a lambda expression while
 also ignoring case:
@@ -444,7 +443,7 @@ Suppose we want a <code>SortedList&lt;String&gt;</code> that sorts strings by th
 <p class=answer>
 <code>(x, y) -&gt; x.length() - y.length()</code>. When the result is negative, <code>x</code> is
 considered to come before <code>y</code>; when positive, after; when zero, equal.
-Note that in general when comparing two integers, it is is safer to use the method
+Note that in general when comparing two integers, it is safer to use the method
 <code>Integer.compare</code>, which has no issues with numeric overflow. However,
 for comparing two string lengths, subtraction works fine.
 </p>

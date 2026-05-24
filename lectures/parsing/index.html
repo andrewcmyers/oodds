@@ -3,7 +3,7 @@
 Parsing is something we do constantly. In fact, you are doing it right
 now as you read this sentence. Parsing is the process of converting a
 stream of input into a structured representation. The input stream may
-consists of words, characters, or even bits. The output of the process
+consist of words, characters, or even bits. The output of the process
 is a tree.
 </p>
 <p>          
@@ -81,7 +81,6 @@ sequence of tokens: <code>(</code>, <code>42</code>, <code>+</code>, <code>foo</
 <code>*</code>, and <code>2112</code>.
 </p>
 <p>
-<p>
 One of the nonterminal symbols is the <strong>start symbol</strong>.  The root of the parse tree is always
 the start symbol, although the start symbol may also occur elsewhere in the tree.
 </p>
@@ -116,7 +115,7 @@ in full.
 <p>
 The <strong>language</strong> of a grammar is the set of strings of terminal
 symbols that can be produced by constructing a parse tree with that grammar.
-Each such string strings is said to be <strong>derived</strong> from the start
+Each such string is said to be <strong>derived</strong> from the start
 symbol using the productions of the grammar. The job of a parser is to figure
 out whether an input string is part of the language of the grammar and to
 construct a parse tree if so.
@@ -256,7 +255,7 @@ with (fig) {
 
 <h2>Recursive-descent parsing</h2>
 <p>
-The idea of <sstrongrong>recursive-descent parsing</strong>, also known as
+The idea of <strong>recursive-descent parsing</strong>, also known as
 <strong>top-down parsing</strong>, is to parse input while exploring the
 corresponding parse tree recursively, starting from the top. 
 Let's build a recursive-descent parser!
@@ -537,7 +536,7 @@ Expr parseE() throws SyntaxError {
 </pre>
 <p class=cont>
 But this method won't work: it will cause infinite recursion! The core problem with top-down
-parsing of left-recursive grammars that in general an arbitrary number of recursive calls
+parsing of left-recursive grammars is that in general an arbitrary number of recursive calls
 would be required to build the right parse tree, but the parser has no way to predict how many
 from just seeing the beginning of the input.
 </p>

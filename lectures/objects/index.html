@@ -27,7 +27,7 @@ has a corresponding <strong>run-time type</strong>. Here are some examples of pr
     <td><code>'x', 'a', '\n', '\u0000' </code></td>
     <td>There are about 65,000 Unicode characters from '\u0000' to '\uFFFF', representing characters
     from the Unicode standard's Basic Multilingual Plane. Unicode characters outside this range cannot
-    be directly represented as a <code>char</code>
+    be directly represented as a <code>char</code>.
     Ordinary ASCII characters have character codes between 0 and 127 ('\u0000'
     to '\u007F').
     </td>
@@ -207,7 +207,7 @@ which variables of primitive type are drawn as shown in the diagram on the
 right side, whereas variables of object type are drawn as shown in the diagram
 on the left. This treats the different types perhaps more differently than
 is warranted, but makes the diagrams look as simple as possible. Such hybrid
-diagrams also hint at what is going in the underlying implementation of the
+diagrams also hint at what is going on in the underlying implementation of the
 programming language, because references to objects are typically more expensive than
 references to values of primitive types.
 </p>
@@ -308,7 +308,7 @@ some people put the opening brace <code>{</code> on a line by itself, so that
 the two matching braces line up in the same column. Others indent the braces
 themselves.  Some people do not put a space after the keyword <code>if</code>,
 making it look like a function call.  This text follows the very standard style shown,
-called K&amp;R style, after Kernighan and Richie, authors
+called K&amp;R style, after Kernighan and Ritchie, authors
 of <cite>The C Programming Language</cite>. However, professional software engineers
 learn to follow whatever style is used by the codebase they are working on,
 even if their personal preference differs. Code that is inconsistent about
@@ -541,7 +541,7 @@ describe which object's instance variable is being used, and we can both
 assign to instance variables and use their values, exactly like regular
 variables.
 </p>
-<p>Each object keeps track of what class it is an instance. This is represented
+<p>Each object keeps track of what class it is an instance of. This is represented
 in the object diagram by putting the class name in the first slot. Because the
 object knows its class, it is possible to write code to check whether an object
 is of a particular class.
@@ -637,7 +637,7 @@ These variable names denote the instance variables of the receiver object.
 </p>
 
 <div class=exercise>
-The comment above claims that <code>r.area()</code> evaluates to 3 for the rectangle defined
+The comment above claims that <code>r.area()</code> evaluates to 6 for the rectangle defined
 earlier. Using the values <code>LL.x = 0, LL.y = 0, UR.x = 2, UR.y = 3</code>, verify this
 claim by evaluating the expression inside the <code>area</code> method.
 <p class=answer>
@@ -672,7 +672,7 @@ objects only after creating them with <code>new</code>. A better solution is to
 define one or more <strong>constructors</strong> that initialize the object to a
 &ldquo;good&rdquo; state. Constructors are special methods whose name is
 required to be exactly the same as that of the class. A constructor is
-called using the <code>new</code> keyword rather by supplying a receiver object.
+called using the <code>new</code> keyword rather than by supplying a receiver object.
 The constructor then creates the object and initializes it.
 </p>
 <p>
@@ -713,7 +713,7 @@ the expression <code>this</code> is inside constructors, to allow
 distinguishing the instance variables of the object from constructor
 parameters. The following constructor behaves exactly like the one just above,
 but is more explicit about modifying the receiver object. Notice that the names
-<code>x</code> and <code>y</code> in this code sometimes refers to instance variables of <code>Point</code>
+<code>x</code> and <code>y</code> in this code sometimes refer to instance variables of <code>Point</code>
 and sometimes refer to the formal parameters.
 <pre>
 class Point {

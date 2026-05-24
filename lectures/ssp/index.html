@@ -128,7 +128,7 @@ node <code>g</code> to some node <code>v</code> is considered, it may lie on a s
 the change so that it can produce <code>v</code> perhaps earlier than it would
 otherwise have.
 </p>
-<p>Here is the pseudo-code:</code>
+<p>Here is the pseudo-code:</p>
 <pre>
 1    frontier = new PriorityQueue();
 2    root.dist = 0;
@@ -302,9 +302,7 @@ tricolor black&ndash;white invariant, plus the following two-part invariant:
 <ol type="1">
 <li><p>For every black vertex <code>b</code> and gray vertex <code>g</code>, <code>b.dist ≤ g.dist</code>.</p></li>
 <li><p>For every gray or black vertex <code>v</code>, <code>v.dist</code> is the distance of the shortest <em>interior</em> path to <code>v</code>.</p></li>
-</ul>
 </ol>
-<br>
 <p>
 <b>Initialization.</b>
 Part 1 of the invariant is vacuously true initially, because there are no black vertices.
@@ -348,7 +346,7 @@ at least as long as the already known interior path with distance <code>b.dist</
 <p>
 However, we still need to think about interior paths to gray nodes, which may
 be either successors to \(g\) considered in the inner loop, or existing gray
-nodes. A node that is gray after an execution loop body could have been either
+nodes. A node that is gray after an execution of the loop body could have been either
 white or gray:
 
 <p><b>White.</b> Nodes newly discovered via \(g\) become gray. By the tricolor
@@ -451,7 +449,6 @@ shorter than <code>v.dist</code>. Therefore, the third category of new interior 
 cannot yield paths that are shorter than the previously existing interior paths to \(v\),
 which are already summarized by \(v\)<code>.dist</code>.
 </p>
-</ul>
 </ol>
 
 <div class=exercise>

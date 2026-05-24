@@ -46,7 +46,7 @@ we could then add new fields and methods to. But this strategy doesn't work
 very well when the original supplier of <code>CBoard</code> fixes some bugs and
 gives us a new version <code>CBoard'</code>. Now we have to either apply the same bug fixes to
 <code>LogBoard</code> on the code that we copied from <code>CBoard</code>
-to get a new </code>LogBoard'</code>,
+to get a new <code>LogBoard'</code>,
 or start afresh from <code>CBoard'</code> and build a new <code>LogBoard'</code> from it.
 Either way, it will be a lot of work and difficult to automate.
 </p>
@@ -361,7 +361,7 @@ its initial default state. It then performs the following steps:
 </ol>
 <p>
 For example, consider a call to the constructor <code>LogBoard()</code>.  At
-the beginning of the method the instance variables <code>tiles</code> has the
+the beginning of the method the instance variable <code>tiles</code> has the
 value <code>null</code>, and <code>score</code> and <code>numMoves</code> are
 0. The <code>LogBoard</code> constructor first calls the <code>CBoard</code>
 constructor, causing <code>tiles</code> to be initialized to reference an

@@ -120,8 +120,6 @@ F_0 &= 0 \\
 F_1 &= 1
 \end{align}
 
-</pre>
-</div>
 <p>
 In fact, if we add 1 to each term in the sequence of values for \(N(h)\), the
 familiar Fibonacci sequence emerges: \(1, 2, 3, 5, 8, 13, ...\) . In general,
@@ -136,7 +134,7 @@ prove an exponential lower bound on \(N(h)\) by induction. We show that for all
 \(h≥0\), the inequality \(N(h) ≥ φ^h\) holds,
 where \(φ\) is the <strong>golden ratio</strong> \((1+\sqrt{5})/2 ~~(≈ 1.618)\).
 </p>
-</p>
+<p>
 Experimentally, we have \(N(0) = 1 = φ^0\) and \(N(1) = 2 ≥ φ^1\). Now we assume an
 <em class=term>induction hypothesis</em>:
 that the condition \(N(x) ≥ φ^x\) holds for all values of \(x\) from 0 up to
@@ -215,7 +213,7 @@ the formula is assumed correct for \(F_{n-1}\) and \(F_{n-2}\). Then:
 
 \begin{align}
 F_n & = F_{n-1} + F_{n-2} & \text{(definition of \(F_n\))} \\
-    & = (φ^{n-1} - \phib^{n-2})/\sqrt{5} + (φ^{n-2} - \phib^{n–2})/\sqrt{5} & \text{  (by the induction hypothesis)} \\
+    & = (φ^{n-1} - \phib^{n-1})/\sqrt{5} + (φ^{n-2} - \phib^{n–2})/\sqrt{5} & \text{  (by the induction hypothesis)} \\
     & = (φ^{n-1} + φ^{n-2} - (\phib^{n–1} + \phib^{n–2}))/\sqrt{5} &        \text{(by arithmetic)} \\
     & = (φ^n - \phib^n)/\sqrt{5}                       & \text{(by property (2))}
 \end{align}
@@ -301,15 +299,15 @@ this transformation too keeps the various tree nodes in exactly the same relativ
 </p>
 <p>
 Tree rotations are efficient because they only affect three nodes of the tree:
-the nodes \(x\) and \(y\), and a parent node that is not shown in the diagram above.
-In the following code, the variable <code>newChild</code> represents the
-appropriate child variable in that parent node.
+the nodes \(x\) and \(y\), and a parent node \(p\) that is not shown in the diagram above.
+In the following code, the variable <code>p.<i>child</i></code> represents the
+appropriate child instance variable of node \(p\): either <code>p.left</code> or <code>p.right</code>.
 </p>
 <pre>
 <b>Left rotation</b>                          <b>Right rotation</b>
 x.right = y.left; /* B */              y.left = x.right; /* B */
-y.left = p;                            x.right = y;
-newChild = y;                          newChild = x;
+y.left = x;                            x.right = y;
+p.<i>child</i> = y;                           p.<i>child</i> = x;
 </pre>
 
 <h2>Inserting into an AVL tree</h2>
@@ -706,7 +704,7 @@ with (new CFigure("deletion_ex")) {
     setConnectionStyle("intersection")
     let st = lightStyle()
     const trees = [
-      tree(st, 6, [2, 1, [4,3,5]], [7,8,undefined]),
+      tree(st, 6, [2, 1, [4,3,5]], [7,undefined,8]),
       tree(st, 6, [2,1,[4,3,5]], 8),
       tree(st, 4, [2, 1, 3], [6, 5, 8])
     ]
@@ -719,7 +717,6 @@ with (new CFigure("deletion_ex")) {
     align("abut", "none", trees[0], hspace(20), trees[1])
 }
 </script>
-</div>
 <div class=exercise>
 What if instead we had removed the node 1?
 <div class=answer>

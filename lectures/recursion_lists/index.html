@@ -6,7 +6,7 @@ express both algorithms and data structures.
 Recursion allows us to solve a problem
 by using solutions to “smaller” versions of the same problem.
 </p>
-<h2>Examples</h3>
+<h2>Examples</h2>
 <p>Let's start by looking at some simple examples of using recursion to
 solve problems.</p>
 <h3>Recursively computing Fibonacci numbers</h3>
@@ -299,7 +299,7 @@ avoiding the possibility of a null-pointer exception:
 <pre>
 static Node Null = new Node(); Null.next = Null;
 </pre>
-<p>Algorithms that operates on such a list representation have to watch out
+<p>Algorithms that operate on such a list representation have to watch out
 for the sentinel object instead of for <code>null</code>.
 The Optional design pattern, to be discussed later, is another (and relatively safe)
 way to mark the end of the list.
@@ -451,7 +451,7 @@ contains <code>null</code> if <code>n</code> is the first node:
 </p>
 
 <pre class=load>
-<a href="remove_iterative.java">remove_recursive.java</a>
+<a href="remove_iterative.java">remove_iterative.java</a>
 </pre>
 
 <h2>Tail recursion elimination</h2>
@@ -643,7 +643,7 @@ operation that compares all the corresponding elements:
 </p>
 <pre>
 boolean equals(Object o) {
-   if (!o instanceof ImmList) return false;
+   if (!(o instanceof ImmList)) return false;
    ImmList lst = (ImmList) o;
    Node n = head;
    while (n != null) {

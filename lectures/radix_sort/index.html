@@ -110,7 +110,7 @@ For example, suppose we wanted to sort an array of integers, and we know that al
 <p>
 buckets[0] contains a list of elements \(0 &le; i &lt; 100\)<br>
 buckets[1] contains a list of elements \(100 &le; i &lt; 200\)<br>
-buckets[2] contains a list of elements \(200 &le; i &lt; 300<\)br>
+buckets[2] contains a list of elements \(200 &le; i &lt; 300\)<br>
 ...<br>
 buckets[k] contains a list of elements \(100k &le; i &lt; 100(k+1)\)<br>
 ...<br>
@@ -160,7 +160,7 @@ Like counting sort, the time complexity is O(m + n), where m is the number of bu
 </p>
 
 <p>
-This can be accomplished by sorting the entire array on the value of the least significant chunk \(C_{n}\); then on the value of the next significant chunk \(C_{n-1}\)</sub>; and so on. The last sort is on the value of the most significant chunk \(C_{1}\). A stable sorting method must be used to sort the chunks, so that later sorts do not undo the work of the earlier sorts. Bucket sort is a common choice to sort the chunks.
+This can be accomplished by sorting the entire array on the value of the least significant chunk \(C_{n}\); then on the value of the next significant chunk \(C_{n-1}\); and so on. The last sort is on the value of the most significant chunk \(C_{1}\). A stable sorting method must be used to sort the chunks, so that later sorts do not undo the work of the earlier sorts. Bucket sort is a common choice to sort the chunks.
 </p>
 
 <p>

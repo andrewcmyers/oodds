@@ -258,7 +258,7 @@ deal with this problem is to write a catch clause for those exceptions, and to t
 One of the biggest source of bugs in Java programs is the use of the special
 value <code>null</code>. A value of any boxed type can be null, and if used
 incautiously, will generate the unchecked exception
-<code>NullPointerException</code>. SInce compiler does not warn about unchecked
+<code>NullPointerException</code>. Since the compiler does not warn about unchecked
 exceptions, <em>every</em> pointer value can potentially generate this
 exception!  A rule of thumb for coding reliable software is to avoid or limit
 the use of <code>null</code>.  For example, instead of using <code>null</code>
@@ -273,10 +273,10 @@ between values that could be null and ones that cannot be.
 <p>
 Recall the <code>sqrt</code> method. It is a
 <em class=term>partial function</em> that has no natural result in the case where the
-requested exponent is negative. There are several alternative ways to deal with
+argument is negative. There are several alternative ways to deal with
 this situation, with varying tradeoffs in terms of performance vs. debugging.
 The alternative least friendly to the client is simply to require that the
-requested exponent be nonnegative, by giving a requires clause:
+argument be nonnegative, by giving a requires clause:
 </p>
 
 <pre>
@@ -293,7 +293,7 @@ What happens if the client calls <code>sqrt(-1)</code>? This spec
 doesn't say. Maybe it throws an exception, maybe it goes into
 an infinite loop, maybe it just returns a wrong answer. If the client makes
 this call, the code can do anything it likes. But that is okay. The spec
-is clear that the client must ensure that <code>n</code> is not negative.
+is clear that the client must ensure that <code>x</code> is not negative.
 If the requires clause is violated, it is the <em>client's</em> fault.
 </p>
 
@@ -322,7 +322,7 @@ double sqrt(double x) {
 <p>The <code>assert</code> statement may check any boolean condition. If Java
 is used with assertions enabled (by using the <kbd>-ea</kbd> option, which you
 <em>should</em> enable in your development environment), then the boolean condition is tested at run
-time. If it evaluates to <code>true</code>, nothing happens. If it executes to
+time. If it evaluates to <code>true</code>, nothing happens. If it evaluates to
 <code>false</code>, an error <code>AssertionError</code> is generated
 and will halt the program at the point where the assertion failed.</p>
 
@@ -413,7 +413,7 @@ try (Reader fr = new FileReader(filename);
      Reader br = new BufferedReader(fr)) {
     // use br to read input from the file here
 } catch (IOException exc) {
-    System.err.println("IO exception: " + exc.message());
+    System.err.println("IO exception: " + exc.getMessage());
 }
 </pre>
 <p>

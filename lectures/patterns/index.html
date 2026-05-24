@@ -39,7 +39,7 @@ value <code>null</code>, so it might be anywhere. And if the code tries to use
 a null value as if it were a real object, a null-pointer exception (NPE) will ensue,
 probably crashing the program. A large fraction of Java bugs manifest as null-pointer
 exceptions, and it is often unclear even to experienced programmers whether any
-given variable in a Java bugs might take on a null value under some circumstance.
+given variable in a Java program might take on a null value under some circumstance.
 </p>
 <p>
 The Option pattern offers an alternative to programming with <code>null</code>. The
@@ -162,7 +162,7 @@ T, the communication we want can be depicted as follows:
 
 <p>The Iterator design pattern is one way to solve this programming problem. Module A
 constructs objects that provide the ability for the consumer to &ldquo;pull&rdquo;
-values from the producer. These object provide an interface like the following:
+values from the producer. These objects provide an interface like the following:
 <pre class=load>
 <a href="Iterator.java">Iterator.java</a>
 </pre>
@@ -175,7 +175,7 @@ end of the iteration without using exceptions, it is standard to use the
 </p>
 <p>Once consumer B has obtained an iterator from producer A, it can
 keep getting new elements from the iterator without mentioning A in any way.
-The producer code doesn't need know about B, either. Thus, we have complete
+The producer code doesn't need to know about B, either. Thus, we have complete
 decoupling of A and B.
 </p>
 <p>An additional advantage of this pattern is that multiple consumers can
@@ -439,7 +439,7 @@ but this approach is even worse, since it leads to a porous abstraction barrier
 and mistakes result in incompletely initialized objects.
 </p>
 <p>
-In the Builder pattern, the job of initialization is given to a another class
+In the Builder pattern, the job of initialization is given to another class
 whose job it is to construct objects. The client passes all the information needed
 to create the object through a series of method calls to the builder object. A
 final call to the builder returns the newly constructed object. This works especially
@@ -454,6 +454,7 @@ calls, and a final call to <code>toString()</code> returns the finished string.
 For long strings, it is much more efficient to construct the string this way than to
 concatenate many short strings.
 </p>
+<p>
 <p>
 Here is a more interesting example of the Builder pattern,
 in which an <code>EmployeeBuilder</code> class makes it
@@ -595,7 +596,7 @@ can then override that behavior if desired.
 <pre class="load"><a href="Visitor.java">Visitor.java</a>
 </pre>
 <p>The classes on which visitors operate supply a method <code>accept(v)</code>
-method that invokes the appropriate visitor operation:
+that invokes the appropriate visitor operation:
 </p>
 <pre class="load"><a href="Node.java">Node.java</a>
 </pre>
@@ -792,4 +793,3 @@ A <a href="http://en.wikipedia.org/wiki/Anti-pattern">good and rather humorous l
 can be found on Wikipedia.
 </p>
 
-</div>

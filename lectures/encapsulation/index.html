@@ -159,7 +159,7 @@ working well. Procedural abstraction by itself did not scale
 up to big software systems. The problem was that the
 procedural model offers no control over
 which program code can access a given part of the data. Code
-can reach into the program data and use it or update in an arbitrary
+can reach into the program data and use it or update it in an arbitrary
 way. Working on a team of programmers is difficult in the procedural
 model because the different parts of the code tend to be <strong>tightly coupled</strong>.
 A bug in one software component can corrupt program data and look like a bug in
@@ -293,7 +293,7 @@ The data in
 This is just one possible representation of rational numbers. For example, it would probably be better
 to make the types of these fields <code>long</code> or even use <code>BigInteger</code>. We could also
 imagine keeping track of the sign of the number in a separate boolean field, leaving both <code>p</code>
-and </code>q</code> as
+and <code>q</code> as
 nonnegative numbers. The point is that the client <em>doesn't</em> and
 <em>shouldn't</em> need to know how the number is represented internally. The
 client should think of the objects of class <code>Rational</code> as simply
@@ -388,7 +388,7 @@ written with the assumption that the precondition of the method is satisfied,
 the method result correspondingly satisfies the postcondition.
 </p>
 <p>
-WIth clear preconditions and postconditions, the public interface of the class
+With clear preconditions and postconditions, the public interface of the class
 forms a contract between the client and the implementer. Like legal
 contracts in law, contracts allow blame to be assigned when someone makes
 a mistake. For large software projects with multiple developers,
@@ -580,7 +580,7 @@ sure that newly constructed objects already satisfy it.
 <p>
 To make it convenient to check the class invariant, we write a method
 <code>classInv</code> to do the checking. Such a method has the added benefit
-that it precisely describes what the class invariant, as executable code.
+that it precisely describes the class invariant as executable code.
 Writing the code for this method can also help clarify your thinking about what
 belongs in the class invariant.
 </p>
@@ -651,4 +651,3 @@ It is usually better to import just the classes you are actually using.
 <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/language/assert.html">
 A useful Oracle web page about programming with assertions</a>.</li>
 </ul>
-</p>

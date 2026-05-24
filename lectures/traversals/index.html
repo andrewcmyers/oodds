@@ -46,7 +46,7 @@ assigned one of three colors that can change over time:
 <ul>
 <li><b>White</b> nodes are undiscovered nodes that have not been seen yet in the current traversal and may even be unreachable.
 <li><b>Black</b> nodes are reachable nodes that the algorithm has already visited and is finished processing.
-<li><b>Gray</b> nodes are nodes that have been discovered but that have not yet been visited yet.
+<li><b>Gray</b> nodes are nodes that have been discovered but that have not yet been visited.
 These nodes form a <em>frontier</em> between white and black. (Extending the frontier analogy, the black nodes
 are sometimes called the <em>settled</em> nodes.)
 </li>
@@ -345,8 +345,7 @@ proportional to the size of the queue or stack. For DFS, this
 is proportional to the length of the path from the root to the node currently
 being visited. For BFS, the state is proportional to the
 size of the perimeter of nodes at distance \(k\) or \(k+1\)
-from the root. In both algorithms, the amount of state can be \(O(|V|)\). For DFS this
-the worst case is when searching a linked list. For BFS, this happens when
+from the root. In both algorithms, the amount of state can be \(O(|V|)\). For DFS the worst case is when searching a linked list. For BFS, this happens when
 searching a graph with a lot of branching, such as a binary tree,
 because there can be as many as \(2^k\) nodes at distance \(k\) from
 the root. For balanced binary trees, DFS maintains state proportional to
@@ -422,8 +421,7 @@ That is, all DAGs have at least one topological sort.
 <p>We can obtain a linear-time algorithm for topological sort from DFS.
 The key observation is that a node finishes (is marked black) only after all
 of its descendants have been marked black. Therefore, a node that is marked
-black later must come earlier when topologically sorted. A 
-a <i>postorder</i> traversal generates nodes in the reverse of
+black later must come earlier when topologically sorted. A <i>postorder</i> traversal generates nodes in the reverse of
 a topological sort:
 </p>
 
@@ -659,7 +657,6 @@ Then all the back edges go from right to left (why?).
 at <i>v</i> on the <em>transpose</em> of the graph (the digraph obtained by reversing all the edges) and mark all
 previously unmarked nodes reachable from <i>v</i> as being in the same strong component as <i>v</i>. 
 </ol>
-</p>
 
 <p>
 For example, consider the graph in the above figure.

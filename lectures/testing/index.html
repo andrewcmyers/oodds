@@ -103,7 +103,7 @@ should be as automatic and easy to invoke as possible—a "push-button" process.
 Many software organizations even
 include regression testing as a standard part of the software build process,
 preventing developers from pushing changes to the code repository if regression
-tests fails. The time invested in automating regression tests is time well spent
+tests fail. The time invested in automating regression tests is time well spent
 for even moderate-sized projects.
 </p>
 <p>
@@ -172,7 +172,7 @@ with minimal input, and edge cases with negative values.
 <h3>Glass-box testing</h3>
 <p>
 In <em class=term>glass-box testing</em> we design test cases based on the implementation code.
-The goal is achieve coverage of all the ways the code can behave, under the reasonable
+The goal is to achieve coverage of all the ways the code can behave, under the reasonable
 assumption that any untested functionality in the code could hide a bug.
 </p>
 <p>
@@ -207,8 +207,8 @@ With black-box and glass-box testing, input/output pairs must be designed. Where
 do we get these when doing randomized testing? In general we cannot
 fully test that the outputs of the code agree with the specification,
 so we must settle for weaker properties of the code being tested, such as not
-throwing unexpected assertions or failing assertions. Therefore, adding useful
-assertions to code helps with testing. By capturing programmer knowledge and
+throwing unexpected exceptions or failing assertions. Therefore, adding useful
+assertions to code helps with testing by capturing programmer knowledge and
 intent, as discussed earlier. Test cases that cause assertions to fail reveal
 discrepancies between the code and the intent of the programmer
 even if the final output of the test is not checked.

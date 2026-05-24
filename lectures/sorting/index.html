@@ -33,7 +33,7 @@ we discuss will work as an implementation of the following more generic specific
 What does it mean to put the array into sorted order? To be more precise, we
 want the method to rearrange (that is, permute) the values that were initially
 in a, so that the initially permuted ordering of the elements is replaced with
-a fully sorted ordering. The job of a sorting algorithm is figure out how
+a fully sorted ordering. The job of a sorting algorithm is to figure out how
 the desired sorted ordering has been permuted and to undo that permutation.
 </p>
 
@@ -259,14 +259,14 @@ twice as much work on average.
 The most efficient way to do selection sort is to swap elements, avoiding
 unnecessary updates to array elements. One nice property about selection sort
 is that it only does a linear number of updates to the array. This property makes
-selection sort still a useful algorithms in settings where updates to array elements
+selection sort still a useful algorithm in settings where updates to array elements
 are especially expensive. For example, writing to solid-state memory is much more expensive
 than reading from it.
 </p>
 <p>
 On the other hand, swapping elements means that this implementation of
 selection sort is not stable. When the elements at \(a[i]\) and \(a[p]\) are
-swapped, it the element at \(a[i]\) changes its relative ordering with any
+swapped, the element at \(a[i]\) changes its relative ordering with any
 equal element that happens to be located between indices \(i\) and \(p\). We
 could make selection sort stable by not swapping, but instead shifting all
 elements in \(a[i..p)\) upward by one position. This change would not hurt the
@@ -374,7 +374,6 @@ there exists some constant factor \(k\) and value
 \(g(n)\) is an <strong>asymptotic lower bound</strong> for \(f(n)\).
 </p>
 
-</p>
 <p>
 In this case, the running time of the sorting algorithm is \(\Omega(h)\).
 But what do we know about \(h\)?
@@ -514,7 +513,7 @@ At the end of the <code>while</code> loop, either <code>i</code> = <code>m</code
 and <code>j</code> is incremented on each loop iteration.  Therefore, 
 array <code>a</code> still contains some elements that have not been
 copied to <code>tmp</code>, either in <code>a[i..m)</code> (if <code>j</code> = <code>r</code>)
-or in <code>a[j..r)</code> (if <code>i</code> = <code>m</code>). if
+or in <code>a[j..r)</code> (if <code>i</code> = <code>m</code>). If
 <code>j</code> = <code>r</code>, the first <code>arraycopy</code> call
 transfers the elements <code>a[i..m)</code> to <code>tmp</code> and the second
 <code>arraycopy</code> copies all the elements from tmp back to a (since
@@ -746,9 +745,9 @@ index <code>j</code> scans in from the end of the array until an element is
 found that could be partitioned into the left side of the array. At 
 this point the loop invariant depicted below is established. All elements
 strictly to the left of <code>i</code> are at most the pivot value; all
-elements strictly to the right <code>j</code> are at least the pivot value.
+elements strictly to the right of <code>j</code> are at least the pivot value.
 All of those elements are already successfully partitioned.
-Indices <code>i</code> and </code>j</code> point to elements that could be
+Indices <code>i</code> and <code>j</code> point to elements that could be
 partitioned to the other side of the array.
 As a final part of the invariant,
 we have <code>l</code> ≤ <code>i</code> ≤ <code>j + 1</code> ≤ <code>r</code>
@@ -811,7 +810,7 @@ Interestingly, these inner loops do not need to do any bounds checking on
 <code>i</code> and <code>j</code>, which makes them significantly more efficient.
 The reason bounds checks are not needed is because the immediately previous swap
 of elements places values ahead of <code>i</code> and <code>j</code> that
-stops the inner loops before they walk off the ends of the array.
+stop the inner loops before they walk off the ends of the array.
 </p>
 <p>
 An example of partitioning will probably help.

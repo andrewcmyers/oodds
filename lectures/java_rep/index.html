@@ -5,7 +5,7 @@
 The Java language is an abstraction. Java is implemented on top of hardware
 using a compiler and the software for its run-time system, presenting you with
 the illusion that there are really ints, booleans, objects, and so forth.  In
-reality there are circuits and electrons. For most part, you can ignore the
+reality there are circuits and electrons. For the most part, you can ignore the
 lower-level details of what is really happening when Java programs run. That's
 because the Java abstraction is very effective. But computer scientists ought
 to have a model of how computers really work.
@@ -185,7 +185,7 @@ need a way to represent the sign of a number.
 
     <p>Other representations for numbers exist, such as one's-complement, in which
     the negation of a number is performed by inverting all of its bits. But
-    the usual two's-component representation is more convenient to work with and
+    the usual two's-complement representation is more convenient to work with and
     leads to simpler, faster implementations in hardware. At this point
     essentially everyone uses two's complement.
     </p>
@@ -255,7 +255,7 @@ bit, it preserves the sign of the result and therefore inverts the effect of
 </p>
 <p>
 There is also a <i>logical</i> right shift operator <code>&gt;&gt;&gt;</code>,
-which shift all bits to the right but changes the high bit to <code>0</code>.
+which shifts all bits to the right but changes the high bit to <code>0</code>.
 On nonnegative numbers, shifting right by one bit still has the effect of
 dividing by two, but its effect on negative numbers is not so easy (or useful) to interpret
 arithmetically.
@@ -540,7 +540,7 @@ bit-level representation of the number 1.0 has \(s = 0,\) \(bexp = 01111111\), a
 <p>Some special exponents follow different rules. If the exponent is \(&minus;127\)
 (and hence the biased exponent is 0), the <strong>subnormal</strong> representation is used.
 The represented number is instead:
-:</p>
+</p>
 \[
 (-1)^s·2^{-126}·(0.m)
 \]
@@ -556,8 +556,8 @@ bits are zero, so the relative precision of the number is reduced.</p>
 <p>The largest number representable using <code>float</code> is
 <code>Float.MAX_VALUE</code>, which is about 3.0·10<sup>38</sup>. And the smallest positive
 number representable with full precision is about 10<sup>&minus;38</sup>. It is
-possible to represent smaller numbers down to about 10<sup>&minus;45</sup>
-
+possible to represent smaller numbers down to about 10<sup>&minus;45</sup>.
+</p>
 <p>A biased exponent of 255 (all 1's in binary) is not used to represent
 ordinary numbers. Instead, it is used to represent various other kinds of
 values, such as  positive and negative infinity, which use a mantissa of 0 and      

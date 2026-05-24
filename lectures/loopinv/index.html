@@ -13,7 +13,7 @@ some insight about how to solve the problem of reasoning about loops. When writi
 for a method, we are allowed to assume that the method's precondition is
 true, and it is our job as implementers to write code that makes the method's
 postcondition true. But <em>in addition</em>, we are allowed to rely on
-a class invariant. Of course, also we have an obligation to ensure that at the
+a class invariant. Of course, we also have an obligation to ensure that at the
 end, the class invariant is still true. We can visualize this
 reasoning process in the following diagram:
 </p>
@@ -368,7 +368,7 @@ Let's try these four steps on the binary search algorithm.
         </p>
 
         <p>
-          How about clause 3? By the loop invariant, we know that <code>k</code> occurs at
+          How about clause 3? By the loop invariant, we know that <code>x</code> occurs at
           least once in <code>a[l..r]</code>. Since <code>x &lt;= a[m]</code>,
           it must occur at or before index <code>m</code>. Therefore we have
           <code>x∈a[l..m] = a[l'..r']</code>, as required.
@@ -391,7 +391,7 @@ Let's try these four steps on the binary search algorithm.
   </li>
   <li><strong>Termination.</strong>
   <p>The value \(\DF = \)<code>r &minus; l</code> is guaranteed by the invariant
-  (1) to be nonnegative: we can choose \(\DF_0 = 0\).
+  (2) to be nonnegative: we can choose \(\DF_0 = 0\).
   In the case where <code>x ∈ a[l..m]</code>, we know <code>m &lt; r</code>, so
   <code>r' &minus; l' &lt; r &minus; l</code>. In the other case, we know <code>l &lt; m+1</code>, so again,
   <code>r' &minus; l' &lt; r &minus; l</code>. Thus the quantity <code>r &minus; l</code> gets strictly
@@ -565,7 +565,7 @@ Two things commonly go wrong when choosing a loop invariant.
 The most typical error is to define a loop invariant that is too weak. This
 error is often detected when trying to carry out the Postcondition step. All we
 know when arguing the Postcondition step is that the loop invariant holds and
-the guard does not. If the loop invariant is too weak, we can't argue that from
+the guard does not. If the loop invariant is too weak, we can't argue from
 those two facts that the loop achieves its postcondition. In essence, the
 loop invariant has forgotten too much about what past loop iterations accomplished.
 A too-weak invariant may also be detected in the

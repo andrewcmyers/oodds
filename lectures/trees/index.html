@@ -324,7 +324,7 @@ arbitrary element x. We compare x to the root data value. If x is equal to the d
 then we've already found it. If x is less than the data value and it's in the tree, it
 <em>must</em> be in the left subtree, so we can walk down to the left subtree and look for
 the element there. Conversely, if x is greater than the data value and it's in the tree, it
-must by in the right subtree, so we should look for it there. In either case,
+must be in the right subtree, so we should look for it there. In either case,
 if the subtree where x must be is empty (null), the element must not be in the tree. This
 algorithm can be expressed compactly as a (tail-)recursive method on <code>BinaryNode</code>:
 </p>
@@ -718,7 +718,7 @@ Random insertion turns out to create trees whose expected height is \(O(\log n)\
 href="#References">1, Chapter 12.4</a>] or [<a href="#References">2, Lecture
 13</a>] for a proof).
 Of course, to be able to shuffle the elements randomly requires that the elements are
-avaiable ahead of time. 
+available ahead of time. 
 And if elements are not arriving in a random order already,
 we need to know how to shuffle a collection of elements into a random order,
 which involves a small digression to learn a useful algorithm.
@@ -800,7 +800,7 @@ that are just as asymptotically efficient but have lower constant factors.
 </p>
 <p> Since it is easy to visit elements in sorted order, search trees also
 support efficient <em class=term>range queries</em>. Given two elements, we can find all
-elements between them, in sorted order, by doing modifying the in-order
+elements between them, in sorted order, by modifying the in-order
 traversal to skip parts of the tree that are outside the desired range. If a
 node's element is above the range, then its right subtree can be skipped
 entirely; symmetrically, if the element is below the range, its left subtree

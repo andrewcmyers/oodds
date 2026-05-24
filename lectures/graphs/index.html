@@ -16,7 +16,7 @@
 
 <p>
 A <strong>graph</strong> is a highly useful mathematical abstraction. A graph
-consists of a set of <strong>nodes</strong> (also called <strong>nodes</strong>) and a set
+consists of a set of <strong>vertices</strong> (also called <strong>nodes</strong>) and a set
 of <strong>edges</strong> connecting those vertices. There are two main kinds
 of graphs: <strong>undirected graphs</strong> and <strong>directed graphs</strong>. In a
 directed graph (sometimes abbreviated as <strong>digraph</strong>), the edges
@@ -389,14 +389,14 @@ requires scanning the entire data structure, requiring \( O(V+E) \) time.
 When it is necessary to be able to walk forward on outgoing edges and backward
 on incoming edges, a good approach is to maintain two adjacency lists,
 one representing the graph as above and one corresponding to the <strong>dual</strong>
-(or <strong>transposed</strong>) graph</b> in which all edges are reversed. That is,
+(or <strong>transposed</strong>) graph in which all edges are reversed. That is,
 there is an edge \((u,v)\) in the original graph if and only if there is an edge \((v,u)\) in 
 the transposed graph.  Of course, this invariant must be maintained between the
 two adjacency list representations.
 </p>
 <p>
 Testing whether there is an edge from vertex <code>i</code> to vertex <code>j</code> requires scanning
-all the outgoing edges, taking \(O(V)\) time in the worse case. If this operation
+all the outgoing edges, taking \(O(V)\) time in the worst case. If this operation
 needs to be fast, the linked list can be replaced with a hash table. For example,
 we might implement the graph using this Java representation, which preserves
 the asymptotic space efficiency of adjacency lists while also supporting
@@ -560,7 +560,7 @@ can be done in linear time.
 <h3>Shortest paths</h3>
 <p>
 Finding paths with the smallest number of edges is useful and can be solved
-efficiently. Shortest-path problems are a generalization: finding a paths of
+efficiently. Shortest-path problems are a generalization: finding paths of
 minimum total weight, where we think of the weight of an edge as a distance.
 <p>
 For example, if a road map is represented as a graph with vertices representing

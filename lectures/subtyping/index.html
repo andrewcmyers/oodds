@@ -51,7 +51,7 @@ numbers or characters, but when used appropriately, using an <code>enum</code>
 makes code easier to read and less error-prone.
 </p>
 
-<h3>Smoe implementations</h3>
+<h3>Some implementations</h3>
 <p>
 The <code>Board</code> interface can be implemented by defining a class
 that is declared to implement it using the <code>implements</code>
@@ -99,13 +99,13 @@ rather than what tile is located at each position.
 </pre>
 <p>
 The method <code>tile()</code> becomes more complicated because the
-code has to search for a title at the specified location. When it finds
+code has to search for a tile at the specified location. When it finds
 such a tile, the method returns immediately. If no matching tile is
 found, it returns zero.
 </p>
 
 <p>
-And here is a third implementation 
+And here is a third implementation in
 which the tiles are represented as characters in a string, aiming for
 efficient use of the computer's memory:
 </p>
@@ -117,7 +117,7 @@ efficient use of the computer's memory:
 <p>
 As we can see, even a simple abstraction like <code>Board</code> has a variety
 of implementations, with different tradeoffs in simplicity of code, running
-time, and space used. If the rest of the code accessing the board through the
+time, and space used. If the rest of the code accesses the board through the
 interface <code>Board</code>, the code has loose coupling. We can easily change
 to another implementation of <code>Board</code> if we gain better understanding of these
 tradeoffs, or use different implementations of <code>Board</code> within the same program
@@ -272,7 +272,7 @@ The subtyping relationships among the various types form a <em class=term>type h
 In addition to the subtype relationships we've discussed so far, this diagram shows a few
 more, such as <code>Board</code> &lt;: <code>Object</code>. 
 The subtyping relation is reflexive (\(T&lt;:T\) for all types T) and is also transitive
-(if \(T&lt;:U\) and \(U&lt;:V\), then \(T&lt;:V\)).)
+(if \(T&lt;:U\) and \(U&lt;:V\), then \(T&lt;:V\)).
 Thus by transitivity, we also have <code>CBoard</code> &lt;: <code>Object</code>.
 We can also notice that array types like <code>int[]</code> are subtypes of <code>Object</code>.
 Standing alone in the diagram are the primitive types (<code>int</code>, <code>boolean</code>, <code>char</code>, ...). These types are not subtypes of any other type.
@@ -292,7 +292,7 @@ more than one ancestor.
 </p>
 
 <p>If static type checking is doing its job, then the following invariant should always hold
-throughout execution is:</p>
+throughout execution:</p>
 <blockquote>
 The dynamic type of the value of an expression is always a subtype of the static type of the expression.
 </blockquote>
@@ -446,9 +446,9 @@ addition to the new <code>solve()</code> method that it adds.
 <p>
 The ability to extend interfaces gives even more control over how much of a class is exposed
 to client code. Clients that do not need the <code>solve()</code> method can be given the
-<code>Board</code> view of the board, avoiding unnecessarily coupling of the implementing
+<code>Board</code> view of the board, avoiding unnecessary coupling of the implementing
 class and its clients. However, the possibility of downcasting means that the abstraction barrier
-is more permeable when interfaces are in this way: we get a form of information hiding but not
+is more permeable when interfaces are used in this way: we get a form of information hiding but not
 full encapsulation.
 </p>
 <p>
@@ -588,7 +588,7 @@ eliminate the precondition:
     implementation and its interface. The implementation can accept more inputs
     than its precondition demands and for any given input, can produce a more
     restricted set of outputs than its postcondition describes.  The
-    postcondition of a the subtype operation must <em>imply</em> the postcondition of
+    postcondition of the subtype operation must <em>imply</em> the postcondition of
     the corresponding supertype operation.  Conversely, the preconditions of
     the subtype must be <em>implied by</em> the preconditions of the supertype.
 </p>

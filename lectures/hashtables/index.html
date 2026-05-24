@@ -170,7 +170,7 @@ with (hashfn_fig) {
 </div>
 <p>
 Instead of requiring that each key be mapped to a unique index,
-hash tables allow <strong>collisions</strong> in which two keys maps to the same index,
+hash tables allow <strong>collisions</strong> in which two keys map to the same index,
 and consequently the array can be smaller, on the order of the number of
 elements in the hash table. The entries in the array are called <strong>buckets</strong>,
 and we use \(m\) to denote the number of buckets.
@@ -546,7 +546,7 @@ keys and trying to cause collisions. The job of the hash function designer is to
 pick a hash function that defeats the adversary: that makes it unlikely that the
 adversary will generate collisions. Of course, often this ”adversary“ is not
 really an adversary at all; it is the rest of the program generating keys in a way that relates
-to the computation being done. But some settings, there really is an adversary
+to the computation being done. But in some settings, there really is an adversary
 influencing the choice of keys.
 </p>
 <p>
@@ -644,7 +644,7 @@ All three of these hash table implementations rely on objects
 having a method <code>hashCode()</code> that computes
 the hash of an object as an <code>int</code> value. In fact,
 all Java objects have such a method, inheriting it from
-the base implementation <code>Object.equals()</code> unless
+the base implementation <code>Object.hashCode()</code> unless
 overridden.
 </p>
 <p>
@@ -664,7 +664,7 @@ table is the <em>composition</em> of the two methods:
 In this arrangement, the job of <code>hashCode()</code> is to hash a key object
 to the full domain of the internal hash function (<code>int</code>) rather than just
 to an integer in \([0,m)\). The job of the internal hash function is to convert an
-arbitary <code>int</code> into an integer in \([0,m)\).
+arbitrary <code>int</code> into an integer in \([0,m)\).
 As long as at least one of these two methods provides adequate diffusion, their
 composition will too.
 In the current

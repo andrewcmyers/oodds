@@ -115,7 +115,7 @@ them than the generic way in the context of this particular implementation.
 Even if an interface is well documented, we cannot assume that users have read it
 carefully. Therefore it is important to avoid surprising behavior that might
 be a pitfall for unwary users. It helps to choose good names for operations and then
-make the behavior of the operation intuitive. Particularly problematic is
+make the behavior of the operation intuitive. Particularly problematic are
 operations with unexpected side effects, such as in the following example:
 </p>
 <pre>
@@ -158,7 +158,7 @@ separate documentation is from the code it describes, the more it tends to
 diverge from the code. The more it diverges from the code, the less useful it
 becomes and the less programmers rely on (or look at) the documentation. Both
 documentation and code require programmers' attention to stay fresh!
-</ul>
+</p>
 <h3><em>When</em> to document? (Early!)</h3>
 <div class="figure">
 <canvas id="design-process" style="width: 400px; height: 280px"></canvas>
@@ -248,7 +248,6 @@ explanation than to intersperse explanatory comments throughout the code.</li>
     reader/client can understand without knowing the implementation. Don't
     expose implementation details in specifications.</li>
 </ol>
-</ul>
 
 <h2>An example: polynomials</h2>
 
@@ -328,7 +327,7 @@ effects in order to check the state of an object.</p>
   </ul>
 <li><b>Observers:</b>
   <ul>
-	<li><code>degree</code>: report the maximum exponent with non-zero degree.</li>
+	<li><code>degree</code>: report the maximum exponent with a non-zero coefficient.</li>
 	<li><code>coefficient</code>: report one coefficient of the polynomial</li>
 	<li><code>evaluate</code>: evaluate the polynomial at a given value for x</li>
 	<li><code>toString</code>: generate a string representation of the polynomial</li>
@@ -647,7 +646,7 @@ code might look like the following:
 <pre>
     boolean equals(Object o) {
         if (o instanceof Polynomial p) {
-            return Arrays.equal(coefficients, p.coefficients);
+            return Arrays.equals(coefficients, p.coefficients);
         } else {
             return false;
         }
@@ -657,7 +656,7 @@ code might look like the following:
 
 <p>
 Note that if the value of <code>o</code> is <code>null</code>, it will not satisfy
-the <code>instanceof</code> text. This code uses the relatively new feature of
+the <code>instanceof</code> test. This code uses the relatively new feature of
 pattern matching in <code>instanceof</code>; if the test succeeds, the variable <code>p</code>
 may be used within the consequent clause of the <code>if</code>-statement in a type-safe way.
 </p>
@@ -731,7 +730,7 @@ of the order in which the comparison is made:
     }
 </pre>
 <p>
-A ColoredPoint is not equal to a CartesianPoint because the point does not pass the <ocde>instanceof</code>
+A ColoredPoint is not equal to a CartesianPoint because the point does not pass the <code>instanceof</code>
 test in <code>ColoredPoint.equals()</code>; a CartesianPoint will not be equal to a
 <code>ColoredPoint</code> because the CartesianPoint does not pass the <code>instanceof</code> test in
 <code>ColoredPoint.canEqual()</code>.
@@ -767,7 +766,7 @@ If two classes like <code>CartesianPoint</code> and <code>PolarPoint</code>
 provide alternate implementations of the same
 immutable interface (such as <code>Point</code>), Leibniz equality says that we should consider their objects equal
 even when their classes are different, if the objects cannot be distinguished using their
-interfaces. Using reflection as above forces us to implement a overly strong notion of equality
+interfaces. Using reflection as above forces us to implement an overly strong notion of equality
 that distinguishes otherwise indistinguishable objects.
 </p>
 
