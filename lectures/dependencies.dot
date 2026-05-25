@@ -98,6 +98,7 @@ digraph dependencies {
     objects -> recursion
     recursion -> complexity
     recursion -> lists
+    recursion -> loopinv
     subtyping -> generics
     lists -> trees
     lists -> generics
@@ -140,7 +141,6 @@ digraph dependencies {
 
     // Algorithm analysis
     loopinv -> sorting
-    loopinv -> ssp
     loopinv -> heaps
     loopinv -> testing
 
@@ -148,7 +148,7 @@ digraph dependencies {
     inheritance -> patterns [style=dashed]
     subtyping -> patterns [style=dashed]
     generics -> patterns [style=dashed]
-    hashtables -> patterns [style=dashed, label="interning", fontsize=9]
+    hashtables -> patterns [style=dashed]
 
     // GUI connections
     patterns -> gui [style=dashed]
@@ -166,5 +166,5 @@ digraph dependencies {
 
     // Undecidability
     complexity -> undecidability
-    jvm -> undecidability [style=dashed, label="programs\nas data", fontsize=9]
+    jvm -> undecidability [style=dashed]
 }
