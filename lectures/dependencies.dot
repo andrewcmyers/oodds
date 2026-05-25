@@ -55,6 +55,7 @@ digraph dependencies {
         traversals [label="Graph Traversals"]
         ssp        [label="Shortest Paths"]
         undecidability  [label="Undecidability"]
+        { rank=same; undecidability; ssp; }
     }
 
     // === Programming Models ===
@@ -130,8 +131,8 @@ digraph dependencies {
 
     // OOP connections
     java_rep -> encapsulation [style=dashed]
+    java_rep -> jvm [style=dashed]
     intf_design -> mod_design [style=dashed]
-    encapsulation -> mod_design [style=dashed]
 
     // SE to data structures
     encapsulation -> lists [style=dashed]
@@ -139,8 +140,6 @@ digraph dependencies {
 
     // Algorithm analysis
     loopinv -> sorting [style=dashed]
-    complexity -> heaps [style=dashed]
-    complexity -> avl [style=dashed]
 
     // Design patterns bridge
     inheritance -> patterns [style=dashed]
@@ -156,7 +155,6 @@ digraph dependencies {
 
     // Concurrency
     gui -> concurrency
-    objects -> concurrency [style=dashed]
     synchronization -> guievents [style=dashed]
 
     // JVM
@@ -164,6 +162,6 @@ digraph dependencies {
     parsing -> jvm [style=dashed]
 
     // Undecidability
-    complexity -> undecidability [style=dashed]
+    complexity -> undecidability
     jvm -> undecidability [style=dashed, label="programs\nas data", fontsize=9]
 }
