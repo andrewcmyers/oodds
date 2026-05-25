@@ -30,6 +30,7 @@ digraph dependencies {
         testing    [label="Testing"]
         patterns   [label="Design Patterns"]
         generics   [label="Generics"]
+        { rank=same; testing; mod_design; }
     }
 
     // === Data Structures and Algorithms ===
@@ -113,7 +114,7 @@ digraph dependencies {
     sorting -> radix_sort
 
     // Graphs
-    trees -> graphs [style=dashed]  // graphs generalize but don't strictly require trees
+    trees -> graphs
     complexity -> graphs
     graphs -> traversals
     traversals -> ssp
@@ -136,10 +137,12 @@ digraph dependencies {
 
     // SE to data structures
     encapsulation -> lists [style=dashed]
-    encapsulation -> generics [style=dashed]
 
     // Algorithm analysis
-    loopinv -> sorting [style=dashed]
+    loopinv -> sorting
+    loopinv -> ssp
+    loopinv -> heaps
+    loopinv -> testing
 
     // Design patterns bridge
     inheritance -> patterns [style=dashed]
@@ -149,7 +152,7 @@ digraph dependencies {
 
     // GUI connections
     patterns -> gui [style=dashed]
-    inheritance -> gui [style=dashed]
+    inheritance -> gui
     patterns -> guievents [style=dashed]
     guievents -> uidesign [style=dashed]
 
