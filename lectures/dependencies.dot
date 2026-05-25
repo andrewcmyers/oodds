@@ -1,0 +1,169 @@
+// Lecture dependency diagram
+// Solid edges = strict prerequisite (must read X before Y)
+// Dashed edges = helpful background (X provides useful context for Y)
+
+digraph dependencies {
+    rankdir=TB
+    node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11,
+          fillcolor="#f0f4ff", color="#4466aa", penwidth=1.5]
+    edge [color="#444444"]
+    bgcolor = "#eeeeee"
+
+    // === OOP & Software Engineering ===
+    subgraph cluster_oop {
+        label="Object-Oriented Programming\n& Software Engineering"
+        style="rounded,dashed"
+        color="#8888cc"
+        fontname="Helvetica Bold"
+        fontsize=13
+
+        intro    [label="Introduction"]
+        objects  [label="Objects"]
+        pitfalls [label="Java Pitfalls"]
+        java_rep [label="Representing Values"]
+        encapsulation [label="Encapsulation"]
+        subtyping [label="Subtyping"]
+        intf_design [label="Interface Design"]
+        exceptions [label="Exceptions"]
+        inheritance [label="Inheritance"]
+        mod_design [label="Modular Design"]
+        testing    [label="Testing"]
+        patterns   [label="Design Patterns"]
+        generics   [label="Generics"]
+    }
+
+    // === Data Structures and Algorithms ===
+    subgraph cluster_dsa {
+        label="Data Structures and Algorithms"
+        style="rounded,dashed"
+        color="#cc8844"
+        fontname="Helvetica Bold"
+        fontsize=13
+
+        recursion [label="Recursion"]
+        lists [label="Linked Lists"]
+        complexity [label="Complexity\nAnalysis"]
+        loopinv    [label="Loop Invariants"]
+        trees      [label="Trees"]
+        hashtables [label="Hash Tables"]
+        parsing    [label="Parsing"]
+        sorting    [label="Sorting"]
+        radix_sort [label="Linear-Time\nSorting"]
+        heaps      [label="Heaps"]
+        avl        [label="Balanced Search Trees"]
+        graphs     [label="Graphs"]
+        traversals [label="Graph Traversals"]
+        ssp        [label="Shortest Paths"]
+        undecidability  [label="Undecidability"]
+    }
+
+    // === Programming Models ===
+    subgraph cluster_pm {
+        label="Systems & Programming Models"
+        style="rounded,dashed"
+        color="#66aaaa"
+        fontname="Helvetica Bold"
+        fontsize=13
+
+        gui        [label="GUIs"]
+        guievents  [label="Events &\nAnimation"]
+        uidesign   [label="UI Design"]
+        concurrency     [label="Concurrency"]
+        synchronization [label="Synchronization"]
+        jvm             [label="JVM &\nBytecode"]
+    }
+
+    // ============================
+    // Strict prerequisites (solid)
+    // ============================
+
+    // Core OOP chain
+    intro -> objects
+    objects -> pitfalls
+    objects -> java_rep
+    objects -> encapsulation
+    encapsulation -> subtyping
+    subtyping -> intf_design
+    subtyping -> inheritance
+    encapsulation -> exceptions
+    exceptions -> intf_design
+
+    // Software engineering
+    inheritance -> mod_design
+    encapsulation -> testing
+
+    // Data structures
+    objects -> recursion
+    recursion -> complexity
+    recursion -> lists
+    subtyping -> generics
+    lists -> trees
+    lists -> generics
+    generics -> trees
+    generics -> hashtables
+    trees -> heaps
+    trees -> avl
+    trees -> parsing
+
+    // Algorithm analysis
+    complexity -> sorting
+    complexity -> trees
+    complexity -> hashtables
+    sorting -> radix_sort
+
+    // Graphs
+    trees -> graphs [style=dashed]  // graphs generalize but don't strictly require trees
+    complexity -> graphs
+    graphs -> traversals
+    traversals -> ssp
+    heaps -> ssp
+
+    // GUI
+    gui -> guievents
+
+    // Systems
+    concurrency -> synchronization
+
+    // ============================
+    // Helpful background (dashed)
+    // ============================
+
+    // OOP connections
+    java_rep -> encapsulation [style=dashed]
+    intf_design -> mod_design [style=dashed]
+    encapsulation -> mod_design [style=dashed]
+
+    // SE to data structures
+    encapsulation -> lists [style=dashed]
+    encapsulation -> generics [style=dashed]
+
+    // Algorithm analysis
+    loopinv -> sorting [style=dashed]
+    complexity -> heaps [style=dashed]
+    complexity -> avl [style=dashed]
+
+    // Design patterns bridge
+    inheritance -> patterns [style=dashed]
+    subtyping -> patterns [style=dashed]
+    generics -> patterns [style=dashed]
+    hashtables -> patterns [style=dashed, label="interning", fontsize=9]
+
+    // GUI connections
+    patterns -> gui [style=dashed]
+    inheritance -> gui [style=dashed]
+    patterns -> guievents [style=dashed]
+    guievents -> uidesign [style=dashed]
+
+    // Concurrency
+    gui -> concurrency
+    objects -> concurrency [style=dashed]
+    synchronization -> guievents [style=dashed]
+
+    // JVM
+    inheritance -> jvm [style=dashed]
+    parsing -> jvm [style=dashed]
+
+    // Undecidability
+    complexity -> undecidability [style=dashed]
+    jvm -> undecidability [style=dashed, label="programs\nas data", fontsize=9]
+}
