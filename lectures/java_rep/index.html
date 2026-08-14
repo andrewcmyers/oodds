@@ -16,15 +16,15 @@ to have a model of how computers really work.
 <p>
 The computer memory is actually a big grid in which a bit is stored at every
 intersection. But the hardware itself offers a more abstract view of memory as
-a big array. The memory can be accessed using <strong>memory addresses</strong> that
+a big array. The memory can be accessed using <em class=term>memory addresses</em> that
 start at 0 and go up to some large number (usually 2<sup>32</sup> or
 2<sup>64</sup>, depending on whether the computer is 32-bit or 64-bit).
-Each address names a group of 8 bits (a <strong>byte</strong>). However, usually
+Each address names a group of 8 bits (a <em class=term>byte</em>). However, usually
 computer memories give back multiple bytes at once. When given an address
 divisible by four, the computer memory can read the four bytes beginning
-at that address, containing 32 bits. These four bytes are called a <strong>word</strong>.
+at that address, containing 32 bits. These four bytes are called a <em class=term>word</em>.
 On 64-bit machines, the memory can fetch 64 bits at a time; for simplicity
-we'll call a set of eight bytes a <strong>double word</strong>.
+we'll call a set of eight bytes a <em class=term>double word</em>.
 </p>
 
 <div class="figure">
@@ -109,7 +109,7 @@ need a way to represent the sign of a number.
 	<li>Unsigned: <code>char</code> (16 bits, 0&ndash;65535)</li>
     </ol>
 
-    <p><strong>Two's complement representation</strong>: in a signed n-bit representation, the most
+    <p><em class=term>Two's complement representation</em>: in a signed n-bit representation, the most
     significant bit stands for -2<sup>n-1</sup> instead of 2<sup>n&minus;1</sup>,
     which would be its value in the unsigned representation we have been discussing above.
     For Java's type <code>byte</code>, the bits 01111111 represent 127 but 10000000 is &minus;128.
@@ -443,7 +443,7 @@ compact representation for large arrays.
 <p>
 Objects take up space in memory, so if the program allocates enough objects, the computer
 could potentially run out of space to store objects in memory. To help with this problem,
-Java has the feature of <strong>garbage collection</strong>. Objects that the Java runtime system
+Java has the feature of <em class=term>garbage collection</em>. Objects that the Java runtime system
 can figure out will never be used again are automatically garbage-collected and their space
 is reclaimed for use by other objects. The runtime may also move objects around in memory
 to create large contiguous chunks of memory.
@@ -451,7 +451,7 @@ to create large contiguous chunks of memory.
 <p>
 How does the runtime system know which objects will never be used again? In
 general, it can't know that precisely. As a safe approximation, an object is
-considered to be <strong>garbage</strong> if the running program has no way to ever reach
+considered to be <em class=term>garbage</em> if the running program has no way to ever reach
 the object again by following a chain of pointers.
 </p>
 <p>
@@ -462,12 +462,12 @@ long-running programs with complex data structures.
 </p>
 <h2>Floating point representations</h2>
 
-<p>Java supports <strong>floating-point</strong> numbers that act a lot like real
+<p>Java supports <em class=term>floating-point</em> numbers that act a lot like real
 numbers. But it would take an unbounded amount of memory to store a real
 number, in general, so floating-point numbers are only an approximation to real
 numbers. There are two floating-point types in Java. The type
-<code>float</code> is a <strong>single-precision</strong> floating point number taking up
-one word, and the type <code>double</code> is a <strong>double-precision</strong>
+<code>float</code> is a <em class=term>single-precision</em> floating point number taking up
+one word, and the type <code>double</code> is a <em class=term>double-precision</em>
 floating point number taking up two words.</p>
 
 <p>Because floating point numbers have limited precision, computations using them
@@ -499,11 +499,11 @@ a single-precision floating point number has the following representation:</p>
         bexp = rectangle().addText("bexp"),
         m = rectangle().addText("m")
         let sign = label("sign"), biased_exp = textFrame("biased\nexponent").setInset(0).setH(40).setVerticalAlign("top"),
-            mantissa = label("mantissa")
+            significand = label("significand")
         align("abut", "TB", s, bexp, m, vspace(30))
         align("center", "abut", s, vspace(5), label("1"), vspace(5), sign)
         align("center", "abut", bexp, vspace(5), label("8"), vspace(5), biased_exp)
-        align("center", "abut", m, vspace(5), label("23"), vspace(5), mantissa)
+        align("center", "abut", m, vspace(5), label("23"), vspace(5), significand)
         align("left", "none", sign, margin(), s)
         align("right", "top", m, margin())
         align("none", "top", sign, biased_exp)
@@ -512,65 +512,75 @@ a single-precision floating point number has the following representation:</p>
 </script>
 </div>
 
-<p>A floating point number is represented using three components, the sign, the exponent, and the mantissa,
+<p>A floating point number is represented using three components, the <em class=term>sign</em>,
+the <em class=term>exponent</em>, and the <em class=term>significand</em>,
 respectively taking up 1, 8, and 23 bits of the 32-bit word.
 </p>
 <p>
-Given representation components \(s\) (sign), \(exp\) (exponent), and \(m\) (mantissa), where the exponent \(exp\) is between &minus;126 and 127,
+Given representation components \(s\) (sign), \(exp\) (exponent), and \(M\) (significand), where the exponent \(exp\) is between &minus;126 and 127,
 the following real number is signified:
 \[
-(&minus;1)^s·2^{\mathit{exp}}·(1.m)
+(&minus;1)^s·2^{\mathit{exp}}·M
 \]
-<p>Here, we interpret m as a sequence of binary digits, so &ldquo;\(1.m\)&rdquo; represents a binary number that is at least 1 (and equal to 1 in the case where
-m = "000000...") and less than 2. The largest number that \(1.m\) can represent is "1.11111...", which is a binary representation of a
-number less than 2 by the small amount 2<sup>&minus;23</sup>.</p>
+<p>
+The significand is represented as a sequence of 23 binary digits called the <em
+class=term>fraction</em>, which we will write as \(m\). We can interpret
+these binary digits as an integer between 0 and \(2^{23}-1\), so dividing
+\(m/2^{23}\) gives a number in the half-open interval \([0,1)\).  For normal
+numbers, the significand is \(M = 1 + m/2^{23}\). We can also think of the
+significand as a
+number written in binary with the form \(1.m\): that is, the digits in \(m\)
+supply the fractional part of the number.  If all the bits are 0, the
+significand is 1.  If the all the bits are 1, the significand hits its
+maximum value, \(2 - 2^{-23}\).
+</p>
 <p>
 Thus, if we want to represent the number 1, we choose \(s=0\), \(exp=0\), and \(m=0000\dots\)
 To represent numbers outside the interval [1,2), an exponent is needed. To
 represent 2, we use \(s = 0\), exp = \(1\), \(m=0000\dots\), since \(1·2^1 = 2\).
 To represent 3, we choose \(s=0\), \(exp=1\), \(m=10000\dots\), since
-1.1 in base 2 represents 3/2, and 3/2·2<sup>1</sup> = 3. And so on.</p>
-<p>The exponent is stored with a <strong>bias</strong> of 127; that is, the <strong>biased exponent</strong>
-\(bexp\) equals \(exp + 127\).
-The actual
-bit-level representation of the number 1.0 has \(s = 0,\) \(bexp = 01111111\), and
-\(m = 00000000000000000000000\), and the whole word contains exactly the 32 bits
-\(00111111100000000000000000000000\).</p>
-
-<p>Some special exponents follow different rules. If the exponent is \(&minus;127\)
-(and hence the biased exponent is 0), the <strong>subnormal</strong> representation is used.
-The represented number is instead:
+1.1 in base 2 represents 3/2, and 3/2·2<sup>1</sup> = 3. And so on.
+</p>
+<p>
+The exponent is stored with a <em class=term>bias</em> of 127; that is, the <em
+class=term>biased exponent</em> \(bexp\) equals \(exp + 127\).  The actual
+bit-level representation of the number 1.0 has \(s = 0,\) \(bexp = 01111111\),
+and \(m = 00000000000000000000000\), and the whole word contains exactly the 32
+bits \(00111111100000000000000000000000\).
+</p>
+<p>Some special exponents follow different rules. If the biased exponent is 0
+the <em class=term>subnormal</em> representation is used. The exponent is -126,
+and the significand is simply \(m/2^{23}\). The represented number is 
+is instead:
 </p>
 \[
-(-1)^s·2^{-126}·(0.m)
+(-1)^s·2^{-126}·m/2^{23} = (-1)^s·m·2^{-149}
 \]
-
-<p>Therefore, a word consisting entirely of 0's represents the        
-floating-point number 0.0, since \(0.m = 0\) in that case.  It is         
-also possible to represent the floating point number \(-0.0\),      
-which behaves slightly differently, such as when its reciprocal is    
-computed.
-In the <strong>denormalized</strong> representation, some or many of the mantissa
-bits are zero, so the relative precision of the number is reduced.</p>
+<p>Therefore, a word consisting entirely of 0's is a subnormal number
+representing the floating-point number 0.0, since \(m = 0\) in that case.  It
+is also possible to represent the floating point number \(-0.0\),
+which usually behaves the same way as 0.0, except when it used as a divisor.
+In the subnormal representation, some or many of the significand bits are zero,
+so the relative precision of the number is reduced.</p>
 
 <p>The largest number representable using <code>float</code> is
 <code>Float.MAX_VALUE</code>, which is about 3.0·10<sup>38</sup>. And the smallest positive
-number representable with full precision is about 10<sup>&minus;38</sup>. It is
-possible to represent smaller numbers down to about 10<sup>&minus;45</sup>.
+number representable with full precision is about 10<sup>&minus;38</sup>. Using subnormals,
+it is possible to represent smaller positive numbers down to about 10<sup>&minus;45</sup>.
 </p>
 <p>A biased exponent of 255 (all 1's in binary) is not used to represent
 ordinary numbers. Instead, it is used to represent various other kinds of
-values, such as  positive and negative infinity, which use a mantissa of 0 and      
-the appropriate sign bit. If the mantissa is anything other than 0,   
+values, such as positive and negative infinity, which use a fraction of 0 and      
+the appropriate sign bit. If the fraction is anything other than 0,   
 the represented value is called NaN, for &ldquo;not    
 a number&rdquo;.  The value NaN arises when there is no reasonable    
 answer to the computation, such as when adding positive and negative  
 infinity or when dividing zero by zero.  Any numeric computation performed
-using NaN produces NaN, so a     final result of NaN indicates that something
-went wrong during the    computation.</p>
+using NaN produces NaN, so a final result of NaN indicates that something
+went wrong during the computation.</p>
 
 <p>A single decimal digit corresponds to log<sub>2</sub> 10 = 3.32
-binary digits, so the number of decimal digits represented by 23 mantissa bits
+binary digits, so the number of decimal digits represented by 23 significand bits
 is 23/3.32 = 6.93.  You can therefore think of floating point numbers
 as representing numbers to about 7 digits of precision. However, errors
 tend to accumulate with each computation, so a long computation often has
@@ -591,16 +601,16 @@ As a result, we have to be very careful about comparing
 two floating-point numbers for equality. Floating-point numbers will be equal if they were
 produced by exactly the same computation, but otherwise round-off error can
 make them differ slightly. Rather than check for equality, often we instead
-check that their difference lies within some <strong>tolerance</strong> corresponding to
+check that their difference lies within some <em class=term>tolerance</em> corresponding to
 the largest expected round-off error.
 </p>
 
 <p>Because single-precision floating point has limited precision, it is
 usually better to use the more precise type <code>double</code>.
 A double-precision number has 11 exponent bits with a bias of
-1023 and 53 mantissa bits (52 explicitly stored), so it has about 16 decimal digits
+1023 and 53 significand bits (52 explicitly stored), so it has about 16 decimal digits
 of precision. The number represented with sign bit \(s\), biased exponent \(\mathit{bexp}\), and
-52 mantissa bits \(m\) is:
+52 significand bits \(m\) is:
 
 \[
 (&minus;1)^s·2^{\mathit{bexp}-1023}·(1.m)
