@@ -209,8 +209,22 @@ em.term { font-weight: bold; font-style: normal; }
 
 dt { font-weight: bold }
 
+div.chapterLinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em 2em;
+    margin: 3em 0 1em 0;
+    padding-top: 0.5em;
+    border-top: 1px solid #aaa;
+}
+div.chapterLinks a { text-decoration: none }
+div.chapterLinks .chapterTitle { font-weight: bold }
+/* Keep the next-chapter link at the right edge even when it is the only one. */
+div.nextChapter { margin-left: auto; text-align: right }
+
 
 @media print {
+	div.chapterLinks { display: none }
 	body {
 		font-family: "Times New Roman", times;
 		font-size: 12pt;

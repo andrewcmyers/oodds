@@ -8,9 +8,73 @@ function load_lecture() {
         url = base_url + "/lectures/" + match[1] + "/index.html"
         const content = elem("content")
         fetch_content_node(content, url,
-            () => localizeContent(content, url),
+            () => {
+                localizeContent(content, url)
+                add_chapter_links(content, match[1])
+            },
             "text/html")
     }
+}
+
+// The name of the chapter that sits 'offset' positions after the chapter named
+// 'name' in the chapter order defined by 'lectures' (see js/dirs.js), or null
+// if there is no such chapter.
+function adjacent_lecture(name, offset) {
+    const i = lectures.indexOf(name)
+    if (i < 0) return null
+    const j = i + offset
+    if (j < 0 || j >= lectures.length) return null
+    return lectures[j]
+}
+
+// The URL of the page for the chapter named 'name'. Query parameters of the
+// current page other than the chapter id (e.g., 'swing') are preserved so
+// that the reader stays in the same version of the text.
+function lecture_url(name) {
+    const params = new URLSearchParams(location.search)
+    params.set('id', name)
+    // A valueless parameter such as 'swing' is written back without the '='
+    // that URLSearchParams adds, to keep the URL tidy.
+    return 'lecture.html?' + params.toString().replace(/=(?=&|$)/g, '')
+}
+
+// The title of a chapter, as found in the first h1 element of its HTML
+// source text, or null if it has no h1 element.
+function lecture_title(source) {
+    const match = source.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
+    if (!match) return null
+    return match[1].replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
+}
+
+// A link to the chapter named 'name', reading "before TITLE after". The title
+// is read from the chapter itself, so it is filled in once that chapter
+// arrives; fetching it also warms the cache for the click.
+function chapter_link(name, before, after) {
+    const title = EZDom.span({className: 'chapterTitle'}),
+          link = EZDom.a({href: lecture_url(name)}, before, title, after)
+    read_from_url(base_url + "/lectures/" + name + "/index.html",
+        source => {
+            const t = lecture_title(source)
+            if (t) EZDom.app(title, t)
+        },
+        errmsg => {})
+    return link
+}
+
+// Append to 'node' links to the chapters preceding and following the chapter
+// named 'name'. Either link is omitted if there is no such chapter.
+function add_chapter_links(node, name) {
+    const prev = adjacent_lecture(name, -1),
+          next = adjacent_lecture(name, 1)
+    if (!prev && !next) return
+    const nav = EZDom.div({className: 'chapterLinks'})
+    if (prev)
+        nav.appendChild(EZDom.div({className: 'prevChapter'},
+            chapter_link(prev, "← Previous: ", "")))
+    if (next)
+        nav.appendChild(EZDom.div({className: 'nextChapter'},
+            chapter_link(next, "Next: ", " →")))
+    node.appendChild(nav)
 }
 
 function basename(url) {
