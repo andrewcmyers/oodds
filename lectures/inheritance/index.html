@@ -51,24 +51,25 @@ or start afresh from <code>CBoard'</code> and build a new <code>LogBoard'</code>
 Either way, it will be a lot of work and difficult to automate.
 </p>
 <div class="figure">
-<canvas id="merging-updates" style="width: 200px; height: 100px"></canvas>
+<canvas id="merging-updates" style="width: 200px; height: 8em"></canvas>
 <p>
-Figure 1: The problem of merging upgrades
+  Figure 1: The problem of merging upgrades
 </p>
 </div>
 <script class=graphics>
 with (new CFigure("merging-updates")) {
     const i = 4,
           l1 = label("CBoard").expand(i), l2 = label("CBoard'").expand(i),
-          l3 = label("LogBoard").expand(i), l4 = label("LogBoard'").expand(i)
+          l3 = label("LogBoard").expand(i), l4 = label("LogBoard'").expand(i),
+          m = margin(4)
     align("none", "center", l1, l2)
     align("none", "center", l3, l4)
     align("center", "none", l1, l3)
     align("center", "none", l2, l4)
-    align("left", "none", l1, l3, canvasRect())
-    align("right", "none", l2, l4, canvasRect())
-    align("none", "top", l1, l2, canvasRect().toTop(-3))
-    align("none", "bottom", l3, l4, canvasRect().toBottom(-8))
+    align("left", "none", l1, l3, m)
+    align("right", "none", l2, l4, m)
+    align("none", "top", l1, l2, m.toTop(-3))
+    align("none", "bottom", l3, l4, m.toBottom(-8))
     connector(l1, l2).setLineWidth(2).setEndArrow("arrow")
     connector(l1, l3).setLineWidth(2).setEndArrow("arrow")
     connector(l2, l4).setLineWidth(2).setEndArrow("arrow").setLineDash([4,4])
