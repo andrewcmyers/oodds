@@ -386,15 +386,31 @@ class CBoard {
    ...
 }
 </pre>
+
 <p>
-Protected fields and methods form a second interface to a class.
-Public methods and fields are the <em>public interface</em>, which is exposed
-to client code. Protected methods and fields are the <em>specialization
-interface</em>, which is available to subclasses but not to ordinary
-clients. One of the challenges of good object-oriented design is to
-design both of these interfaces effectively, without confusing their
-roles. Designing a good specialization interface is especially
-important for object-oriented libraries where the classes provided
+Protected fields and methods defined by a superclass can be accessed on objects
+of its subclasses, within the definitions of those subclasses. The subclasses
+can also override the definitions of protected methods, providing new behavior
+that the superclass did not supply.
+</p>
+<p>
+Protected visibility is weaker than package visibility: anything that is
+protected is also accessible from any code in the same package.  Note that a
+subclass is not able to access protected fields and methods of
+<em>superclass</em> objects, unless the subclass is defined within the same
+package as the superclass.
+</p>
+
+<h2>The specialization interface</h2>
+
+<p>
+Public methods and fields form a <em>public interface</em>, which is exposed to
+client code. But protected fields and methods form a <em>second</em> interface
+to the class: the <em>specialization interface</em>, which is available to
+subclasses but not to ordinary clients. One of the challenges of good
+object-oriented design is to design both of these interfaces effectively,
+without confusing their roles. Designing a good specialization interface is
+especially important for object-oriented libraries where the classes provided
 by the library are intended to be extended through inheritance.
 </p>
 
@@ -402,8 +418,6 @@ by the library are intended to be extended through inheritance.
 <img src="specintf.png" alt="specialization interface" /><br><br>
 Figure 2: the specialization interface
 </div>
-
-<h2>Protected methods and the specialization interface</h2>
 
 <p>
 Suppose that <code>scramble()</code> had been defined to call a protected method
