@@ -441,10 +441,41 @@ Suppose we want a <code>SortedList&lt;String&gt;</code> that sorts strings by th
 (shorter strings first). Write a lambda expression that could be passed to the
 <code>SortedList</code> constructor to achieve this.
 <p class=answer>
-<code>(x, y) -&gt; x.length() - y.length()</code>. When the result is negative, <code>x</code> is
-considered to come before <code>y</code>; when positive, after; when zero, equal.
-Note that in general when comparing two integers, it is safer to use the method
-<code>Integer.compare</code>, which has no issues with numeric overflow. However,
-for comparing two string lengths, subtraction works fine.
+<code>(x, y) -&gt; Integer.compare(x, y)</code>. Alternatively we could just
+use a method reference: <code>Integer::compare</code>.
 </p>
 </div>
+
+<h3>Why use this pattern?</h3>
+
+<p> The pattern above is sometimes called the Concept design pattern,
+especially among C++ programmers. These days, concepts are integrated into
+C++. In Java it is fairly convenient even without special language support.</p>
+
+<p>
+Another approach that is sometimes used to access argument-type operations
+is to use an <code>extends</code> clause to demand that operations exist directly
+on the argument type. For example,
+there is an interface <code>Comparable<T></code> that ensures all classes that implement
+it have a <code>compareTo</code> method:
+</p>
+<pre class=load>
+<a href="Comparable.java">
+Comparable.java
+</a>
+</pre>
+<p>
+Using this interface, we can implement a generic sort without relying on a separate
+comparator object, which looks appealing:
+</p>
+<pre class=load>
+<a href="comparable_sort.java">
+comparable_sort.java
+</a>
+</pre>
+<p>
+The problem with this approach is that we cannot use this sorting method on any class <code>C</code>
+that does not explicitly declare that it implements the interface <code>Comparable&lt;C&gt;</code>.
+Thus, it leads to tighter coupling than desirable between parameterized abstractions and the types that
+they are instantiated on.
+</p>
