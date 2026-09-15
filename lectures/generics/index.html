@@ -477,5 +477,6 @@ comparable_sort.java
 The problem with this approach is that we cannot use this sorting method on any class <code>C</code>
 that does not explicitly declare that it implements the interface <code>Comparable&lt;C&gt;</code>.
 Thus, it leads to tighter coupling than desirable between parameterized abstractions and the types that
-they are instantiated on.
+they are instantiated on. This tight coupling is probably why the standrad Java libraries have tended
+over time to move away from this pattern and toward the Concept pattern with its looser coupling.
 </p>
