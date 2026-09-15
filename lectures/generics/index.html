@@ -390,30 +390,33 @@ Notice that here we are using <tt>String</tt>'s own <tt>compareTo</tt>
 operation as a model for the comparator, but we don't have to. For example, we
 could have used the <tt>compareToIgnoreCase</tt> method to sort strings while
 ignoring the difference between upper and lower case. It turns out that we can use
-<em class=term>lambda expressions</em> to implement the interface even more
-compactly. Here is how we would sort the array using a lambda expression while
+<em class=term>lambda expressions</em> to implement this interface even more
+compactly, because this interface is what Java terms a <em>functional
+interface</em>: an interface with a single unimplemented method.
+Here is how we would sort the array using a lambda expression while
 also ignoring case:
 </p>
 <pre>
 sort(a, (x,y) -&gt; x.compareToIgnoreCase(y));
 </pre>
 <p class=cont>
-The lambda expression <code>(x,y) -&gt; x.compareToIgnoreCase(y)</code> is actually
-just a very convenient syntactic sugar for declaring a class like the one above
-and instantiating it with <code>new</code>.
+The lambda expression <code>(x,y) -&gt; x.compareToIgnoreCase(y)</code> is
+actually just a very convenient syntactic sugar for declaring a class like the
+one above and instantiating it with <code>new</code>.
 </p>
 <p>
 In fact, Java has an even more convenient way to produce an implementation
-of an interface. A <em class=term>method reference</em> can be used to produce an implementation
-of an interface that needs to have a single method implemented. Rather than
+of a functional interface. A <em class=term>method reference</em> can be used to produce an implementation
+of a functional interface. Rather than
 write <code>(x,y) -&gt; x.compareToIgnoreCase(y)</code>, we can simply 
-write <code>String::compareToIgnoreCase</code>, which will have the same effect:
+write <code>String::compareToIgnoreCase</code>, which will have the
+same effect because the signature of this method expects two strings:
 </p>
 <pre>
 sort(a, String::compareToIgnoreCase)
 </pre>
 <p>
-A method reference is also just sugar for a lambda expression. For example, the
+A method reference is just sugar for a lambda expression. For example, the
 method reference <code>String::compareToIgnoreCase</code> is sugar for the
 lambda expression <code>(String x, String y)-&gt;
 x.compareToIgnoreCase(y)</code>, which implements the interface
