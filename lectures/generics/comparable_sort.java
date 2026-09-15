@@ -1,0 +1,9 @@
+/** Sort the array a in ascending order using cmp to define the ordering on the
+ * elements. */
+<T extends Comparable<T>> void sort(T[] a) {
+    ...
+    if (a[i].compare(a[j]) > 0) {
+        ...
+    }
+    ...
+}
