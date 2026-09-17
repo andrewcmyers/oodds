@@ -8,10 +8,10 @@ private void removeNodeData(BinaryNode<T> p) {
         // case 1: prune
         replaceChild(p, this, null);
     } else if (left == null) {
-        // case 2L: splice n.right
+        // case 2L: splice out
         replaceChild(p, this, right);
     } else if (right == null) {
-        // case 2R: splice n.left
+        // case 2R: splice out
         replaceChild(p, this, left);
     } else { // case 3: two children: move data
         var next = right;
