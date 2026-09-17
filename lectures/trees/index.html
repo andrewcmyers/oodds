@@ -348,17 +348,18 @@ version where the root of the tree is passed in explicitly as a parameter
 </pre>
 <h3>Adding an element to a binary search tree</h3>
 <p>
-To add an element so we can find it later, it has to be added along
-the search path that will be used. To add an element, we first search for it.
-If found, it need not be added; if not found,
-it is added as a child of the leaf node reached along the search path.
+To insert a new element into the tree we can find it later, it has
+to be inserted along
+the search path that will be used. To insert an element, we first search for it.
+If found, it need not be inserted; if not found,
+it is inserted as a child of the leaf node reached along the search path.
 Again, this can be written easily as a tail-recursive method:
 </p>
 <pre class=load>
-<a href="add.java">add</a>
+<a href="insert.java">insert</a>
 </pre>
 <p>
-To see how this algorithm works, consider adding the element 3 to the tree
+To see how this algorithm works, consider inserting the element 3 to the tree
 shown with the black edges in the following diagram. We start at the root (2)
 and go to the right (5) because 3 &gt; 2. In the recursive call we then go to
 the left (3 &lt; 5) to node 4. Since 3 &lt; 4, we try to go to the left but
@@ -418,7 +419,7 @@ height of the tree, \(h\). Therefore, tree operations take \(O(h)\) time.
 <p>
 With the simple binary search tree implementation we've seen so far,
 the worst performance is seen when elements are inserted in order, e.g.:
-<code>add(1)</code>, <code>add(2)</code>, <code>add(3)</code>, ..., <code>add(n)</code>. The resulting binary tree
+<code>insert(1)</code>, <code>insert(2)</code>, <code>insert(3)</code>, ..., <code>insert(n)</code>. The resulting binary tree
 has only right children and has the performance characteristics of a linked list!
 </p>
 <div class=figure>
@@ -643,6 +644,16 @@ with (delete_two_children) {
   }
 </script>
 </div>
+</li>
+</ol>
+<p>The following is the core functionality of element removal expressed
+as Java code. A helper method <code>replaceChild</code> is used to
+simplify the algorithm.
+</p>
+
+<pre class=load>
+<a href="removeNodeData.java">removeNoteData.java</a>
+</pre>
 <p>
 An alternative to overwriting the data in node \(x\) is
 to replace the entire \(x\) node with the \(y\) node, which requires updating three
@@ -650,12 +661,10 @@ pointers: one child pointer in node \(p\) and both child pointers in the \(y\) n
 This alternative is preferable if the data to be overwritten is large or if some
 external client has a reference to the original \(x\) node.
 </p>
-</li>
-</ol>
 <p>
 Removing an element from the tree requires walking along a path from the root to a leaf
 in the worst case, plus some constant number of updates to the tree, so the time
-required is \(O(h)\), as with searching and adding.
+required is \(O(h)\), as with searching and insertion.
 </p>
 
 <h3>Supporting duplicate elements</h3>
@@ -728,7 +737,7 @@ which involves a small digression to learn a useful algorithm.
 <p>
 The <a href="http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">
 Fisher–Yates algorithm</a> (developed in 1938) shuffles \(N\) elements into random
-order. Recall that there are \(N! = 1×2×3×...×N\) possible permutations of \(N\) elements; a
+order. There are \(N! = 1×2×3×...×N\) possible permutations of \(N\) elements; a
 perfectly random shuffle should have equal probability \(1/N!\) of producing any
 given permutation. The algorithm works as follows. Assume we have the \(N\) elements
 in an array \(a\). We iterate the array index \(i\) from \(N-1\) down to \(0\), deciding for each array index
