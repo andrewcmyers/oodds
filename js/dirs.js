@@ -31,7 +31,6 @@
         'hashtables',
         'loopinv',
         'sorting',
-        'radix_sort',
         'graphs',
         'traversals',
         'ssp',
