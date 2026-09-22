@@ -893,8 +893,8 @@ into linked lists.
 <p>
 To produce hashes resistant to an adversary, a <em class=term>cryptographic hash function</em>
 should be used. The message digest algorithms MD5, SHA-1,
-and SHA-2 are good choices whose security increases (and performance
-decreases) in that order. They are available in Java through the class
+SHA-2, and SHA-3 are good choices whose security increases (and performance
+typically decreases) in that order. They are available in Java through the class
 <tt>java.security.MessageDigest</tt>. Viewing the data to be hashed as
 a string or byte array s, the value <code>MD5(IV + s) mod m</code> is a
 cryptographic hash function offering a good balance between security and
