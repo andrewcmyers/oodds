@@ -1,10 +1,10 @@
 <h1>Balanced Binary Trees</h1>
 <p>
-We've already seen that by imposing the <strong>binary search tree invariant</strong>
+We've already seen that by imposing the <em class=term>binary search tree invariant</em>
 (BST invariant), we can search for keys in a tree of height \(h\) in \(O(h)\) time,
 assuming that the keys are part of a total order that permits pairwise ordering
 tests. However, nothing thus far ensured that \(h\) is not linear in the number of
-nodes \(n\) in the tree, whereas we would like to know that trees are <strong>balanced</strong>:
+nodes \(n\) in the tree, whereas we would like to know that trees are <em class=term>balanced</em>:
 that their height \(h\), and therefore their worst-case search time, is logarithmic
 in the number of nodes in the tree.</p>
 
@@ -13,13 +13,13 @@ in the number of nodes in the tree.</p>
 There are many different balanced tree schemes. The first was AVL trees, named
 after its inventors, Adelson-Velsky and Landis. AVL trees strengthen the usual BST
 invariant with an additional shape invariant regarding the heights of subtrees. The
-<strong>AVL invariant</strong> states that at each node, the heights of the left
+<em class=term>AVL invariant</em> states that at each node, the heights of the left
 and right subtrees differ by at most one.
 </p>
 <p>
 Let \(h(t)\) be the height of the subtree rooted at node \(t\) (where an empty tree
 is considered to have height \(&minus;1\) and a tree consisting of a single node is
-considered to have height \(0\)). The <strong>balance factor</strong> or <strong>imbalance</strong> of
+considered to have height \(0\)). The <em class=term>balance factor</em> or <em class=term>imbalance</em> of
 a node \(t\) is defined to be the difference between the heights of its two subtrees:
 <div class=equation>
 \[ BF(t) = h(t.\texttt{left}) &minus; h(t.\texttt{right}) \]
@@ -89,7 +89,7 @@ A node of height at least \(h\) has two subtrees, one of which must have
 height at least \(h&minus;1\). By the AVL invariant, the other subtree must have height at least \(h&minus;2\).
 Therefore, the minimum number of nodes that must be in the tree is \(N(h&minus;1)+N(h&minus;2)+1\),
 that is, the number of nodes in the two subtrees plus 1 for the root node.
-This gives us an equation called a <strong>recurrence</strong>:
+This gives us an equation called a <em class=term>recurrence</em>:
 <div class=equation>
 \begin{align}
 N(h) = 1 + N(h&minus;1) + N(h&minus;2)
@@ -132,7 +132,7 @@ exponentially.</p>
 Without showing an exact formula for \(N(h)\) or \(F_n\), we can even more easily
 prove an exponential lower bound on \(N(h)\) by induction. We show that for all
 \(h≥0\), the inequality \(N(h) ≥ φ^h\) holds,
-where \(φ\) is the <strong>golden ratio</strong> \((1+\sqrt{5})/2 ~~(≈ 1.618)\).
+where \(φ\) is the <em class=term>golden ratio</em> \((1+\sqrt{5})/2 ~~(≈ 1.618)\).
 </p>
 <p>
 Experimentally, we have \(N(0) = 1 = φ^0\) and \(N(1) = 2 ≥ φ^1\). Now we assume an
@@ -235,9 +235,9 @@ vanishingly small for large \(n\). Asymptotically, the Fibonacci numbers grow as
 The key to balancing search trees is to reorganize them incrementally as
 operations are performed, so that they never become unbalanced. However, any
 reorganization of the data structure must maintain the BST invariant. The most
-important tree transformation is a <strong>tree rotation</strong>, which swaps a node
+important tree transformation is a <em class=term>tree rotation</em>, which swaps a node
 with its parent while preserving the BST invariant. If a node \(y\) is the
-right child of its parent node \(x\), a <strong>left rotation</strong> is performed by changing
+right child of its parent node \(x\), a <em class=term>left rotation</em> is performed by changing
 pointers so that \(y\) becomes the parent of \(x\), turning the data structure on the left into the data structure on the
 right.
 (Note that \(A\), \(B\), and \(C\) here represent entire subtrees that are not affected by the
@@ -293,7 +293,7 @@ we know that the keys in the various parts of the tree are ordered as follows: \
 respective subtrees). This ordering of the keys is preserved in the rotated tree.
 </p>
 <p>
-Symmetrically, a <strong>right rotation</strong> changes the tree on the right side into
+Symmetrically, a <em class=term>right rotation</em> changes the tree on the right side into
 the tree on the left, lifting a node \(x\) above its former parent \(y\). And
 this transformation too keeps the various tree nodes in exactly the same relative order.
 </p>
@@ -753,13 +753,13 @@ with (new CFigure("deletion_exercise")) {
 
 <h2>Random Treaps</h2>
 <p>
-Search trees can be balanced in several other ways. One good one is <strong>random
-treaps</strong>, which are balanced with high probability. Balancing is achieved by
+Search trees can be balanced in several other ways. One good one is <em class=term>random
+treaps</em>, which are balanced with high probability. Balancing is achieved by
 ensuring the tree has exactly the same structure that it would have had if the
 elements had been inserted into a binary search tree in a random order.
 </p>
 <p>
-A <strong>treap</strong> is both a binary search tree and a heap.
+A <em class=term>treap</em> is both a binary search tree and a heap.
 Each node contains both a key and a priority. The treap satisfies
 the BST invariant with respect to all of its keys, so elements can be found in
 the treap in (expected) logarithmic time.  However, the treap is also a <a
@@ -842,7 +842,7 @@ most important:
 <li>Red–black trees
 <ul>
 <li>Nodes are colored red or black.
-<li>The shape invariant is that the number of black nodes on every path from the root to a leaf is the same for every leaf: this number is the <strong>black height</strong> of the tree.
+<li>The shape invariant is that the number of black nodes on every path from the root to a leaf is the same for every leaf: this number is the <em class=term>black height</em> of the tree.
 <li>Further, there are no edges connecting two red nodes (red–red edges).
 <li>The shape invariant guarantees that the shortest path length is \(h/2\), so the tree contains at least \(n ≥ 2^{h/2}\) nodes. Therefore, \(h ≤ 2 \lg n = O(\log n) \) : the tree is balanced.
 <li>Red–black trees are a popular implementation of balanced binary trees,
@@ -882,7 +882,7 @@ them is especially fast.
 <p>
 Note that most of these data structures (except splay trees) impose an
 additional invariant to ensure the tree remains balanced. For example,
-red–black trees have a <strong>color invariant</strong>. B-trees and 2–3–4
+red–black trees have a <em class=term>color invariant</em>. B-trees and 2–3–4
 trees ensure all leaves are at the same depth but allow the number of children
 to vary between \(&lceil;n/2&rceil;\) and \(n\) (except that the root may have
 as few as 2 children).

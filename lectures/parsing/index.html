@@ -8,7 +8,7 @@ is a tree.
 </p>
 <p>          
 Our brains are remarkably good at parsing. When we hear a sentence like
-“The rat ate cheese,” our brains build a <strong>parse tree</strong> similar to the
+“The rat ate cheese,” our brains build a <em class=term>parse tree</em> similar to the
 following diagram:
 </p>
 <div class="figure">
@@ -39,7 +39,7 @@ Your brain can handle much more complex sentences, though it does
 have its limits.  On the other hand, when you read a supposed sentence
 like “rat cheese the ate the,” you instantly recognize this as not being
 a sentence at all. This sequence of words
-is a <strong>syntax error</strong>, because it has no parse tree. 
+is a <em class=term>syntax error</em>, because it has no parse tree. 
 
 </p>
 <p>
@@ -51,28 +51,28 @@ well.
 </p>
 <h2>Grammars</h2>
 <p>
-For programming languages, legal syntax is defined by a <strong>grammar</strong>,
+For programming languages, legal syntax is defined by a <em class=term>grammar</em>,
 which specifies which input sequences have a parse tree.  While the
 situation in real human languages is more complex, for programming
-languages, legal syntax is defined using a <strong>context-free grammar</strong>.
-The modifier <strong>context-free</strong> means that the legal syntax for a
+languages, legal syntax is defined using a <em class=term>context-free grammar</em>.
+The modifier <em class=term>context-free</em> means that the legal syntax for a
 subtree of the parse tree (say, the possible subtrees of a “noun phrase”
 node, above) depends only on the node at the root of the subtree and not
 on the rest of the tree. 
 </p>
 <h3>Symbols</h3>
 <p>
-The grammar is defined in terms of <strong>symbols</strong>.  There are two kinds of symbols:
-<strong>terminal symbols</strong> (also
-called <strong>tokens</strong> or just <strong>terminals</strong>) and <strong>nonterminal symbols</strong>
-(or just <strong>nonterminals</strong>). The terminal symbols
+The grammar is defined in terms of <em class=term>symbols</em>.  There are two kinds of symbols:
+<em class=term>terminal symbols</em> (also
+called <em class=term>tokens</em> or just <em class=term>terminals</em>) and <em class=term>nonterminal symbols</em>
+(or just <em class=term>nonterminals</em>). The terminal symbols
 can appear as part of the input (e.g., “rat”) and appear in the parse
 tree only at its leaves. The nonterminal symbols (e.g., “noun phrase”)
 appear at all other nodes in the tree.
 </p>
 <p>
-There is usually a low-level preprocessing step called <strong>tokenization</strong>,
-<strong>scanning</strong>, or <strong>lexing</strong>,
+There is usually a low-level preprocessing step called <em class=term>tokenization</em>,
+<em class=term>scanning</em>, or <em class=term>lexing</em>,
 which reads a raw input stream (often a stream of bytes or characters)
 and organizes that data into a sequence of tokens
 to be presented to the parser. For example, when parsing the arithmetic expression
@@ -81,12 +81,12 @@ sequence of tokens: <code>(</code>, <code>42</code>, <code>+</code>, <code>foo</
 <code>*</code>, and <code>2112</code>.
 </p>
 <p>
-One of the nonterminal symbols is the <strong>start symbol</strong>.  The root of the parse tree is always
+One of the nonterminal symbols is the <em class=term>start symbol</em>.  The root of the parse tree is always
 the start symbol, although the start symbol may also occur elsewhere in the tree.
 </p>
 <h3>Productions</h3>
 <p>
-A context-free grammar also includes a set of <strong>productions</strong>,
+A context-free grammar also includes a set of <em class=term>productions</em>,
 which are rules that define how a single nonterminal can be expanded out into a
 longer series of symbols. A given nonterminal can have multiple different
 productions specifying alternative ways to expand it. For example, we can write
@@ -113,15 +113,15 @@ This notation is just an abbreviation for writing out multiple productions
 in full.
 </p>
 <p>
-The <strong>language</strong> of a grammar is the set of strings of terminal
+The <em class=term>language</em> of a grammar is the set of strings of terminal
 symbols that can be produced by constructing a parse tree with that grammar.
-Each such string is said to be <strong>derived</strong> from the start
+Each such string is said to be <em class=term>derived</em> from the start
 symbol using the productions of the grammar. The job of a parser is to figure
 out whether an input string is part of the language of the grammar and to
 construct a parse tree if so.
 </p>
 <p>The language of a grammar can be infinite in size if the grammar is
-<strong>recursive</strong>. For example, the productions <code><i>noun-phrase</i> → <i>article
+<em class=term>recursive</em>. For example, the productions <code><i>noun-phrase</i> → <i>article
 noun</i></code> and <code><i>noun</i> → <i>adjective</i></code>
 noun</i> allow us to derive the following noun phrases:
 “the dog”, “the old dog”, “the old old dog”, “the old old old dog”, and so on ad infinitum.
@@ -144,7 +144,7 @@ no production allows <i>article</i> to precede another <i>article</i>.
 <h2>Ambiguity</h2>
 <p>
 With some grammars, it is possible for a string to have more than one parse
-tree. Such a grammar is said to be <strong>ambiguous</strong>.
+tree. Such a grammar is said to be <em class=term>ambiguous</em>.
 </p>
 <p>
 An example of an ambiguous grammar is the following grammar for arithmetic expressions,
@@ -186,7 +186,7 @@ Two parse trees for “<code>2+3×5</code>”
 Only one of these parse trees corresponds to our usual understanding of the
 meaning of the expression as arithmetic: the one on the left.
 The problem with the parse tree on the right is that it violates our
-expectations about <strong>precedence</strong>. By convention, multiplicative operations
+expectations about <em class=term>precedence</em>. By convention, multiplicative operations
 have higher precedence than additive operations, but the parse tree on the
 right violates this custom, because the addition is performed first.
 </p>
@@ -196,7 +196,7 @@ Usually, we
 want the grammars we write to be unambiguous so that we obtain a unique parse
 tree corresponding to the meaning of the expression. Unfortunately, there is
 no algorithm that can determine in general whether a given grammar is ambiguous
-(the problem is said to be <strong>undecidable</strong>). However,
+(the problem is said to be <em class=term>undecidable</em>). However,
 in practice it is possible to design grammars in a way that avoids ambiguity.
 </p>
 
@@ -255,8 +255,8 @@ with (fig) {
 
 <h2>Recursive-descent parsing</h2>
 <p>
-The idea of <strong>recursive-descent parsing</strong>, also known as
-<strong>top-down parsing</strong>, is to parse input while exploring the
+The idea of <em class=term>recursive-descent parsing</em>, also known as
+<em class=term>top-down parsing</em>, is to parse input while exploring the
 corresponding parse tree recursively, starting from the top. 
 Let's build a recursive-descent parser!
 </p>
@@ -302,7 +302,7 @@ computed result. The content of each method corresponds exactly to the
 productions for that nonterminal. The key is that it must be possible to
 <em>predict</em> from the tokens seen on the input stream which production
 is being used. Recursive-descent parsing is therefore also known as
-<strong>predictive parsing</strong>.
+<em class=term>predictive parsing</em>.
 </p>
 
 <p>
@@ -363,7 +363,7 @@ void parseF() throws SyntaxError {
 </pre>
 <h3>Building an evaluator</h3>
 <p>
-So far, the parser we have built is only a <strong>recognizer</strong> that decides
+So far, the parser we have built is only a <em class=term>recognizer</em> that decides
 whether the input string is in the language generated by the grammar, i.e. whether
 it has a parse tree. It halts normally if so and throws a <code>SyntaxError</code> if not.
 It doesn't actually build the parse tree or evaluate the expression.</p>
@@ -415,7 +415,7 @@ and returns 6. Then <code>parseE()</code> sees a <code>+</code>, consumes it, an
 </div>
 <h2>Abstract syntax trees</h2>
 <p>
-The output of a parser is usually an <strong>abstract syntax tree</strong> (AST), which
+The output of a parser is usually an <em class=term>abstract syntax tree</em> (AST), which
 differs from a parse tree in that it contains no noninformative terminal
 symbols. For example, if we parse the input “2+(3×5)”, we expect to get a tree
 like the following.
@@ -511,7 +511,7 @@ Expr parseF() throws SyntaxError {
 <p>
 Some grammars cannot be parsed top-down. Unfortunately, they include grammars
 that we might naturally want to write. Particularly problematic are grammars
-that contain <strong>left-recursive</strong> productions, where the nonterminal being
+that contain <em class=term>left-recursive</em> productions, where the nonterminal being
 expanded appears on the left-hand side of its own production. We saw these
 in the original grammar specifying the left-associative operators + and ×. The production
 \(E → E + T\) is left-recursive, whereas the production used
@@ -604,7 +604,7 @@ E → T~(~+~T~)^*
 \]
 <p class=cont>
 where the parentheses are being used as a grouping construct (they are
-<strong>metasyntax</strong> rather than syntax).
+<em class=term>metasyntax</em> rather than syntax).
 </p>
 <p>The point of rewriting the productions in this way is that parsing a use of Kleene star
 naturally lends itself to an implementation as a loop. Within that loop, the AST can be

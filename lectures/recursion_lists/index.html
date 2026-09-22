@@ -76,8 +76,8 @@ so the base case is reached eventually.
 
 <h3>Recursive exponentiation</h3>
 <p>
-An efficient algorithm for exponentiation known as <strong>exponentiation by
-squaring</strong> can be implemented recursively in an elegant way.  Algorithms
+An efficient algorithm for exponentiation known as <em class=term>exponentiation by
+squaring</em> can be implemented recursively in an elegant way.  Algorithms
 like this one are used by modern cryptography, because there the exponents are
 far too large for the obvious, simple exponentiation algorithm to be practical.
 </p>
@@ -103,7 +103,7 @@ in either case.
 
 <h2>Execution of recursive methods</h2>
 <p>
-Every time a method is invoked, a structure called an <strong>activation record</strong> is
+Every time a method is invoked, a structure called an <em class=term>activation record</em> is
 created in the computer's memory, containing all its local variables, including its
 parameters. We can represent an activation record in a way similar
 to the way we've shown objects, as a box containing variables. (However, it's
@@ -465,9 +465,9 @@ this transformation possible.
 </p>
 <p>
 Any time that a function (method) returns its result by immediately returning
-the result of another function call, we say that call is a <strong>tail
-call</strong>. If the recursive calls in a recursive function are all tail
-calls, we say that the function is <strong>tail-recursive</strong>.
+the result of another function call, we say that call is a <em class=term>tail
+call</em>. If the recursive calls in a recursive function are all tail
+calls, we say that the function is <em class=term>tail-recursive</em>.
 </p>
 <p>
 For example, the recursive implementation of <code>contains()</code> contains

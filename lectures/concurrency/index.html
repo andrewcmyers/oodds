@@ -1,10 +1,10 @@
 <h1>Concurrency</h1>
 <p>
-Concurrency is the simultaneous execution of multiple <strong>threads</strong>
+Concurrency is the simultaneous execution of multiple <em class=term>threads</em>
 of execution. These threads may execute within
-the same program, which is called <strong>multithreading</strong>. Modern computers
+the same program, which is called <em class=term>multithreading</em>. Modern computers
 also allow different processes to run separate programs at the same
-time; this is called <strong>multiprogramming</strong>.
+time; this is called <em class=term>multiprogramming</em>.
 Like most modern programming languages, Java supports concurrent threads; Java is a multithreaded programming language. We have already seen this in the context of graphical user interfaces.
 
 </p>
@@ -12,7 +12,7 @@ Like most modern programming languages, Java supports concurrent threads; Java i
 Concurrency is important for two major reasons. First, it helps us
 build good user interfaces. One thread can be taking care of updating
 the GUI while other threads are doing the real computational work of
-the application. JavaFX has a separate <strong>application thread</strong>
+the application. JavaFX has a separate <em class=term>application thread</em>
 that starts when the first JavaFX window is opened, and handles
 delivery of events to JavaFX nodes. JavaFX applications can also 
 start other threads that run in the background and get work done
@@ -32,9 +32,9 @@ design patterns help.
 
 <p>
 Modern computers usually have multiple processors that can be simultaneously computing
-different things. The individual processors are called <strong>cores</strong> when they
-are located together on the same chip, as they are in most modern <strong>multicore</strong> machines.
-<strong>Multiprocessor</strong> systems have existed for a long time; prior to multicore
+different things. The individual processors are called <em class=term>cores</em> when they
+are located together on the same chip, as they are in most modern <em class=term>multicore</em> machines.
+<em class=term>Multiprocessor</em> systems have existed for a long time; prior to multicore
 systems, the processors were located on different chips.
 </p>
 
@@ -60,7 +60,7 @@ cores.
 Concurrent threads can also execute on a single core. To implement the
 abstraction that the threads are all running at the same time, the core rapidly
 switches among the threads, making a little progress on executing each thread before
-moving on to the next thread. This is called <strong>context switching</strong>. However,
+moving on to the next thread. This is called <em class=term>context switching</em>. However,
 context switching slows the computer down because it takes a little time to set up the hardware
 state for a different thread.
 </p>
@@ -168,7 +168,7 @@ work among multiple other threads, and wait for them to complete their work.
 
 <h3>Priorities and preemption</h3>
 <p>
-In Java, threads can <strong>preempt</strong> each other by starting to run even when <code>yield()</code> is not
+In Java, threads can <em class=term>preempt</em> each other by starting to run even when <code>yield()</code> is not
 called. With preemptive concurrency, a thread that has run long enough might be
 suspended automatically to allow other threads to run.</p>
 <p>It is possible to set priorities of threads so that threads with higher priority
@@ -181,7 +181,7 @@ threads are preempted.
 
 <h3>Daemon threads vs. normal threads</h3>
 <p>
-A thread is either a <strong>daemon</strong> or a <strong>normal</strong> thread.
+A thread is either a <em class=term>daemon</em> or a <em class=term>normal</em> thread.
 Daemon threads are used for minor or ephemeral tasks such as timers or sounds.
 The initial thread (the one that runs <code>main</code>) is normal.
 The application halts when either <code>System.exit(...)</code> is called or all
@@ -232,12 +232,12 @@ Your computer almost surely has multiple processor cores. Unless you use threads
 one of those cores will be helping execute the program at a given time.
 Threads enable a program to take advantage of multiple cores and, potentially, run
 significantly faster. For example, on a computer with 4 cores, we might expect to
-achieve a <strong>speedup</strong> of 4; in other words, the program would take 1/4 of the
+achieve a <em class=term>speedup</em> of 4; in other words, the program would take 1/4 of the
 time it took when run on a single core.
 </p>
 <p>
 A big challenge in achieving this good performance scaling with increasing
-cores is that not all work the program does can be easily <strong>parallelized</strong>:
+cores is that not all work the program does can be easily <em class=term>parallelized</em>:
 that is, separated into tasks that can be done in parallel by different cores.
 </p>
 <p>
@@ -280,7 +280,7 @@ Two threads simultaneously reading information from the same object
 is not a problem. Read–read sharing is safe. But if both threads are
 simultaneously trying to update the same object, or if one thread
 is updating the object while the other is reading it, it is possible that
-inconsistencies can arise. This is called a <strong>race condition</strong>.
+inconsistencies can arise. This is called a <em class=term>race condition</em>.
 Both read–write and write–write races are problems.
 </p>
 <p>
@@ -307,7 +307,7 @@ If two threads T1 and T2 are respectively concurrently executing
 <code>withdraw(50)</code> and
 <code>deposit(50)</code>, what can happen? Clearly the final balance ought to be
 $100. But the actions of the different threads can be
-<strong>interleaved</strong> in
+<em class=term>interleaved</em> in
 many different ways. Under some of those interleavings, such as (R1,
 W1, R2, W2) or (R2, W2, R1, W1), the final balance is indeed $100. But
 other interleavings are more problematic: (R1, R2, W2, W1) destroys $50,
@@ -316,7 +316,7 @@ races between R1 and W2 and between R2 and W1.
 </p><p>
 We can fix this code by controlling which interleavings are possible. In
 particular, we want only interleavings in which the methods
-<code>withdraw()</code> and <code>deposit()</code> execute <strong>atomically</strong>,
+<code>withdraw()</code> and <code>deposit()</code> execute <em class=term>atomically</em>,
 meaning that their execution can be thought of as an indivisible unit that cannot
 be interrupted by another thread. This does not mean that when one thread
 executes, say, <code>withdraw()</code>, that all other threads are suspended.
@@ -340,7 +340,7 @@ lost-update race condition.
 
 <p>
 We have been seeing that sharing mutable objects between different
-threads is tricky. We need some kind of <strong>synchronization</strong> between the
+threads is tricky. We need some kind of <em class=term>synchronization</em> between the
 different threads to prevent race conditions. For example, we saw that the following two methods
 on a <code>BankAccount</code> object got us into trouble:
 </p>
@@ -369,17 +369,17 @@ updated incorrectly.
 <p>
 This example shows that sometimes a piece of code needs to be executed as
 though nothing else in the system is making updates. Such code segments are
-called <strong>critical sections</strong>. They need to be executed <strong>atomically</strong> and
-in <strong>isolation</strong>; that is, without interruption from or interaction with
+called <em class=term>critical sections</em>. They need to be executed <em class=term>atomically</em> and
+in <em class=term>isolation</em>; that is, without interruption from or interaction with
 other threads.
 </p>
 <p>
 However, we don't want to stop all threads just because one thread has
 entered a critical section. So we need a mechanism that only stops the
 interactions of other threads with this one. This is usually achieved
-by using <strong>locks</strong>. An alternative approach to achieving
+by using <em class=term>locks</em>. An alternative approach to achieving
 atomicity, software- and hardware-based
-<strong>transaction</strong> mechanisms, are a popular
+<em class=term>transaction</em> mechanisms, are a popular
 research topic, but locks remain for now the standard way to isolate
 threads.
 </p>
@@ -387,7 +387,7 @@ threads.
 <h2>The single-owner principle</h2>
 <p>
 The key to safe concurrency is that mutable state needs to be accessible to
-at most one thread at a given time. This thread is the current <strong>owner</strong> of
+at most one thread at a given time. This thread is the current <em class=term>owner</em> of
 the state. Given any collection of mutable state over
 which some invariant needs to hold, the invariant cannot be relied upon if two
 threads can race on accessing the state in a way that is not purely read-only.
@@ -413,13 +413,13 @@ thread owns it at a given time. Locks can enforce this property.
 <h2>Mutexes and <code>synchronized</code></h2>
 
 <p>
-A <strong>lock</strong> is a special object that can be <strong>held</strong> by threads, with some
+A <em class=term>lock</em> is a special object that can be <em class=term>held</em> by threads, with some
 restriction on which threads can hold it. The simplest form of lock is a
-<strong>mutual exclusion lock</strong>, or <strong>mutex</strong>, which can be held by at
+<em class=term>mutual exclusion lock</em>, or <em class=term>mutex</em>, which can be held by at
 most one thread at a time.
 </p>
 <p>
-Threads can <strong>acquire</strong> and <strong>release</strong> mutexes.
+Threads can <em class=term>acquire</em> and <em class=term>release</em> mutexes.
 </p>
 <dl>
 <dt>acquire:<dd><p>When a thread tries to acquire a mutex, it first checks whether
@@ -429,7 +429,7 @@ longer held by any thread. At that point, the thread then becomes the unique
 holder of the mutex. Note that in general, multiple threads can be blocked,
 waiting to acquire the mutex; there is no guarantee that the order in which they
 actually acquire the mutex corresponds to the order in which they tried. Mutex
-implementations usually try to provide some <strong>fairness</strong>, so that threads
+implementations usually try to provide some <em class=term>fairness</em>, so that threads
 do eventually acquire the mutex.
 </p>
 <dt>release:<dd>
@@ -517,7 +517,7 @@ synchronized void deposit(int n) {
 <h3>Mutex variations</h3>
 
 <p>
-Java mutexes are <strong>reentrant mutexes</strong>, meaning that it is harmless for a
+Java mutexes are <em class=term>reentrant mutexes</em>, meaning that it is harmless for a
 single thread to acquire the same mutex more than once. One consequence is that
 one synchronized method can call another on the same object without getting
 stuck trying to acquire the same mutex. Each mutex keeps track of the number of
@@ -535,9 +535,9 @@ same object from within the same thread are safe.
 </div>
 
 <p>
-A locking mechanism closely related to the mutex is the <strong>semaphore</strong>,
+A locking mechanism closely related to the mutex is the <em class=term>semaphore</em>,
 named after <a href="https://en.wikipedia.org/wiki/Railway_semaphore_signal">railway
-semaphores</a>. A <strong>binary semaphore</strong> acts just like a (non-reentrant)
+semaphores</a>. A <em class=term>binary semaphore</em> acts just like a (non-reentrant)
 mutex, except that a thread is not required to hold the semaphore in order to
 release it. In general, semaphores can be acquired by up to some fixed number
 of threads, and additional threads trying to acquire it block until some
@@ -667,7 +667,7 @@ current thread, the programmer must assume that its value can
 change at any time. Any invariant that involves the value of such a
 field cannot be relied upon.
 </p><p>
-Note that <strong>immutable</strong> state shared between threads doesn't need
+Note that <em class=term>immutable</em> state shared between threads doesn't need
 to be locked because it cannot be updated. This fact
 encourages a style of programming that avoids mutable state—which has an additional
 benefit of simplifying reasoning about code even when concurrency is not being used.

@@ -205,7 +205,7 @@ allow it. A similar situation arises with arrays, although in that case the erro
 </pre>
 
 <p>The idea that there can be a subtyping relationship between different instantiations
-of the same generic type is called <b>variance</b>. Variance is tricky to support in a
+of the same generic type is called <em class=term>variance</em>. Variance is tricky to support in a
 sound way, so Java does not support variance. Other languages such as Scala do have variance.
 </p>
 
@@ -280,7 +280,7 @@ the generics mechanism in Java when in a generic context where <code>T</code> is
 </p>
 <ol>
 <li>Constructors of <code>T</code> cannot be used; we cannot write <code>new T()</code>. The workaround for
-this limitation is to have an object with a <b>factory method</b> for creating <code>T</code> objects.</li>
+this limitation is to have an object with a <em class=term>factory method</em> for creating <code>T</code> objects.</li>
 
 <li>Arrays with <code>T</code> as elements cannot be created, either. We cannot write <code>new T[n]</code>,
 because the type <code>T</code> is not known at run time and so the type <code>T[]</code> cannot be installed

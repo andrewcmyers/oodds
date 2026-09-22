@@ -1,13 +1,13 @@
 <h1>Hash tables</h1>
 <p>
-Suppose we want a data structure to implement either a <strong>mutable
-set</strong> of elements with operations like <code>contains</code>,
+Suppose we want a data structure to implement either a <em class=term>mutable
+set</em> of elements with operations like <code>contains</code>,
 <code>add</code>, and <code>remove</code> that take an element
-as an argument, or a <strong>mutable map</strong> from keys to
+as an argument, or a <em class=term>mutable map</em> from keys to
 values with operations like <code>get</code>, <code>put</code>, and
 <code>remove</code> that take a key or a (key,value) pair for an
-argument. A <strong>map</strong> represents a partial function that maps
-keys to values; it is <strong>partial</strong> because it is not defined
+argument. A <em class=term>map</em> represents a partial function that maps
+keys to values; it is <em>partial</em> because it is not defined
 on all keys, but only on those that have been put into the map. We have
 now seen a few data structures that could be used for both of these
 implementation tasks.
@@ -41,7 +41,7 @@ for each of their main operations:
 </center>
 <p>
 Naturally, we might wonder if there is a data structure that can do better.
-And it turns out that there is: the <strong>hash table</strong>, one of the best and
+And it turns out that there is: the <em class=term>hash table</em>, one of the best and
 most useful data structures—when used correctly.
 </p>
 <p>
@@ -52,9 +52,9 @@ common ones, building up in steps.
 <p>
 While arrays are a slow implementation of maps and sets when you don't know the right index to
 look at, all of their operations are very fast when you do. This insight underlies
-the <strong>direct address table</strong>. Suppose that for each element that
+the <em class=term>direct address table</em>. Suppose that for each element that
 we want to store in the data structure, we can determine a unique integer index
-in the range \(0\dots m-1\). That is, we need an <strong>injective</strong> function that maps
+in the range \(0\dots m-1\). That is, we need an <em class=term>injective</em> function that maps
 elements (or keys) to integers in the range. Then we can use the indices produced
 by the function to decide at which index to store the elements in an array of size \(m\).
 </p>
@@ -112,7 +112,7 @@ numbers, and to look them up by social security number. Using the social
 security number as the index into a direct address table would require
 an array of 1 billion elements, almost all of which are likely to be
 unused. Modern computers usually have enough memory to store such a
-<strong>sparse</strong> array (it will require probably at least 8 GiB),
+<em class=term>sparse</em> array (it will require probably at least 8 GiB),
 but it will be a waste of memory. Furthermore, on
 most computer hardware, the use of caches means that accesses to large
 arrays are actually significantly slower than accesses to small arrays,
@@ -170,13 +170,13 @@ with (hashfn_fig) {
 </div>
 <p>
 Instead of requiring that each key be mapped to a unique index,
-hash tables allow <strong>collisions</strong> in which two keys map to the same index,
+hash tables allow <em class=term>collisions</em> in which two keys map to the same index,
 and consequently the array can be smaller, on the order of the number of
-elements in the hash table. The entries in the array are called <strong>buckets</strong>,
+elements in the hash table. The entries in the array are called <em class=term>buckets</em>,
 and we use \(m\) to denote the number of buckets.
 The mapping from keys to bucket indices
-is performed by a <strong>hash function</strong>;
-it maps the key in a reproducible way to a <strong>hash value</strong> (or just <strong>hash</strong>) that
+is performed by a <em class=term>hash function</em>;
+it maps the key in a reproducible way to a <em class=term>hash value</em> (or just <em class=term>hash</em>) that
 is a legal array index.
 </p>
 <p>
@@ -188,7 +188,7 @@ approximately \(1/m\).
 </p>
 
 <p>For example, suppose we are using an array with 13 entries and our keys are
-social security numbers.  Then we might use <strong>modular hashing</strong>, in which
+social security numbers.  Then we might use <em class=term>modular hashing</em>, in which
 the array index is computed as <code>(key % 13)</code>. Modular hashing is not
 very random, but is likely to be good enough in many applications.
 </p>
@@ -209,16 +209,16 @@ function must be chosen carefully to prevent the adversary from
 engineering collisions.  Modular hashing will not be good enough. In
 fact, it is possible to choose strings such that Java's built-in hashing
 of strings produces collisions. When dealing with adversarial keys, a
-<strong>cryptographic hash function</strong> should be used so that the
+<em class=term>cryptographic hash function</em> should be used so that the
 adversary cannot produce collisions at a rate higher than random choice.
 </p>
 <h2>Step 3: Collision resolution</h2>
 <h3>Chaining</h3>
 <p>
 Collisions are dealt with in two main ways. The best way is
-usually <strong>chaining</strong>: each array entry corresponds to a <strong>bucket</strong>
+usually <em class=term>chaining</em>: each array entry corresponds to a <em class=term>bucket</em>
 containing a mutable set of elements. (Confusingly, this approach is sometimes called
-<strong>closed addressing</strong> or <strong>open hashing</strong>.) Typically, the bucket is
+<em class=term>closed addressing</em> or <em class=term>open hashing</em>.) Typically, the bucket is
 implemented as a linked list, and each nonempty array entry contains a
 pointer to the head of the list. The list contains all keys that have been added to
 the hash table which hash to that array index.
@@ -342,22 +342,22 @@ setConnectionStyle("intersection")
 </div>
 <p>
 Another approach to collision resolution is
-<strong>probing</strong>. (Equally confusingly, this technique is also known as
-<strong>open addressing</strong> or <strong>closed hashing</strong>.) Rather
+<em class=term>probing</em>. (Equally confusingly, this technique is also known as
+<em class=term>open addressing</em> or <em class=term>closed hashing</em>.) Rather
 than put colliding elements in
 a linked list, all elements are stored in the array itself. When adding a new
 element to the hash table creates a collision, the hash table finds somewhere
 else in the array to put it. The simple way to find an empty index is to search ahead
 through the array indices with a fixed stride (usually 1) for the next unused array
 entry, wrapping modulo the length of the array if necessary. This strategy
-is called <strong>linear probing</strong>. It tends to produce a lot of
+is called <em class=term>linear probing</em>. It tends to produce a lot of
 clustering of elements, leading to poor performance. A better
-strategy is <strong>double hashing</strong>, in which a second hash function
+strategy is <em class=term>double hashing</em>, in which a second hash function
 is used to determine the probing interval.  Removing an element
 from a hash table is not as straightforward because simply removing the array
 element could mislead a probe for a different element. Instead, the element
 must remain but be marked as deleted, perhaps by changing the array entry to
-point to a distinguished <strong>tombstone</strong> object.
+point to a distinguished <em class=term>tombstone</em> object.
 </p>
 
 <p>Regardless of how collisions are resolved, the time required for hash
@@ -373,7 +373,7 @@ locations must be consulted in order to determine whether the element is
 present. The advantage over a single hash function is that the distribution of
 bucket sizes becomes much more uniform, a property known as “the power of two
 choices.” This idea underlies a recently popular variant of closed hashing,
-<strong>cuckoo hashing</strong>. Instead of probing, if both possible locations
+<em class=term>cuckoo hashing</em>. Instead of probing, if both possible locations
 are occupied, the newly added element <em>displaces</em> an element that was
 there, and this element is then re-added to the table using its other hash
 function. In general, a chain of displacements occurs. The more uniform
@@ -384,7 +384,7 @@ factor than classic probing without creating long probing sequences.</p>
 
 <p>Suppose we are using a chained hash table with \(m\) buckets, and the number of
 elements in the hash table is \(n\). The average number of elements per bucket is
-\(n/m\), which is called the <strong>load factor</strong> of the hash table, written as \(α\).  When
+\(n/m\), which is called the <em class=term>load factor</em> of the hash table, written as \(α\).  When
 we search for an element that is not in the hash table, the expected length of
 the linked list traversed is \(n/m = α\). If we search for an element that
 <em>is</em> in the hash table, there is at least one element in the traversed
@@ -439,10 +439,10 @@ before concluding the key is not there.
 <h2>Step 4: Resizable arrays</h2>
 <p>
 To avoid trying to predict how big to make the bucket array ahead of time,
-we can use a <strong>resizable array</strong> to dynamically adjust the size when necessary.
+we can use a <em class=term>resizable array</em> to dynamically adjust the size when necessary.
 Instead of representing the hash table as a bucket array, we introduce a hash table
 object that maintains a pointer to the current bucket array and the
-number of elements that are currently in the hash table. This <strong>header object</strong>
+number of elements that are currently in the hash table. This <em class=term>header object</em>
 is depicted in the figure on the right.
 </p>
 <div class="floatfigure">
@@ -494,7 +494,7 @@ Perhaps surprisingly, however,
 the expected cost per operation is still \(O(1)\). In
 particular, any sequence of \(n\) operations on the hash table always takes
 expected time \(O(n)\), or \(O(1)\)
-per operation. Therefore we say that the <strong>amortized</strong> asymptotic
+per operation. Therefore we say that the <em class=term>amortized</em> asymptotic
 complexity of hash table operations is \(O(1)\). </p>
 <p>
 To see why this is true, consider the worst case: inserting a series of elements
@@ -533,10 +533,10 @@ can't design a perfect hash function.
 </p>
 <p>
 An idealized hash function
-is one that satisfies the <strong>simple uniform hashing assumption</strong>: it behaves
+is one that satisfies the <em class=term>simple uniform hashing assumption</em>: it behaves
 as if it generates each bucket index randomly with equal probability whenever
 it sees a new key; whenever it is given the key later, it returns the same
-bucket index. Such an idealized hash function is called a <strong>random oracle</strong>.
+bucket index. Such an idealized hash function is called a <em class=term>random oracle</em>.
 </p>
 <p>
 It would be impractical to implement a hash function that behaves in exactly this way,
@@ -747,7 +747,7 @@ violated, so the table silently misbehaves. Whenever <code>equals()</code> is ov
 A useful building block for hashing is an <em>integer hash function</em> that
 maps from <code>int</code> to <code>int</code> or from <code>long</code> to
 <code>long</code> while introducing diffusion. Two standard approaches are
-<strong>modular hashing</strong> and <strong>multiplicative hashing</strong>. More expensive
+<em class=term>modular hashing</em> and <em class=term>multiplicative hashing</em>. More expensive
 techniques like cyclic redundancy checks (CRCs) and message digests are also
 used in practice.
 </p>
@@ -755,7 +755,7 @@ used in practice.
 <h4>Modular hashing</h4>
 
 <p>
-With <strong>modular hashing</strong>, the hash function is simply \(h(k) = k \mod m\)
+With <em class=term>modular hashing</em>, the hash function is simply \(h(k) = k \mod m\)
 for some modulus \(m\), which is typically the number of buckets. This hash
 function is easy to compute quickly when we have an integer hash code.
 Some values of \(m\) tend to produce poor results, though; in particular, if
@@ -777,7 +777,7 @@ sizes from a predefined table of appropriately sized primes.
 
 <h4>Multiplicative hashing</h4>
 <p>
-An alternative to modular hashing is <strong>multiplicative hashing</strong>, which is defined as
+An often faster alternative to modular hashing is <em class=term>multiplicative hashing</em>, which is defined as
 \(\newcommand\ffrac{\mathit{frac}}\)
 \(h(k) = \lfloor m * \ffrac(k·A)\rfloor\), where \(A\) is a constant between 0 and 1
 (e.g., Knuth recommends \(A = φ&minus;1 = 0.618033...\)), and the function \(\ffrac\)
@@ -891,7 +891,7 @@ to craft strings (e.g., usernames) that collided, effectively turning Perl's has
 into linked lists.
 </p>
 <p>
-To produce hashes resistant to an adversary, a <strong>cryptographic hash function</strong>
+To produce hashes resistant to an adversary, a <em class=term>cryptographic hash function</em>
 should be used. The message digest algorithms MD5, SHA-1,
 and SHA-2 are good choices whose security increases (and performance
 decreases) in that order. They are available in Java through the class
@@ -905,7 +905,7 @@ applied to the message digest.
 </p>
 <p>
 The value
-<code>IV</code> is the <strong>initialization vector</strong>. It should be randomly generated
+<code>IV</code> is the <em class=term>initialization vector</em>. It should be randomly generated
 when the program starts, using a high-entropy input source such as the
 class <code>java.security.SecureRandom</code>. The initialization vector
 prevents the adversary from testing possible values of <code>s</code> ahead of
@@ -1129,7 +1129,7 @@ value. Your computer is then more likely to get a wrong answer from a
 cosmic ray hitting it than from a collision in random 64-bit data.
 </p>
 <p>
-Precomputing and storing hash codes is an example of a <strong>space-time tradeoff</strong>,
+Precomputing and storing hash codes is an example of a <em class=term>space-time tradeoff</em>,
 in which we speed up computation at the cost of using
 extra memory.
 </p>
@@ -1137,7 +1137,7 @@ extra memory.
 <h3>Detecting clustering</h3>
 <p>
 When the distribution of keys into buckets is not random, we say that the hash
-table exhibits <strong>clustering</strong>. If you care about performance,
+table exhibits <em class=term>clustering</em>. If you care about performance,
 it is a good idea to test your hash
 function to make sure it does not exhibit clustering. With any
 hash function, it is possible to generate data that cause it to behave poorly,
@@ -1168,7 +1168,7 @@ In general, you should not count on this happening!
 <h4>Using bucket size variance</h4>
 <p>
 A more informative way to measure clustering looks at the sizes of the buckets.
-It is based on the <strong>variance</strong> of the distribution of bucket
+It is based on the <em class=term>variance</em> of the distribution of bucket
 sizes. If clustering is occurring, some buckets will have more elements than
 they should, and some will have fewer. Bucket
 sizes will vary more than one would expect from a random hash function.

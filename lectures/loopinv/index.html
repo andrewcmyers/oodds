@@ -2,7 +2,7 @@
 <p>
 Writing correct loops can be a challenging part of programming. To make it
 manageable to be able to convince ourselves that our code is correct, we want
-to use <strong>local reasoning</strong>, in which we consider one small piece
+to use <em class=term>local reasoning</em>, in which we consider one small piece
 of code at a time. Loops make reasoning challenging because they can
 do a lot of complex work.  To obtain local reasoning for loops, we want to
 be able to reason about loops one iteration at a time.
@@ -57,7 +57,7 @@ can be executed multiple times. How do we know what is true about the program
 as loops execute?
 </p>
 <p>
-A <strong>loop invariant</strong> is a condition that is true at both the beginning and end of
+A <em class=term>loop invariant</em> is a condition that is true at both the beginning and end of
 every iteration of the loop, somewhat like a class invariant,
 which must be true at the beginning and end of every public method. When you
 write a loop that works correctly, you are at least implicitly relying on a
@@ -71,7 +71,7 @@ tricky algorithms.
 Some loops are hard to write correctly without thinking about loop invariants.
 For example, suppose we want to find an element in a sorted array. We can do
 much better than scanning from left to right, which would take linear time: as
-we saw earlier, <strong>binary search</strong> can find an element in logarithmic time.
+we saw earlier, <em class=term>binary search</em> can find an element in logarithmic time.
 We can use loop invariants to take a more careful look at this algorithm.
 </p>
 <p>
@@ -109,7 +109,7 @@ precondition to one satisfying the postcondition.
 </p>
 <h2>Binary search loop invariant</h2>
 <p>
-A <strong>loop invariant</strong> describes the conditions that the loop body must
+A <em class=term>loop invariant</em> describes the conditions that the loop body must
 preserve in order to be correct. For this example, such a loop
 invariant can be expressed using three clauses:
 </p>
@@ -139,7 +139,7 @@ makes as it runs.
 The loop invariant is not actually exactly the same on every loop iteration,
 because it depends on the state of the program, such as the values of the
 mutable variables <code>l</code> and <code>r</code> in the example. The loop
-invariant is a <strong>predicate</strong>—a logical formula—over the program state.
+invariant is a <em class=term>predicate</em>—a logical formula—over the program state.
 </p>
 <p>
 If we know what the loop invariant is for a loop, and it is not blindingly
@@ -284,20 +284,20 @@ too-weak invariant is a common mistake, so it is good to try the Postcondition s
 
 <p>
 These three steps allow us to conclude that the loop satisfies
-<strong>partial correctness</strong>, which means that if the loop terminates, it
+<em class=term>partial correctness</em>, which means that if the loop terminates, it
 will succeed. In fact, these three steps constitute a proof of partial
 correctness by induction on the number of loop iterations. However, they
 do not imply that the loop terminates in the first place.
 </p>
 <p>
-To show <strong>total correctness</strong>, we must show in addition
+To show <em class=term>total correctness</em>, we must show in addition
 that the loop eventually terminates. To show this, there is a fourth step:
 </p>
 <ol>
 <li value="4"><p><strong>Termination.</strong> Assuming the loop invariant holds at the start of
 each iteration, show that some quantity strictly decreases, and that it cannot
 decrease indefinitely.
-This quantity is called the <strong class=defn>decrementing function</strong> (also known
+This quantity is called the <em class=term>decrementing function</em> (also known
 as the decreasing function or loop variant) and it is a function of the program state: that is, the variables
 \(\newcommand\DF{\textit{DF}}\)
 appearing in the loop. Calling the decrementing function \(DF\),
