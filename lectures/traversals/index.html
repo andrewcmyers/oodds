@@ -135,7 +135,7 @@ The algorithm pseudo-code is as follows:
 traversals. It allows the particular implementation to choose the node \(n\) from
 among the gray nodes; it allows choosing which and how many white successors to
 color gray; and it allows delaying the coloring of gray nodes black. We say
-that such an algorithm is <i>nondeterministic</i> because its next step is not uniquely
+that such an algorithm is <em class=term>nondeterministic</em> because its next step is not uniquely
 defined. However, as long as it does some work on each gray node that it picks,
 any implementation that can be described in terms of this algorithm will finish. Moreover,
 because the black–white invariant is maintained, it must reach all reachable nodes in the graph.
@@ -210,10 +210,10 @@ The final <code>distance</code> value of a node is the length of the minimum pat
 root to that node.
 All the nodes on the queue have <code>distance</code> within one of each other.
 In general, there is a set of nodes to be popped off,
-at some distance <i>k</i> from the source, and another set of elements, later
-on the queue, at distance <i>k+1</i>. Every time a new node is pushed onto the
-queue, it is at distance <i>k+1</i> until all the nodes at distance <i>k</i>
-are gone, and <i>k</i> then increases by one.
+at some distance \(k\) from the source, and another set of elements, later
+on the queue, at distance \(k+1\). Every time a new node is pushed onto the
+queue, it is at distance \(k+1\) until all the nodes at distance \(k\)
+are gone, and \(k\) then increases by one.
 </p>
 
 <p>Suppose that we run this algorithm on the following graph, starting with the
@@ -257,7 +257,7 @@ frontier = new Stack();
 </pre>
 
 In that case we get a completely different order of traversal.
-Assuming that successors are pushed onto the stack in <i>reverse</i>
+Assuming that successors are pushed onto the stack in <em>reverse</em>
 alphabetic order, the successive stack states look like this
 (elements are pushed and popped on the left):
 </p>
@@ -388,7 +388,7 @@ tree that is a subgraph of the original graph, we get a <em class=term>DFS fores
 <p>
 One of the most useful algorithms on graphs is <em>topological sort</em>, in
 which the nodes of an acyclic graph are placed in a total order consistent with the
-edges of the graph; that is, if there is an edge (<i>u</i>,<i>v</i>), then <i>u</i> comes before <i>v</i> in 
+edges of the graph; that is, if there is an edge \((u,v)\), then \(u\) comes before \(v\) in 
 the total order. This is useful when you need to order a set of
 elements and some elements have no ordering constraint relative to other elements.
 </p>
@@ -421,7 +421,7 @@ That is, all DAGs have at least one topological sort.
 <p>We can obtain a linear-time algorithm for topological sort from DFS.
 The key observation is that a node finishes (is marked black) only after all
 of its descendants have been marked black. Therefore, a node that is marked
-black later must come earlier when topologically sorted. A <i>postorder</i> traversal generates nodes in the reverse of
+black later must come earlier when topologically sorted. A <em class=term>postorder</em> traversal generates nodes in the reverse of
 a topological sort:
 </p>
 
@@ -653,9 +653,9 @@ An efficient algorithm due to Kosaraju finds strong components by performing DFS
 <li>Topologically sort the nodes, ignoring the back edges (recall that without the back edges, the graph is acyclic).
 Order the nodes in topological order so that all tree, forward, and cross edges go from left to right.
 Then all the back edges go from right to left (why?). 
-<li>For all nodes <i>v</i> in topological order from left to right, do a DFS starting
-at <i>v</i> on the <em>transpose</em> of the graph (the digraph obtained by reversing all the edges) and mark all
-previously unmarked nodes reachable from <i>v</i> as being in the same strong component as <i>v</i>. 
+<li>For all nodes \(v\) in topological order from left to right, do a DFS starting
+at \(v\) on the <em>transpose</em> of the graph (the digraph obtained by reversing all the edges) and mark all
+previously unmarked nodes reachable from \(v\) as being in the same strong component as \(v\). 
 </ol>
 
 <p>
@@ -754,6 +754,6 @@ each SCC is also topologically ordered.</p -->
 <hr>
 <h2>Further reading</h2>
 <ul>
-<li>[1] Carrano. <i>Data Structures and Abstractions with Java</i>, Chapter 31.
-<li>[2] Cormen, Leiserson, and Rivest. <i>Introduction to Algorithms</i>, Chapter 23.
+<li>[1] Carrano. <cite>Data Structures and Abstractions with Java</cite>, Chapter 31.
+<li>[2] Cormen, Leiserson, and Rivest. <cite>Introduction to Algorithms</cite>, Chapter 23.
 </ul>

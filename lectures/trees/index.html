@@ -334,10 +334,10 @@ algorithm can be expressed compactly as a (tail-)recursive method on <code>Binar
 <p>
 We've used Java's &ldquo;ternary expression&rdquo; here to make the code
 more compact (and to show off another coding idiom!) The expression
-<code><i>b</i> ? <i>e</i><sub>1</sub> : <i>e</i><sub>2</sub></code> is a
+<code><var>b</var> ? <var>e</var><sub>1</sub> : <var>e</var><sub>2</sub></code> is a
 <em class=term>conditional expression</em> whose value is the result of either
-<i>e</i><sub>1</sub> or <i>e</i><sub>2</sub>, depending on whether the boolean
-expression <i>b</i> evaluates to <code>true</code> or <code>false</code>.</p>
+<var>e</var><sub>1</sub> or <var>e</var><sub>2</sub>, depending on whether the boolean
+expression <var>b</var> evaluates to <code>true</code> or <code>false</code>.</p>
 <p>
 Since the method is tail-recursive, we can also write it as a loop. Here is a
 version where the root of the tree is passed in explicitly as a parameter
@@ -817,8 +817,8 @@ can be skipped.
 </p>
 <p>
 Other traversals than in-order can be done.
-By visiting a node <i>before</i> visiting either of its children,
-we obtain <em class=term>preorder</em> traversal. By visiting a node <i>after</i> visiting both of its children,
+By visiting a node <em>before</em> visiting either of its children,
+we obtain <em class=term>preorder</em> traversal. By visiting a node <em>after</em> visiting both of its children,
 we obtain <em class=term>postorder</em> traversal.
 </p>
 <pre class=load>

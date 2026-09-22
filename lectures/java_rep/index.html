@@ -246,15 +246,16 @@ of multiplying by two would not be representable in that numeric type anyway.
 Therefore, shifting left by one bit is exactly the same as multiplying by 2.
 </p>
 <p>
-It is possible to <i>divide</i> by shifting <i>right</i>. The (arithmetic) right-shift
-operator <code>&gt;&gt;</code> shifts all bits in a number to the right by
-the specified number of positions. However, unlike the left-shift operator,
-it does not change the most significant bit. By keeping the most significant
-bit, it preserves the sign of the result and therefore inverts the effect of
-<code>&lt;&lt;</code> when that operator would have successfully multiplied by 2.
+It is possible to <em>divide</em> by shifting <em>right</em>. The (arithmetic)
+<em class=term>right-shift operator</em> <code>&gt;&gt;</code> shifts all bits in a number to the
+right by the specified number of positions. However, unlike the left-shift
+operator, it does not change the most significant bit. By keeping the most
+significant bit, it preserves the sign of the result and therefore inverts the
+effect of <code>&lt;&lt;</code> when that operator would have successfully
+multiplied by 2.
 </p>
 <p>
-There is also a <i>logical</i> right shift operator <code>&gt;&gt;&gt;</code>,
+There is also a <em class=term>logical right shift</em> operator <code>&gt;&gt;&gt;</code>,
 which shifts all bits to the right but changes the high bit to <code>0</code>.
 On nonnegative numbers, shifting right by one bit still has the effect of
 dividing by two, but its effect on negative numbers is not so easy (or useful) to interpret

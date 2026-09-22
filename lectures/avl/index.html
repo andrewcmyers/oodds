@@ -300,14 +300,14 @@ this transformation too keeps the various tree nodes in exactly the same relativ
 <p>
 Tree rotations are efficient because they only affect three nodes of the tree:
 the nodes \(x\) and \(y\), and a parent node \(p\) that is not shown in the diagram above.
-In the following code, the variable <code>p.<i>child</i></code> represents the
+In the following code, the variable <code>p.<var>child</var></code> represents the
 appropriate child instance variable of node \(p\): either <code>p.left</code> or <code>p.right</code>.
 </p>
 <pre>
 <b>Left rotation</b>                          <b>Right rotation</b>
 x.right = y.left; /* B */              y.left = x.right; /* B */
 y.left = x;                            x.right = y;
-p.<i>child</i> = y;                           p.<i>child</i> = x;
+p.<var>child</var> = y;                           p.<var>child</var> = x;
 </pre>
 
 <h2>Inserting into an AVL tree</h2>

@@ -361,7 +361,7 @@ can be useful if they are made <code>final</code>.</td></tr>
 <div class=exercise>
 Suppose a new developer changes <code>Rational</code> so that the field <code>q</code> is declared
 <code>public</code>. Why does this single change make it impossible to enforce the class invariant
-<i>gcd(p, q) = 1 and q &gt; 0</i>?
+\(\texttt{gcd}(p, q) = 1\) and \(q &gt; 0\)?
 <p class=answer>
 With <code>q</code> public, client code can assign any value to <code>q</code> at any time—including
 0 or a value that shares a factor with <code>p</code>. The class no longer mediates access to the
@@ -428,7 +428,7 @@ write working code!
 </p>
 <p>
 Conversely, a class invariant creates an
-<i>obligation</i> for the programmer:
+<em>obligation</em> for the programmer:
 the class invariant must hold for all objects of the class when
 methods and constructors return. In particular, the constructor
 for <code>Rational</code> must only create objects that satisfy

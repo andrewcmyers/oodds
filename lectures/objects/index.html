@@ -197,7 +197,7 @@ don't destroy the number 2 when we assign into y. What is stored
 in x is something that represents or names 2. In the view on the right, variables
 store values, so we can put the value 2 directly into x. Both views are equally correct in
 the sense that they give the same answers if we use either of them to predict what will happen
-when we run a program and observe its output. Of course, what <i>actually</i> happens
+when we run a program and observe its output. Of course, what <em>actually</em> happens
 when we run the program is more complicated than either of these diagrams! So it is
 very useful to have a simple model that nevertheless manages to accurately
 explain the output we get.
@@ -238,23 +238,23 @@ here. We see more statement forms later.
 <tr>
 <th>Statement syntax</th><th>Meaning</th>
 <tr>
-<td><code><i>var</i> = <i>expr</i></td>
-<td>Assign the value of the expression <i>expr</i> into the variable <i>var</i>
+<td><code><var>var</var> = <var>expr</var></code></td>
+<td>Assign the value of the expression <var>expr</var> into the variable <var>var</var>
 <tr>
-<td><code>if (<i>expr</i>) <i>stmt</i></code></td>
-<td>A conditional. If expression <i>expr</i> evaluates to <code>true</code>, perform the <em class=term>consequent</em> statement <i>stmt</i>.
+<td><code>if (<var>expr</var>) <var>stmt</var></code></td>
+<td>A conditional. If expression <var>expr</var> evaluates to <code>true</code>, perform the <em class=term>consequent</em> statement <var>stmt</var>.
 <tr>
-<td><code>if (<i>expr</i>) <i>stmt1</i> else <i>stmt2</i></code>   </td>
-<td>If expression <i>expr</i> evaluates to <code>true</code>, perform the statement <code><i>stmt1</i></code>. Otherwise, perform the <em class=term>alternative</em> statement <code><i>stmt2</i></code>.
+<td><code>if (<var>expr</var>) <var>stmt1</var> else <var>stmt2</var></code>   </td>
+<td>If expression <var>expr</var> evaluates to <code>true</code>, perform the statement <code><var>stmt1</var></code>. Otherwise, perform the <em class=term>alternative</em> statement <code><var>stmt2</var></code>.
 <tr>
-<td><code>while (<i>expr</i>) <i>stmt</i></code> <td>A while-loop. If the <em class=term>guard
-expression</em> <code><i>expr</i></code> evaluates to <code>true</code>, perform
-statement <code><i>stmt</i></code>. Then repeat execution of the entire loop.
-The loop stops when <code><i>expr</i></code> evaluates to <code>false</code> on any iteration of the loop.
+<td><code>while (<var>expr</var>) <var>stmt</var></code> <td>A while-loop. If the <em class=term>guard
+expression</em> <code><var>expr</var></code> evaluates to <code>true</code>, perform
+statement <code><var>stmt</var></code>. Then repeat execution of the entire loop.
+The loop stops when <code><var>expr</var></code> evaluates to <code>false</code> on any iteration of the loop.
 <tr>
-<td><code>return <i>expr</i></code>
+<td><code>return <var>expr</var></code>
 <td>End the execution of the current method and return the value of
-<code><i>expr</i></code> as the value of the method.
+<code><var>expr</var></code> as the value of the method.
 </table>
 
 <p>
@@ -499,7 +499,7 @@ Point b = new Point();
 <p>
 Even though these objects represent the same point on the plane, they are
 different objects.  We represent this by drawing objects as boxes. Viewed as a
-value, the object <i>is</i> the box, so we refer to objects as <em class=term>boxed
+value, the object <em>is</em> the box, so we refer to objects as <em class=term>boxed
 values</em>, whereas primitive values are <em class=term>unboxed values</em>. The object
 diagram for the above code shows that we have two distinct values in play:
 </p>
@@ -564,7 +564,7 @@ r.UR = b;
 Assuming variables <code>a</code> and <code>b</code> are initialized and
 updated as in the code above, we
 arrive at the following object diagram. Notice that the <code>Rectangle</code> object does not
-<i>contain</i> the two <code>Point</code> objects; it merely <strong>references</strong> them by containing
+<em>contain</em> the two <code>Point</code> objects; it merely <strong>references</strong> them by containing
 <em class=term>pointers</em> to the <code>Point</code> objects. Changes
 to the point objects through variables <code>a</code> and <code>b</code> will still
 affect what rectangle <code>r</code> represents.
@@ -839,7 +839,7 @@ class Point {
 }
 </pre>
 <p>
-As the example shows, there <i>is</i> a way to talk about shadowed instance
+As the example shows, there <em>is</em> a way to talk about shadowed instance
 variables, using the object reference <code>this</code>. The expression
 <code>this</code> can only be used inside instance methods (not static methods)
 and refers to the current object: in this case, the object being

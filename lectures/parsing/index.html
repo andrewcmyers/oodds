@@ -93,22 +93,22 @@ productions specifying alternative ways to expand it. For example, we can write
 a pseudo-English grammar corresponding to the parse tree above:
 </p>
 <pre>
-<i>sentence</i> → <i>noun-phrase verb-phrase noun-phrase</i>
-<i>sentence</i> → <i>noun-phrase verb-phrase</i>
-<i>noun-phrase</i> → <i>noun</i>
-<i>noun-phrase</i> → <i>article</i> <i>noun</i>
-<i>noun</i> → <i>adjective</i> <i>noun</i>
-<i>article</i> → <b>the</b> | <b>a</b> | <b>an</b>
-<i>adjective</i> → <b>young</b> | <b>old</b> | <b>red</b> | ...
-<i>noun</i> → <b>cat</b> | <b>dog</b> | <b>rat</b> | <b>cheese</b> | ...
-<i>verb</i> → <b>eats</b> | <b>barks</b> | ...
+<var>sentence</var> → <var>noun-phrase verb-phrase noun-phrase</var>
+<var>sentence</var> → <var>noun-phrase verb-phrase</var>
+<var>noun-phrase</var> → <var>noun</var>
+<var>noun-phrase</var> → <var>article</var> <var>noun</var>
+<var>noun</var> → <var>adjective</var> <var>noun</var>
+<var>article</var> → <b>the</b> | <b>a</b> | <b>an</b>
+<var>adjective</var> → <b>young</b> | <b>old</b> | <b>red</b> | ...
+<var>noun</var> → <b>cat</b> | <b>dog</b> | <b>rat</b> | <b>cheese</b> | ...
+<var>verb</var> → <b>eats</b> | <b>barks</b> | ...
 </pre>
 <p>
 As an abbreviation, when a single nonterminal has multiple productions,
 we can write them all together on the right side separated by a vertical
-bar. For example, the two productions for the nonterminal <code><i>noun-phrase</i></code>
+bar. For example, the two productions for the nonterminal <code><var>noun-phrase</var></code>
 could have been expressed more concisely:
-<code><i>noun-phrase</i> → <i>noun</i> | <i>article</i> <i>noun</i></code>.
+<code><var>noun-phrase</var> → <var>noun</var> | <var>article</var> <var>noun</var></code>.
 This notation is just an abbreviation for writing out multiple productions
 in full.
 </p>
@@ -121,24 +121,24 @@ out whether an input string is part of the language of the grammar and to
 construct a parse tree if so.
 </p>
 <p>The language of a grammar can be infinite in size if the grammar is
-<em class=term>recursive</em>. For example, the productions <code><i>noun-phrase</i> → <i>article
-noun</i></code> and <code><i>noun</i> → <i>adjective</i></code>
-noun</i> allow us to derive the following noun phrases:
+<em class=term>recursive</em>. For example, the productions <code><var>noun-phrase</var> → <var>article
+noun</var></code> and <code><var>noun</var> → <var>adjective</var> <var>noun</var></code>
+allow us to derive the following noun phrases:
 “the dog”, “the old dog”, “the old old dog”, “the old old old dog”, and so on ad infinitum.
 </p>
 
 <div class=exercise>
-Consider the pseudo-English grammar given above. Which of the following strings are in the language of the grammar?
+Consider the pseudo-English grammar given above. Which of the following strings are in the language of the grammar, and how do they parse?
 <ol type=a>
 <li>the rat eats cheese</li>
 <li>rat eats</li>
 <li>the the dog</li>
 </ol>
 <p class=answer>
-(a) is in the language: it parses as <i>sentence → noun-phrase verb-phrase noun-phrase</i>,
+(a) is in the language: it parses as <var>sentence → noun-phrase verb-phrase noun-phrase</var>,
 with the two noun phrases being “the rat” and “cheese”. (b) is also in the language,
-parsed as <i>sentence → noun-phrase verb-phrase</i>. (c) is not in the language, because
-no production allows <i>article</i> to precede another <i>article</i>.
+parsed as <var>sentence → noun-phrase verb-phrase</var>. (c) is not in the language, because
+no production allows <var>article</var> to precede another <var>article</var>.
 </p>
 </div>
 <h2>Ambiguity</h2>
@@ -148,10 +148,10 @@ tree. Such a grammar is said to be <em class=term>ambiguous</em>.
 </p>
 <p>
 An example of an ambiguous grammar is the following grammar for arithmetic expressions,
-with a single nonterminal symbol <i>E</i> and four productions:
+with a single nonterminal symbol <var>E</var> and four productions:
 </p>
 <pre>
-<i>E</i> → <b>n</b> | <i>E</i> + <i>E</i> | <i>E</i> × <i>E</i> | ( <i>E</i> )
+<var>E</var> → <b>n</b> | <var>E</var> + <var>E</var> | <var>E</var> × <var>E</var> | ( <var>E</var> )
 </pre>
 <p>
 The symbols <b>n</b>, <b>+</b>, <b>×</b>, <b>(</b>, and <b>)</b> are all
@@ -184,11 +184,11 @@ Two parse trees for “<code>2+3×5</code>”
 </div>
 <p>
 Only one of these parse trees corresponds to our usual understanding of the
-meaning of the expression as arithmetic: the one on the left.
-The problem with the parse tree on the right is that it violates our
-expectations about <em class=term>precedence</em>. By convention, multiplicative operations
-have higher precedence than additive operations, but the parse tree on the
-right violates this custom, because the addition is performed first.
+meaning of the expression as arithmetic: the one on the left.  The problem
+with the parse tree on the right is that it violates our expectations about
+<em class=term>operator precedence</em>. By convention, multiplication has
+higher precedence than addition, but the parse tree on the right violates this
+custom, because it indicates that addition is performed first.
 </p>
 
 <p>
@@ -203,15 +203,15 @@ in practice it is possible to design grammars in a way that avoids ambiguity.
 <p>To remove the ambiguity and obtain the expected precedence, the
 grammar can be rewritten to use more nonterminals. We add more nonterminals
 to prevent a “+” production from appearing directly under a “×” production.
-Here <i>T</i> represents an operand in an additive expression and
-<i>F</i> represents an operand in a multiplicative expression.
-The productions in this grammar prevent a <i>T</i> from appearing under an <i>F</i> in the
+Here <var>T</var> represents an operand in an additive expression and
+<var>F</var> represents an operand in a multiplicative expression.
+The productions in this grammar prevent a <var>T</var> from appearing under an <var>F</var> in the
 parse tree unless shielded by parentheses:
 </p>
 <pre>
-<i>E</i> → <i>E</i> + <i>T</i> | <i>T</i>
-<i>T</i> → <i>T</i> × <i>F</i> | <i>F</i>
-<i>F</i> → <b>n</b> | ( <i>E</i> )
+<var>E</var> → <var>E</var> + <var>T</var> | <var>T</var>
+<var>T</var> → <var>T</var> × <var>F</var> | <var>F</var>
+<var>F</var> → <b>n</b> | ( <var>E</var> )
 </pre>
 <p>This grammar has exactly the same language as the above grammar but is unambiguous. For example,
 the string “<code>2+3×5</code>” parses uniquely with this new grammar:
@@ -306,20 +306,20 @@ is being used. Recursive-descent parsing is therefore also known as
 </p>
 
 <p>
-The grammar above ensures that the operators + and × are <i>left-associative</i> (operations of
+The grammar above ensures that the operators + and × are <em class=term>left-associative</em> (operations of
 equal precedence are performed left-to-right). To simplify exposition, let us temporarily
-change the grammar to make them <em>right</em>-associative instead:
+change the grammar to make them <em class=term>right-associative</em> instead:
 </p>
 <pre>
-<i>E</i> → <i>T</i> + <i>E</i> | <i>T</i>
-<i>T</i> → <i>F</i> × <i>T</i> | <i>F</i>
-<i>F</i> → <b>n</b> | ( <i>E</i> )
+<var>E</var> → <var>T</var> + <var>E</var> | <var>T</var>
+<var>T</var> → <var>F</var> × <var>T</var> | <var>F</var>
+<var>F</var> → <b>n</b> | ( <var>E</var> )
 </pre>
 <p>
 We see later how left-associativity can be regained.
 </p>
 
-<p>The method to parse a string generated by the nonterminal <i>E</i> first recursively parses a string generated by <i>T</i> (because both productions for <i>E</i> start with <i>T</i>), then peeks ahead at the next token to see if it is a +. This determines whether the input contains a string generated by <i>T</i> <tt>+</tt> <i>E</i> or just <i>T</i>, thereby determining which production to apply next.
+<p>The method to parse a string generated by the nonterminal <var>E</var> first recursively parses a string generated by <var>T</var> (because both productions for <var>E</var> start with <var>T</var>), then peeks ahead at the next token to see if it is a +. This determines whether the input contains a string generated by <var>T</var> <tt>+</tt> <var>E</var> or just <var>T</var>, thereby determining which production to apply next.
 </p>
 <pre>
 // E → T + E | T
@@ -443,7 +443,7 @@ to disambiguate parsing. Once the expression is parsed, they are
 no longer needed, because the tree structure determines the 
 evaluation order. In fact, the expressions “2+(3×5)” and “2+3×5” should produce
 exactly the same AST. Note also that the tree does not need to keep track of
-nonterminals like <i>T</i> and <i>F</i>; they help get the parse right
+nonterminals like <var>T</var> and <var>F</var>; they help get the parse right
 but add no useful information to the AST.
 </p>
 <p>The abstract syntax tree is implemented as a data structure. However, unlike the
@@ -589,7 +589,7 @@ E &→  T + T + T + T \\
 </p>
 <p>
 Another way to express all these productions is to adapt the <em class=term>Kleene star</em>
-notation used in regular expressions: the expression <i>A</i><sup>*</sup> means
+notation used in regular expressions: the expression <var>A</var><sup>*</sup> means
 0 or more concatenated strings, each chosen
 from the language of \(A\). For example, if the language of
 \(A\) is {“a”, ”bb”}, then the language of \(A^*\)

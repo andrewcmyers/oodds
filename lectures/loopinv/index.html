@@ -240,10 +240,10 @@ use the following steps, depicted in the figure:
 true just after loop initialization. That is, the loop invariant must be
 implied by the loop precondition.
 For while-loops of the form <code>while
-(<i>guard</i>) { <i>body</i> }</code>, the invariant must be true before
-beginning the loop.  For for-loops <code>for (<i>init</i>; <i>guard</i>;
-<i>incr</i>) { body }</code>, the invariant must be true just after executing
-the code <code><i>init</i></code>, which is not properly part of the loop because
+(<var>guard</var>) { <var>body</var> }</code>, the invariant must be true before
+beginning the loop.  For for-loops <code>for (<var>init</var>; <var>guard</var>;
+<var>incr</var>) { body }</code>, the invariant must be true just after executing
+the code <code><var>init</var></code>, which is not properly part of the loop because
 it is executed only once.</p>
 <p>
 Viewing the loop as a tail-recursive function, Establishment is about showing that

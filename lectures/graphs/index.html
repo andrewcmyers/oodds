@@ -535,13 +535,14 @@ O(V<sup>2</sup>) time. We can do better, as we'll see shortly.
 </p>
 <div class=exercise>
 Give one valid topological ordering of the &ldquo;men's informal dressing problem&rdquo; DAG above
-that is different from the two shown. Also explain why any ordering that places <i>jacket</i>
-before <i>shirt</i> is invalid.
+that is different from the two shown. Also explain why any ordering that places <var>jacket</var>
+before <var>shirt</var> is invalid.
 <p class=answer>
-One valid ordering is (socks, shirt, tie, pants, belt, jacket, shoes); many others are possible.
-Placing <i>jacket</i> before <i>shirt</i> is invalid because there is an edge (shirt &rarr; tie)
-and (tie &rarr; jacket), so shirt must precede jacket in any topological sort. More directly,
-(shirt &rarr; belt &rarr; jacket) also forces shirt before jacket.
+One valid ordering is (socks, shirt, tie, pants, belt, jacket, shoes);
+many others are possible.  Placing jacket before shirt is invalid;
+there are edges (shirt &rarr; tie) and (tie &rarr; jacket), so
+shirt must precede jacket in any topological sort. More directly, (shirt
+&rarr; belt &rarr; jacket) also forces shirt before jacket.
 </p>
 </div>
 
