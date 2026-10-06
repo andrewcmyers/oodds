@@ -922,7 +922,7 @@ also be partitioned to the left side.
 
 <div class=figure>
 <div class="controls">
-    <input id="qsdata" type="text" value="5, 3, 8, 1, 9, 2, 7, 4, 0, 6"
+    <input id="qsdata" type="text" value="5, 3, 8, 1, 9, 2, 0, 4, 7, 6"
            placeholder="e.g. 5, 3, 8, 1">
 </div>
 <canvas id="quicksort_canvas" style="width: 700px; height: 120px"></canvas>
@@ -955,7 +955,8 @@ function runQuicksort() {
         setStyle('partitionStroke', '#bbb')
         setStyle('partitionLineWidth', 2)
         setStyle('partitionPadding', 8)
-        setStyle('rightStroke', '#2070e0')
+        setStyle('iStroke', '#e07020')
+        setStyle('jStroke', '#2070e0')
         setStyle('pivotStroke', '#c04080')
 
         const m = margin(5)
@@ -967,94 +968,85 @@ function runQuicksort() {
         sa.addRegion("leftDone")
         sa.addRegion("rightDone")
 
-        // Highlights: pivot (magenta), left pointer (orange), right pointer (blue)
+        // Highlights: the pivot value (magenta) and the indices i and j
         sa.addHighlight("pivot")
-        sa.addHighlight("left")
-        sa.addHighlight("right")
+        sa.addHighlight("i")
+        sa.addHighlight("j")
 
         align("LR", "center", sa, m)
 
-        // Quicksort with leftmost pivot
-        function qsort(lo, hi) {
-            if (lo >= hi) return
+        // partition.java, with the green regions showing the loop invariant:
+        // a[l..i) is at most p, a[j+1..r) is at least p, a[i] is at least p,
+        // and a[j] is at most p. The pivot is taken from a[l] rather than
+        // chosen randomly, so that stepping through the figure is repeatable.
+        function partition(l, r) {
+            const p = sa.valueAt(l)
+            let i = l, j = r - 1
+            // Which slot holds the pivot value; the swaps below move it.
+            let pivotSlot = l
 
-            sa.setRegion("partition", lo, hi)
-
-            const pivot = sa.valueAt(lo)
-            let i = lo + 1, j = hi
-
-            // Highlight pivot and show initial pointer positions
-            sa.moveHighlight("pivot", lo)
-            sa.moveHighlight("left", i)
-            sa.moveHighlight("right", j)
+            sa.moveHighlight("pivot", pivotSlot)
+            sa.moveHighlight("i", i)
+            sa.moveHighlight("j", j)
             sa.step({ autoAdvance: false })
 
-            while (i <= j) {
-                // Scan left pointer rightward
-                while (i <= j && sa.valueAt(i) <= pivot) {
-                    i++
-                    if (i <= j) {
-                        sa.moveHighlight("left", i)
-                        sa.setRegion("leftDone", lo + 1, i - 1)
-                        sa.step()
-                    }
-                }
-                if (i > j) {
-                    sa.setRegion("leftDone", lo + 1, i - 1)
-                    sa.step()
-                    break
-                }
-
-                // Scan right pointer leftward
-                while (i <= j && sa.valueAt(j) > pivot) {
-                    j--
-                    if (i <= j) {
-                        sa.moveHighlight("right", j)
-                        sa.setRegion("rightDone", j + 1, hi)
-                        sa.step()
-                    }
-                }
-                if (i > j) {
-                    sa.setRegion("rightDone", j + 1, hi)
-                    sa.step()
-                    break
-                }
-
-                // Swap and move pointers inward
-                if (i < j) {
-                    sa.swap(i, j)
-                    i++
-                    j--
-                    if (i <= j) {
-                        sa.moveHighlight("left", i)
-                        sa.moveHighlight("right", j)
-                        sa.setRegion("leftDone", lo + 1, i - 1)
-                        sa.setRegion("rightDone", j + 1, hi)
-                        sa.step()
-                    }
-                } else {
-                    break
-                }
-            }
-
-            // Place pivot: swap with position j
-            sa.hideHighlight("pivot")
-            sa.hideHighlight("left")
-            sa.hideHighlight("right")
-            sa.hideRegion("leftDone")
-            sa.hideRegion("rightDone")
-            if (j > lo) {
-                sa.swap(lo, j)
-            } else {
+            // No bounds check: p is not greater than itself, so a[l] stops j.
+            while (sa.valueAt(j) > p) {
+                j--
+                sa.moveHighlight("j", j)
+                sa.setRegion("rightDone", j + 1, r - 1)
                 sa.step()
             }
 
-            // Recurse (child calls overwrite the partition region directly)
-            qsort(lo, j - 1)
-            qsort(j + 1, hi)
+            while (i < j) {
+                sa.swap(i, j)
+                if (pivotSlot === i) pivotSlot = j
+                else if (pivotSlot === j) pivotSlot = i
+                sa.moveHighlight("pivot", pivotSlot)
+                // Each swapped value is now on its own side of the pivot, and
+                // is the value that stops the other index's scan below.
+                sa.setRegion("leftDone", l, i)
+                sa.setRegion("rightDone", j, r - 1)
+                sa.step()
+
+                do {
+                    i++
+                    sa.moveHighlight("i", i)
+                    sa.setRegion("leftDone", l, i - 1)
+                    sa.step()
+                } while (sa.valueAt(i) < p)
+
+                do {
+                    j--
+                    sa.moveHighlight("j", j)
+                    sa.setRegion("rightDone", j + 1, r - 1)
+                    sa.step()
+                } while (sa.valueAt(j) > p)
+            }
+
+            return j + 1
         }
 
-        qsort(0, n - 1)
+        // Sort a[l..r).
+        function qsort(l, r) {
+            if (l >= r - 1) return // 0 or 1 elements are already sorted
+
+            sa.setRegion("partition", l, r - 1)
+            const k = partition(l, r)
+
+            sa.hideHighlight("pivot")
+            sa.hideHighlight("i")
+            sa.hideHighlight("j")
+            sa.hideRegion("leftDone")
+            sa.hideRegion("rightDone")
+            sa.step()
+
+            // Child calls overwrite the partition region directly.
+            qsort(l, k)
+            qsort(k, r)
+        }
+
+        qsort(0, n)
         sa.finish()
         sa.setH(40)
 
@@ -1085,17 +1077,27 @@ using <code>5</code> as the pivot value (already at <code>a[l]</code>). Show the
 and the values of <code>i</code> and <code>j</code> after each swap, and give the final partition
 index returned.
 <p class=answer>
-Initial state: <code>[5, 3, 8, 2, 7, 1, 6, 4]</code> with <code>i = 0</code>, <code>j = 7</code>.
-Scanning: <code>i</code> advances to index 2 (<code>a[2] = 8 ≥ 5</code>); <code>j</code> stays at
-index 7 (<code>a[7] = 4 ≤ 5</code>). Swap <code>a[2]</code> and <code>a[7]</code>:
-<code>[5, 3, 4, 2, 7, 1, 6, 8]</code>, then <code>i = 3</code>, <code>j = 6</code>.
-Scanning: <code>i</code> advances to index 4 (<code>a[4] = 7 ≥ 5</code>); <code>j</code> retreats to
-index 5 (<code>a[5] = 1 ≤ 5</code>). Swap <code>a[4]</code> and <code>a[5]</code>:
-<code>[5, 3, 4, 2, 1, 7, 6, 8]</code>, then <code>i = 5</code>, <code>j = 4</code>.
-Now <code>i > j</code>, so the loop exits and returns <code>j + 1 = 5</code>. The two subarrays
-are <code>[5, 3, 4, 2, 1]</code> (indices 0–4) and <code>[7, 6, 8]</code> (indices 5–7).
+The loop setup leaves <code>i = 0</code> and <code>j = 7</code>: the scan
+<code>while (a[j] &gt; p) j--</code> stops immediately because
+<code>a[7] = 4</code> is not greater than 5.
+Swap <code>a[0]</code> and <code>a[7]</code>:
+<code>[4, 3, 8, 2, 7, 1, 6, 5]</code>. Advancing <code>i</code> past
+<code>a[1] = 3</code> stops it at index 2 (<code>a[2] = 8 ≥ 5</code>), and
+retreating <code>j</code> past <code>a[6] = 6</code> stops it at index 5
+(<code>a[5] = 1 ≤ 5</code>), so <code>i = 2</code>, <code>j = 5</code>.
+Swap <code>a[2]</code> and <code>a[5]</code>:
+<code>[4, 3, 1, 2, 7, 8, 6, 5]</code>. Advancing <code>i</code> past
+<code>a[3] = 2</code> stops it at index 4 (<code>a[4] = 7 ≥ 5</code>), and
+retreating <code>j</code> past <code>a[4] = 7</code> stops it at index 3
+(<code>a[3] = 2 ≤ 5</code>), so <code>i = 4</code>, <code>j = 3</code>.
+Now <code>i ≥ j</code>, so the loop exits and returns <code>j + 1 = 4</code>.
+The two subarrays are <code>[4, 3, 1, 2]</code> (indices 0–3) and
+<code>[7, 8, 6, 5]</code> (indices 4–7).
 Everything in the left subarray is ≤ 5 and everything in the right subarray is ≥ 5, as required
 by the loop invariant.
+Notice that no scan needed a bounds test: each swap had just placed a value at
+least 5 at <code>j</code> and a value at most 5 at <code>i</code>, and those
+values would have halted the two scans even had they got that far.
 </p>
 </div>
 
