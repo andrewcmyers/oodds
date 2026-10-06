@@ -78,16 +78,29 @@ element, because all elements that are greater than \(k\) must be shifted right
 by one position to make room for it. Eventually all elements have been inserted
 into the sorted part and there is nothing left to sort.
 </p>
+<p>
 <pre class=load>
 <a href="InsertionSort.java">InsertionSort.java</a>
 </pre>
 
+<p>
+The figure below animates this algorithm. You can give new numbers to sort
+in the input box. The sorted part of the array has a green highlight, and
+the current element is highlighted in orange.
+</p>
+
+<div class=figure>
 <div class="controls">
     <input id="data" type="text" value="5, 3, 8, 1, 9, 2, 7, 4"
            placeholder="e.g. 5, 3, 8, 1">
 </div>
-<canvas id="insertion_sort_canvas"></canvas>
+<canvas id="insertion_sort_canvas"
+          style="height:120px; width:700px">
+</canvas>
 <script class=graphics>
+document.getElementById("data").addEventListener("keydown", e => {
+    if (e.key === "Enter") runSort()
+})
 
 function runSort() {
     const raw = document.getElementById("data").value
@@ -96,15 +109,16 @@ function runSort() {
         alert("Please enter at least two valid numbers, separated by commas.")
         return
     }
+    const old_figure = Constrain.getFigureByName("insertion_sort_canvas")
+    if (old_figure) old_figure.destroy()
 
     const n = data.length
 
     with (new Constrain.Figure("insertion_sort_canvas")) {
         setFontSize(18)
 
-        const m = margin(5)
-
-        const sa = sortingArray(data)
+        const m = margin(5),
+              sa = sortingArray(data)
 
         // Generate insertion sort steps
         for (let i = 1; i < n; i++) {
@@ -115,14 +129,19 @@ function runSort() {
             sa.highlight(i).markSorted(i).insert(i, j)
         }
         sa.finish()
+        sa.setH(40)
 
         align("right", "bottom", advanceButton(), m.inset(5))
         align("LR", "center", sa, m)
+        start()
     }
 }
 
 runSort()
+
 </script>
+<p class=caption>Animated insertion sort</p>
+</div>
 
 <p>
 The loop invariant for the outer loop is as depicted above. The invariant is satisfied
@@ -900,6 +919,156 @@ The latter case can only happen if <code>a[i]</code> = <code>a[j]</code> = <code
 in which case the non-empty subarray to the left of <code>j</code> inclusive can
 also be partitioned to the left side.
 </p>
+
+<div class=figure>
+<div class="controls">
+    <input id="qsdata" type="text" value="5, 3, 8, 1, 9, 2, 7, 4, 0, 6"
+           placeholder="e.g. 5, 3, 8, 1">
+</div>
+<canvas id="quicksort_canvas" style="width: 700px; height: 120px"></canvas>
+
+<script class=graphics>
+const canvas = document.getElementById("quicksort_canvas")
+
+document.getElementById("qsdata").addEventListener("keydown", e => {
+    if (e.key === "Enter") runQuicksort()
+})
+
+function runQuicksort() {
+    const raw = document.getElementById("qsdata").value
+    const data = raw.split(/[,\s]+/).map(s => s.trim()).filter(s => s.length > 0).map(Number)
+    if (data.length < 2 || data.some(isNaN)) {
+        alert("Please enter at least two valid numbers, separated by commas.")
+        return
+    }
+
+    const n = data.length
+
+    const old_figure = Constrain.getFigureByName("quicksort_canvas")
+    if (old_figure) old_figure.destroy()
+
+    with (new Constrain.Figure("quicksort_canvas")) {
+        setFontSize(18)
+
+        // Region and highlight styles
+        setStyle('partitionFill', '#e0e0e0')
+        setStyle('partitionStroke', '#bbb')
+        setStyle('partitionLineWidth', 2)
+        setStyle('partitionPadding', 8)
+        setStyle('rightStroke', '#2070e0')
+        setStyle('pivotStroke', '#c04080')
+
+        const m = margin(5)
+        const sa = sortingArray(data)
+
+        // Partition background (light gray, slightly larger)
+        sa.addRegion("partition")
+        // Green regions for elements already on the correct side of pivot
+        sa.addRegion("leftDone")
+        sa.addRegion("rightDone")
+
+        // Highlights: pivot (magenta), left pointer (orange), right pointer (blue)
+        sa.addHighlight("pivot")
+        sa.addHighlight("left")
+        sa.addHighlight("right")
+
+        align("LR", "center", sa, m)
+
+        // Quicksort with leftmost pivot
+        function qsort(lo, hi) {
+            if (lo >= hi) return
+
+            sa.setRegion("partition", lo, hi)
+
+            const pivot = sa.valueAt(lo)
+            let i = lo + 1, j = hi
+
+            // Highlight pivot and show initial pointer positions
+            sa.moveHighlight("pivot", lo)
+            sa.moveHighlight("left", i)
+            sa.moveHighlight("right", j)
+            sa.step({ autoAdvance: false })
+
+            while (i <= j) {
+                // Scan left pointer rightward
+                while (i <= j && sa.valueAt(i) <= pivot) {
+                    i++
+                    if (i <= j) {
+                        sa.moveHighlight("left", i)
+                        sa.setRegion("leftDone", lo + 1, i - 1)
+                        sa.step()
+                    }
+                }
+                if (i > j) {
+                    sa.setRegion("leftDone", lo + 1, i - 1)
+                    sa.step()
+                    break
+                }
+
+                // Scan right pointer leftward
+                while (i <= j && sa.valueAt(j) > pivot) {
+                    j--
+                    if (i <= j) {
+                        sa.moveHighlight("right", j)
+                        sa.setRegion("rightDone", j + 1, hi)
+                        sa.step()
+                    }
+                }
+                if (i > j) {
+                    sa.setRegion("rightDone", j + 1, hi)
+                    sa.step()
+                    break
+                }
+
+                // Swap and move pointers inward
+                if (i < j) {
+                    sa.swap(i, j)
+                    i++
+                    j--
+                    if (i <= j) {
+                        sa.moveHighlight("left", i)
+                        sa.moveHighlight("right", j)
+                        sa.setRegion("leftDone", lo + 1, i - 1)
+                        sa.setRegion("rightDone", j + 1, hi)
+                        sa.step()
+                    }
+                } else {
+                    break
+                }
+            }
+
+            // Place pivot: swap with position j
+            sa.hideHighlight("pivot")
+            sa.hideHighlight("left")
+            sa.hideHighlight("right")
+            sa.hideRegion("leftDone")
+            sa.hideRegion("rightDone")
+            if (j > lo) {
+                sa.swap(lo, j)
+            } else {
+                sa.step()
+            }
+
+            // Recurse (child calls overwrite the partition region directly)
+            qsort(lo, j - 1)
+            qsort(j + 1, hi)
+        }
+
+        qsort(0, n - 1)
+        sa.finish()
+        sa.setH(40)
+
+        align("right", "bottom", advanceButton(), m.inset(5))
+        start()
+    }
+}
+
+runQuicksort()
+</script>
+<p class=caption>Animated quicksort</p>
+</div>
+
+
 <p>
 Quicksort is an excellent sorting algorithm for many applications.  As a rule
 of thumb, it tends to be around 25% faster than
