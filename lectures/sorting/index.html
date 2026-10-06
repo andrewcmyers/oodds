@@ -82,6 +82,48 @@ into the sorted part and there is nothing left to sort.
 <a href="InsertionSort.java">InsertionSort.java</a>
 </pre>
 
+<div class="controls">
+    <input id="data" type="text" value="5, 3, 8, 1, 9, 2, 7, 4"
+           placeholder="e.g. 5, 3, 8, 1">
+</div>
+<canvas id="insertion_sort_canvas"></canvas>
+<script class=graphics>
+
+function runSort() {
+    const raw = document.getElementById("data").value
+    const data = raw.split(/[,\s]+/).map(s => s.trim()).filter(s => s.length > 0).map(Number)
+    if (data.length < 2 || data.some(isNaN)) {
+        alert("Please enter at least two valid numbers, separated by commas.")
+        return
+    }
+
+    const n = data.length
+
+    with (new Constrain.Figure("insertion_sort_canvas")) {
+        setFontSize(18)
+
+        const m = margin(5)
+
+        const sa = sortingArray(data)
+
+        // Generate insertion sort steps
+        for (let i = 1; i < n; i++) {
+            const insertValue = sa.valueAt(i)
+            let j = i
+            while (j > 0 && sa.valueAt(j - 1) > insertValue) j--
+
+            sa.highlight(i).markSorted(i).insert(i, j)
+        }
+        sa.finish()
+
+        align("right", "bottom", advanceButton(), m.inset(5))
+        align("LR", "center", sa, m)
+    }
+}
+
+runSort()
+</script>
+
 <p>
 The loop invariant for the outer loop is as depicted above. The invariant is satisfied
 when \( i=1 \), and each loop iteration ensures that the value that
