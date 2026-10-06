@@ -1095,9 +1095,10 @@ The two subarrays are <code>[4, 3, 1, 2]</code> (indices 0–3) and
 <code>[7, 8, 6, 5]</code> (indices 4–7).
 Everything in the left subarray is ≤ 5 and everything in the right subarray is ≥ 5, as required
 by the loop invariant.
-Notice that no scan needed a bounds test: each swap had just placed a value at
-least 5 at <code>j</code> and a value at most 5 at <code>i</code>, and those
-values would have halted the two scans even had they got that far.
+Notice that neither inner scan needed a bounds test. Each swap leaves a value of
+at least 5 at <code>j</code>, which is what would stop <code>i</code> had it run
+that far, and a value of at most 5 at the position <code>i</code> is leaving,
+which is what would stop <code>j</code>.
 </p>
 </div>
 
