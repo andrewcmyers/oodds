@@ -66,7 +66,7 @@ order. The code can be written as a loop with a loop invariant depicted as follo
 </div>
 <p>
 To be more precise, the loop invariant says that the variable \(i\) is in the
-range \([1, a.\texttt{length})\), and that the elements in the range
+range \([1, a.\texttt{length}]\), and that the elements in the range
 \(a[0..i)\) are sorted. Further, the sequence of elements in the whole array is
 a permutation of the sequence of elements originally in the array.
 </p>
@@ -812,7 +812,7 @@ Indices <code>i</code> and <code>j</code> point to elements that could be
 partitioned to the other side of the array.
 As a final part of the invariant,
 we have <code>l</code> ≤ <code>i</code> ≤ <code>j + 1</code> ≤ <code>r</code>
-and <code>l</code> &lt; <code>j+1</code>.
+and <code>l</code> &lt; <code>j+1</code> and <code>i &lt; r</code>.
 </p>
 <div class=figure>
   <canvas id="qs-inv" style="height:80px; width:400px">

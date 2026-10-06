@@ -9,8 +9,9 @@ class InsertionSort {
        //    3. a contains a permutation of the original sequence of elements in a
        int k = a[i];
        int j = i;
-       for (; j > 0 && a[j-1] > k; j--) {
+       while (j > 0 && a[j-1] > k) {
            a[j] = a[j-1];
+           j--;
        }
        a[j] = k;
    }
