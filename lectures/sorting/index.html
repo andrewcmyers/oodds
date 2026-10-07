@@ -749,9 +749,6 @@ elements strictly to the right of <code>j</code> are at least the pivot value.
 All of those elements are already successfully partitioned.
 Indices <code>i</code> and <code>j</code> point to elements that could be
 partitioned to the other side of the array.
-As a final part of the invariant,
-we have <code>l</code> ≤ <code>i</code> ≤ <code>j + 1</code> ≤ <code>r</code>
-and <code>l</code> &lt; <code>j+1</code>.
 </p>
 <div class=figure>
   <canvas id="qs-inv" style="height:80px; width:400px">
@@ -790,6 +787,15 @@ and <code>l</code> &lt; <code>j+1</code>.
   </script>
 </div>
 
+<p>
+As a final part of the invariant,
+we have
+<ul>
+<li><code>l</code> ≤ <code>i</code> ≤ <code>j + 1</code>
+<li><code>l</code> &le; <code>j</code> &lt; r</code>
+<li><code>i = l</code> <i>or</i> <code>j &lt; r-1</code>
+</ul>
+</p>
 <p>
 Despite (or because of!) the complexity of the invariant, the loop code can
 then look very simple and be very efficient. It starts by swapping <code>a[i]</code>
@@ -839,7 +845,7 @@ Notice that everything strictly to the right of <code>j</code> is at least the p
 and everything to the left of <code>i</code> is no more than 5.
 </p>
 <p>
-On the third iteration, we swap and then move <code>i</code> and <code>j</code> inward again, causing
+On the second iteration, we swap and then move <code>i</code> and <code>j</code> inward again, causing
 the indices to go past each other:
 <pre>
 3 2 1 7 6 9 5 8
@@ -851,9 +857,11 @@ Since <code>i &geq; j</code>, the loop halts and the result is <code>j+1</code>
 </p>
 <p>
 When the loop terminates, the invariant ensures that we either have <code>j =
-i-1</code> or <code>j = i</code>.  In the former case, the loop invariant guarantees
-that <code>j+1 = i</code> is a valid point to split the array, with <code>j &gt; l</code>
-so that at least one element ends up at each side of the array.
+i-1</code> or <code>j = i</code>.  In the former case, the loop invariant
+guarantees that <code>j+1 = i</code> is a valid point to split the array, with
+<code>j + 1 &gt; l</code> and <code>j &lt; r-1</code> ensuring there is at least
+one element at each end of the partitioned array.
+
 The latter case can only happen if <code>a[i]</code> = <code>a[j]</code> = <code>p</code>,
 in which case the non-empty subarray to the left of <code>j</code> inclusive can
 also be partitioned to the left side.
@@ -874,17 +882,36 @@ using <code>5</code> as the pivot value (already at <code>a[l]</code>). Show the
 and the values of <code>i</code> and <code>j</code> after each swap, and give the final partition
 index returned.
 <p class=answer>
-Initial state: <code>[5, 3, 8, 2, 7, 1, 6, 4]</code> with <code>i = 0</code>, <code>j = 7</code>.
-Scanning: <code>i</code> advances to index 2 (<code>a[2] = 8 ≥ 5</code>); <code>j</code> stays at
-index 7 (<code>a[7] = 4 ≤ 5</code>). Swap <code>a[2]</code> and <code>a[7]</code>:
-<code>[5, 3, 4, 2, 7, 1, 6, 8]</code>, then <code>i = 3</code>, <code>j = 6</code>.
-Scanning: <code>i</code> advances to index 4 (<code>a[4] = 7 ≥ 5</code>); <code>j</code> retreats to
-index 5 (<code>a[5] = 1 ≤ 5</code>). Swap <code>a[4]</code> and <code>a[5]</code>:
-<code>[5, 3, 4, 2, 1, 7, 6, 8]</code>, then <code>i = 5</code>, <code>j = 4</code>.
-Now <code>i > j</code>, so the loop exits and returns <code>j + 1 = 5</code>. The two subarrays
-are <code>[5, 3, 4, 2, 1]</code> (indices 0–4) and <code>[7, 6, 8]</code> (indices 5–7).
-Everything in the left subarray is ≤ 5 and everything in the right subarray is ≥ 5, as required
-by the loop invariant.
+Loop setup: <code>i = 0</code> and <code>j = 7</code>. The initial scan does not move
+<code>j</code>, because <code>a[7] = 4 ≤ 5</code> already. The invariant holds, with
+<code>a[i] = 5 ≥ p</code> and <code>a[j] = 4 ≤ p</code>:
+<pre>
+  5 3 8 2 7 1 6 4
+  i             j r
+</pre>
+First iteration: swap <code>a[0]</code> and <code>a[7]</code>, then move the indices inward.
+Index <code>i</code> skips <code>a[1] = 3 &lt; 5</code> and stops at index 2
+(<code>a[2] = 8</code>); index <code>j</code> skips <code>a[6] = 6 &gt; 5</code> and stops at
+index 5 (<code>a[5] = 1</code>):
+<pre>
+  4 3 8 2 7 1 6 5
+  l   i     j     r
+</pre>
+Second iteration: since <code>i = 2 &lt; 5 = j</code>, swap <code>a[2]</code> and
+<code>a[5]</code>, then move the indices inward again. Index <code>i</code> skips
+<code>a[3] = 2 &lt; 5</code> and stops at index 4 (<code>a[4] = 7</code>); index <code>j</code>
+skips <code>a[4] = 7 &gt; 5</code> and stops at index 3 (<code>a[3] = 2</code>), so the
+indices cross:
+<pre>
+  4 3 1 2 7 8 6 5
+  l     j i       r
+</pre>
+Now <code>i &geq; j</code>, so the loop halts and returns <code>j + 1 = 4</code>. The two
+subarrays to be sorted recursively are <code>[4, 3, 1, 2]</code> (indices 0&ndash;3) and
+<code>[7, 8, 6, 5]</code> (indices 4&ndash;7): everything in the left subarray is ≤ 5 and
+everything in the right subarray is ≥ 5, as the loop invariant guarantees.
+Notice that the pivot value 5 does not end up at the split point; it is swapped out of
+<code>a[l]</code> on the very first iteration and finishes at index 7.
 </p>
 </div>
 
