@@ -1,7 +1,7 @@
 <h1>Asymptotic Complexity</h1>
 <p>
 We write expressions like <span class=m>O(n)</span> and <span class=m>O(n<sup>2</sup>)</span> to describe the performance
-of algorithms. This is called <b>&ldquo;big-O&rdquo; notation</b>, and describes
+of algorithms. This is called <em class=term>&ldquo;big-O&rdquo; notation</em>, and describes
 performance in a way that is largely independent of the kind of computer on
 which we are running our code. This is handy.
 </p>
@@ -30,13 +30,13 @@ class=m>f'</span> are also <span class=m>O(n<sup>2</sup>)</span>, because the
 quantity <span class=m>(3n&pm;2)</span> is bounded above by <span
 class=m>kn<sup>2</sup></span> (for any <span class=m>k</span>) as <span
 class=m>n</span> grows large. In other words, big-O notation only establishes
-an <b>upper bound</b> on how the function grows.</p>
+an <em class=term>upper bound</em> on how the function grows.</p>
 <p>
-A function that is <span class=m>O(n)</span> is said to be asympotically <b>linear</b> and a
-function that is <span class=m>O(1)</span> is said to be <b>constant-time</b> because it is always
+A function that is <span class=m>O(n)</span> is said to be asympotically <em class=term>linear</em> and a
+function that is <span class=m>O(1)</span> is said to be <em class=term>constant-time</em> because it is always
 less than some constant <span class=m>k</span>. A function that is <span class=m>O(n<sup>2</sup>)</span> is called
-<b>quadratic</b>, and a function that is <span class=m>O(n<sup>y</sup>)</span> for some positive
-integer <span class=m>y</span> is said to be <b>polynomial</b>.
+<em class=term>quadratic</em>, and a function that is <span class=m>O(n<sup>y</sup>)</span> for some positive
+integer <span class=m>y</span> is said to be <em class=term>polynomial</em>.
 </p>
 <h2>Reasoning with asymptotic complexity</h2>
 <p>An expression like <span class=m>O(g(n))</span> is <em>not</em> a function. It really
@@ -73,7 +73,7 @@ but this is <em>not</em> true when <span class=m>k &gt; k'</span>. In that case,
 </p>
 <h2>Deriving asymptotic complexity</h2>
 <p>
-Together, the constants k and n<sub>0</sub> form a <b>witness</b> to the
+Together, the constants k and n<sub>0</sub> form a <em class=term>witness</em> to the
 asymptotic complexity of the function. To show that a function has a particular
 asymptotic complexity, the direct way to produce the necessary witness. For
 the example of the function <span class=math>f'(n) = 3n + 2</span>, one witness is, as we saw above,

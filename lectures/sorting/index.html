@@ -21,7 +21,7 @@ following specification:
 </p>
 <pre>
 /** Effect: Put a into ascending sorted order. */
-int sort(int[] a)
+void sort(int[] a)
 </pre>
 <p>Because we will not use element operations other than comparison, the algorithms
 we discuss will work as an implementation of the following more generic specification:
@@ -66,7 +66,7 @@ order. The code can be written as a loop with a loop invariant depicted as follo
 </div>
 <p>
 To be more precise, the loop invariant says that the variable \(i\) is in the
-range \([1, a.\texttt{length})\), and that the elements in the range
+range \([1, a.\texttt{length}]\), and that the elements in the range
 \(a[0..i)\) are sorted. Further, the sequence of elements in the whole array is
 a permutation of the sequence of elements originally in the array.
 </p>
@@ -78,9 +78,70 @@ element, because all elements that are greater than \(k\) must be shifted right
 by one position to make room for it. Eventually all elements have been inserted
 into the sorted part and there is nothing left to sort.
 </p>
+<p>
 <pre class=load>
 <a href="InsertionSort.java">InsertionSort.java</a>
 </pre>
+
+<p>
+The figure below animates this algorithm. You can give new numbers to sort
+in the input box. The sorted part of the array has a green highlight, and
+the current element is highlighted in orange.
+</p>
+
+<div class=figure>
+<div class="controls">
+    <input id="data" type="text" value="5, 3, 8, 1, 9, 2, 7, 4"
+           placeholder="e.g. 5, 3, 8, 1">
+</div>
+<canvas id="insertion_sort_canvas"
+          style="height:120px; width:700px">
+</canvas>
+<script class=graphics>
+document.getElementById("data").addEventListener("keydown", e => {
+    if (e.key === "Enter") runSort()
+})
+
+function runSort() {
+    const raw = document.getElementById("data").value
+    const data = raw.split(/[,\s]+/).map(s => s.trim()).filter(s => s.length > 0).map(Number)
+    if (data.length < 2 || data.some(isNaN)) {
+        alert("Please enter at least two valid numbers, separated by commas.")
+        return
+    }
+    const old_figure = Constrain.getFigureByName("insertion_sort_canvas")
+    if (old_figure) old_figure.destroy()
+
+    const n = data.length
+
+    with (new Constrain.Figure("insertion_sort_canvas")) {
+        setFontSize(18)
+
+        const m = margin(5),
+              sa = sortingArray(data)
+
+        // Generate insertion sort steps
+        for (let i = 1; i < n; i++) {
+            const insertValue = sa.valueAt(i)
+            let j = i
+            while (j > 0 && sa.valueAt(j - 1) > insertValue) j--
+
+            sa.highlight(i).markSorted(i).insert(i, j)
+        }
+        sa.finish()
+        sa.setH(40)
+
+        align("right", "bottom", advanceButton(), m.inset(5))
+        align("LR", "center", sa, m)
+        start()
+    }
+}
+
+runSort()
+
+</script>
+<p class=caption>Animated insertion sort</p>
+</div>
 
 <p>
 The loop invariant for the outer loop is as depicted above. The invariant is satisfied
@@ -160,7 +221,7 @@ asymptotic complexity.
 <h2>Stability</h2>
 <p>
 Insertion sort has one other nice property: implemented properly, it is a
-<strong>stable</strong> sort, meaning that if given an array containing elements that compare
+<em class=term>stable</em> sort, meaning that if given an array containing elements that compare
 as equal to each other, it keeps those elements in the same relative order as in
 the original array. A stable sort does not unnecessarily reorder any elements.
 </p>
@@ -305,10 +366,10 @@ correctly among. The information it uses to make that choice consists of the
 sequence of observations the algorithm makes using <code>compareTo()</code>.
 For example, such a sequence might look like (&lt;, &gt;, &lt;, =, &gt;, ...),
 where we've only recorded the result returned by the call. We can organize
-all such possible observation sequences into a <strong>decision tree</strong>, in which
+all such possible observation sequences into a <em class=term>decision tree</em>, in which
 each observation sequence corresponds to exactly one path from the root of the tree
 to some leaf. With three possible children at each node, the decision tree is
-a <strong>ternary</strong> tree.
+a <em class=term>ternary</em> tree.
 When the algorithm reaches a leaf, it must have computed the
 full permutation to apply, so there must be a leaf corresponding to every permutation.
 Since the decision tree handles all \(n!\) permutations of the array, it must
@@ -371,7 +432,7 @@ there exists some constant factor \(k\) and value
 \(n_0\) such that for large values of
 \(n\) (that is, where \(n &gt; n_0\), the inequality
 \(f(n) &ge; k·g(n)\) always holds. In this case,
-\(g(n)\) is an <strong>asymptotic lower bound</strong> for \(f(n)\).
+\(g(n)\) is an <em class=term>asymptotic lower bound</em> for \(f(n)\).
 </p>
 
 <p>
@@ -414,7 +475,7 @@ are not subject to this constraint.
 
 <h2>Merge sort</h2>
 <p>
-Most efficient sorting algorithms use recursion to implement a <strong>divide-and-conquer</strong>
+Most efficient sorting algorithms use recursion to implement a <em class=term>divide-and-conquer</em>
 strategy. They break the array into smaller subarrays and recursively
 sort them. Merge sort is one such algorithm. Given an array to sort,
 it finds the middle of the array and then recursively sorts the
@@ -624,7 +685,7 @@ of this size can speed up merge sort by about 20%.
 <p>
 Quicksort is another divide-and-conquer sorting algorithm. It avoids
 the work of merging by partitioning the array elements before
-recursively sorting. The algorithm chooses a <strong>pivot value</strong> \(p\) and
+recursively sorting. The algorithm chooses a <em class=term>pivot value</em> \(p\) and
 then separates all the elements in the array so that the right half 
 contains
 elements at least as large as \(p\) and the left half contains elements
@@ -866,6 +927,148 @@ The latter case can only happen if <code>a[i]</code> = <code>a[j]</code> = <code
 in which case the non-empty subarray to the left of <code>j</code> inclusive can
 also be partitioned to the left side.
 </p>
+
+<div class=figure>
+<div class="controls">
+    <input id="qsdata" type="text" value="5, 3, 8, 1, 9, 2, 0, 4, 7, 6"
+           placeholder="e.g. 5, 3, 8, 1">
+</div>
+<canvas id="quicksort_canvas" style="width: 700px; height: 120px"></canvas>
+
+<script class=graphics>
+const canvas = document.getElementById("quicksort_canvas")
+
+document.getElementById("qsdata").addEventListener("keydown", e => {
+    if (e.key === "Enter") runQuicksort()
+})
+
+function runQuicksort() {
+    const raw = document.getElementById("qsdata").value
+    const data = raw.split(/[,\s]+/).map(s => s.trim()).filter(s => s.length > 0).map(Number)
+    if (data.length < 2 || data.some(isNaN)) {
+        alert("Please enter at least two valid numbers, separated by commas.")
+        return
+    }
+
+    const n = data.length
+
+    const old_figure = Constrain.getFigureByName("quicksort_canvas")
+    if (old_figure) old_figure.destroy()
+
+    with (new Constrain.Figure("quicksort_canvas")) {
+        setFontSize(18)
+
+        // Region and highlight styles
+        setStyle('partitionFill', '#e0e0e0')
+        setStyle('partitionStroke', '#bbb')
+        setStyle('partitionLineWidth', 2)
+        setStyle('partitionPadding', 8)
+        setStyle('iStroke', '#e07020')
+        setStyle('jStroke', '#2070e0')
+        setStyle('pivotStroke', '#c04080')
+
+        const m = margin(5)
+        const sa = sortingArray(data)
+
+        // Partition background (light gray, slightly larger)
+        sa.addRegion("partition")
+        // Green regions for elements already on the correct side of pivot
+        sa.addRegion("leftDone")
+        sa.addRegion("rightDone")
+
+        // Highlights: the pivot value (magenta) and the indices i and j
+        sa.addHighlight("pivot")
+        sa.addHighlight("i")
+        sa.addHighlight("j")
+
+        align("LR", "center", sa, m)
+
+        // partition.java, with the green regions showing the loop invariant:
+        // a[l..i) is at most p, a[j+1..r) is at least p, a[i] is at least p,
+        // and a[j] is at most p. The pivot is taken from a[l] rather than
+        // chosen randomly, so that stepping through the figure is repeatable.
+        function partition(l, r) {
+            const p = sa.valueAt(l)
+            let i = l, j = r - 1
+            // Which slot holds the pivot value; the swaps below move it.
+            let pivotSlot = l
+
+            sa.moveHighlight("pivot", pivotSlot)
+            sa.moveHighlight("i", i)
+            sa.moveHighlight("j", j)
+            sa.step({ autoAdvance: false })
+
+            // No bounds check: p is not greater than itself, so a[l] stops j.
+            while (sa.valueAt(j) > p) {
+                j--
+                sa.moveHighlight("j", j)
+                sa.setRegion("rightDone", j + 1, r - 1)
+                sa.step()
+            }
+
+            while (i < j) {
+                sa.swap(i, j)
+                if (pivotSlot === i) pivotSlot = j
+                else if (pivotSlot === j) pivotSlot = i
+                sa.moveHighlight("pivot", pivotSlot)
+                // Each swapped value is now on its own side of the pivot, and
+                // is the value that stops the other index's scan below.
+                sa.setRegion("leftDone", l, i)
+                sa.setRegion("rightDone", j, r - 1)
+                sa.step()
+
+                do {
+                    i++
+                    sa.moveHighlight("i", i)
+                    sa.setRegion("leftDone", l, i - 1)
+                    sa.step()
+                } while (sa.valueAt(i) < p)
+
+                do {
+                    j--
+                    sa.moveHighlight("j", j)
+                    sa.setRegion("rightDone", j + 1, r - 1)
+                    sa.step()
+                } while (sa.valueAt(j) > p)
+            }
+
+            return j + 1
+        }
+
+        // Sort a[l..r).
+        function qsort(l, r) {
+            if (l >= r - 1) return // 0 or 1 elements are already sorted
+
+            sa.setRegion("partition", l, r - 1)
+            const k = partition(l, r)
+
+            sa.hideHighlight("pivot")
+            sa.hideHighlight("i")
+            sa.hideHighlight("j")
+            sa.hideRegion("leftDone")
+            sa.hideRegion("rightDone")
+            sa.step()
+
+            // Child calls overwrite the partition region directly.
+            qsort(l, k)
+            qsort(k, r)
+        }
+
+        qsort(0, n)
+        sa.finish()
+        sa.setH(40)
+
+        align("right", "bottom", advanceButton(), m.inset(5))
+        start()
+    }
+}
+
+runQuicksort()
+</script>
+<p class=caption>Animated quicksort</p>
+</div>
+
+
 <p>
 Quicksort is an excellent sorting algorithm for many applications.  As a rule
 of thumb, it tends to be around 25% faster than
@@ -882,36 +1085,24 @@ using <code>5</code> as the pivot value (already at <code>a[l]</code>). Show the
 and the values of <code>i</code> and <code>j</code> after each swap, and give the final partition
 index returned.
 <p class=answer>
-Loop setup: <code>i = 0</code> and <code>j = 7</code>. The initial scan does not move
-<code>j</code>, because <code>a[7] = 4 ≤ 5</code> already. The invariant holds, with
-<code>a[i] = 5 ≥ p</code> and <code>a[j] = 4 ≤ p</code>:
-<pre>
-  5 3 8 2 7 1 6 4
-  i             j r
-</pre>
-First iteration: swap <code>a[0]</code> and <code>a[7]</code>, then move the indices inward.
-Index <code>i</code> skips <code>a[1] = 3 &lt; 5</code> and stops at index 2
-(<code>a[2] = 8</code>); index <code>j</code> skips <code>a[6] = 6 &gt; 5</code> and stops at
-index 5 (<code>a[5] = 1</code>):
-<pre>
-  4 3 8 2 7 1 6 5
-  l   i     j     r
-</pre>
-Second iteration: since <code>i = 2 &lt; 5 = j</code>, swap <code>a[2]</code> and
-<code>a[5]</code>, then move the indices inward again. Index <code>i</code> skips
-<code>a[3] = 2 &lt; 5</code> and stops at index 4 (<code>a[4] = 7</code>); index <code>j</code>
-skips <code>a[4] = 7 &gt; 5</code> and stops at index 3 (<code>a[3] = 2</code>), so the
-indices cross:
-<pre>
-  4 3 1 2 7 8 6 5
-  l     j i       r
-</pre>
-Now <code>i &geq; j</code>, so the loop halts and returns <code>j + 1 = 4</code>. The two
-subarrays to be sorted recursively are <code>[4, 3, 1, 2]</code> (indices 0&ndash;3) and
-<code>[7, 8, 6, 5]</code> (indices 4&ndash;7): everything in the left subarray is ≤ 5 and
-everything in the right subarray is ≥ 5, as the loop invariant guarantees.
-Notice that the pivot value 5 does not end up at the split point; it is swapped out of
-<code>a[l]</code> on the very first iteration and finishes at index 7.
+The loop setup leaves <code>i = 0</code> and <code>j = 7</code>: the scan
+<code>while (a[j] &gt; p) j--</code> stops immediately because
+<code>a[7] = 4</code> is not greater than 5.
+Swap <code>a[0]</code> and <code>a[7]</code>:
+<code>[4, 3, 8, 2, 7, 1, 6, 5]</code>. Advancing <code>i</code> past
+<code>a[1] = 3</code> stops it at index 2 (<code>a[2] = 8 ≥ 5</code>), and
+retreating <code>j</code> past <code>a[6] = 6</code> stops it at index 5
+(<code>a[5] = 1 ≤ 5</code>), so <code>i = 2</code>, <code>j = 5</code>.
+Swap <code>a[2]</code> and <code>a[5]</code>:
+<code>[4, 3, 1, 2, 7, 8, 6, 5]</code>. Advancing <code>i</code> past
+<code>a[3] = 2</code> stops it at index 4 (<code>a[4] = 7 ≥ 5</code>), and
+retreating <code>j</code> past <code>a[4] = 7</code> stops it at index 3
+(<code>a[3] = 2 ≤ 5</code>), so <code>i = 4</code>, <code>j = 3</code>.
+Now <code>i ≥ j</code>, so the loop exits and returns <code>j + 1 = 4</code>.
+The two subarrays are <code>[4, 3, 1, 2]</code> (indices 0–3) and
+<code>[7, 8, 6, 5]</code> (indices 4–7).
+Everything in the left subarray is at most 5 and everything in the right subarray is at least 5, as required
+by the loop invariant.
 </p>
 </div>
 
@@ -921,13 +1112,13 @@ Finding the maximum and minimum elements in an array is a straightforward
 \(O(n)\)
 algorithm.  But what if we want to find the <em>median</em> element? Or the
 10th largest element? The problem of finding the \(n\)th largest element in an
-array is called the <strong>order statistics</strong> problem.  Clearly, we can solve
+array is called the <em class=term>order statistics</em> problem.  Clearly, we can solve
 this problem by sorting the array and then indexing to the appropriate
 position, but that does a lot of unnecessary sorting work.
 </p>
 <p>
 Fortunately, the quicksort algorithm can be tweaked a little to solve
-the order statistics problem efficiently, giving us the <strong>quickselect</strong>
+the order statistics problem efficiently, giving us the <em class=term>quickselect</em>
 algorithm. It looks like quicksort except that it only recurses on one side
 of the partitioned array:
 </p>

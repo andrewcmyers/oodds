@@ -1,7 +1,7 @@
 <h1>Graphical User Interfaces: Display and Layout</h1>
 <p>
 One of the driving forces behind the development of object-oriented programming
-was the need to create <strong>graphical user interfaces</strong> (GUIs). It is not surprising,
+was the need to create <em class=term>graphical user interfaces</em> (GUIs). It is not surprising,
 then, that the OO programming model really shines when building GUIs.
 </p>
 <p>
@@ -169,7 +169,7 @@ added, removed, moved, or transformed.
 <h2>Event-driven programs</h2>
 
 <p>
-Swing applications are <strong>event-driven</strong>. This is a different
+Swing applications are <em class=term>event-driven</em>. This is a different
 programming paradigm from the usual imperative style. Its motto is: "Don't call us, we'll call you."
 When some hardware event takes place, such as a mouse click or key press, an
 event object is generated. An event object is simply a regular Java object, but
@@ -182,8 +182,8 @@ mouse clicks and button pushes.</p>
 <h2>Threads</h2>
 <p>
 Unlike simple Java programs, a Swing application typically has multiple
-concurrent threads: a <strong>main thread</strong>, an <strong>event dispatch
-thread</strong>, and optionally more threads that do computation in the
+concurrent threads: a <em class=term>main thread</em>, an <em class=term>event dispatch
+thread</em>, and optionally more threads that do computation in the
 background. The job of the event dispatch thread is to loop continuously,
 listening for the occurrence of hardware-generated events such as mouse clicks.
 For each such occurrence, it constructs an event object describing the event
@@ -205,11 +205,11 @@ expression (anonymous function) syntax.
 <p>
 Programming with threads is challenging because they share access to the same
 objects. If two threads access the same object, it is challenging to prevent
-them from <strong>interfering</strong>.  If one thread is in the middle of
+them from <em class=term>interfering</em>.  If one thread is in the middle of
 modifying an object while another thread accesses the object, it is easy for
 the observing thread to see the object in a state in which its class invariant
 does not hold. A good programming pattern for preventing interference is to
-have most objects <strong>owned</strong> by a single thread. Accesses (either
+have most objects <em class=term>owned</em> by a single thread. Accesses (either
 reading or writing) to an object by a thread that does not own the object are
 unsafe and are not permitted by the pattern.
 </p>

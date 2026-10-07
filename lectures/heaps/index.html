@@ -18,14 +18,14 @@ Priority queues have other applications:
 </p>
 <ul>
 <li>
-In <strong>discrete
-event-driven simulation</strong>, events are processed in the
+In <em class=term>discrete
+event-driven simulation</em>, events are processed in the
 order in which they occur, updating the state of the simulation for each event.
 A min-queue is used to store unprocessed events, where the priority is a
 timestamp indicating the time of occurrence. Handling one event can generate
 new future events, which are added to the queue.</p>
 <li>
-<a href="http://en.wikipedia.org/wiki/Huffman_coding"><strong>Huffman coding</strong></a> is a data
+<a href="http://en.wikipedia.org/wiki/Huffman_coding"><em class=term>Huffman coding</em></a> is a data
 compression algorithm that optimally compresses individual symbols in a data
 stream.
 <li>
@@ -59,8 +59,8 @@ operations to be done in \(O(\log n)\) time with good constant factors.
 </p>
 <p>
 In computer science, the term <em class=term>heap</em> is unfortunately overloaded.
-Binary heaps should not be confused with <em class=term>memory heaps</em>. A <strong>memory
-heap</strong> is a low-level data structure used to keep track of the computer's
+Binary heaps should not be confused with <em class=term>memory heaps</em>. A <em class=term>memory
+heap</em> is a low-level data structure used to keep track of the computer's
 memory so that the programming language implementation (the <em class=term>language runtime</em>)
 knows where to place objects in memory. Here we use “heap” to
 refer to binary heaps.
@@ -191,7 +191,7 @@ is at index \(\lfloor (3-1)/2 \rfloor = 1\) (value 3).
 <h3>Binary heap operations</h3>
 <h4>Add</h4>
 <p>
-Adding a new node to the heap is done by adding the element at the end of the array to preserve the shape invariant. However, the heap invariant may not hold, because its priority may be greater than its parent's priority. To restore the heap invariant, we <strong>bubble up</strong> the element by swapping it with its parent until either it reaches the root or its parent node has higher priority. This requires at most \(\lg n\) swaps, because the tree is perfectly balanced. So adds take at most \(O(\log n)\) time.</p>
+Adding a new node to the heap is done by adding the element at the end of the array to preserve the shape invariant. However, the heap invariant may not hold, because its priority may be greater than its parent's priority. To restore the heap invariant, we <em class=term>bubble up</em> the element by swapping it with its parent until either it reaches the root or its parent node has higher priority. This requires at most \(\lg n\) swaps, because the tree is perfectly balanced. So adds take at most \(O(\log n)\) time.</p>
 
 <p>In the example above, if we add an element with priority 2, it is first
 placed at the end of the array, then bubbles up past the 5 and the 3, finally
@@ -233,7 +233,7 @@ The minimum element is always at the root (location 0 in the array). We can extr
 but we need to replace it with something.
 The last element in the array is a good candidate. We move it to the root
 of the tree. This reestablishes the shape invariant, but the heap invariant may now be broken.
-We fix the heap invariant by <strong>bubbling down</strong> the element (sometimes it is called <strong>sifting down</strong>).
+We fix the heap invariant by <em class=term>bubbling down</em> the element (sometimes it is called <em class=term>sifting down</em>).
 The element is compared against its
 two children. If either child is higher priority, it is swapped with the higher
 priority child. The process repeats until either the element is higher priority than
@@ -291,7 +291,7 @@ We may wish to change the priority of an element in the queue. Assigning a new p
 
 <h2>Heapsort</h2>
 <p>
-The heapsort algorithm sorts an array by first <strong>heapifying</strong> it to make
+The heapsort algorithm sorts an array by first <em class=term>heapifying</em> it to make
 it satisfy the heap invariant. Then <code>extractMin()</code> is used
 repeatedly to read out the elements in increasing order. This can be used to
 sort an array in \(O(n \log n)\) time. That repeatedly calling <code>extractMin()</code>

@@ -46,35 +46,66 @@ function lecture_title(source) {
     return match[1].replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
 }
 
-// A link to the chapter named 'name', reading "before TITLE after". The title
-// is read from the chapter itself, so it is filled in once that chapter
-// arrives; fetching it also warms the cache for the click.
-function chapter_link(name, before, after) {
-    const title = EZDom.span({className: 'chapterTitle'}),
-          link = EZDom.a({href: lecture_url(name)}, before, title, after)
+// Apply 'cont' to the title of the chapter named 'name', once it is known.
+// Each chapter is fetched at most once even though it is linked to more than
+// once; fetching it also warms the cache for the click.
+const chapter_titles = new Map()
+
+function with_chapter_title(name, cont) {
+    const known = chapter_titles.get(name)
+    if (known) {
+        if (known.title === null) known.waiting.push(cont)
+        else cont(known.title)
+        return
+    }
+    const entry = {title: null, waiting: [cont]}
+    chapter_titles.set(name, entry)
     read_from_url(base_url + "/lectures/" + name + "/index.html",
         source => {
             const t = lecture_title(source)
-            if (t) EZDom.app(title, t)
+            if (!t) return
+            entry.title = t
+            for (const f of entry.waiting) f(t)
+            entry.waiting = []
         },
         errmsg => {})
+}
+
+// A link to the chapter named 'name', reading "before TITLE after". The title
+// is read from the chapter itself, so it is filled in once that chapter
+// arrives.
+function chapter_link(name, before, after) {
+    const title = EZDom.span({className: 'chapterTitle'}),
+          link = EZDom.a({href: lecture_url(name)}, before, title, after)
+    with_chapter_title(name, t => EZDom.app(title, t))
     return link
 }
 
-// Append to 'node' links to the chapters preceding and following the chapter
-// named 'name'. Either link is omitted if there is no such chapter.
-function add_chapter_links(node, name) {
+// A navigation bar linking to the chapters preceding and following the chapter
+// named 'name', or null if there is no chapter in either direction. Either
+// link is omitted if there is no such chapter. 'className' distinguishes the
+// bar above the chapter from the one below it, which are styled differently.
+function chapter_links(name, className) {
     const prev = adjacent_lecture(name, -1),
           next = adjacent_lecture(name, 1)
-    if (!prev && !next) return
-    const nav = EZDom.div({className: 'chapterLinks'})
+    if (!prev && !next) return null
+    const nav = EZDom.div({className: 'chapterLinks ' + className})
     if (prev)
         nav.appendChild(EZDom.div({className: 'prevChapter'},
             chapter_link(prev, "← Previous: ", "")))
     if (next)
         nav.appendChild(EZDom.div({className: 'nextChapter'},
             chapter_link(next, "Next: ", " →")))
-    node.appendChild(nav)
+    return nav
+}
+
+// Add to 'node' links to the chapters preceding and following the chapter
+// named 'name', both above and below the text of the chapter.
+function add_chapter_links(node, name) {
+    const top = chapter_links(name, 'topLinks')
+    if (!top) return
+    node.insertBefore(top, node.firstChild)
+    node.appendChild(chapter_links(name, 'bottomLinks'))
 }
 
 function basename(url) {

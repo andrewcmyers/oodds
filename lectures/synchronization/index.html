@@ -394,7 +394,7 @@ variables: a blocking queue. The <code>put</code> method blocks whenever it
 would put too many elements into the queue, waiting for another thread to take
 an element out. The <code>take</code> method blocks whenever there is no
 element to take. The same condition variable keeps track of two
-conditions at the same time: queue full <i>or</i> queue empty. It is (always)
+conditions at the same time: queue full <em>or</em> queue empty. It is (always)
 the responsibility of the waiting thread to ensure that the condition is true.
 </p>
 

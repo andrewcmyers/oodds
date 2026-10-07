@@ -213,6 +213,15 @@ div.chapterLinks {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5em 2em;
+}
+/* The bar above the chapter is separated from the title by a rule below it;
+   the bar below the chapter by a rule above it. */
+div.chapterLinks.topLinks {
+    margin: 0 0 2em 0;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid #aaa;
+}
+div.chapterLinks.bottomLinks {
     margin: 3em 0 1em 0;
     padding-top: 0.5em;
     border-top: 1px solid #aaa;

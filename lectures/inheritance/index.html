@@ -81,7 +81,7 @@ with (new CFigure("merging-updates")) {
 At least for some kinds of changes that we might make between
 <code>CBoard</code> and <code>LogBoard</code>, <em class=term>inheritance</em> offers a solution to this
 problem. We can think of inheritance as a language mechanism for
-<i>copying</i> a class and making certain kinds of changes to that class, without
+<em>copying</em> a class and making certain kinds of changes to that class, without
 actually physically copying the code.
 </p><p>
 To add the new functionality to <code>CBoard</code>, we build a new class
@@ -193,16 +193,16 @@ dispatched.
 
 <p>
 There are two different ways to understand how inheritance works when an instance
-method is invoked. One way is to say that the system <i>searches
-upward</i> through the inheritance hierarchy starting at the dynamic type of the object,
+method is invoked. One way is to say that the system <em>searches
+upward</em> through the inheritance hierarchy starting at the dynamic type of the object,
 looking for the first implementation of the method. But it is (almost) equivalent to say that the
-methods from the superclasses are <i>copied down</i> to their subclasses,
+methods from the superclasses are <em>copied down</em> to their subclasses,
 except when overridden.</p>
 
 <p>
 We say "almost" because there are some cases where code cannot be naively
 copied down verbatim.  For example, a method in the superclass can refer to an
-instance variable in the superclass that is <i>shadowed</i> by an instance
+instance variable in the superclass that is <em>shadowed</em> by an instance
 variable of the same name in a subclass. If the method in the superclass refers
 to this instance variable, then it still refers to the same instance variable
 even after it is copied down to the subclass.  The identity of the instance
