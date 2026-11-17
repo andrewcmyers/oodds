@@ -810,6 +810,9 @@ elements strictly to the right of <code>j</code> are at least the pivot value.
 All of those elements are already successfully partitioned.
 Indices <code>i</code> and <code>j</code> point to elements that could be
 partitioned to the other side of the array.
+As a final part of the invariant,
+we have <code>l</code> ≤ <code>i</code> ≤ <code>j + 1</code> ≤ <code>r</code>
+and <code>l</code> &lt; <code>j+1</code> and <code>i≥j ⇒ j+1 &lt; r</code>.
 </p>
 <div class=figure>
   <canvas id="qs-inv" style="height:80px; width:400px">
