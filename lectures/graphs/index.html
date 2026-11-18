@@ -530,21 +530,51 @@ This gives us an (inefficient) way to topologically sort a DAG:
 <li>Repeat from step 2 until the graph is empty.
 </ol>
 <p>
-Since finding the 0 in-degree node takes O(V) time, this algorithm takes
-O(V<sup>2</sup>) time. We can do better, as we'll see shortly.
+Since finding the 0 in-degree node takes \(O(V)\) time, this algorithm takes
+\(O(V^2)\) time. We can do better.
 </p>
+
 <div class=exercise>
 Give one valid topological ordering of the &ldquo;men's informal dressing problem&rdquo; DAG above
-that is different from the two shown. Also explain why any ordering that places <var>jacket</var>
-before <var>shirt</var> is invalid.
+that is different from the two shown.
 <p class=answer>
-One valid ordering is (socks, shirt, tie, pants, belt, jacket, shoes);
-many others are possible.  Placing jacket before shirt is invalid;
-there are edges (shirt &rarr; tie) and (tie &rarr; jacket), so
-shirt must precede jacket in any topological sort. More directly, (shirt
-&rarr; belt &rarr; jacket) also forces shirt before jacket.
+One valid ordering is (socks, shirt, tie, pants, belt, jacket, shoes); many others are possible.
 </p>
 </div>
+
+<h3>Kahn's algorithm</h3>
+<p>
+Searching for a 0 in-degree vertex from scratch at
+every step is inefficient. Instead, we can keep track of the in-degree of every vertex and
+maintain a collection of the vertices whose in-degree is currently zero. Rather
+than actually removing a vertex from the graph, we simulate its removal by
+decrementing the in-degrees of its successors. Any successor whose in-degree drops
+to zero is added to the collection. This approach is known as <em class=term>Kahn's
+algorithm</em>:
+</p>
+<ol>
+<li>Compute the in-degree of every vertex, storing it in an array <code>indeg</code>.
+<li>Add every vertex with in-degree 0 to a collection <code>ready</code>
+(for example, a queue or stack).
+<li>While <code>ready</code> is nonempty: remove some vertex \(v\) from it and
+put \(v\) at the end of the current ordering. Then, for each edge
+\((v,w)\), decrement <code>indeg[</code>\(w\)<code>]</code>; if it becomes 0, add \(w\)
+to <code>ready</code>.
+</ol>
+<p>
+Computing all initial in-degrees requires one pass over all the adjacency lists, taking
+\(O(V+E)\) time. In the main loop, each vertex is added to and removed from
+<code>ready</code> exactly once, and each edge \((v,w)\) is examined exactly
+once, when \(v\) is removed. Therefore the whole algorithm takes \(O(V+E)\)
+time; it is linear in the size of the graph, which is the best we could hope for.
+</p>
+<p>
+As a bonus, the same algorithm also detects cycles in linear time. If the graph contains a cycle,
+no vertex on the cycle can ever have its in-degree reduced to zero, because
+each one has a predecessor on the cycle that is never output. In that case
+<code>ready</code> becomes empty before all vertices are ordered, signaling
+the existence of a cycle.
+</p>
 
 <h2>Other graph problems</h2>
 <p>
