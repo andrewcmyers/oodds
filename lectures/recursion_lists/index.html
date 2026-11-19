@@ -558,21 +558,26 @@ efficient loop when efficiency is paramount.
 <div class=exercise>
 <p>
 Can you convert the recursive implementation of <code>remove()</code> above into
-a tail-recursive one, by adding an additional parameter to represent the previous node?
+a tail-recursive one, by adding additional parameters to represent the previous node
+and the head of the list?
 </p>
 <div class=answer>
 <pre class=load>
 <a href="remove_tail_recursive.java">remove_tail_recursive.java</a>
 </pre>
 <p>To get the effect of the original <code>remove</code> method, we call
-this with <code>p</code> equal to <code>null</code>:
+this with <code>p</code> equal to <code>null</code> and <code>head</code> equal to <code>n</code>:
 <pre>
-   remove(n, x, null)
+   remove(n, x, null, n)
 </pre>
 </p>
 <p>
-From this tail-recursive code, we can get an iterative implementation like the
-one above, using the tail-recursion removal trick!
+The <code>head</code> parameter is needed because a tail-recursive method returns the
+result of the innermost call directly, so that call must know what the head of the
+list is. From this tail-recursive code, we can get the iterative implementation
+above using the tail-recursion removal trick: the parameters <code>n</code>,
+<code>p</code>, and <code>head</code> become the loop variables <code>n</code>,
+<code>p</code>, and <code>result</code>!
 </p>
 </div>
 </div>
